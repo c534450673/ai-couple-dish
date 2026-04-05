@@ -1,0 +1,200 @@
+/* pages/love-timer/love-timer.wxss */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 背景装饰 */
+.bg-hearts {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.heart {
+  position: absolute;
+  font-size: 40rpx;
+  opacity: 0.15;
+  animation: float 6s ease-in-out infinite;
+}
+
+.heart:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+.heart:nth-child(2) { top: 20%; right: 10%; animation-delay: 1s; }
+.heart:nth-child(3) { top: 50%; left: 8%; animation-delay: 2s; }
+.heart:nth-child(4) { top: 70%; right: 5%; animation-delay: 0.5s; }
+.heart:nth-child(5) { top: 85%; left: 15%; animation-delay: 1.5s; }
+.heart:nth-child(6) { top: 30%; right: 20%; animation-delay: 2.5s; }
+.heart:nth-child(7) { top: 60%; left: 20%; animation-delay: 3s; }
+.heart:nth-child(8) { top: 40%; right: 8%; animation-delay: 3.5s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20rpx); }
+}
+
+/* 计时器区域 */
+.timer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 40rpx;
+}
+
+.timer-label {
+  font-size: 32rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 40rpx;
+}
+
+.timer-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 60rpx;
+}
+
+.timer-days {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 30rpx;
+}
+
+.days-number {
+  font-size: 160rpx;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.days-text {
+  font-size: 48rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-left: 10rpx;
+}
+
+.timer.HMS {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 20rpx 40rpx;
+  border-radius: 40rpx;
+}
+
+.hms-number {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.hms-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 6rpx;
+}
+
+.hms-separator {
+  font-size: 48rpx;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 4rpx;
+}
+
+/* 里程碑卡片 */
+.milestone-card {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 30rpx;
+  border-radius: 24rpx;
+  width: 100%;
+  margin-bottom: 40rpx;
+}
+
+.milestone-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.milestone-info {
+  flex: 1;
+}
+
+.milestone-title {
+  font-size: 30rpx;
+  color: #ffffff;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.milestone-days {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.milestone-arrow {
+  font-size: 48rpx;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 日期卡片 */
+.date-cards {
+  display: flex;
+  gap: 20rpx;
+  width: 100%;
+}
+
+.date-card {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30rpx;
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.date-card.active {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.date-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10rpx;
+}
+
+.date-value {
+  font-size: 32rpx;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* 纪念日入口 */
+.anniversary-section {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  margin: 0 40rpx;
+  padding: 30rpx;
+  border-radius: 20rpx;
+}
+
+.section-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.section-text {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.section-arrow {
+  font-size: 40rpx;
+  color: #ccc;
+}

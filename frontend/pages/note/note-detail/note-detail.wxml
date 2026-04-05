@@ -1,0 +1,21 @@
+<!--pages/note/note-detail/note-detail.wxml-->
+<view class="container">
+  <view class="note-card" wx:if="{{noteInfo}}">
+    <text class="note-title">{{noteInfo.title}}</text>
+    <text class="note-date">{{noteInfo.createTime}}</text>
+
+    <view class="note-images" wx:if="{{noteInfo.images && noteInfo.images.length > 0}}">
+      <image wx:for="{{noteInfo.images}}" wx:key="index" src="{{item}}" mode="aspectFill" bindtap="onPreviewImage" data-url="{{item}}"/>
+    </view>
+
+    <text class="note-content">{{noteInfo.content}}</text>
+
+    <view class="note-actions">
+      <button class="btn-delete" bindtap="onDelete">删除</button>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

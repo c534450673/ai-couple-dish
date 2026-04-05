@@ -1,0 +1,59 @@
+<!--pages/love-timer/love-timer.wxml-->
+<view class="container">
+  <!-- 背景装饰 -->
+  <view class="bg-hearts">
+    <text class="heart" wx:for="{{[1,2,3,4,5,6,7,8]}}" wx:key="index">❤️</text>
+  </view>
+
+  <!-- 主计时器 -->
+  <view class="timer-section">
+    <text class="timer-label">我们在一起</text>
+
+    <view class="timer-display">
+      <view class="timer-days">
+        <text class="days-number">{{loveDays}}</text>
+        <text class="days-text">天</text>
+      </view>
+
+      <view class="timer HMS">
+        <text class="hms-number">{{hours}}</text>
+        <text class="hms-label">时</text>
+        <text class="hms-separator">:</text>
+        <text class="hms-number">{{minutes}}</text>
+        <text class="hms-label">分</text>
+        <text class="hms-separator">:</text>
+        <text class="hms-number">{{seconds}}</text>
+        <text class="hms-label">秒</text>
+      </view>
+    </view>
+
+    <!-- 特殊日期卡片 -->
+    <view class="milestone-card" wx:if="{{nextAnniversary}}">
+      <text class="milestone-icon">🎉</text>
+      <view class="milestone-info">
+        <text class="milestone-title">{{nextAnniversary.name}}</text>
+        <text class="milestone-days">还有 {{nextAnniversary.daysUntil}} 天</text>
+      </view>
+      <text class="milestone-arrow">›</text>
+    </view>
+
+    <!-- 日期选择 -->
+    <view class="date-cards">
+      <view class="date-card">
+        <text class="date-label">相识</text>
+        <text class="date-value">--</text>
+      </view>
+      <view class="date-card active">
+        <text class="date-label">恋爱</text>
+        <text class="date-value">{{loveDays}}天</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 纪念日入口 -->
+  <view class="anniversary-section" bindtap="goToAnniversary">
+    <text class="section-icon">📅</text>
+    <text class="section-text">纪念日管理</text>
+    <text class="section-arrow">›</text>
+  </view>
+</view>

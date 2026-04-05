@@ -1,0 +1,25 @@
+<!--pages/photo/photo-upload/photo-upload.wxml-->
+<view class="container">
+  <view class="upload-area">
+    <view class="photo-grid">
+      <view
+        class="photo-item"
+        wx:for="{{photos}}"
+        wx:key="index"
+      >
+        <image src="{{item}}" mode="aspectFill"/>
+        <view class="remove-btn" bindtap="onRemovePhoto" data-index="{{index}}">×</view>
+      </view>
+      <view class="add-photo" bindtap="onChoosePhoto" wx:if="{{photos.length < 9}}">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加照片</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-section">
+    <button class="btn-upload" bindtap="onUpload" loading="{{loading}}">
+      上传
+    </button>
+  </view>
+</view>

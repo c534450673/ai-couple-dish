@@ -1,0 +1,101 @@
+<!--pages/feed/feed-send/feed-send.wxml-->
+<view class="container">
+  <!-- 投喂类型选择 -->
+  <view class="type-section">
+    <text class="section-title">选择投喂类型</text>
+    <view class="type-grid">
+      <view
+        class="type-item {{feedType === 'meal' ? 'active' : ''}}"
+        bindtap="onSelectType"
+        data-type="meal"
+      >
+        <text class="type-icon">🍜</text>
+        <text class="type-text">正餐</text>
+      </view>
+
+      <view
+        class="type-item {{feedType === 'dessert' ? 'active' : ''}}"
+        bindtap="onSelectType"
+        data-type="dessert"
+      >
+        <text class="type-icon">🍰</text>
+        <text class="type-text">甜品</text>
+      </view>
+
+      <view
+        class="type-item {{feedType === 'snack' ? 'active' : ''}}"
+        bindtap="onSelectType"
+        data-type="snack"
+      >
+        <text class="type-icon">🍿</text>
+        <text class="type-text">小吃</text>
+      </view>
+
+      <view
+        class="type-item {{feedType === 'drink' ? 'active' : ''}}"
+        bindtap="onSelectType"
+        data-type="drink"
+      >
+        <text class="type-icon">🥤</text>
+        <text class="type-text">饮品</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 投喂内容 -->
+  <view class="content-section">
+    <text class="section-title">投喂内容</text>
+    <textarea
+      class="content-input"
+      placeholder="想给TA点什么？"
+      value="{{content}}"
+      bindinput="onContentInput"
+      maxlength="200"
+    />
+  </view>
+
+  <!-- 留言 -->
+  <view class="message-section">
+    <text class="section-title">留言（可选）</text>
+    <input
+      class="message-input"
+      type="text"
+      placeholder="添加一句温馨的话"
+      value="{{message}}"
+      bindinput="onMessageInput"
+      maxlength="100"
+    />
+  </view>
+
+  <!-- 图片上传 -->
+  <view class="image-section">
+    <text class="section-title">添加图片（可选）</text>
+    <view class="image-grid">
+      <view
+        class="image-item"
+        wx:for="{{images}}"
+        wx:key="index"
+      >
+        <image src="{{item}}" mode="aspectFill"/>
+        <view class="remove-btn" bindtap="onRemoveImage" data-index="{{index}}">×</view>
+      </view>
+
+      <view class="add-image" bindtap="onChooseImage" wx:if="{{images.length < 3}}">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发送按钮 -->
+  <view class="bottom-section">
+    <button
+      class="btn-send"
+      bindtap="onSend"
+      loading="{{sending}}"
+      disabled="{{!content || sending}}"
+    >
+      发送给TA
+    </button>
+  </view>
+</view>

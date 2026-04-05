@@ -1,0 +1,105 @@
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: ai-couple-dish
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:ai_couple_dish}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      pool-name: HikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: ${REDIS_DATABASE:0}
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 2
+        max-wait: -1ms
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+# MyBatis Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.aicoupledish.dao.model
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: isDeleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# JWT配置
+# 安全警告: JWT_SECRET 必须通过环境变量设置，禁止使用默认值部署到生产环境
+# 生成密钥命令: openssl rand -base64 64 | tr -d '\n'
+jwt:
+  secret: ${JWT_SECRET:}
+  expiration: ${JWT_EXPIRATION:604800000}
+  header: Authorization
+  prefix: Bearer
+
+# 微信小程序配置
+wx:
+  miniapp:
+    appid: ${WX_MINIAPP_APPID:your-appid}
+    secret: ${WX_MINIAPP_SECRET:your-secret}
+    msgDataFormat: JSON
+    tenantId: 10001
+
+# 文件上传配置
+file:
+  upload:
+    path: ${FILE_UPLOAD_PATH:/app/uploads}
+    base-url: ${FILE_BASE_URL:http://localhost:8080/api/uploads}
+
+# Knife4j配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# Actuator配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+# 日志配置
+logging:
+  level:
+    com.aicoupledish: ${LOG_LEVEL:debug}
+    org.springframework: ${LOG_LEVEL_SPRING:info}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

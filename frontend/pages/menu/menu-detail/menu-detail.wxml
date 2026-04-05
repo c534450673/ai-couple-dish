@@ -1,0 +1,48 @@
+<!--pages/menu/menu-detail/menu-detail.wxml-->
+<view class="container">
+  <view class="menu-card" wx:if="{{menuInfo}}">
+    <image class="menu-image" src="{{menuInfo.imageUrl}}" mode="aspectFill"/>
+    <view class="menu-content">
+      <view class="menu-header">
+        <text class="menu-name">{{menuInfo.name}}</text>
+        <view class="menu-tags">
+          <text class="tag tag-type">{{menuInfo.menuType}}</text>
+          <text class="tag tag-status">{{menuInfo.statusText}}</text>
+        </view>
+      </view>
+
+      <view class="menu-info-row">
+        <text class="info-label">位置：</text>
+        <text class="info-value">{{menuInfo.location || '未填写'}}</text>
+      </view>
+
+      <view class="menu-info-row">
+        <text class="info-label">人均：</text>
+        <text class="info-value">{{menuInfo.averageCost || '未填写'}}</text>
+      </view>
+
+      <view class="menu-info-row" wx:if="{{menuInfo.recommendedDishes}}">
+        <text class="info-label">推荐菜：</text>
+        <text class="info-value">{{menuInfo.recommendedDishes}}</text>
+      </view>
+
+      <view class="menu-info-row" wx:if="{{menuInfo.notes}}">
+        <text class="info-label">备注：</text>
+        <text class="info-value">{{menuInfo.notes}}</text>
+      </view>
+
+      <view class="menu-actions">
+        <button class="btn-edit" bindtap="onEdit">编辑</button>
+        <button class="btn-delete" bindtap="onDelete">删除</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && !menuInfo}}">
+    <text>菜单不存在</text>
+  </view>
+</view>

@@ -1,0 +1,85 @@
+# ===================
+# System and IDE
+# ===================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+*.iml
+.vscode/
+*.iws
+*.ipr
+.project
+.classpath
+
+# ===================
+# Build outputs
+# ===================
+dist/
+build/
+target/
+out/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.tgz
+
+# ===================
+# Dependency directories
+# ===================
+node_modules/
+bower_components/
+.m2/
+.npm/
+.yarn/
+
+# ===================
+# Environment configs (DO NOT COMMIT)
+# ===================
+.env
+.env.local
+.env.*.local
+*.local.yml
+*.local.yaml
+secrets/
+credentials/
+
+# ===================
+# Logs and temp files
+# ===================
+*.log
+logs/
+temp/
+tmp/
+*.pid
+*.seed
+
+# ===================
+# UniApp and Mini Program
+# ===================
+unpackage/
+*.uni.bundle
+miniprogram_npm/
+*.db
+
+# ===================
+# Test coverage
+# ===================
+coverage/
+.nyc_output/
+
+# ===================
+# Spring Boot
+# ===================
+spring-boot-*.log
+
+# ===================
+# Application specific
+# ===================
+/uploads/
+*.bak

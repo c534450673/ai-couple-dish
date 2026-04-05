@@ -1,0 +1,85 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/couple-home/couple-home",
+    "pages/couple-bind/couple-bind",
+    "pages/love-timer/love-timer",
+    "pages/menu/menu-list/menu-list",
+    "pages/menu/menu-detail/menu-detail",
+    "pages/menu/menu-add/menu-add",
+    "pages/feed/feed-home/feed-home",
+    "pages/feed/feed-send/feed-send",
+    "pages/feed/wish-list/wish-list",
+    "pages/note/note-list/note-list",
+    "pages/note/note-add/note-add",
+    "pages/note/note-detail/note-detail",
+    "pages/anniversary/anniversary-list/anniversary-list",
+    "pages/anniversary/anniversary-add/anniversary-add",
+    "pages/my/my-home/my-home",
+    "pages/my/settings/settings"
+  ],
+  "subpackages": [
+    {
+      "root": "pages/chef",
+      "pages": [
+        "recipe-list/recipe-list",
+        "order-list/order-list"
+      ]
+    },
+    {
+      "root": "pages/photo",
+      "pages": [
+        "photo-list/photo-list",
+        "photo-upload/photo-upload"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#667eea",
+    "navigationBarTitleText": "情侣私密菜单",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f5f5f5",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": true,
+    "onReachBottomDistance": 50
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#667eea",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/couple-home/couple-home",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/menu/menu-list/menu-list",
+        "text": "菜单",
+        "iconPath": "assets/icons/menu.png",
+        "selectedIconPath": "assets/icons/menu-active.png"
+      },
+      {
+        "pagePath": "pages/feed/feed-home/feed-home",
+        "text": "投喂",
+        "iconPath": "assets/icons/feed.png",
+        "selectedIconPath": "assets/icons/feed-active.png"
+      },
+      {
+        "pagePath": "pages/my/my-home/my-home",
+        "text": "我的",
+        "iconPath": "assets/icons/my.png",
+        "selectedIconPath": "assets/icons/my-active.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "获取位置信息以便推荐附近的餐厅"
+    }
+  },
+  "requiredBackgroundModes": ["audio", "location"],
+  "usingComponents": {}
+}

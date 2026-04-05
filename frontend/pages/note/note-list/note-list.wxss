@@ -1,0 +1,96 @@
+/* pages/note/note-list/note-list.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 30rpx;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.add-btn {
+  font-size: 28rpx;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.note-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.note-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.note-text {
+  font-size: 28rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 15rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.note-images {
+  display: flex;
+  gap: 10rpx;
+  margin-bottom: 15rpx;
+}
+
+.note-images image {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 8rpx;
+}
+
+.note-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.note-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15rpx;
+  padding-top: 15rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.delete-btn {
+  font-size: 26rpx;
+  color: #ff4d4f;
+}
+
+.empty, .loading {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #bbb;
+  margin-top: 10rpx;
+  display: block;
+}

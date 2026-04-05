@@ -1,0 +1,122 @@
+<!--pages/couple-home/couple-home.wxml-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <block wx:else>
+    <!-- 顶部信息 -->
+    <view class="header-section">
+      <!-- 背景 -->
+      <view class="header-bg">
+        <view class="heart-icon">❤️</view>
+      </view>
+
+      <!-- 情侣头像 -->
+      <view class="avatar-section">
+        <view class="avatar-wrapper">
+          <image
+            class="avatar left"
+            src="{{homeData.myInfo.avatarUrl || '/assets/images/default-avatar.png'}}"
+            mode="aspectFill"
+          />
+          <view class="avatar-heart">💕</view>
+          <image
+            class="avatar right"
+            src="{{homeData.partnerInfo.avatarUrl || '/assets/images/default-avatar.png'}}"
+            mode="aspectFill"
+          />
+        </view>
+      </view>
+
+      <!-- 昵称 -->
+      <view class="nicknames">
+        <text class="nickname">{{homeData.myInfo.nickName}}</text>
+        <text class="separator">&</text>
+        <text class="nickname">{{homeData.partnerInfo.nickName}}</text>
+      </view>
+
+      <!-- 恋爱天数 -->
+      <view class="love-days" bindtap="goToLoveTimer">
+        <text class="days-number">{{homeData.loveDays}}</text>
+        <text class="days-text">天</text>
+        <text class="timer-arrow">›</text>
+      </view>
+
+      <!-- 下一个纪念日 -->
+      <view class="next-anniversary" wx:if="{{homeData.nextAnniversary}}" bindtap="goToAnniversary">
+        <text class="anniversary-icon">🎉</text>
+        <text class="anniversary-name">{{homeData.nextAnniversary.name}}</text>
+        <text class="anniversary-days">还有{{homeData.nextAnniversary.daysUntil}}天</text>
+      </view>
+    </view>
+
+    <!-- 功能入口 -->
+    <view class="menu-grid">
+      <view class="menu-item" bindtap="goToMenu">
+        <view class="menu-icon">🍽️</view>
+        <text class="menu-text">私密菜单</text>
+        <text class="menu-count" wx:if="{{homeData.stats.menuCount}}">{{homeData.stats.menuCount}}</text>
+      </view>
+
+      <view class="menu-item" bindtap="goToAnniversary">
+        <view class="menu-icon">📅</view>
+        <text class="menu-text">纪念日</text>
+      </view>
+
+      <view class="menu-item" bindtap="goToFeed">
+        <view class="menu-icon">🎁</view>
+        <text class="menu-text">今日投喂</text>
+        <view class="feed-badge" wx:if="{{homeData.todayFeed && !homeData.todayFeed.sentToday}}"></view>
+      </view>
+
+      <view class="menu-item" bindtap="goToNote">
+        <view class="menu-icon">📝</view>
+        <text class="menu-text">私密笔记</text>
+        <text class="menu-count" wx:if="{{homeData.stats.noteCount}}">{{homeData.stats.noteCount}}</text>
+      </view>
+
+      <view class="menu-item" bindtap="goToPhoto">
+        <view class="menu-icon">📸</view>
+        <text class="menu-text">私密相册</text>
+        <text class="menu-count" wx:if="{{homeData.stats.photoCount}}">{{homeData.stats.photoCount}}</text>
+      </view>
+
+      <view class="menu-item" bindtap="goToMy">
+        <view class="menu-icon">❤️</view>
+        <text class="menu-text">我的</text>
+      </view>
+    </view>
+
+    <!-- 最近动态 -->
+    <view class="recent-section" wx:if="{{homeData.recentActivities.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">最近动态</text>
+        <text class="section-more">查看更多 ›</text>
+      </view>
+
+      <view class="activity-list">
+        <view class="activity-item" wx:for="{{homeData.recentActivities}}" wx:key="id">
+          <image class="activity-avatar" src="{{item.creatorAvatar}}" mode="aspectFill"/>
+          <view class="activity-info">
+            <text class="activity-title">{{item.title}}</text>
+            <text class="activity-time">{{item.createTime}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态提示 -->
+    <view class="empty-hint" wx:if="{{!homeData.stats.menuCount && !homeData.stats.noteCount}}">
+      <text class="hint-icon">💡</text>
+      <text class="hint-text">开始记录你们的美食之旅吧</text>
+      <button class="hint-btn" bindtap="goToMenu">添加第一个菜单</button>
+    </view>
+
+    <!-- 解绑入口 -->
+    <view class="unbind-section" bindtap="onUnbind">
+      <text>解除情侣关系</text>
+    </view>
+  </block>
+</view>

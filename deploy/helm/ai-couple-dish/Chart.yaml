@@ -1,0 +1,15 @@
+# Helm Chart - 情侣私密菜单
+apiVersion: v2
+name: ai-couple-dish
+description: 情侣私密菜单后端服务Helm Chart
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - couple
+  - food
+  - miniprogram
+  - springboot
+maintainers:
+  - name: AI Couple Dish Team
+    email: support@aicoupledish.com

@@ -1,0 +1,67 @@
+<!--pages/chef/order-list/order-list.wxml-->
+<view class="container">
+  <view class="tabs">
+    <view
+      class="tab {{currentTab === 'all' ? 'active' : ''}}"
+      bindtap="onTabChange"
+      data-tab="all"
+    >全部</view>
+    <view
+      class="tab {{currentTab === 'pending' ? 'active' : ''}}"
+      bindtap="onTabChange"
+      data-tab="pending"
+    >待接单</view>
+    <view
+      class="tab {{currentTab === 'processing' ? 'active' : ''}}"
+      bindtap="onTabChange"
+      data-tab="processing"
+    >进行中</view>
+    <view
+      class="tab {{currentTab === 'completed' ? 'active' : ''}}"
+      bindtap="onTabChange"
+      data-tab="completed"
+    >已完成</view>
+  </view>
+
+  <view class="order-list" wx:if="{{orders.length > 0}}">
+    <view
+      class="order-card"
+      wx:for="{{orders}}"
+      wx:key="id"
+    >
+      <view class="order-header">
+        <text class="order-id">订单号：{{item.orderNo}}</text>
+        <text class="order-status">{{item.statusText}}</text>
+      </view>
+      <view class="order-content">
+        <text class="order-dish">{{item.dishName}}</text>
+        <text class="order-note" wx:if="{{item.note}}">备注：{{item.note}}</text>
+      </view>
+      <view class="order-footer">
+        <text class="order-time">{{item.createTime}}</text>
+        <view class="order-actions">
+          <button
+            class="btn-process"
+            wx:if="{{item.status === 'pending'}}"
+            bindtap="onProcessOrder"
+            data-id="{{item.id}}"
+          >接单</button>
+          <button
+            class="btn-complete"
+            wx:if="{{item.status === 'processing'}}"
+            bindtap="onCompleteOrder"
+            data-id="{{item.id}}"
+          >完成</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && orders.length === 0}}">
+    <text>暂无订单</text>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

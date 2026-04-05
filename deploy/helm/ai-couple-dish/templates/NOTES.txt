@@ -1,0 +1,39 @@
+{{/* Helm NOTES.txt */}}
+==========================================
+  情侣私密菜单 - Helm部署成功
+==========================================
+
+检查服务状态:
+
+  kubectl get pods -n {{ .Values.namespace }}
+  kubectl get svc -n {{ .Values.namespace }}
+
+获取后端服务地址:
+
+{{- if eq .Values.nginx.service.type "LoadBalancer" }}
+  NODE_PORT=$(kubectl get svc -n {{ .Values.namespace }} -o jsonpath='{.spec.ports[0].nodePort}' nginx)
+  echo "http://$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}'):$NODE_PORT"
+{{- else if eq .Values.nginx.service.type "ClusterIP" }}
+  kubectl port-forward -n {{ .Values.namespace }} svc/nginx 8080:80
+  # 访问 http://localhost:8080
+{{- end }}
+
+健康检查:
+
+  curl http://localhost:8080/api/actuator/health
+
+查看日志:
+
+  kubectl logs -f -n {{ .Values.namespace }} -l app=backend
+
+==========================================
+  后续配置步骤:
+  1. 修改Secrets中的密码和密钥
+  2. 配置微信小程序后台服务器域名
+  3. 配置SSL证书（如使用HTTPS）
+  4. 配置DNS解析
+==========================================
+
+{{- if not .Values.secret.jwtSecret }}
+WARNING: 请务必修改 secret.jwtSecret 配置！
+{{- end }}

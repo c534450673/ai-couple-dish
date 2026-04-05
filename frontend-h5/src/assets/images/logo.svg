@@ -1,0 +1,10 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="80" height="80" rx="20" fill="url(#gradient)"/>
+  <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="36">🍽️</text>
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="80" y2="80">
+      <stop offset="0%" stop-color="#ff6b9d"/>
+      <stop offset="100%" stop-color="#ff4757"/>
+    </linearGradient>
+  </defs>
+</svg>

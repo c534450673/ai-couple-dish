@@ -1,0 +1,249 @@
+/* pages/menu/menu-list/menu-list.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* Tab栏 */
+.tab-bar {
+  display: flex;
+  background: #ffffff;
+  padding: 20rpx 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+  padding: 10rpx 0;
+}
+
+.tab-item.active {
+  color: #667eea;
+  font-weight: bold;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 6rpx;
+  background: #667eea;
+  border-radius: 3rpx;
+}
+
+/* 菜单列表 */
+.menu-list {
+  padding: 20rpx;
+}
+
+.menu-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 卡片封面 */
+.card-cover {
+  height: 200rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.cover-placeholder {
+  font-size: 80rpx;
+  opacity: 0.5;
+}
+
+.status-tag {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: #ffffff;
+}
+
+.status-tag.tag-0 {
+  background: #ffa502;
+}
+
+.status-tag.tag-1 {
+  background: #52c41a;
+}
+
+.status-tag.tag-2 {
+  background: #722ed1;
+}
+
+/* 卡片信息 */
+.card-info {
+  padding: 24rpx;
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.restaurant-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.star {
+  font-size: 24rpx;
+  margin-right: 4rpx;
+}
+
+.rating-num {
+  font-size: 24rpx;
+  color: #ffa502;
+}
+
+.dish-name {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 12rpx;
+  display: block;
+}
+
+.info-tags {
+  display: flex;
+  gap: 10rpx;
+  margin-bottom: 12rpx;
+}
+
+.tag {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  background: #f5f5f5;
+  border-radius: 8rpx;
+  color: #666;
+}
+
+.tag.price {
+  background: rgba(255, 82, 82, 0.1);
+  color: #ff5252;
+}
+
+.note {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.info-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f5f5f5;
+}
+
+.date {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.actions {
+  display: flex;
+  gap: 30rpx;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.action-icon {
+  font-size: 28rpx;
+}
+
+.action-icon.liked {
+  color: #ff4757;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 200rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 加载中 */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100rpx 0;
+  color: #999;
+}
+
+/* 添加按钮 */
+.add-btn {
+  position: fixed;
+  right: 40rpx;
+  bottom: 40rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 30rpx rgba(102, 126, 234, 0.4);
+}
+
+.add-btn text {
+  font-size: 60rpx;
+  color: #ffffff;
+  font-weight: 300;
+}

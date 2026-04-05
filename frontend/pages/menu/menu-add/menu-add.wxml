@@ -1,0 +1,109 @@
+<!--pages/menu/menu-add/menu-add.wxml-->
+<view class="container">
+  <!-- 菜单类型 -->
+  <view class="section">
+    <text class="section-title">菜单类型</text>
+    <view class="type-grid">
+      <view
+        class="type-item {{menuType === 'wantToGo' ? 'active' : ''}}"
+        bindtap="onSelectType"
+        data-type="wantToGo"
+      >
+        <text class="type-icon">想去</text>
+      </view>
+      <view
+        class="type-item {{menuType === 'beenTo' ? 'active' : ''}}"
+        bindtap="onSelectType"
+        data-type="beenTo"
+      >
+        <text class="type-icon">去过</text>
+      </view>
+      <view
+        class="type-item {{menuType === 'recommended' ? 'active' : ''}}"
+        bindtap="onSelectType"
+        data-type="recommended"
+      >
+        <text class="type-icon">推荐</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 菜单名称 -->
+  <view class="section">
+    <text class="section-title">餐厅/菜单名称 *</text>
+    <input
+      class="input"
+      placeholder="请输入名称"
+      value="{{name}}"
+      bindinput="onNameInput"
+      maxlength="50"
+    />
+  </view>
+
+  <!-- 位置 -->
+  <view class="section">
+    <text class="section-title">位置</text>
+    <input
+      class="input"
+      placeholder="请输入位置"
+      value="{{location}}"
+      bindinput="onLocationInput"
+      maxlength="100"
+    />
+  </view>
+
+  <!-- 人均消费 -->
+  <view class="section">
+    <text class="section-title">人均消费</text>
+    <input
+      class="input"
+      type="number"
+      placeholder="请输入人均"
+      value="{{averageCost}}"
+      bindinput="onCostInput"
+    />
+  </view>
+
+  <!-- 推荐菜 -->
+  <view class="section">
+    <text class="section-title">推荐菜</text>
+    <input
+      class="input"
+      placeholder="请输入推荐菜"
+      value="{{recommendedDishes}}"
+      bindinput="onDishesInput"
+      maxlength="200"
+    />
+  </view>
+
+  <!-- 图片 -->
+  <view class="section">
+    <text class="section-title">图片</text>
+    <view class="image-picker" bindtap="onChooseImage">
+      <image wx:if="{{imageUrl}}" src="{{imageUrl}}" mode="aspectFill"/>
+      <view wx:else class="picker-placeholder">
+        <text>+</text>
+        <text>添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="section">
+    <text class="section-title">备注</text>
+    <textarea
+      class="textarea"
+      placeholder="添加备注"
+      value="{{notes}}"
+      bindinput="onNotesInput"
+      maxlength="500"
+    />
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="bottom-section">
+    <button class="btn-save" bindtap="onSave" loading="{{loading}}">
+      保存
+    </button>
+  </view>
+</view>

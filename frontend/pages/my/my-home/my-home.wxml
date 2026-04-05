@@ -1,0 +1,67 @@
+<!--pages/my/my-home/my-home.wxml-->
+<view class="container">
+  <!-- 用户信息 -->
+  <view class="user-section">
+    <image class="user-avatar" src="{{userInfo.avatarUrl || '/assets/images/default-avatar.png'}}" mode="aspectFill"/>
+    <text class="user-name">{{userInfo.nickName || '用户'}}</text>
+    <text class="couple-status" wx:if="{{coupleInfo}}">💑 已绑定</text>
+    <text class="couple-status unbound" wx:else>未绑定</text>
+    <text class="demo-badge" wx:if="{{isDemoMode}}">演示模式</text>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats-section">
+    <view class="stat-item">
+      <text class="stat-num">{{menuCount}}</text>
+      <text class="stat-label">菜单</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{noteCount}}</text>
+      <text class="stat-label">笔记</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{feedCount}}</text>
+      <text class="stat-label">投喂</text>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="menu-section">
+    <view class="menu-item" bindtap="goToNotes">
+      <text class="menu-icon">📝</text>
+      <text class="menu-text">我的笔记</text>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="goToAnniversary">
+      <text class="menu-icon">📅</text>
+      <text class="menu-text">纪念日</text>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="goToPhoto">
+      <text class="menu-icon">📸</text>
+      <text class="menu-text">私密相册</text>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="goToWish">
+      <text class="menu-icon">🎁</text>
+      <text class="menu-text">心愿单</text>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="goToSettings">
+      <text class="menu-icon">⚙️</text>
+      <text class="menu-text">设置</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section" bindtap="onLogout">
+    <text>{{isDemoMode ? '退出演示模式' : '退出登录'}}</text>
+  </view>
+</view>

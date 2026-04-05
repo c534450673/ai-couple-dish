@@ -1,0 +1,95 @@
+<!--pages/couple-bind/couple-bind.wxml-->
+<view class="container">
+  <!-- 顶部装饰 -->
+  <view class="header">
+    <text class="header-icon">💑</text>
+    <text class="header-title">绑定情侣</text>
+    <text class="header-desc">和TA一起记录美食之旅</text>
+  </view>
+
+  <!-- 模式选择 -->
+  <view class="mode-select" wx:if="{{mode === 'select'}}">
+    <view class="mode-card" bindtap="onSelectMode" data-mode="generate">
+      <text class="mode-icon">📝</text>
+      <view class="mode-info">
+        <text class="mode-title">生成情侣码</text>
+        <text class="mode-desc">创建邀请链接，等待TA确认</text>
+      </view>
+      <text class="mode-arrow">›</text>
+    </view>
+
+    <view class="mode-card" bindtap="onSelectMode" data-mode="input">
+      <text class="mode-icon">🔑</text>
+      <view class="mode-info">
+        <text class="mode-title">输入情侣码</text>
+        <text class="mode-desc">输入TA发来的情侣码进行绑定</text>
+      </view>
+      <text class="mode-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 生成情侣码模式 -->
+  <view class="mode-content" wx:if="{{mode === 'generate'}}">
+    <view class="back-btn" bindtap="onSelectMode" data-mode="select">
+      <text>‹ 返回</text>
+    </view>
+
+    <view class="date-section">
+      <text class="section-title">你们是哪天在一起的？</text>
+      <view class="date-picker" bindtap="chooseDate">
+        <text wx:if="{{loveStartDate}}">{{loveStartDate}}</text>
+        <text wx:else class="placeholder">点击选择日期</text>
+      </view>
+    </view>
+
+    <button
+      class="btn-generate"
+      bindtap="onGenerateCode"
+      loading="{{generating}}"
+      disabled="{{!loveStartDate || generating}}"
+    >
+      生成情侣码
+    </button>
+
+    <!-- 情侣码展示 -->
+    <view class="code-display" wx:if="{{coupleCode}}">
+      <text class="code-label">发送给TA</text>
+      <view class="code-box">
+        <text class="code-text">{{coupleCode}}</text>
+      </view>
+      <view class="code-actions">
+        <button class="btn-copy" bindtap="onCopyCode">复制</button>
+        <button class="btn-share" open-type="share">分享</button>
+      </view>
+      <text class="code-tip">情侣码7天内有效</text>
+    </view>
+  </view>
+
+  <!-- 输入情侣码模式 -->
+  <view class="mode-content" wx:if="{{mode === 'input'}}">
+    <view class="back-btn" bindtap="onSelectMode" data-mode="select">
+      <text>‹ 返回</text>
+    </view>
+
+    <view class="input-section">
+      <text class="section-title">输入TA发来的情侣码</text>
+      <input
+        class="code-input"
+        type="text"
+        maxlength="8"
+        placeholder="请输入8位情侣码"
+        value="{{inputCode}}"
+        bindinput="onInputCode"
+      />
+    </view>
+
+    <button
+      class="btn-bind"
+      bindtap="onBindCouple"
+      loading="{{binding}}"
+      disabled="{{inputCode.length !== 8 || binding}}"
+    >
+      确认绑定
+    </button>
+  </view>
+</view>

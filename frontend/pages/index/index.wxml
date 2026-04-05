@@ -1,0 +1,57 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 背景装饰 -->
+  <view class="bg-decoration">
+    <view class="circle circle-1"></view>
+    <view class="circle circle-2"></view>
+    <view class="circle circle-3"></view>
+  </view>
+
+  <!-- Logo区域 -->
+  <view class="logo-section">
+    <view class="logo">
+      <text class="logo-icon">🍽️</text>
+    </view>
+    <view class="app-name">情侣私密菜单</view>
+    <view class="app-slogan">记录我们的美食之旅</view>
+  </view>
+
+  <!-- 登录按钮区域 -->
+  <view class="login-section">
+    <view class="welcome-text">
+      <text>开启您的甜蜜美食之旅</text>
+    </view>
+
+    <!-- 微信登录按钮 -->
+    <button
+      class="btn-login"
+      bindtap="getUserProfile"
+      type="primary"
+      lang="zh_CN"
+    >
+      <text class="btn-icon">微信</text>
+      <text>授权登录</text>
+    </button>
+
+    <!-- 游客模式 -->
+    <view class="guest-mode" bindtap="guestMode">
+      <text>先看看再说</text>
+    </view>
+  </view>
+
+  <!-- 功能介绍 -->
+  <view class="features-section">
+    <view class="feature-item">
+      <text class="feature-icon">💑</text>
+      <text class="feature-text">情侣专属空间</text>
+    </view>
+    <view class="feature-item">
+      <text class="feature-icon">🍽️</text>
+      <text class="feature-text">私密美食记录</text>
+    </view>
+    <view class="feature-item">
+      <text class="feature-icon">🎁</text>
+      <text class="feature-text">投喂惊喜不断</text>
+    </view>
+  </view>
+</view>

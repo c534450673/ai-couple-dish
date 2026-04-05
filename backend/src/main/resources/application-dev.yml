@@ -1,0 +1,31 @@
+# 开发环境配置
+# 使用: docker-compose up -d (dev环境)
+# 容器内通信: mysql, redis (docker-compose服务名)
+
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:mysql}:${DB_PORT:3306}/${DB_NAME:ai_couple_dish}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:aicoupledish}
+    password: ${DB_PASSWORD:dev_password_change_me}
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 10
+
+  redis:
+    host: ${REDIS_HOST:redis}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:redis_dev_pass_change_me}
+    database: ${REDIS_DATABASE:0}
+
+# 开发环境日志级别
+logging:
+  level:
+    com.aicoupledish: debug
+    org.springframework: debug
+    org.mybatis: debug
+
+# 开发环境关闭部分安全特性
+management:
+  endpoint:
+    health:
+      show-details: always

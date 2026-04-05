@@ -1,0 +1,29 @@
+<!--pages/photo/photo-list/photo-list.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">私密相册</text>
+    <view class="upload-btn" bindtap="onUpload">上传</view>
+  </view>
+
+  <view class="photo-grid" wx:if="{{photos.length > 0}}">
+    <view
+      class="photo-item"
+      wx:for="{{photos}}"
+      wx:key="id"
+      bindtap="onPreviewPhoto"
+      data-url="{{item.url}}"
+    >
+      <image src="{{item.url}}" mode="aspectFill"/>
+      <view class="delete-btn" catchtap="onDeletePhoto" data-id="{{item.id}}">×</view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && photos.length === 0}}">
+    <text>还没有照片</text>
+    <text class="empty-hint">上传你们的私密照片</text>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

@@ -1,0 +1,113 @@
+/* pages/chef/order-list/order-list.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 30rpx;
+}
+
+.tabs {
+  display: flex;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 10rpx;
+  margin-bottom: 20rpx;
+}
+
+.tab {
+  flex: 1;
+  height: 64rpx;
+  line-height: 64rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #666;
+  border-radius: 12rpx;
+}
+
+.tab.active {
+  background: #667eea;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.order-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15rpx;
+}
+
+.order-id {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.order-status {
+  font-size: 24rpx;
+  color: #667eea;
+}
+
+.order-content {
+  padding: 15rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.order-dish {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.order-note {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15rpx;
+}
+
+.order-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.order-actions {
+  display: flex;
+  gap: 10rpx;
+}
+
+.btn-process, .btn-complete {
+  font-size: 24rpx;
+  padding: 0 30rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  border-radius: 28rpx;
+}
+
+.btn-process {
+  background: #667eea;
+  color: #ffffff;
+}
+
+.btn-complete {
+  background: #52c41a;
+  color: #ffffff;
+}
+
+.empty, .loading {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}

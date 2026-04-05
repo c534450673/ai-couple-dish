@@ -1,0 +1,123 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "情侣私密菜单",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/bind/index",
+      "style": {
+        "navigationBarTitleText": "绑定TA",
+        "navigationBarBackgroundColor": "#ffffff"
+      }
+    },
+    {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/menu/list",
+      "style": {
+        "navigationBarTitleText": "私密菜单"
+      }
+    },
+    {
+      "path": "pages/menu/add",
+      "style": {
+        "navigationBarTitleText": "添加餐厅"
+      }
+    },
+    {
+      "path": "pages/menu/detail",
+      "style": {
+        "navigationBarTitleText": "餐厅详情"
+      }
+    },
+    {
+      "path": "pages/feed/index",
+      "style": {
+        "navigationBarTitleText": "投喂"
+      }
+    },
+    {
+      "path": "pages/anniversary/index",
+      "style": {
+        "navigationBarTitleText": "纪念日"
+      }
+    },
+    {
+      "path": "pages/note/index",
+      "style": {
+        "navigationBarTitleText": "美食笔记"
+      }
+    },
+    {
+      "path": "pages/wish/index",
+      "style": {
+        "navigationBarTitleText": "心愿单"
+      }
+    },
+    {
+      "path": "pages/settings/index",
+      "style": {
+        "navigationBarTitleText": "设置"
+      }
+    },
+    {
+      "path": "pages/privacy/index",
+      "style": {
+        "navigationBarTitleText": "隐私政策"
+      }
+    },
+    {
+      "path": "pages/agreement/index",
+      "style": {
+        "navigationBarTitleText": "用户协议"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "情侣私密菜单",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f5f5f5"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#ff4757",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/menu/list",
+        "text": "餐厅",
+        "iconPath": "static/tabbar/menu.png",
+        "selectedIconPath": "static/tabbar/menu-active.png"
+      },
+      {
+        "pagePath": "pages/feed/index",
+        "text": "投喂",
+        "iconPath": "static/tabbar/feed.png",
+        "selectedIconPath": "static/tabbar/feed-active.png"
+      },
+      {
+        "pagePath": "pages/settings/index",
+        "text": "我的",
+        "iconPath": "static/tabbar/my.png",
+        "selectedIconPath": "static/tabbar/my-active.png"
+      }
+    ]
+  }
+}

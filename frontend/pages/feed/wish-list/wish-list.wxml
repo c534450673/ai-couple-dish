@@ -1,0 +1,36 @@
+<!--pages/feed/wish-list/wish-list.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">心愿单</text>
+  </view>
+
+  <view class="wish-list" wx:if="{{wishes.length > 0}}">
+    <view
+      class="wish-card {{item.fulfilled ? 'fulfilled' : ''}}"
+      wx:for="{{wishes}}"
+      wx:key="id"
+    >
+      <view class="wish-content">
+        <text class="wish-icon">{{item.fulfilled ? '✅' : '🎁'}}</text>
+        <view class="wish-info">
+          <text class="wish-title">{{item.title}}</text>
+          <text class="wish-desc" wx:if="{{item.description}}">{{item.description}}</text>
+          <text class="wish-date">{{item.createTime}}</text>
+        </view>
+      </view>
+      <view class="wish-actions">
+        <text class="action-btn fulfill-btn" wx:if="{{!item.fulfilled}}" catchtap="onFulfill" data-id="{{item.id}}">实现了</text>
+        <text class="action-btn delete-btn" catchtap="onDelete" data-id="{{item.id}}">删除</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && wishes.length === 0}}">
+    <text>还没有心愿</text>
+    <text class="empty-hint">记录你们的心愿清单</text>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

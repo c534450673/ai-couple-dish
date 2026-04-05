@@ -1,0 +1,187 @@
+# 生产环境 - Backend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: ai-couple-dish-prod
+  labels:
+    app: backend
+    version: v1.0.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: backend
+        version: v1.0.0
+    spec:
+      containers:
+        - name: backend
+          image: registry.cn-hangzhou.aliyuncs.com/ai-couple-dish/backend:latest
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            # 数据库配置（来自ConfigMap）
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ai-couple-dish-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: ai-couple-dish-config
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: ai-couple-dish-config
+                  key: DB_NAME
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: ai-couple-dish-config
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ai-couple-dish-secrets
+                  key: DB_PASSWORD
+            # Redis配置（来自ConfigMap）
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ai-couple-dish-config
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: ai-couple-dish-config
+                  key: REDIS_PORT
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ai-couple-dish-secrets
+                  key: REDIS_PASSWORD
+            # JWT配置
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ai-couple-dish-secrets
+                  key: JWT_SECRET
+            - name: JWT_EXPIRATION
+              value: "604800000"
+            # 微信配置
+            - name: WX_MINIAPP_APPID
+              valueFrom:
+                secretKeyRef:
+                  name: ai-couple-dish-secrets
+                  key: WX_APPID
+            - name: WX_MINIAPP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ai-couple-dish-secrets
+                  key: WX_SECRET
+            # Java配置（生产优化）
+            - name: JAVA_OPTS
+              value: "-Xms512m -Xmx2048m -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: ai-couple-dish-config
+                  key: SPRING_PROFILES_ACTIVE
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          livenessProbe:
+            httpGet:
+              path: /api/actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          volumeMounts:
+            - name: uploads
+              mountPath: /app/uploads
+            - name: logs
+              mountPath: /app/logs
+      volumes:
+        - name: uploads
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}
+---
+# Backend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: ai-couple-dish-prod
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  selector:
+    app: backend
+---
+# Nginx Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-ingress
+  namespace: ai-couple-dish-prod
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.aicoupledish.com
+      secretName: ai-couple-dish-tls
+  rules:
+    - host: api.aicoupledish.com
+      http:
+        paths:
+          - path: /api/
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 8080
+          - path: /uploads/
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 8080

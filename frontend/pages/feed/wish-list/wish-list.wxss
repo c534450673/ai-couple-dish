@@ -1,0 +1,100 @@
+/* pages/feed/wish-list/wish-list.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 30rpx;
+}
+
+.header {
+  margin-bottom: 30rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.wish-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.wish-card.fulfilled {
+  opacity: 0.6;
+}
+
+.wish-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.wish-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.wish-info {
+  flex: 1;
+}
+
+.wish-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.wish-desc {
+  font-size: 26rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.wish-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.wish-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20rpx;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.action-btn {
+  font-size: 26rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.fulfill-btn {
+  background: rgba(82, 196, 26, 0.1);
+  color: #52c41a;
+}
+
+.delete-btn {
+  background: rgba(255, 77, 79, 0.1);
+  color: #ff4d4f;
+}
+
+.empty, .loading {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #bbb;
+  margin-top: 10rpx;
+  display: block;
+}

@@ -1,0 +1,83 @@
+<!--pages/menu/menu-list/menu-list.wxml-->
+<view class="container">
+  <!-- 顶部Tab -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{currentTab === item.key ? 'active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="key"
+      bindtap="onTabChange"
+      data-tab="{{item.key}}"
+    >
+      <text>{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 菜单列表 -->
+  <view class="menu-list" wx:if="{{!empty && !loading}}">
+    <view
+      class="menu-card"
+      wx:for="{{menuList}}"
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <!-- 封面 -->
+      <view class="card-cover">
+        <text class="cover-placeholder">🍽️</text>
+        <view class="status-tag tag-{{item.status}}">
+          <text wx:if="{{item.status === 0}}">想去</text>
+          <text wx:elif="{{item.status === 1}}">去过</text>
+          <text wx:else>种草</text>
+        </view>
+      </view>
+
+      <!-- 信息 -->
+      <view class="card-info">
+        <view class="info-header">
+          <text class="restaurant-name">{{item.restaurantName}}</text>
+          <view class="rating" wx:if="{{item.rating}}">
+            <text class="star">⭐</text>
+            <text class="rating-num">{{item.rating}}</text>
+          </view>
+        </view>
+
+        <text class="dish-name" wx:if="{{item.dishName}}">{{item.dishName}}</text>
+
+        <view class="info-tags">
+          <text class="tag" wx:if="{{item.dishCategory}}">{{item.dishCategory}}</text>
+          <text class="tag price" wx:if="{{item.price}}">¥{{item.price}}</text>
+        </view>
+
+        <text class="note" wx:if="{{item.note}}">{{item.note}}</text>
+
+        <view class="info-footer">
+          <text class="date">{{item.eatenDate}}</text>
+          <view class="actions">
+            <view class="action-item" catchtap="onLike" data-id="{{item.id}}" data-index="{{index}}">
+              <text class="action-icon {{item.isLiked ? 'liked' : ''}}">❤️</text>
+              <text>{{item.likeCount || 0}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{empty && !loading}}">
+    <text class="empty-icon">🍽️</text>
+    <text class="empty-text">还没有菜单记录</text>
+    <text class="empty-hint">开始记录你们的美食之旅吧</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn" bindtap="goToAdd">
+    <text>+</text>
+  </view>
+</view>

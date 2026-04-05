@@ -1,0 +1,29 @@
+<!--pages/anniversary/anniversary-add/anniversary-add.wxml-->
+<view class="container">
+  <view class="section">
+    <text class="section-title">纪念日名称</text>
+    <input
+      class="input"
+      placeholder="如：在一起纪念日"
+      value="{{name}}"
+      bindinput="onNameInput"
+      maxlength="30"
+    />
+  </view>
+
+  <view class="section">
+    <text class="section-title">日期</text>
+    <picker mode="date" value="{{date}}" bindchange="onDateChange">
+      <view class="date-picker">
+        <text>{{date || '请选择日期'}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <view class="bottom-section">
+    <button class="btn-save" bindtap="onSave" loading="{{loading}}">
+      保存
+    </button>
+  </view>
+</view>

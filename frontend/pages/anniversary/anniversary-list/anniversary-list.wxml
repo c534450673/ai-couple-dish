@@ -1,0 +1,33 @@
+<!--pages/anniversary/anniversary-list/anniversary-list.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">纪念日</text>
+    <view class="add-btn" bindtap="onAddAnniversary">+ 添加</view>
+  </view>
+
+  <view class="anniversary-list" wx:if="{{anniversaries.length > 0}}">
+    <view
+      class="anniversary-card"
+      wx:for="{{anniversaries}}"
+      wx:key="id"
+    >
+      <view class="anniversary-info">
+        <text class="anniversary-name">{{item.name}}</text>
+        <text class="anniversary-date">{{item.date}}</text>
+        <text class="anniversary-countdown">已在一起 {{item.days}} 天</text>
+      </view>
+      <view class="anniversary-actions">
+        <text class="delete-btn" catchtap="onDeleteAnniversary" data-id="{{item.id}}">删除</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && anniversaries.length === 0}}">
+    <text>还没有纪念日</text>
+    <text class="empty-hint">记录你们的重要日子</text>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

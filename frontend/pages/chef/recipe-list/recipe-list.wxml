@@ -1,0 +1,31 @@
+<!--pages/chef/recipe-list/recipe-list.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">食谱库</text>
+  </view>
+
+  <view class="recipe-list" wx:if="{{recipes.length > 0}}">
+    <view
+      class="recipe-card"
+      wx:for="{{recipes}}"
+      wx:key="id"
+    >
+      <image class="recipe-image" src="{{item.imageUrl}}" mode="aspectFill"/>
+      <view class="recipe-info">
+        <text class="recipe-name">{{item.name}}</text>
+        <text class="recipe-desc">{{item.description}}</text>
+        <view class="recipe-tags">
+          <text class="tag" wx:for="{{item.tags}}" wx:key="index">{{item}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && recipes.length === 0}}">
+    <text>还没有食谱</text>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

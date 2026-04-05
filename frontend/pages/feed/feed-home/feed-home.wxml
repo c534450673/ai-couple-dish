@@ -1,0 +1,69 @@
+<!--pages/feed/feed-home/feed-home.wxml-->
+<view class="container">
+  <!-- 今日投喂状态 -->
+  <view class="today-section">
+    <view class="section-header">
+      <text class="section-title">今日投喂</text>
+      <text class="section-sub">每天一次，向TA表达心意</text>
+    </view>
+
+    <view class="today-status">
+      <view class="status-card {{todayFeed && todayFeed.sentToday ? 'sent' : ''}}">
+        <text class="status-icon">{{todayFeed && todayFeed.sentToday ? '✅' : '🍽️'}}</text>
+        <text class="status-text">{{todayFeed && todayFeed.sentToday ? '今日已投喂' : '今日可投喂'}}</text>
+      </view>
+
+      <view class="status-card {{todayFeed && todayFeed.pendingFeed ? 'received' : ''}}" wx:if="{{todayFeed && todayFeed.receivedToday}}">
+        <text class="status-icon">🎁</text>
+        <text class="status-text">收到投喂待领取</text>
+      </view>
+    </view>
+
+    <button class="btn-send" bindtap="goToSend">
+      <text wx:if="{{todayFeed && todayFeed.sentToday}}">明日再投喂</text>
+      <text wx:else>发起投喂</text>
+    </button>
+  </view>
+
+  <!-- 待领取的投喂 -->
+  <view class="feed-section" wx:if="{{receivedList.length > 0}}">
+    <view class="section-title">收到的投喂</view>
+
+    <view class="feed-list">
+      <view class="feed-card" wx:for="{{receivedList}}" wx:key="id">
+        <view class="feed-header">
+          <image class="sender-avatar" src="{{item.senderAvatar}}" mode="aspectFill"/>
+          <view class="sender-info">
+            <text class="sender-name">{{item.senderName}}</text>
+            <text class="feed-time">{{item.createTime}}</text>
+          </view>
+          <view class="feed-type tag-{{item.feedType}}">
+            <text wx:if="{{item.feedType === 'meal'}}">正餐</text>
+            <text wx:elif="{{item.feedType === 'dessert'}}">甜品</text>
+            <text wx:elif="{{item.feedType === 'snack'}}">小吃</text>
+            <text wx:elif="{{item.feedType === 'drink'}}">饮品</text>
+          </view>
+        </view>
+
+        <text class="feed-content">{{item.content || '一份投喂'}}</text>
+
+        <view class="feed-actions" wx:if="{{item.status === 0}}">
+          <button class="btn-accept" bindtap="onAccept" data-id="{{item.id}}">接受</button>
+          <button class="btn-reject" bindtap="onReject" data-id="{{item.id}}">拒绝</button>
+        </view>
+
+        <view class="feed-status" wx:else>
+          <text wx:if="{{item.status === 1}}">已接受</text>
+          <text wx:elif="{{item.status === 2}}">已拒绝：{{item.rejectReason || '无'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && receivedList.length === 0 && sentList.length === 0}}">
+    <text class="empty-icon">🎁</text>
+    <text class="empty-text">还没有投喂记录</text>
+    <text class="empty-hint">开始向TA发送投喂吧</text>
+  </view>
+</view>

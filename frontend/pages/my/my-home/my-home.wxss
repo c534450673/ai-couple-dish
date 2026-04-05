@@ -1,0 +1,131 @@
+/* pages/my/my-home/my-home.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* 用户信息 */
+.user-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 60rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  border: 6rpx solid rgba(255, 255, 255, 0.5);
+  margin-bottom: 20rpx;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 10rpx;
+}
+
+.couple-status {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 6rpx 20rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20rpx;
+}
+
+.couple-status.unbound {
+  background: rgba(255, 71, 87, 0.3);
+}
+
+.demo-badge {
+  font-size: 20rpx;
+  color: #fff;
+  background: rgba(255, 149, 0, 0.8);
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  margin-top: 10rpx;
+}
+
+/* 数据统计 */
+.stats-section {
+  background: #ffffff;
+  display: flex;
+  padding: 40rpx 0;
+  margin-bottom: 20rpx;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-num {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 10rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.stat-divider {
+  width: 1rpx;
+  height: 80rpx;
+  background: #f0f0f0;
+  align-self: center;
+}
+
+/* 功能列表 */
+.menu-section {
+  background: #ffffff;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 40rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.menu-item:active {
+  background: #f9f9f9;
+}
+
+.menu-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.menu-arrow {
+  font-size: 36rpx;
+  color: #ccc;
+}
+
+/* 退出登录 */
+.logout-section {
+  margin: 40rpx;
+  padding: 30rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.logout-section text {
+  font-size: 28rpx;
+  color: #ff4757;
+}

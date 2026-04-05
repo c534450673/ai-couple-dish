@@ -1,0 +1,44 @@
+# 生产环境 - ConfigMap
+# 注意：此文件定义非敏感配置
+# 敏感配置(DB_PASSWORD, REDIS_PASSWORD, JWT_SECRET等)应通过secret.yaml传入
+# DB_HOST和REDIS_HOST需要修改为实际的云数据库地址
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-couple-dish-config
+  namespace: ai-couple-dish-prod
+data:
+  # 数据库配置（云数据库 - 必须修改为实际地址）
+  # 阿里云格式: rm-xxxxx.mysql.rds.aliyuncs.com
+  # 腾讯云格式: 10.0.0.1 (VPC内网IP)
+  DB_HOST: "your-cloud-mysql-host"
+  DB_PORT: "3306"
+  DB_NAME: "ai_couple_dish"
+  DB_USERNAME: "aicoupledish"
+
+  # Redis配置（云Redis - 必须修改为实际地址）
+  # 阿里云格式: r-xxxxx.redis.rds.aliyuncs.com
+  # 腾讯云格式: 10.0.0.2 (VPC内网IP)
+  REDIS_HOST: "your-cloud-redis-host"
+  REDIS_PORT: "6379"
+  REDIS_DATABASE: "0"
+
+  # 应用配置
+  SPRING_PROFILES_ACTIVE: "prod"
+  SERVER_PORT: "8080"
+
+  # 文件上传（建议使用OSS/COS等对象存储）
+  FILE_UPLOAD_PATH: "/app/uploads"
+  FILE_BASE_URL: "https://api.aicoupledish.com/uploads"
+
+  # 时区
+  TZ: "Asia/Shanghai"
+---
+# 生产环境 - Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ai-couple-dish-prod
+  labels:
+    name: ai-couple-dish-prod
+    env: production

@@ -1,0 +1,72 @@
+/* pages/note/note-detail/note-detail.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 30rpx;
+}
+
+.note-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+}
+
+.note-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 15rpx;
+}
+
+.note-date {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.note-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-bottom: 20rpx;
+}
+
+.note-images image {
+  width: 220rpx;
+  height: 220rpx;
+  border-radius: 8rpx;
+}
+
+.note-content {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+  display: block;
+}
+
+.note-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.btn-delete {
+  background: #f5f5f5;
+  color: #ff4d4f;
+  font-size: 28rpx;
+  padding: 0 40rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  border-radius: 32rpx;
+}
+
+.loading {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}

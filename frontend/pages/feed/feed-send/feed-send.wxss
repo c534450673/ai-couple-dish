@@ -1,0 +1,182 @@
+/* pages/feed/feed-send/feed-send.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 30rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+/* 类型选择 */
+.type-section {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20rpx;
+}
+
+.type-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30rpx 0;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  border: 4rpx solid transparent;
+}
+
+.type-item.active {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: #667eea;
+}
+
+.type-icon {
+  font-size: 56rpx;
+  margin-bottom: 10rpx;
+}
+
+.type-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.type-item.active .type-text {
+  color: #667eea;
+  font-weight: bold;
+}
+
+/* 内容输入 */
+.content-section {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.content-input {
+  width: 100%;
+  height: 200rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+/* 留言 */
+.message-section {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.message-input {
+  height: 88rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+}
+
+/* 图片上传 */
+.image-section {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.image-item {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.image-item image {
+  width: 100%;
+  height: 100%;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40rpx;
+  height: 40rpx;
+  background: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  font-size: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-image {
+  width: 200rpx;
+  height: 200rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  border: 2rpx dashed #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-icon {
+  font-size: 48rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+.add-text {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 发送按钮 */
+.bottom-section {
+  padding: 20rpx 0;
+}
+
+.btn-send {
+  width: 100%;
+  height: 96rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 48rpx;
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-send[disabled] {
+  background: #ccc;
+}
+
+.btn-send::after {
+  border: none;
+}
