@@ -11,7 +11,6 @@ import com.aicoupledish.service.SweetBombService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +31,7 @@ public class SweetBombServiceImpl implements SweetBombService {
     private final AnniversaryMapper anniversaryMapper;
     private final CoupleMenuMapper coupleMenuMapper;
     private final TimeCapsuleMapper timeCapsuleMapper;
-
-    @Autowired(required = false)
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -62,14 +59,12 @@ public class SweetBombServiceImpl implements SweetBombService {
         log.info("生成甜蜜炸弹: userId={}, bombId={}, type={}", userId, bomb.getId(), bombType);
 
         // 发送通知给伴侣
-        if (notificationService != null) {
-            Couple couple = coupleMapper.selectById(user.getCoupleId());
-            if (couple != null) {
-                Long partnerId = couple.getUser1Id().equals(userId) ? couple.getUser2Id() : couple.getUser1Id();
-                notificationService.sendNotification(partnerId, 2,
-                    "💣 甜蜜炸弹", "你收到了一个甜蜜炸弹，快来看看吧~",
-                    bomb.getId(), "sweet_bomb");
-            }
+        Couple couple = coupleMapper.selectById(user.getCoupleId());
+        if (couple != null) {
+            Long partnerId = couple.getUser1Id().equals(userId) ? couple.getUser2Id() : couple.getUser1Id();
+            notificationService.sendNotification(partnerId, 2,
+                "💣 甜蜜炸弹", "你收到了一个甜蜜炸弹，快来看看吧~",
+                bomb.getId(), "sweet_bomb");
         }
 
         return buildDTO(bomb);

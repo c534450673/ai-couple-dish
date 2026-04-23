@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/invite")
 @RequiredArgsConstructor
-public class InviteController {
+public class InviteController extends BaseAuthController {
 
     private final InviteService inviteService;
     private final JwtUtils jwtUtils;
@@ -32,7 +32,7 @@ public class InviteController {
     @ApiOperation("获取我的邀请码")
     @GetMapping("/code")
     public Result<InviteCodeDTO> getMyInviteCode() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         InviteCodeDTO dto = inviteService.getOrCreateInviteCode(userId);
         return Result.success(dto);
     }
@@ -42,7 +42,7 @@ public class InviteController {
     public Result<Void> useInviteCode(
             @ApiParam(value = "邀请码", required = true)
             @RequestParam String inviteCode) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         inviteService.useInviteCode(userId, inviteCode);
         return Result.success("邀请码使用成功");
     }
@@ -52,7 +52,7 @@ public class InviteController {
     public Result<List<ReferralDTO>> getReferralList(
             @ApiParam(value = "数量限制，默认50")
             @RequestParam(required = false, defaultValue = "50") Integer limit) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<ReferralDTO> list = inviteService.getReferralList(userId, limit);
         return Result.success(list);
     }
@@ -60,7 +60,7 @@ public class InviteController {
     @ApiOperation("获取邀请统计")
     @GetMapping("/stats")
     public Result<InviteStatsDTO> getInviteStats() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         InviteStatsDTO stats = inviteService.getInviteStats(userId);
         return Result.success(stats);
     }
@@ -91,20 +91,5 @@ public class InviteController {
             return Result.error(404, "邀请码不存在");
         }
         return Result.success(dto);
-    }
-
-    private Long getCurrentUserId() {
-        String token = request.getHeader("Authorization");
-        if (token == null || token.isEmpty()) {
-            throw new BusinessException(9001, "请先登录");
-        }
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-        Long userId = jwtUtils.getUserIdFromToken(token);
-        if (userId == null) {
-            throw new BusinessException(9001, "无效的登录凭证");
-        }
-        return userId;
     }
 }

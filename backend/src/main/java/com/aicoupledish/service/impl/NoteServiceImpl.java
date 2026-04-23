@@ -5,9 +5,11 @@ import com.aicoupledish.common.enums.BusinessException;
 import com.aicoupledish.common.utils.XssUtils;
 import com.aicoupledish.dao.mapper.AnniversaryMapper;
 import com.aicoupledish.dao.mapper.FoodNoteMapper;
+import com.aicoupledish.dao.mapper.NoteLikeMapper;
 import com.aicoupledish.dao.mapper.UserMapper;
 import com.aicoupledish.dao.model.Anniversary;
 import com.aicoupledish.dao.model.FoodNote;
+import com.aicoupledish.dao.model.NoteLike;
 import com.aicoupledish.dao.model.User;
 import com.aicoupledish.domain.dto.FoodNoteDTO;
 import com.aicoupledish.domain.req.AddNoteReq;
@@ -17,6 +19,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +38,7 @@ public class NoteServiceImpl implements NoteService {
     private final FoodNoteMapper noteMapper;
     private final UserMapper userMapper;
     private final AnniversaryMapper anniversaryMapper;
+    private final NoteLikeMapper noteLikeMapper;
 
     @Autowired(required = false)
     private NotificationService notificationService;
@@ -204,7 +208,34 @@ public class NoteServiceImpl implements NoteService {
             throw BusinessException.NOTE_NOT_FOUND;
         }
 
-        // 使用原子更新避免竞态条件
+        // 检查是否已点赞（幂等性保证）
+        NoteLike existingLike = noteLikeMapper.selectOne(
+            new LambdaQueryWrapper<NoteLike>()
+                .eq(NoteLike::getUserId, userId)
+                .eq(NoteLike::getNoteId, noteId)
+        );
+
+        if (existingLike != null) {
+            // 已点赞，幂等返回
+            log.debug("用户已点赞过该笔记，幂等返回: userId={}, noteId={}", userId, noteId);
+            return;
+        }
+
+        // 插入点赞记录
+        NoteLike noteLike = new NoteLike();
+        noteLike.setUserId(userId);
+        noteLike.setNoteId(noteId);
+        noteLike.setCreateTime(LocalDateTime.now());
+
+        try {
+            noteLikeMapper.insert(noteLike);
+        } catch (DuplicateKeyException e) {
+            // 唯一索引冲突，说明已点赞，幂等返回
+            log.debug("点赞记录已存在（唯一索引冲突），幂等返回: userId={}, noteId={}", userId, noteId);
+            return;
+        }
+
+        // 点赞成功，增加计数
         noteMapper.update(null, new com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper<FoodNote>()
                 .eq(FoodNote::getId, noteId)
                 .setSql("like_count = COALESCE(like_count, 0) + 1"));
@@ -214,20 +245,41 @@ public class NoteServiceImpl implements NoteService {
             notificationService.sendNotification(note.getAuthorId(), 2, "💕 收到点赞",
                 "你的笔记「" + note.getTitle() + "」收到了一个赞", noteId, "note");
         }
+
+        log.info("点赞成功: userId={}, noteId={}", userId, noteId);
     }
 
     @Override
+    @Transactional
     public void unlikeNote(Long userId, Long noteId) {
         FoodNote note = noteMapper.selectById(noteId);
         if (note == null) {
             throw BusinessException.NOTE_NOT_FOUND;
         }
 
-        // 使用原子更新避免竞态条件，确保不会变成负数
-        noteMapper.update(null, new com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper<FoodNote>()
-                .eq(FoodNote::getId, noteId)
-                .gt(FoodNote::getLikeCount, 0)
-                .setSql("like_count = like_count - 1"));
+        // 查找点赞记录
+        NoteLike existingLike = noteLikeMapper.selectOne(
+            new LambdaQueryWrapper<NoteLike>()
+                .eq(NoteLike::getUserId, userId)
+                .eq(NoteLike::getNoteId, noteId)
+        );
+
+        if (existingLike == null) {
+            // 未点赞，幂等返回
+            log.debug("用户未点赞过该笔记，幂等返回: userId={}, noteId={}", userId, noteId);
+            return;
+        }
+
+        // 删除点赞记录
+        int deleted = noteLikeMapper.deleteById(existingLike.getId());
+        if (deleted > 0) {
+            // 取消点赞成功，减少计数
+            noteMapper.update(null, new com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper<FoodNote>()
+                    .eq(FoodNote::getId, noteId)
+                    .gt(FoodNote::getLikeCount, 0)
+                    .setSql("like_count = like_count - 1"));
+            log.info("取消点赞成功: userId={}, noteId={}", userId, noteId);
+        }
     }
 
     @Override

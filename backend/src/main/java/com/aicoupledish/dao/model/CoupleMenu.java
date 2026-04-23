@@ -81,6 +81,7 @@ public class CoupleMenu implements Serializable {
     /**
      * 用餐人IDs（JSON数组）
      */
+    @TableField("eater_ids")
     private String eaterIds;
 
     /**

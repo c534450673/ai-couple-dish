@@ -134,12 +134,12 @@ class FeedServiceTest {
     }
 
     @Test
-    @DisplayName("发送投喂-今日已发送应抛异常")
+    @DisplayName("发送投喂-今日已发送同类型应抛异常")
     void sendFeed_AlreadySentToday_ShouldThrowException() {
         // Given
         when(userMapper.selectById(1L)).thenReturn(testUser);
         when(userMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Arrays.asList(testPartner));
-        when(feedMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(1L); // 今日已发送
+        when(feedMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(1L); // 今日已发送该类型
 
         SendFeedReq req = new SendFeedReq();
         req.setFeedType("meal");
@@ -148,7 +148,8 @@ class FeedServiceTest {
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class,
             () -> feedService.sendFeed(1L, req));
-        assertEquals(BusinessException.FEED_ALREADY_SENT.getCode(), exception.getCode());
+        // 服务现在返回错误码 9006: "今日已发送过XX类型的投喂"
+        assertEquals(9006, exception.getCode());
     }
 
     @Test
@@ -157,8 +158,14 @@ class FeedServiceTest {
         // Given
         when(userMapper.selectById(1L)).thenReturn(testUser);
         when(userMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Arrays.asList(testPartner));
+        // Mock for feed type check (returns 0 - not sent today)
+        // Mock for total count check (returns 0 - under limit)
         when(feedMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0L);
-        when(feedMapper.insert(any(Feed.class))).thenReturn(1);
+        when(feedMapper.insert(any(Feed.class))).thenAnswer(invocation -> {
+            Feed feed = invocation.getArgument(0);
+            feed.setId(1L);
+            return 1;
+        });
 
         SendFeedReq req = new SendFeedReq();
         req.setFeedType("meal");
@@ -180,7 +187,11 @@ class FeedServiceTest {
         when(userMapper.selectById(1L)).thenReturn(testUser);
         when(userMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Arrays.asList(testPartner));
         when(feedMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0L);
-        when(feedMapper.insert(any(Feed.class))).thenReturn(1);
+        when(feedMapper.insert(any(Feed.class))).thenAnswer(invocation -> {
+            Feed feed = invocation.getArgument(0);
+            feed.setId(1L);
+            return 1;
+        });
 
         SendFeedReq req = new SendFeedReq();
         req.setFeedType("dessert");
@@ -201,7 +212,11 @@ class FeedServiceTest {
         when(userMapper.selectById(1L)).thenReturn(testUser);
         when(userMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Arrays.asList(testPartner));
         when(feedMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0L);
-        when(feedMapper.insert(any(Feed.class))).thenReturn(1);
+        when(feedMapper.insert(any(Feed.class))).thenAnswer(invocation -> {
+            Feed feed = invocation.getArgument(0);
+            feed.setId(1L);
+            return 1;
+        });
 
         SendFeedReq req = new SendFeedReq();
         req.setFeedType("snack");
@@ -221,7 +236,11 @@ class FeedServiceTest {
         when(userMapper.selectById(1L)).thenReturn(testUser);
         when(userMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Arrays.asList(testPartner));
         when(feedMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0L);
-        when(feedMapper.insert(any(Feed.class))).thenReturn(1);
+        when(feedMapper.insert(any(Feed.class))).thenAnswer(invocation -> {
+            Feed feed = invocation.getArgument(0);
+            feed.setId(1L);
+            return 1;
+        });
 
         SendFeedReq req = new SendFeedReq();
         req.setFeedType("drink");
@@ -256,7 +275,7 @@ class FeedServiceTest {
 
         when(feedMapper.selectList(any(LambdaQueryWrapper.class)))
             .thenReturn(Arrays.asList(feed2, feed1));
-        when(userMapper.selectById(1L)).thenReturn(testUser);
+        when(userMapper.selectBatchIds(any(java.util.Collection.class))).thenReturn(Arrays.asList(testUser));
 
         // When
         List<FeedDTO> result = feedService.getReceivedFeeds(2L);
@@ -272,7 +291,7 @@ class FeedServiceTest {
         // Given
         when(feedMapper.selectList(any(LambdaQueryWrapper.class)))
             .thenReturn(Arrays.asList(testFeed));
-        when(userMapper.selectById(1L)).thenReturn(testUser);
+        when(userMapper.selectBatchIds(any(java.util.Collection.class))).thenReturn(Arrays.asList(testUser));
 
         // When
         List<FeedDTO> result = feedService.getSentFeeds(1L);
@@ -423,7 +442,7 @@ class FeedServiceTest {
         // Given
         when(feedMapper.selectList(any(LambdaQueryWrapper.class)))
             .thenReturn(Arrays.asList(testFeed));
-        when(userMapper.selectById(1L)).thenReturn(testUser);
+        when(userMapper.selectBatchIds(any(java.util.Collection.class))).thenReturn(Arrays.asList(testUser));
 
         // When
         List<FeedDTO> result = feedService.getSentFeeds(1L);
@@ -439,7 +458,7 @@ class FeedServiceTest {
         testFeed.setFeedType("dessert");
         when(feedMapper.selectList(any(LambdaQueryWrapper.class)))
             .thenReturn(Arrays.asList(testFeed));
-        when(userMapper.selectById(1L)).thenReturn(testUser);
+        when(userMapper.selectBatchIds(any(java.util.Collection.class))).thenReturn(Arrays.asList(testUser));
 
         // When
         List<FeedDTO> result = feedService.getSentFeeds(1L);
@@ -455,7 +474,7 @@ class FeedServiceTest {
         testFeed.setFeedType("snack");
         when(feedMapper.selectList(any(LambdaQueryWrapper.class)))
             .thenReturn(Arrays.asList(testFeed));
-        when(userMapper.selectById(1L)).thenReturn(testUser);
+        when(userMapper.selectBatchIds(any(java.util.Collection.class))).thenReturn(Arrays.asList(testUser));
 
         // When
         List<FeedDTO> result = feedService.getSentFeeds(1L);
@@ -471,7 +490,7 @@ class FeedServiceTest {
         testFeed.setFeedType("drink");
         when(feedMapper.selectList(any(LambdaQueryWrapper.class)))
             .thenReturn(Arrays.asList(testFeed));
-        when(userMapper.selectById(1L)).thenReturn(testUser);
+        when(userMapper.selectBatchIds(any(java.util.Collection.class))).thenReturn(Arrays.asList(testUser));
 
         // When
         List<FeedDTO> result = feedService.getSentFeeds(1L);
@@ -487,7 +506,7 @@ class FeedServiceTest {
         testFeed.setStatus(0);
         when(feedMapper.selectList(any(LambdaQueryWrapper.class)))
             .thenReturn(Arrays.asList(testFeed));
-        when(userMapper.selectById(1L)).thenReturn(testUser);
+        when(userMapper.selectBatchIds(any(java.util.Collection.class))).thenReturn(Arrays.asList(testUser));
 
         // When
         List<FeedDTO> result = feedService.getSentFeeds(1L);
@@ -503,7 +522,7 @@ class FeedServiceTest {
         testFeed.setStatus(1);
         when(feedMapper.selectList(any(LambdaQueryWrapper.class)))
             .thenReturn(Arrays.asList(testFeed));
-        when(userMapper.selectById(1L)).thenReturn(testUser);
+        when(userMapper.selectBatchIds(any(java.util.Collection.class))).thenReturn(Arrays.asList(testUser));
 
         // When
         List<FeedDTO> result = feedService.getSentFeeds(1L);
@@ -519,7 +538,7 @@ class FeedServiceTest {
         testFeed.setStatus(2);
         when(feedMapper.selectList(any(LambdaQueryWrapper.class)))
             .thenReturn(Arrays.asList(testFeed));
-        when(userMapper.selectById(1L)).thenReturn(testUser);
+        when(userMapper.selectBatchIds(any(java.util.Collection.class))).thenReturn(Arrays.asList(testUser));
 
         // When
         List<FeedDTO> result = feedService.getSentFeeds(1L);

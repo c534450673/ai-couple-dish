@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/relationshipWeather")
 @RequiredArgsConstructor
-public class RelationshipWeatherController {
+public class RelationshipWeatherController extends BaseAuthController {
 
     private final RelationshipWeatherService relationshipWeatherService;
     private final JwtUtils jwtUtils;
@@ -30,7 +30,7 @@ public class RelationshipWeatherController {
     @ApiOperation("获取当前天气状态")
     @GetMapping("/current")
     public Result<RelationshipWeatherDTO> getCurrentWeather() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         RelationshipWeatherDTO dto = relationshipWeatherService.getCurrentWeather(userId);
         return Result.success(dto);
     }
@@ -40,7 +40,7 @@ public class RelationshipWeatherController {
     public Result<List<RelationshipWeatherDTO.InteractionRecord>> getInteractionHistory(
             @ApiParam(value = "数量限制，默认10")
             @RequestParam(required = false, defaultValue = "10") Integer limit) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<RelationshipWeatherDTO.InteractionRecord> records = relationshipWeatherService.getInteractionHistory(userId, limit);
         return Result.success(records);
     }
@@ -48,7 +48,7 @@ public class RelationshipWeatherController {
     @ApiOperation("获取改善建议")
     @GetMapping("/suggestions")
     public Result<List<RelationshipWeatherDTO.ImprovementSuggestion>> getSuggestions() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<RelationshipWeatherDTO.ImprovementSuggestion> suggestions = relationshipWeatherService.getSuggestions(userId);
         return Result.success(suggestions);
     }
@@ -56,23 +56,8 @@ public class RelationshipWeatherController {
     @ApiOperation("获取天气预报（未来7天预测）")
     @GetMapping("/forecast")
     public Result<List<RelationshipWeatherDTO.WeatherForecast>> getWeatherForecast() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<RelationshipWeatherDTO.WeatherForecast> forecast = relationshipWeatherService.getWeatherForecast(userId);
         return Result.success(forecast);
-    }
-
-    private Long getCurrentUserId() {
-        String token = request.getHeader("Authorization");
-        if (token == null || token.isEmpty()) {
-            throw new BusinessException(9001, "请先登录");
-        }
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-        Long userId = jwtUtils.getUserIdFromToken(token);
-        if (userId == null) {
-            throw new BusinessException(9001, "无效的登录凭证");
-        }
-        return userId;
     }
 }

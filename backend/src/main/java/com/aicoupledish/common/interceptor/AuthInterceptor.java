@@ -1,18 +1,20 @@
 package com.aicoupledish.common.interceptor;
 
+import com.aicoupledish.common.constants.AuthConstants;
 import com.aicoupledish.common.exception.UnauthorizedException;
 import com.aicoupledish.common.utils.JwtUtils;
+import com.aicoupledish.common.utils.TokenExtractor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * 认证拦截器 - 验证用户Token
+ * Authentication interceptor - validates user JWT tokens.
  */
 @Slf4j
 @Component
@@ -21,33 +23,15 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private final JwtUtils jwtUtils;
 
-    /**
-     * 不需要认证的路径
-     */
-    private static final String[] EXCLUDE_PATHS = {
-            "/user/login",
-            "/user/phoneLogin",
-            "/doc.html",
-            "/swagger-ui",
-            "/v3/api-docs",
-            "/favicon.ico"
-    };
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String path = request.getRequestURI();
 
-        // 跳过不需要认证的路径（使用startsWith更精确匹配）
-        for (String excludePath : EXCLUDE_PATHS) {
-            if (path.startsWith(excludePath) || path.equals(excludePath)) {
-                return true;
-            }
+        if (isPublicPath(path)) {
+            return true;
         }
 
-        String token = request.getHeader("Authorization");
-        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
+        String token = TokenExtractor.extractToken(request);
 
         if (!StringUtils.hasText(token)) {
             log.warn("请求[{}]缺少Token", path);
@@ -65,8 +49,16 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new UnauthorizedException("登录信息无效");
         }
 
-        // 将用户ID存入请求属性，方便后续使用
-        request.setAttribute("userId", userId);
+        request.setAttribute(AuthConstants.USER_ID_ATTR, userId);
         return true;
+    }
+
+    private boolean isPublicPath(String path) {
+        for (String publicPath : AuthConstants.PUBLIC_PATHS) {
+            if (path.startsWith(publicPath) || path.equals(publicPath)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

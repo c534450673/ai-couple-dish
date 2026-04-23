@@ -4,9 +4,13 @@
 import api from './request'
 
 export const userApi = {
+  // 手机号注册
+  registerByPhone(data) {
+    return api.post('/user/register', data)
+  },
   // 手机号登录
-  loginByPhone(phone) {
-    return api.post('/user/phoneLogin', null, { params: { phone } })
+  loginByPhone(data) {
+    return api.post('/user/phoneLogin', data)
   },
   // 发送验证码
   sendVerifyCode(phone) {
@@ -19,6 +23,10 @@ export const userApi = {
   // 更新用户信息
   updateUserInfo(data) {
     return api.put('/user/update', null, { params: data })
+  },
+  // 登出
+  logout() {
+    return api.post('/user/logout')
   }
 }
 
@@ -184,15 +192,19 @@ export const wishApi = {
   },
   // 添加心愿
   addWish(data) {
-    return api.post('/wish/add', null, { params: data })
+    return api.post('/wish/add', data)
   },
   // 更新心愿
   updateWish(id, data) {
-    return api.put(`/wish/update/${id}`, null, { params: data })
+    return api.put(`/wish/update/${id}`, data)
   },
   // 实现心愿
   fulfillWish(id) {
     return api.post(`/wish/fulfill/${id}`)
+  },
+  // 撤销实现心愿
+  unfulfillWish(id) {
+    return api.post(`/wish/unfulfill/${id}`)
   },
   // 删除心愿
   deleteWish(id) {
@@ -227,5 +239,16 @@ export const uploadApi = {
     return api.post('/upload/image', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
+  }
+}
+
+export const mapApi = {
+  // 获取附近的餐厅
+  getNearbyRestaurants(params) {
+    return api.get('/menu/nearby', { params })
+  },
+  // 获取地图视图的餐厅数据
+  getMapRestaurants(params) {
+    return api.get('/menu/map', { params })
   }
 }

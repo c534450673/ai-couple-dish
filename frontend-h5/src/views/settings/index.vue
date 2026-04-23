@@ -169,9 +169,9 @@ const handleUnbind = async () => {
   try {
     await showConfirmDialog({ title: '确认解除', message: '确定要解除情侣绑定吗？' })
     await coupleApi.applyUnbind({ coupleId: coupleInfo.value.id })
-    showToast('已申请解绑')
-    userStore.logout()
-    router.replace('/login')
+    showToast('已申请解绑，等待对方确认')
+    // 刷新情侣信息，不要直接登出
+    await userStore.getCoupleInfo()
   } catch (error) {
     if (error !== 'cancel') showToast('操作失败')
   }

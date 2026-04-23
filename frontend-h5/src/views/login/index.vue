@@ -53,7 +53,7 @@
           class="login-btn"
           @click="handleLogin"
         >
-          登录
+          登录/注册
         </van-button>
       </div>
 
@@ -143,13 +143,19 @@ const handleLogin = async () => {
     return
   }
 
+  if (!verifyCode.value || verifyCode.value.length !== 6) {
+    showToast('请输入6位验证码')
+    return
+  }
+
   loading.value = true
   try {
-    await userStore.loginByPhone(phone.value)
+    // 注册（会自动降级为登录如果手机号已注册）
+    await userStore.registerByPhone(phone.value, verifyCode.value)
     const redirect = route.query.redirect || '/home'
     router.push(redirect)
   } catch (error) {
-    showToast(error.message || '登录失败')
+    showToast(error.message || '操作失败')
   } finally {
     loading.value = false
   }

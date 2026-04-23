@@ -24,6 +24,9 @@ public class BusinessException extends RuntimeException {
     public static final BusinessException USER_NOT_FOUND = new BusinessException(1001, "用户不存在");
     public static final BusinessException USER_ALREADY_EXISTS = new BusinessException(1002, "用户已存在");
     public static final BusinessException USER_NOT_LOGGED_IN = new BusinessException(1003, "用户未登录");
+    public static final BusinessException PHONE_FORMAT_INVALID = new BusinessException(1004, "手机号格式不正确");
+    public static final BusinessException PHONE_ALREADY_REGISTERED = new BusinessException(1005, "该手机号已注册，请直接登录");
+    public static final BusinessException PHONE_NOT_REGISTERED = new BusinessException(1006, "该手机号未注册，请先注册");
 
     // 情侣相关 2000-2999
     public static final BusinessException COUPLE_NOT_FOUND = new BusinessException(2001, "情侣关系不存在");

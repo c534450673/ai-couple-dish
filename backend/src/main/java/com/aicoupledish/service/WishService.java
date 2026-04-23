@@ -53,4 +53,9 @@ public interface WishService {
      * 取消进行中状态（回到待实现）
      */
     void cancelInProgress(Long userId, Long wishId);
+
+    /**
+     * 撤销实现心愿（从已实现回到进行中）
+     */
+    void unfulfillWish(Long userId, Long wishId);
 }

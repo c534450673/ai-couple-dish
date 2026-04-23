@@ -89,11 +89,6 @@ public class Order implements Serializable {
     private LocalDateTime acceptTime;
 
     /**
-     * 开始制作时间
-     */
-    private LocalDateTime cookingStartTime;
-
-    /**
      * 完成时间
      */
     private LocalDateTime completeTime;

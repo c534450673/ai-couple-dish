@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/deepQa")
 @RequiredArgsConstructor
-public class DeepQaController {
+public class DeepQaController extends BaseAuthController {
 
     private final DeepQaService deepQaService;
     private final JwtUtils jwtUtils;
@@ -30,7 +30,7 @@ public class DeepQaController {
     @ApiOperation("获取当前问题")
     @GetMapping("/current")
     public Result<DeepQaDTO> getCurrentQuestion() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         DeepQaDTO dto = deepQaService.getCurrentQuestion(userId);
         return Result.success(dto);
     }
@@ -38,7 +38,7 @@ public class DeepQaController {
     @ApiOperation("获取指定周的问题列表")
     @GetMapping("/week/{weekNumber}")
     public Result<List<DeepQaDTO>> getWeekQuestions(@PathVariable Integer weekNumber) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<DeepQaDTO> questions = deepQaService.getWeekQuestions(userId, weekNumber);
         return Result.success(questions);
     }
@@ -46,7 +46,7 @@ public class DeepQaController {
     @ApiOperation("提交答案")
     @PostMapping("/submit")
     public Result<Void> submitAnswer(@RequestBody DeepQaDTO.SubmitAnswerReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         deepQaService.submitAnswer(userId, req);
         return Result.success("答案提交成功");
     }
@@ -54,7 +54,7 @@ public class DeepQaController {
     @ApiOperation("揭晓答案")
     @PostMapping("/reveal/{questionId}")
     public Result<DeepQaDTO> revealAnswer(@PathVariable Long questionId) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         DeepQaDTO dto = deepQaService.revealAnswer(userId, questionId);
         return Result.success(dto);
     }
@@ -62,7 +62,7 @@ public class DeepQaController {
     @ApiOperation("获取进度")
     @GetMapping("/progress")
     public Result<DeepQaDTO.ProgressInfo> getProgress() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         DeepQaDTO.ProgressInfo progress = deepQaService.getProgress(userId);
         return Result.success(progress);
     }
@@ -72,7 +72,7 @@ public class DeepQaController {
     public Result<List<DeepQaDTO>> getHistoryAnswers(
             @ApiParam(value = "数量限制，默认20")
             @RequestParam(required = false, defaultValue = "20") Integer limit) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<DeepQaDTO> history = deepQaService.getHistoryAnswers(userId, limit);
         return Result.success(history);
     }
@@ -80,23 +80,8 @@ public class DeepQaController {
     @ApiOperation("跳过当前问题")
     @PostMapping("/skip")
     public Result<Void> skipQuestion() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         deepQaService.skipQuestion(userId);
         return Result.success();
-    }
-
-    private Long getCurrentUserId() {
-        String token = request.getHeader("Authorization");
-        if (token == null || token.isEmpty()) {
-            throw new BusinessException(9001, "请先登录");
-        }
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-        Long userId = jwtUtils.getUserIdFromToken(token);
-        if (userId == null) {
-            throw new BusinessException(9001, "无效的登录凭证");
-        }
-        return userId;
     }
 }

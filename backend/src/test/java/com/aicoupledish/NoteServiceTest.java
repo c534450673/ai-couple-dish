@@ -3,9 +3,11 @@ package com.aicoupledish;
 import com.aicoupledish.common.enums.BusinessException;
 import com.aicoupledish.dao.mapper.AnniversaryMapper;
 import com.aicoupledish.dao.mapper.FoodNoteMapper;
+import com.aicoupledish.dao.mapper.NoteLikeMapper;
 import com.aicoupledish.dao.mapper.UserMapper;
 import com.aicoupledish.dao.model.Anniversary;
 import com.aicoupledish.dao.model.FoodNote;
+import com.aicoupledish.dao.model.NoteLike;
 import com.aicoupledish.dao.model.User;
 import com.aicoupledish.domain.dto.FoodNoteDTO;
 import com.aicoupledish.domain.req.AddNoteReq;
@@ -46,6 +48,9 @@ class NoteServiceTest {
     @Mock
     private AnniversaryMapper anniversaryMapper;
 
+    @Mock
+    private NoteLikeMapper noteLikeMapper;
+
     @InjectMocks
     private NoteServiceImpl noteService;
 
@@ -60,6 +65,7 @@ class NoteServiceTest {
         testUser = new User();
         testUser.setId(1L);
         testUser.setNickName("小明");
+        testUser.setAvatarUrl("https://example.com/avatar1.jpg");
         testUser.setCoupleId(1L);
         testUser.setStatus(0);
 
@@ -67,6 +73,7 @@ class NoteServiceTest {
         testPartner = new User();
         testPartner.setId(2L);
         testPartner.setNickName("小红");
+        testPartner.setAvatarUrl("https://example.com/avatar2.jpg");
         testPartner.setCoupleId(1L);
         testPartner.setStatus(0);
 
@@ -231,7 +238,11 @@ class NoteServiceTest {
     void addNote_FullInfo_ShouldSuccess() {
         // Given
         when(userMapper.selectById(1L)).thenReturn(testUser);
-        when(noteMapper.insert(any(FoodNote.class))).thenReturn(1);
+        when(noteMapper.insert(any(FoodNote.class))).thenAnswer(invocation -> {
+            FoodNote note = invocation.getArgument(0);
+            note.setId(1L);
+            return 1;
+        });
 
         AddNoteReq req = new AddNoteReq();
         req.setTitle("新的美食笔记");
@@ -256,7 +267,11 @@ class NoteServiceTest {
     void addNote_BasicInfo_ShouldSuccess() {
         // Given
         when(userMapper.selectById(1L)).thenReturn(testUser);
-        when(noteMapper.insert(any(FoodNote.class))).thenReturn(1);
+        when(noteMapper.insert(any(FoodNote.class))).thenAnswer(invocation -> {
+            FoodNote note = invocation.getArgument(0);
+            note.setId(1L);
+            return 1;
+        });
 
         AddNoteReq req = new AddNoteReq();
         req.setTitle("简单笔记");
@@ -354,14 +369,16 @@ class NoteServiceTest {
     void likeNote_NoteExists_ShouldSuccess() {
         // Given
         when(noteMapper.selectById(1L)).thenReturn(testNote);
-        when(noteMapper.updateById(any(FoodNote.class))).thenReturn(1);
+        when(noteLikeMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(null); // 未点赞过
+        when(noteLikeMapper.insert(any(NoteLike.class))).thenReturn(1);
+        when(noteMapper.update(any(), any())).thenReturn(1);
 
         // When
         noteService.likeNote(2L, 1L); // 用户2点赞
 
         // Then
-        verify(noteMapper).updateById(argThat(note ->
-            note.getLikeCount() == 11)); // 10 + 1
+        verify(noteLikeMapper).insert(any(NoteLike.class));
+        verify(noteMapper).update(any(), any());
     }
 
     @Test
@@ -370,29 +387,84 @@ class NoteServiceTest {
         // Given
         testNote.setLikeCount(0);
         when(noteMapper.selectById(1L)).thenReturn(testNote);
-        when(noteMapper.updateById(any(FoodNote.class))).thenReturn(1);
+        when(noteLikeMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(null); // 未点赞过
+        when(noteLikeMapper.insert(any(NoteLike.class))).thenReturn(1);
+        when(noteMapper.update(any(), any())).thenReturn(1);
 
         // When
         noteService.likeNote(2L, 1L);
 
         // Then
-        verify(noteMapper).updateById(argThat(note ->
-            note.getLikeCount() == 1));
+        verify(noteLikeMapper).insert(any(NoteLike.class));
+        verify(noteMapper).update(any(), any());
+    }
+
+    @Test
+    @DisplayName("点赞笔记-已点赞过应幂等返回")
+    void likeNote_AlreadyLiked_ShouldBeIdempotent() {
+        // Given
+        NoteLike existingLike = new NoteLike();
+        existingLike.setId(1L);
+        existingLike.setUserId(2L);
+        existingLike.setNoteId(1L);
+
+        when(noteMapper.selectById(1L)).thenReturn(testNote);
+        when(noteLikeMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(existingLike); // 已点赞过
+
+        // When
+        noteService.likeNote(2L, 1L);
+
+        // Then - 幂等返回，不插入新记录
+        verify(noteLikeMapper, never()).insert(any(NoteLike.class));
+        verify(noteMapper, never()).update(any(), any());
+    }
+
+    @Test
+    @DisplayName("点赞笔记-笔记不存在应抛异常")
+    void likeNote_NoteNotFound_ShouldThrowException() {
+        // Given
+        when(noteMapper.selectById(999L)).thenReturn(null);
+
+        // When & Then
+        assertThrows(BusinessException.class,
+            () -> noteService.likeNote(2L, 999L));
     }
 
     @Test
     @DisplayName("取消点赞-点赞数应减少")
     void unlikeNote_ShouldDecrementLikeCount() {
         // Given
+        NoteLike existingLike = new NoteLike();
+        existingLike.setId(1L);
+        existingLike.setUserId(2L);
+        existingLike.setNoteId(1L);
+
         when(noteMapper.selectById(1L)).thenReturn(testNote);
-        when(noteMapper.updateById(any(FoodNote.class))).thenReturn(1);
+        when(noteLikeMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(existingLike);
+        when(noteLikeMapper.deleteById(1L)).thenReturn(1);
+        when(noteMapper.update(any(), any())).thenReturn(1);
 
         // When
         noteService.unlikeNote(2L, 1L);
 
         // Then
-        verify(noteMapper).updateById(argThat(note ->
-            note.getLikeCount() == 9)); // 10 - 1
+        verify(noteLikeMapper).deleteById(1L);
+        verify(noteMapper).update(any(), any());
+    }
+
+    @Test
+    @DisplayName("取消点赞-未点赞过应幂等返回")
+    void unlikeNote_NotLiked_ShouldBeIdempotent() {
+        // Given
+        when(noteMapper.selectById(1L)).thenReturn(testNote);
+        when(noteLikeMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(null); // 未点赞过
+
+        // When
+        noteService.unlikeNote(2L, 1L);
+
+        // Then - 幂等返回，不删除记录
+        verify(noteLikeMapper, never()).deleteById(any());
+        verify(noteMapper, never()).update(any(), any());
     }
 
     @Test
@@ -400,29 +472,26 @@ class NoteServiceTest {
     void commentNote_NoteExists_ShouldSuccess() {
         // Given
         when(noteMapper.selectById(1L)).thenReturn(testNote);
-        when(noteMapper.updateById(any(FoodNote.class))).thenReturn(1);
+        when(noteMapper.update(any(), any())).thenReturn(1);
 
         // When
         noteService.commentNote(2L, 1L, "写得真好！");
 
         // Then
-        verify(noteMapper).updateById(argThat(note ->
-            note.getCommentCount() == 6)); // 5 + 1
+        verify(noteMapper).update(any(), any());
     }
 
     @Test
     @DisplayName("增加浏览量-笔记存在应成功")
     void incrementViewCount_NoteExists_ShouldSuccess() {
         // Given
-        when(noteMapper.selectById(1L)).thenReturn(testNote);
-        when(noteMapper.updateById(any(FoodNote.class))).thenReturn(1);
+        when(noteMapper.update(any(), any())).thenReturn(1);
 
         // When
         noteService.incrementViewCount(1L);
 
         // Then
-        verify(noteMapper).updateById(argThat(note ->
-            note.getViewCount() == 101)); // 100 + 1
+        verify(noteMapper).update(any(), any());
     }
 
     @Test

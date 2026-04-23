@@ -40,7 +40,7 @@ public class NotificationController extends BaseAuthController {
     @ApiOperation("获取未读通知数量")
     @GetMapping("/unreadCount")
     public Result<Integer> getUnreadCount() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         Integer count = notificationService.getUnreadCount(userId);
         return Result.success(count);
     }
@@ -48,7 +48,7 @@ public class NotificationController extends BaseAuthController {
     @ApiOperation("标记通知已读")
     @PutMapping("/read/{id}")
     public Result<Void> markAsRead(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         notificationService.markAsRead(userId, id);
         return Result.success();
     }
@@ -56,7 +56,7 @@ public class NotificationController extends BaseAuthController {
     @ApiOperation("标记所有通知已读")
     @PutMapping("/readAll")
     public Result<Void> markAllAsRead() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         notificationService.markAllAsRead(userId);
         return Result.success();
     }
@@ -64,7 +64,7 @@ public class NotificationController extends BaseAuthController {
     @ApiOperation("删除通知")
     @DeleteMapping("/delete/{id}")
     public Result<Void> deleteNotification(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         notificationService.deleteNotification(userId, id);
         return Result.success();
     }

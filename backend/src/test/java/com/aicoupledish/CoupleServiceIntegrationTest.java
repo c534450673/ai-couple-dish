@@ -1,6 +1,7 @@
 package com.aicoupledish;
 
 import com.aicoupledish.common.enums.BusinessException;
+import com.aicoupledish.dao.mapper.AnniversaryMapper;
 import com.aicoupledish.dao.mapper.CoupleMapper;
 import com.aicoupledish.dao.mapper.UserMapper;
 import com.aicoupledish.dao.model.Couple;
@@ -17,9 +18,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -40,10 +44,16 @@ class CoupleServiceIntegrationTest {
     private UserMapper userMapper;
 
     @Mock
+    private AnniversaryMapper anniversaryMapper;
+
+    @Mock
     private RedisTemplate<String, String> redisTemplate;
 
     @Mock
     private HashOperations<String, Object, Object> hashOperations;
+
+    @Mock
+    private ValueOperations<String, String> valueOperations;
 
     @InjectMocks
     private CoupleServiceImpl coupleService;
@@ -98,7 +108,10 @@ class CoupleServiceIntegrationTest {
     void generateCoupleCode_UnboundUser_ShouldSuccess() {
         // Given
         when(userMapper.selectById(1L)).thenReturn(user1);
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(valueOperations.get(anyString())).thenReturn(null); // 没有现有情侣码
         when(redisTemplate.opsForHash()).thenReturn(hashOperations);
+        when(redisTemplate.expire(anyString(), anyLong(), any(TimeUnit.class))).thenReturn(true);
 
         GenerateCodeReq req = new GenerateCodeReq();
         req.setLoveStartDate("2026-03-21");
@@ -109,7 +122,7 @@ class CoupleServiceIntegrationTest {
         // Then
         assertNotNull(coupleCode);
         assertEquals(8, coupleCode.length());
-        verify(redisTemplate.opsForHash(), times(3)).put(anyString(), anyString(), anyString());
+        verify(hashOperations, times(3)).put(anyString(), any(), any());
     }
 
     @Test
@@ -140,9 +153,7 @@ class CoupleServiceIntegrationTest {
         when(redisTemplate.opsForHash()).thenReturn(hashOperations);
         when(hashOperations.get(anyString(), eq("userId"))).thenReturn("1");
         when(hashOperations.get(anyString(), eq("loveStartDate"))).thenReturn("2026-03-21");
-        when(hashOperations.get(anyString(), eq("status"))).thenReturn("0");
         when(coupleMapper.insert(any(Couple.class))).thenReturn(1);
-        when(coupleMapper.updateById(any(Couple.class))).thenReturn(1);
         when(userMapper.updateById(any(User.class))).thenReturn(1);
         when(redisTemplate.delete(anyString())).thenReturn(true);
 
@@ -243,6 +254,7 @@ class CoupleServiceIntegrationTest {
 
         when(userMapper.selectById(1L)).thenReturn(user1);
         when(coupleMapper.selectById(1L)).thenReturn(testCouple);
+        when(anniversaryMapper.selectList(any())).thenReturn(Collections.emptyList());
 
         // When
         var result = coupleService.getLoveTimer(1L);
@@ -336,6 +348,7 @@ class CoupleServiceIntegrationTest {
 
         when(userMapper.selectById(1L)).thenReturn(user1);
         when(coupleMapper.selectById(1L)).thenReturn(testCouple);
+        when(anniversaryMapper.selectList(any())).thenReturn(Collections.emptyList());
 
         // When
         var result = coupleService.getLoveTimer(1L);
@@ -354,6 +367,7 @@ class CoupleServiceIntegrationTest {
         when(userMapper.selectById(1L)).thenReturn(user1);
         when(userMapper.selectById(2L)).thenReturn(user2);
         when(coupleMapper.selectById(1L)).thenReturn(testCouple);
+        when(anniversaryMapper.selectList(any())).thenReturn(Collections.emptyList());
 
         // When
         var result = coupleService.getCoupleHome(1L);

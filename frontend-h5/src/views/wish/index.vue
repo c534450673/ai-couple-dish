@@ -191,7 +191,7 @@ const handleFulfill = async (item) => {
 
 const handleUndo = async (item) => {
   try {
-    await wishApi.fulfillWish(item.id)
+    await wishApi.unfulfillWish(item.id)
     showToast('已撤销')
     onRefresh()
   } catch (error) {

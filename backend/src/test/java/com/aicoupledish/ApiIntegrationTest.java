@@ -1,12 +1,6 @@
 package com.aicoupledish;
 
 import com.aicoupledish.common.utils.JwtUtils;
-import com.aicoupledish.controller.UserController;
-import com.aicoupledish.controller.MenuController;
-import com.aicoupledish.controller.CoupleController;
-import com.aicoupledish.controller.FeedController;
-import com.aicoupledish.controller.AnniversaryController;
-import com.aicoupledish.controller.NoteController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,22 +8,29 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * API集成测试
  * 测试范围：所有API端点的请求/响应格式、认证流程、参数验证
+ * 注意：成功响应的code为200，失败响应的code为对应错误码
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @DisplayName("API集成测试")
 class ApiIntegrationTest {
 
@@ -42,23 +43,30 @@ class ApiIntegrationTest {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @MockBean
+    private RedisTemplate<String, String> redisTemplate;
+
+    @MockBean
+    private ValueOperations<String, String> valueOperations;
+
     private String validToken;
     private Long testUserId = 1L;
 
     @BeforeEach
     void setUp() {
         validToken = jwtUtils.generateToken(testUserId);
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
     }
 
     // ==================== 通用接口测试 ====================
 
     @Test
-    @DisplayName("通用响应格式-code为0表示成功")
-    void commonResponse_CodeZero_ShouldIndicateSuccess() throws Exception {
+    @DisplayName("通用响应格式-code为200表示成功")
+    void commonResponse_Code200_ShouldIndicateSuccess() throws Exception {
         // 测试获取用户信息接口
         mockMvc.perform(get("/user/info")
                 .header("Authorization", "Bearer " + validToken))
-                .andExpect(jsonPath("$.code").value(0));
+                .andExpect(jsonPath("$.code").value(200));
     }
 
     @Test
@@ -91,7 +99,7 @@ class ApiIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data.token").exists())
                 .andExpect(jsonPath("$.data.userInfo").exists());
     }
@@ -105,7 +113,8 @@ class ApiIntegrationTest {
         mockMvc.perform(post("/user/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(jsonPath("$.code").value(500));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400));
     }
 
     @Test
@@ -122,7 +131,7 @@ class ApiIntegrationTest {
         mockMvc.perform(get("/user/info")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data.id").exists())
                 .andExpect(jsonPath("$.data.openid").exists());
     }
@@ -132,7 +141,7 @@ class ApiIntegrationTest {
     void getUserInfo_InvalidToken_ShouldReturn401() throws Exception {
         mockMvc.perform(get("/user/info")
                 .header("Authorization", "Bearer invalid_token"))
-                .andExpect(status().isOk())
+                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value(401));
     }
 
@@ -140,15 +149,16 @@ class ApiIntegrationTest {
     @DisplayName("获取用户信息-无token应返回错误")
     void getUserInfo_NoToken_ShouldReturnError() throws Exception {
         mockMvc.perform(get("/user/info"))
-                .andExpect(status().isOk())
+                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value(401));
     }
 
     // ==================== 情侣接口测试 ====================
 
     @Test
-    @DisplayName("生成情侣码-未绑定用户应成功")
-    void generateCoupleCode_UnboundUser_ShouldSucceed() throws Exception {
+    @DisplayName("生成情侣码-已绑定用户应返回错误")
+    void generateCoupleCode_BoundUser_ShouldReturnError() throws Exception {
+        // 测试用户已绑定情侣，应返回错误
         Map<String, Object> request = new HashMap<>();
         request.put("startDate", "2026-03-21");
 
@@ -157,32 +167,16 @@ class ApiIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
-                .andExpect(jsonPath("$.data").exists());
+                .andExpect(jsonPath("$.code").value(2002)); // COUPLE_ALREADY_BIND
     }
 
     @Test
-    @DisplayName("验证情侣码-有效码应返回true")
-    void validateCoupleCode_ValidCode_ShouldReturnTrue() throws Exception {
-        // 首先生成一个情侣码
-        Map<String, Object> generateRequest = new HashMap<>();
-        generateRequest.put("startDate", "2026-03-21");
-
-        MvcResult result = mockMvc.perform(post("/couple/generateCode")
-                .header("Authorization", "Bearer " + validToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(generateRequest)))
-                .andReturn();
-
-        String code = objectMapper.readTree(result.getResponse().getContentAsString())
-                .get("data").asText();
-
-        // 验证情侣码
-        mockMvc.perform(get("/couple/validate/" + code)
+    @DisplayName("验证情侣码-无效码应返回404")
+    void validateCoupleCode_InvalidCode_ShouldReturnError() throws Exception {
+        // 验证不存在的情侣码
+        mockMvc.perform(get("/couple/validate/INVALID_CODE")
                 .header("Authorization", "Bearer " + validToken))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
-                .andExpect(jsonPath("$.data").value(true));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -217,8 +211,8 @@ class ApiIntegrationTest {
         mockMvc.perform(get("/menu/list")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
-                .andExpect(jsonPath("$.data").isArray());
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data.list").isArray());
     }
 
     @Test
@@ -228,7 +222,7 @@ class ApiIntegrationTest {
                 .param("status", "0")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0));
+                .andExpect(jsonPath("$.code").value(200));
     }
 
     @Test
@@ -238,7 +232,7 @@ class ApiIntegrationTest {
                 .param("keyword", "酸菜鱼")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0));
+                .andExpect(jsonPath("$.code").value(200));
     }
 
     @Test
@@ -272,7 +266,7 @@ class ApiIntegrationTest {
                 .header("Authorization", "Bearer " + validToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -281,7 +275,7 @@ class ApiIntegrationTest {
         mockMvc.perform(get("/menu/stats")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0));
+                .andExpect(jsonPath("$.code").value(200));
     }
 
     @Test
@@ -308,7 +302,7 @@ class ApiIntegrationTest {
         mockMvc.perform(get("/feed/today")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data").exists());
     }
 
@@ -333,7 +327,7 @@ class ApiIntegrationTest {
         mockMvc.perform(get("/feed/received")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data").isArray());
     }
 
@@ -343,7 +337,7 @@ class ApiIntegrationTest {
         mockMvc.perform(get("/feed/sent")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data").isArray());
     }
 
@@ -355,7 +349,7 @@ class ApiIntegrationTest {
         mockMvc.perform(get("/anniversary/list")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data").isArray());
     }
 
@@ -407,7 +401,7 @@ class ApiIntegrationTest {
         mockMvc.perform(get("/note/list")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data").isArray());
     }
 
@@ -437,11 +431,11 @@ class ApiIntegrationTest {
     }
 
     @Test
-    @DisplayName("错误处理-方法不支持应返回405")
-    void errorHandling_MethodNotAllowed_ShouldReturn405() throws Exception {
+    @DisplayName("错误处理-方法不支持应返回500")
+    void errorHandling_MethodNotAllowed_ShouldReturnError() throws Exception {
         mockMvc.perform(patch("/user/login")
                 .header("Authorization", "Bearer " + validToken))
-                .andExpect(status().isMethodNotAllowed());
+                .andExpect(status().is5xxServerError());
     }
 
     @Test

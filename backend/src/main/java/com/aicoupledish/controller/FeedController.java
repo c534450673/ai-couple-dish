@@ -48,7 +48,7 @@ public class FeedController extends BaseAuthController {
     @ApiOperation("获取收到的投喂列表")
     @GetMapping("/received")
     public Result<List<FeedDTO>> getReceivedFeeds() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<FeedDTO> list = feedService.getReceivedFeeds(userId);
         return Result.success(list);
     }
@@ -56,7 +56,7 @@ public class FeedController extends BaseAuthController {
     @ApiOperation("获取发出的投喂列表")
     @GetMapping("/sent")
     public Result<List<FeedDTO>> getSentFeeds() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<FeedDTO> list = feedService.getSentFeeds(userId);
         return Result.success(list);
     }
@@ -64,7 +64,7 @@ public class FeedController extends BaseAuthController {
     @ApiOperation("接受投喂")
     @PostMapping("/accept/{id}")
     public Result<Void> acceptFeed(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         feedService.acceptFeed(userId, id);
         return Result.success();
     }
@@ -74,7 +74,7 @@ public class FeedController extends BaseAuthController {
     public Result<Void> rejectFeed(
             @PathVariable Long id,
             @RequestParam(required = false) String reason) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         feedService.rejectFeed(userId, id, reason);
         return Result.success();
     }

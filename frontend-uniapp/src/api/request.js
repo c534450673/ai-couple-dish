@@ -24,8 +24,8 @@ const request = (options) => {
         if (res.statusCode === 200) {
           if (res.data.code === 200) {
             resolve(res.data)
-          } else if (res.data.code === 401) {
-            // Token过期
+          } else if (res.data.code === 401 || res.data.code === 9001) {
+            // Token过期或未登录，统一处理
             uni.removeStorageSync('token')
             uni.removeStorageSync('userInfo')
             uni.reLaunch({ url: '/pages/index/index' })

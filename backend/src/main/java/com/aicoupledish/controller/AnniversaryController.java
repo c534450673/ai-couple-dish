@@ -40,7 +40,7 @@ public class AnniversaryController extends BaseAuthController {
     @ApiOperation("获取即将到来的纪念日")
     @GetMapping("/upcoming")
     public Result<List<AnniversaryDTO>> getUpcomingAnniversaries() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<AnniversaryDTO> list = anniversaryService.getUpcomingAnniversaries(userId);
         return Result.success(list);
     }
@@ -48,7 +48,7 @@ public class AnniversaryController extends BaseAuthController {
     @ApiOperation("获取下一个纪念日")
     @GetMapping("/next")
     public Result<AnniversaryDTO> getNextAnniversary() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         AnniversaryDTO next = anniversaryService.getNextAnniversary(userId);
         return Result.success(next);
     }
@@ -56,7 +56,7 @@ public class AnniversaryController extends BaseAuthController {
     @ApiOperation("添加纪念日")
     @PostMapping("/add")
     public Result<Long> addAnniversary(@Valid @RequestBody AddAnniversaryReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         Long id = anniversaryService.addAnniversary(userId, req);
         return Result.success("纪念日添加成功", id);
     }
@@ -64,7 +64,7 @@ public class AnniversaryController extends BaseAuthController {
     @ApiOperation("更新纪念日")
     @PutMapping("/update/{id}")
     public Result<Void> updateAnniversary(@PathVariable Long id, @RequestBody AddAnniversaryReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         anniversaryService.updateAnniversary(userId, id, req);
         return Result.success();
     }
@@ -72,7 +72,7 @@ public class AnniversaryController extends BaseAuthController {
     @ApiOperation("删除纪念日")
     @DeleteMapping("/delete/{id}")
     public Result<Void> deleteAnniversary(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         anniversaryService.deleteAnniversary(userId, id);
         return Result.success();
     }
@@ -80,7 +80,7 @@ public class AnniversaryController extends BaseAuthController {
     @ApiOperation("检查今日是否是纪念日")
     @GetMapping("/today")
     public Result<AnniversaryDTO> checkTodayAnniversary() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         AnniversaryDTO today = anniversaryService.checkTodayAnniversary(userId);
         return Result.success(today);
     }
@@ -88,7 +88,7 @@ public class AnniversaryController extends BaseAuthController {
     @ApiOperation("更新提醒配置")
     @PutMapping("/reminderConfig")
     public Result<Void> updateReminderConfig(@Valid @RequestBody ReminderConfigReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         anniversaryService.updateReminderConfig(userId, req);
         return Result.success();
     }

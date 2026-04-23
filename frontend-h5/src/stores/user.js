@@ -31,9 +31,9 @@ export const useUserStore = defineStore('user', {
     },
 
     // 手机号登录
-    async loginByPhone(phone) {
+    async loginByPhone(phone, verifyCode) {
       try {
-        const res = await userApi.loginByPhone(phone)
+        const res = await userApi.loginByPhone({ phone, verifyCode })
         this.setLoginInfo(res.data.token, res.data.userInfo)
         return res
       } catch (error) {
@@ -44,6 +44,21 @@ export const useUserStore = defineStore('user', {
     // 发送验证码
     async sendVerifyCode(phone) {
       return await userApi.sendVerifyCode(phone)
+    },
+
+    // 手机号注册（自动登录如果已注册）
+    async registerByPhone(phone, verifyCode) {
+      try {
+        const res = await userApi.registerByPhone({ phone, verifyCode })
+        this.setLoginInfo(res.data.token, res.data.userInfo)
+        return res
+      } catch (error) {
+        // 如果手机号已注册，尝试登录
+        if (error.code === 1005 || error.message?.includes('已注册')) {
+          return this.loginByPhone(phone, verifyCode)
+        }
+        throw error
+      }
     },
 
     // 设置登录信息
@@ -70,7 +85,12 @@ export const useUserStore = defineStore('user', {
     },
 
     // 登出
-    logout() {
+    async logout() {
+      try {
+        await userApi.logout()
+      } catch (error) {
+        // 忽略退出接口错误，继续清除本地状态
+      }
       this.token = ''
       this.userInfo = null
       this.coupleInfo = null

@@ -56,7 +56,19 @@ public class PosterServiceImpl implements PosterService {
         }
 
         // 获取模板
-        PosterTemplate template = posterTemplateMapper.selectById(req.getTemplateId());
+        PosterTemplate template = null;
+        if (req.getTemplateId() != null) {
+            template = posterTemplateMapper.selectById(req.getTemplateId());
+        } else if (req.getPosterType() != null) {
+            // 如果没有指定模板ID，则根据海报类型查找默认模板
+            template = posterTemplateMapper.selectOne(
+                new LambdaQueryWrapper<PosterTemplate>()
+                    .eq(PosterTemplate::getTemplateType, req.getPosterType())
+                    .eq(PosterTemplate::getIsActive, 1)
+                    .orderByAsc(PosterTemplate::getId)
+                    .last("LIMIT 1")
+            );
+        }
         if (template == null || template.getIsActive() != 1) {
             throw new IllegalArgumentException("模板不存在或已禁用");
         }

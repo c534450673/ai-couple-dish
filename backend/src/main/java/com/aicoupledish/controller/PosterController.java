@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/poster")
 @RequiredArgsConstructor
-public class PosterController {
+public class PosterController extends BaseAuthController {
 
     private final PosterService posterService;
     private final JwtUtils jwtUtils;
@@ -39,7 +39,7 @@ public class PosterController {
     @ApiOperation("生成海报")
     @PostMapping("/generate")
     public Result<PosterDTO> generatePoster(@RequestBody PosterDTO.GenerateReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         PosterDTO dto = posterService.generatePoster(userId, req);
         return Result.success("海报生成成功", dto);
     }
@@ -51,7 +51,7 @@ public class PosterController {
             @RequestParam(required = false) String posterType,
             @ApiParam(value = "数量限制，默认20")
             @RequestParam(required = false, defaultValue = "20") Integer limit) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<PosterDTO> posters = posterService.getMyPosters(userId, posterType, limit);
         return Result.success(posters);
     }
@@ -59,7 +59,7 @@ public class PosterController {
     @ApiOperation("获取海报详情")
     @GetMapping("/detail/{id}")
     public Result<PosterDTO> getPosterDetail(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         PosterDTO dto = posterService.getPosterDetail(userId, id);
         return Result.success(dto);
     }
@@ -67,7 +67,7 @@ public class PosterController {
     @ApiOperation("删除海报")
     @DeleteMapping("/delete/{id}")
     public Result<Void> deletePoster(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         posterService.deletePoster(userId, id);
         return Result.success();
     }
@@ -75,23 +75,8 @@ public class PosterController {
     @ApiOperation("获取海报分享数据")
     @GetMapping("/share/{id}")
     public Result<PosterDTO> getPosterShareData(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         PosterDTO dto = posterService.getPosterShareData(userId, id);
         return Result.success(dto);
-    }
-
-    private Long getCurrentUserId() {
-        String token = request.getHeader("Authorization");
-        if (token == null || token.isEmpty()) {
-            throw new BusinessException(9001, "请先登录");
-        }
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-        Long userId = jwtUtils.getUserIdFromToken(token);
-        if (userId == null) {
-            throw new BusinessException(9001, "无效的登录凭证");
-        }
-        return userId;
     }
 }

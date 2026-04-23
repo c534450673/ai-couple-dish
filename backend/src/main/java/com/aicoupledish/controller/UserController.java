@@ -3,15 +3,15 @@ package com.aicoupledish.controller;
 import com.aicoupledish.common.annotation.RateLimit;
 import com.aicoupledish.common.utils.JwtUtils;
 import com.aicoupledish.common.utils.Result;
-import com.aicoupledish.common.utils.SensitiveDataUtils;
 import com.aicoupledish.domain.dto.LoginRespDTO;
 import com.aicoupledish.domain.dto.UserInfoDTO;
+import com.aicoupledish.domain.req.PhoneLoginReq;
+import com.aicoupledish.domain.req.UpdateUserReq;
 import com.aicoupledish.domain.req.WechatLoginReq;
 import com.aicoupledish.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,13 +29,18 @@ public class UserController extends BaseAuthController {
     private final UserService userService;
     private final JwtUtils jwtUtils;
 
-    @Autowired(required = false)
-    private HttpServletRequest request;
-
-    @ApiOperation("微信登录")
+    @ApiOperation("微信登录（含自动注册）")
     @PostMapping("/login")
     public Result<LoginRespDTO> wechatLogin(@Valid @RequestBody WechatLoginReq req) {
         LoginRespDTO resp = userService.wechatLogin(req);
+        return Result.success(resp);
+    }
+
+    @ApiOperation("手机号注册")
+    @PostMapping("/register")
+    @RateLimit(key = "register", time = 60, count = 5, limitType = RateLimit.LimitType.IP, message = "注册操作太频繁，请1分钟后再试")
+    public Result<LoginRespDTO> registerByPhone(@Valid @RequestBody PhoneLoginReq req) {
+        LoginRespDTO resp = userService.registerByPhone(req.getPhone(), req.getVerifyCode());
         return Result.success(resp);
     }
 
@@ -49,14 +54,15 @@ public class UserController extends BaseAuthController {
 
     @ApiOperation("手机号登录")
     @PostMapping("/phoneLogin")
-    public Result<LoginRespDTO> phoneLogin(@RequestParam String phone) {
-        LoginRespDTO resp = userService.phoneLogin(phone);
+    @RateLimit(key = "phoneLogin", time = 60, count = 10, limitType = RateLimit.LimitType.IP, message = "登录操作太频繁，请1分钟后再试")
+    public Result<LoginRespDTO> phoneLogin(@Valid @RequestBody PhoneLoginReq req) {
+        LoginRespDTO resp = userService.phoneLogin(req.getPhone(), req.getVerifyCode());
         return Result.success(resp);
     }
 
     @ApiOperation("获取用户信息")
     @GetMapping("/info")
-    public Result<UserInfoDTO> getUserInfo() {
+    public Result<UserInfoDTO> getUserInfo(HttpServletRequest request) {
         Long userId = getCurrentUserId(request, jwtUtils);
         UserInfoDTO userInfo = userService.getUserInfo(userId);
         return Result.success(userInfo);
@@ -65,17 +71,18 @@ public class UserController extends BaseAuthController {
     @ApiOperation("更新用户信息")
     @PutMapping("/update")
     public Result<Void> updateUserInfo(
-            @RequestParam(required = false) String nickName,
-            @RequestParam(required = false) String avatarUrl) {
+            HttpServletRequest request,
+            @RequestBody UpdateUserReq req) {
         Long userId = getCurrentUserId(request, jwtUtils);
-        userService.updateUserInfo(userId, nickName, avatarUrl);
+        userService.updateUserInfo(userId, req.getNickName(), req.getAvatarUrl());
         return Result.success();
     }
 
     @ApiOperation("退出登录")
     @PostMapping("/logout")
-    public Result<Void> logout() {
-        // 实际项目中可以处理token失效等逻辑
+    public Result<Void> logout(HttpServletRequest request) {
+        Long userId = getCurrentUserId(request, jwtUtils);
+        userService.logout(userId);
         return Result.success();
     }
 

@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/coupleTree")
 @RequiredArgsConstructor
-public class CoupleTreeController {
+public class CoupleTreeController extends BaseAuthController {
 
     private final CoupleTreeService coupleTreeService;
     private final JwtUtils jwtUtils;
@@ -32,7 +32,7 @@ public class CoupleTreeController {
     @ApiOperation("获取爱心树信息")
     @GetMapping("/info")
     public Result<CoupleTreeDTO> getTreeInfo() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         CoupleTreeDTO dto = coupleTreeService.getTreeInfo(userId);
         return Result.success(dto);
     }
@@ -40,7 +40,7 @@ public class CoupleTreeController {
     @ApiOperation("浇水（增加养分）")
     @PostMapping("/water")
     public Result<Void> waterTree(@Valid @RequestBody WaterTreeReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         coupleTreeService.waterTree(userId, req);
         return Result.success();
     }
@@ -50,7 +50,7 @@ public class CoupleTreeController {
     public Result<List<CoupleTreeDTO.NutrientLogInfo>> getNutrientLogs(
             @ApiParam(value = "数量限制，默认20")
             @RequestParam(required = false, defaultValue = "20") Integer limit) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<CoupleTreeDTO.NutrientLogInfo> logs = coupleTreeService.getNutrientLogs(userId, limit);
         return Result.success(logs);
     }
@@ -58,7 +58,7 @@ public class CoupleTreeController {
     @ApiOperation("获取可用皮肤列表")
     @GetMapping("/skins")
     public Result<List<CoupleTreeDTO.SkinInfo>> getAvailableSkins() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<CoupleTreeDTO.SkinInfo> skins = coupleTreeService.getAvailableSkins(userId);
         return Result.success(skins);
     }
@@ -68,23 +68,8 @@ public class CoupleTreeController {
     public Result<Void> changeSkin(
             @ApiParam(value = "皮肤ID", required = true)
             @RequestParam String skinId) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         coupleTreeService.changeSkin(userId, skinId);
         return Result.success();
-    }
-
-    private Long getCurrentUserId() {
-        String token = request.getHeader("Authorization");
-        if (token == null || token.isEmpty()) {
-            throw new BusinessException(9001, "请先登录");
-        }
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-        Long userId = jwtUtils.getUserIdFromToken(token);
-        if (userId == null) {
-            throw new BusinessException(9001, "无效的登录凭证");
-        }
-        return userId;
     }
 }

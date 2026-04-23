@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 菜单控制器
@@ -58,7 +59,7 @@ public class MenuController extends BaseAuthController {
     @ApiOperation("添加菜单")
     @PostMapping("/add")
     public Result<Long> addMenu(@Valid @RequestBody AddMenuReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         Long menuId = menuService.addMenu(userId, req);
         return Result.success("菜单添加成功", menuId);
     }
@@ -66,7 +67,7 @@ public class MenuController extends BaseAuthController {
     @ApiOperation("更新菜单")
     @PutMapping("/update/{id}")
     public Result<Void> updateMenu(@PathVariable Long id, @RequestBody AddMenuReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         menuService.updateMenu(userId, id, req);
         return Result.success();
     }
@@ -74,7 +75,7 @@ public class MenuController extends BaseAuthController {
     @ApiOperation("删除菜单")
     @DeleteMapping("/delete/{id}")
     public Result<Void> deleteMenu(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         menuService.deleteMenu(userId, id);
         return Result.success();
     }
@@ -82,7 +83,7 @@ public class MenuController extends BaseAuthController {
     @ApiOperation("恢复菜单")
     @PostMapping("/recover/{id}")
     public Result<Void> recoverMenu(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         menuService.recoverMenu(userId, id);
         return Result.success();
     }
@@ -90,7 +91,7 @@ public class MenuController extends BaseAuthController {
     @ApiOperation("点赞菜单")
     @PostMapping("/like/{id}")
     public Result<Void> likeMenu(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         menuService.likeMenu(userId, id);
         return Result.success();
     }
@@ -98,7 +99,7 @@ public class MenuController extends BaseAuthController {
     @ApiOperation("取消点赞")
     @DeleteMapping("/unlike/{id}")
     public Result<Void> unlikeMenu(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         menuService.unlikeMenu(userId, id);
         return Result.success();
     }
@@ -106,7 +107,7 @@ public class MenuController extends BaseAuthController {
     @ApiOperation("收藏菜单")
     @PostMapping("/favorite/{id}")
     public Result<Void> favoriteMenu(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         menuService.favoriteMenu(userId, id);
         return Result.success();
     }
@@ -114,7 +115,7 @@ public class MenuController extends BaseAuthController {
     @ApiOperation("取消收藏")
     @DeleteMapping("/unfavorite/{id}")
     public Result<Void> unfavoriteMenu(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         menuService.unfavoriteMenu(userId, id);
         return Result.success();
     }
@@ -122,9 +123,32 @@ public class MenuController extends BaseAuthController {
     @ApiOperation("获取菜单统计")
     @GetMapping("/stats")
     public Result<Object> getMenuStats() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         Object stats = menuService.getMenuStats(userId);
         return Result.success(stats);
+    }
+
+    @ApiOperation("获取附近的餐厅")
+    @GetMapping("/nearby")
+    public Result<List<MenuDTO>> getNearbyRestaurants(
+            @RequestParam BigDecimal latitude,
+            @RequestParam BigDecimal longitude,
+            @RequestParam(required = false, defaultValue = "5000") Integer radiusMeters,
+            @RequestParam(required = false) Integer status) {
+        Long userId = getCurrentUserId(request, jwtUtils);
+        List<MenuDTO> result = menuService.getNearbyRestaurants(userId, latitude, longitude, radiusMeters, status);
+        return Result.success(result);
+    }
+
+    @ApiOperation("根据位置获取餐厅地图数据")
+    @GetMapping("/map")
+    public Result<List<MenuDTO>> getMapRestaurants(
+            @RequestParam(required = false) BigDecimal centerLat,
+            @RequestParam(required = false) BigDecimal centerLng,
+            @RequestParam(required = false, defaultValue = "10") Integer zoomLevel) {
+        Long userId = getCurrentUserId(request, jwtUtils);
+        List<MenuDTO> result = menuService.getMapRestaurants(userId, centerLat, centerLng, zoomLevel);
+        return Result.success(result);
     }
 
 }

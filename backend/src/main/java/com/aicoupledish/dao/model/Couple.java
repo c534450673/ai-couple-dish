@@ -67,7 +67,7 @@ public class Couple implements Serializable {
     /**
      * 解绑申请时间
      */
-    @TableField("unbind_time")
+    @TableField("unbind_apply_time")
     private LocalDateTime unbindApplyTime;
 
     /**

@@ -250,7 +250,8 @@ public class AnniversaryServiceImpl implements AnniversaryService {
         LocalDate today = LocalDate.now();
         LocalDate next = anniversaryDate;
 
-        while (next.isBefore(today) || next.isEqual(today)) {
+        // 当天纪念日应该返回当天，只有过去的日期才需要加一年
+        while (next.isBefore(today)) {
             next = next.plusYears(1);
         }
         return next;

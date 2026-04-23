@@ -1,62 +1,40 @@
-server:
-  port: 8080
-  servlet:
-    context-path: /api
+# 测试环境配置
+# 使用 H2 内存数据库替代 MySQL
 
 spring:
-  application:
-    name: ai-couple-dish-test
-
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ai_couple_dish_test?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
-    username: root
-    password: root
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
 
+  h2:
+    console:
+      enabled: false
+
+  # 使用 schema-test.sql 初始化数据库（测试环境）
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-test.sql
+      data-locations: classpath:data-test.sql
+      encoding: utf-8
+
+  # 嵌入式 Redis 配置
   redis:
     host: localhost
     port: 6379
     password:
-    database: 1
-    timeout: 5000
+    database: 0
 
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 20MB
-
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:sql/init.sql
-      data-locations: classpath:test-data.sql
-
-# MyBatis Plus配置
-mybatis-plus:
-  mapper-locations: classpath*:/mapper/**/*.xml
-  type-aliases-package: com.aicoupledish.dao.model
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    db-config:
-      id-type: auto
-      logic-delete-field: isDeleted
-      logic-delete-value: 1
-      logic-not-delete-value: 0
-
-# JWT配置
+# JWT配置 - 测试用固定密钥
 jwt:
-  secret: aiCoupleDishSecretKey2024VeryLongAndSecureForTest
+  secret: test-jwt-secret-key-for-unit-testing-purpose-only-minimum-256-bits-required
   expiration: 604800000
   header: Authorization
   prefix: Bearer
 
-# 微信小程序配置
+# 微信小程序配置 - 测试用
 wx:
   miniapp:
     appid: test-appid
@@ -67,11 +45,15 @@ wx:
 # 文件上传配置
 file:
   upload:
-    path: /tmp/ai-couple-dish-test/uploads
+    path: /tmp/test-uploads
     base-url: http://localhost:8080/api/uploads
 
 # 日志配置
 logging:
   level:
     com.aicoupledish: debug
-    org.springframework: info
+    org.springframework: warn
+
+# 关闭 Knife4j
+knife4j:
+  enable: false

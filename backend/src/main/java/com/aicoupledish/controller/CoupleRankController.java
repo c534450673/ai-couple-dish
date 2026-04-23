@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/coupleRank")
 @RequiredArgsConstructor
-public class CoupleRankController {
+public class CoupleRankController extends BaseAuthController {
 
     private final CoupleRankService coupleRankService;
     private final JwtUtils jwtUtils;
@@ -30,7 +30,7 @@ public class CoupleRankController {
     @ApiOperation("获取段位信息")
     @GetMapping("/info")
     public Result<CoupleRankDTO> getRankInfo() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         CoupleRankDTO dto = coupleRankService.getRankInfo(userId);
         return Result.success(dto);
     }
@@ -47,7 +47,7 @@ public class CoupleRankController {
     @ApiOperation("获取段位奖励列表")
     @GetMapping("/rewards")
     public Result<List<CoupleRankDTO.RankReward>> getRankRewards() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<CoupleRankDTO.RankReward> rewards = coupleRankService.getRankRewards(userId);
         return Result.success(rewards);
     }
@@ -55,23 +55,8 @@ public class CoupleRankController {
     @ApiOperation("领取段位奖励")
     @PostMapping("/claim/{rank}")
     public Result<Void> claimRankReward(@PathVariable String rank) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         coupleRankService.claimRankReward(userId, rank);
         return Result.success("奖励领取成功");
-    }
-
-    private Long getCurrentUserId() {
-        String token = request.getHeader("Authorization");
-        if (token == null || token.isEmpty()) {
-            throw new BusinessException(9001, "请先登录");
-        }
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-        Long userId = jwtUtils.getUserIdFromToken(token);
-        if (userId == null) {
-            throw new BusinessException(9001, "无效的登录凭证");
-        }
-        return userId;
     }
 }

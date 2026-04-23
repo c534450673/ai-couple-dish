@@ -79,4 +79,23 @@ public interface MenuService {
      * 获取菜单统计
      */
     Object getMenuStats(Long userId);
+
+    /**
+     * 获取附近的餐厅
+     * @param userId 用户ID
+     * @param latitude 当前纬度
+     * @param longitude 当前经度
+     * @param radiusMeters 搜索半径（米）
+     * @param status 状态筛选
+     */
+    List<MenuDTO> getNearbyRestaurants(Long userId, BigDecimal latitude, BigDecimal longitude, Integer radiusMeters, Integer status);
+
+    /**
+     * 获取地图视图的餐厅数据
+     * @param userId 用户ID
+     * @param centerLat 中心纬度
+     * @param centerLng 中心经度
+     * @param zoomLevel 缩放级别
+     */
+    List<MenuDTO> getMapRestaurants(Long userId, BigDecimal centerLat, BigDecimal centerLng, Integer zoomLevel);
 }

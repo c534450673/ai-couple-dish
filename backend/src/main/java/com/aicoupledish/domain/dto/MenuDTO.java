@@ -36,4 +36,5 @@ public class MenuDTO {
     private Long anniversaryId;
     private String createTime;
     private Boolean isLiked;
+    private Double distance;
 }

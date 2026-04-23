@@ -14,14 +14,19 @@ import java.util.Map;
 public interface UserService {
 
     /**
-     * 微信登录
+     * 微信登录（含自动注册）
      */
     LoginRespDTO wechatLogin(WechatLoginReq req);
 
     /**
-     * 手机号登录（本地开发用）
+     * 手机号注册（创建新用户）
      */
-    LoginRespDTO phoneLogin(String phone);
+    LoginRespDTO registerByPhone(String phone, String verifyCode);
+
+    /**
+     * 手机号登录
+     */
+    LoginRespDTO phoneLogin(String phone, String verifyCode);
 
     /**
      * 发送验证码
@@ -52,4 +57,14 @@ public interface UserService {
      * 根据OpenID获取用户
      */
     Long getUserIdByOpenid(String openid);
+
+    /**
+     * 验证手机号格式
+     */
+    boolean isValidPhoneNumber(String phone);
+
+    /**
+     * 退出登录（使token缓存失效）
+     */
+    void logout(Long userId);
 }

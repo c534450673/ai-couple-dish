@@ -58,7 +58,7 @@ public class CoupleController extends BaseAuthController {
     @ApiOperation("获取情侣信息")
     @GetMapping("/info")
     public Result<CoupleInfoDTO> getCoupleInfo() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         CoupleInfoDTO coupleInfo = coupleService.getCoupleInfo(userId);
         return Result.success(coupleInfo);
     }
@@ -66,7 +66,7 @@ public class CoupleController extends BaseAuthController {
     @ApiOperation("获取情侣主页")
     @GetMapping("/home")
     public Result<CoupleHomeDTO> getCoupleHome() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         CoupleHomeDTO home = coupleService.getCoupleHome(userId);
         return Result.success(home);
     }
@@ -74,7 +74,7 @@ public class CoupleController extends BaseAuthController {
     @ApiOperation("申请解绑")
     @PostMapping("/unbind/apply")
     public Result<Void> applyUnbind(@RequestBody(required = false) UnbindReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         coupleService.applyUnbind(userId, req != null ? req : new UnbindReq());
         return Result.success();
     }
@@ -82,7 +82,7 @@ public class CoupleController extends BaseAuthController {
     @ApiOperation("确认解绑")
     @PostMapping("/unbind/confirm")
     public Result<Void> confirmUnbind(@RequestParam Long coupleId) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         coupleService.confirmUnbind(userId, coupleId);
         return Result.success();
     }
@@ -90,7 +90,7 @@ public class CoupleController extends BaseAuthController {
     @ApiOperation("拒绝解绑")
     @PostMapping("/unbind/reject")
     public Result<Void> rejectUnbind(@RequestParam Long coupleId) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         coupleService.rejectUnbind(userId, coupleId);
         return Result.success();
     }
@@ -105,7 +105,7 @@ public class CoupleController extends BaseAuthController {
     @ApiOperation("获取恋爱计时")
     @GetMapping("/loveTimer")
     public Result<CoupleHomeDTO> getLoveTimer() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         CoupleHomeDTO timer = coupleService.getLoveTimer(userId);
         return Result.success(timer);
     }
@@ -113,7 +113,7 @@ public class CoupleController extends BaseAuthController {
     @ApiOperation("检查可恢复的情侣数据")
     @GetMapping("/recoverable")
     public Result<CoupleInfoDTO> checkRecoverableData() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         CoupleInfoDTO data = coupleService.checkRecoverableData(userId);
         return Result.success(data);
     }
@@ -121,7 +121,7 @@ public class CoupleController extends BaseAuthController {
     @ApiOperation("恢复情侣数据")
     @PostMapping("/recover")
     public Result<CoupleInfoDTO> recoverCoupleData(@RequestParam Long recordId) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         CoupleInfoDTO coupleInfo = coupleService.recoverCoupleData(userId, recordId);
         return Result.success("数据恢复成功", coupleInfo);
     }
@@ -129,7 +129,7 @@ public class CoupleController extends BaseAuthController {
     @ApiOperation("获取当前情侣码信息")
     @GetMapping("/codeInfo")
     public Result<CoupleCodeDTO> getCoupleCodeInfo() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         CoupleCodeDTO codeInfo = coupleService.getCoupleCodeInfo(userId);
         return Result.success(codeInfo);
     }
@@ -137,7 +137,7 @@ public class CoupleController extends BaseAuthController {
     @ApiOperation("刷新情侣码")
     @PostMapping("/refreshCode")
     public Result<String> refreshCoupleCode() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         String newCode = coupleService.refreshCoupleCode(userId);
         return Result.success("情侣码已刷新", newCode);
     }

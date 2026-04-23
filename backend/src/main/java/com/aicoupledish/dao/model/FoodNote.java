@@ -45,7 +45,6 @@ public class FoodNote implements Serializable {
     /**
      * 位置信息
      */
-    @TableField("location_name")
     private String location;
 
     /**
@@ -86,7 +85,7 @@ public class FoodNote implements Serializable {
     /**
      * 照片URLs（JSON数组）
      */
-    @TableField("cover_photo_url")
+    @TableField("photo_urls")
     private String photoUrls;
 
     /**

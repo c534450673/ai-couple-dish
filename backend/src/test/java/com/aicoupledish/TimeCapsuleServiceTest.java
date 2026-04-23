@@ -99,7 +99,11 @@ class TimeCapsuleServiceTest {
         void createTimeCapsule_Success() {
             // Given
             when(userMapper.selectById(1L)).thenReturn(testUser);
-            when(timeCapsuleMapper.insert(any(TimeCapsule.class))).thenReturn(1);
+            when(timeCapsuleMapper.insert(any(TimeCapsule.class))).thenAnswer(invocation -> {
+                TimeCapsule capsule = invocation.getArgument(0);
+                capsule.setId(1L);
+                return 1;
+            });
 
             // When
             Long capsuleId = timeCapsuleService.createTimeCapsule(1L, capsuleReq);

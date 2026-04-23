@@ -362,4 +362,29 @@ public class WishServiceImpl implements WishService {
             default: return "待实现";
         }
     }
+
+    @Override
+    @Transactional
+    public void unfulfillWish(Long userId, Long wishId) {
+        User user = userService.getUserById(userId);
+        Wish wish = wishMapper.selectById(wishId);
+        if (wish == null) {
+            throw BusinessException.WISH_NOT_FOUND;
+        }
+
+        // 权限检查
+        if (user.getCoupleId() == null || !wish.getCoupleId().equals(user.getCoupleId())) {
+            throw BusinessException.WISH_NOT_PERMISSION;
+        }
+
+        // 只有已实现状态才能撤销
+        if (wish.getStatus() != 2) {
+            throw new IllegalArgumentException("只有已实现的心愿才能撤销");
+        }
+
+        wish.setStatus(1); // 回到进行中
+        wish.setAchievedDate(null);
+        wishMapper.updateById(wish);
+        log.info("撤销实现心愿: userId={}, wishId={}", userId, wishId);
+    }
 }

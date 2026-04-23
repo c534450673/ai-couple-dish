@@ -72,9 +72,9 @@
           <div class="stat-value">{{ stats.recommendedCount || 0 }}</div>
           <div class="stat-label">种草</div>
         </div>
-        <div class="stat-item" @click="$router.push('/feed')">
-          <div class="stat-value">{{ stats.feedCount || 0 }}</div>
-          <div class="stat-label">投喂</div>
+        <div class="stat-item" @click="$router.push('/map')">
+          <div class="stat-value"><van-icon name="location-o" size="20" /></div>
+          <div class="stat-label">地图</div>
         </div>
       </div>
 

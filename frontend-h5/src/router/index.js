@@ -69,6 +69,12 @@ const routes = [
     meta: { title: '心愿单', requiresAuth: true }
   },
   {
+    path: '/map',
+    name: 'Map',
+    component: () => import('@/views/map/index.vue'),
+    meta: { title: '餐厅地图', requiresAuth: true }
+  },
+  {
     path: '/settings',
     name: 'Settings',
     component: () => import('@/views/settings/index.vue'),

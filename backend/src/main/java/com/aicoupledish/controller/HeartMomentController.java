@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/heartMoment")
 @RequiredArgsConstructor
-public class HeartMomentController {
+public class HeartMomentController extends BaseAuthController {
 
     private final HeartMomentService heartMomentService;
     private final JwtUtils jwtUtils;
@@ -31,7 +31,7 @@ public class HeartMomentController {
     @ApiOperation("创建心动时刻")
     @PostMapping("/create")
     public Result<Long> createHeartMoment(@Valid @RequestBody HeartMomentReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         Long momentId = heartMomentService.createHeartMoment(userId, req);
         return Result.success("心动时刻创建成功", momentId);
     }
@@ -41,7 +41,7 @@ public class HeartMomentController {
     public Result<List<HeartMomentDTO>> getHeartMomentList(
             @RequestParam(required = false) Long page,
             @RequestParam(required = false) Long pageSize) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<HeartMomentDTO> list = heartMomentService.getHeartMomentList(userId, page, pageSize);
         return Result.success(list);
     }
@@ -49,7 +49,7 @@ public class HeartMomentController {
     @ApiOperation("删除心动时刻")
     @DeleteMapping("/delete/{id}")
     public Result<Void> deleteHeartMoment(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         heartMomentService.deleteHeartMoment(userId, id);
         return Result.success();
     }
@@ -57,23 +57,8 @@ public class HeartMomentController {
     @ApiOperation("获取随机心动时刻")
     @GetMapping("/random")
     public Result<HeartMomentDTO> getRandomHeartMoment() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         HeartMomentDTO dto = heartMomentService.getRandomHeartMoment(userId);
         return Result.success(dto);
-    }
-
-    private Long getCurrentUserId() {
-        String token = request.getHeader("Authorization");
-        if (token == null || token.isEmpty()) {
-            throw new BusinessException(9001, "请先登录");
-        }
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-        Long userId = jwtUtils.getUserIdFromToken(token);
-        if (userId == null) {
-            throw new BusinessException(9001, "无效的登录凭证");
-        }
-        return userId;
     }
 }

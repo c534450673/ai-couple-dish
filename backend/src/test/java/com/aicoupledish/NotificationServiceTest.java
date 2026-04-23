@@ -303,7 +303,6 @@ class NotificationServiceTest {
         void sendCoupleNotification_OnlyOneUser() {
             // Given
             when(userMapper.selectList(any())).thenReturn(Arrays.asList(testUser));
-            when(notificationMapper.insert(any(Notification.class))).thenReturn(1);
 
             // When
             notificationService.sendCoupleNotification(1L, 1L, 1, "标题", "内容", 1L, "type");

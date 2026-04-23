@@ -23,7 +23,7 @@
             name="location"
             label="位置"
             placeholder="请输入位置"
-            @click="$router.push('/location-picker')"
+            @click="$router.push('/map')"
             readonly
           >
             <template #button>

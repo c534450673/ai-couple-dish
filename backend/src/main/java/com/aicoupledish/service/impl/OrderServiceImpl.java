@@ -155,15 +155,6 @@ public class OrderServiceImpl implements OrderService {
             throw new BusinessException("订单状态不正确，当前状态不允许开始制作");
         }
 
-        // 检查是否已记录开始制作时间
-        if (order.getCookingStartTime() != null) {
-            throw new BusinessException("已确认开始制作");
-        }
-
-        // 更新开始制作时间
-        order.setCookingStartTime(LocalDateTime.now());
-        orderMapper.updateById(order);
-
         log.info("用户 {} 确认开始制作订单 {}", userId, orderId);
     }
 

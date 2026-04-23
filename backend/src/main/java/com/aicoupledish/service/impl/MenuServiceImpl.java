@@ -350,6 +350,128 @@ public class MenuServiceImpl implements MenuService {
         return stats;
     }
 
+    @Override
+    public List<MenuDTO> getNearbyRestaurants(Long userId, BigDecimal latitude, BigDecimal longitude, Integer radiusMeters, Integer status) {
+        User user = getUserById(userId);
+        if (user.getCoupleId() == null) {
+            throw BusinessException.COUPLE_NOT_BIND;
+        }
+
+        LambdaQueryWrapper<CoupleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CoupleMenu::getCoupleId, user.getCoupleId());
+        queryWrapper.eq(CoupleMenu::getIsDeleted, 0);
+        queryWrapper.isNotNull(CoupleMenu::getLatitude);
+        queryWrapper.isNotNull(CoupleMenu::getLongitude);
+        queryWrapper.eq(status != null, CoupleMenu::getStatus, status);
+
+        List<CoupleMenu> menus = menuMapper.selectList(queryWrapper);
+
+        // 使用 Haversine 公式计算距离并过滤
+        final double lat = latitude.doubleValue();
+        final double lng = longitude.doubleValue();
+        final double radius = radiusMeters != null ? radiusMeters : 5000;
+
+        List<MenuDTO> result = menus.stream()
+            .filter(menu -> {
+                double distance = calculateDistance(lat, lng,
+                    menu.getLatitude().doubleValue(), menu.getLongitude().doubleValue());
+                return distance <= radius;
+            })
+            .map(menu -> {
+                MenuDTO dto = buildMenuDTO(menu);
+                dto.setDistance(calculateDistance(lat, lng,
+                    menu.getLatitude().doubleValue(), menu.getLongitude().doubleValue()));
+                return dto;
+            })
+            .sorted((a, b) -> Double.compare(a.getDistance(), b.getDistance()))
+            .collect(Collectors.toList());
+
+        return result;
+    }
+
+    @Override
+    public List<MenuDTO> getMapRestaurants(Long userId, BigDecimal centerLat, BigDecimal centerLng, Integer zoomLevel) {
+        User user = getUserById(userId);
+        if (user.getCoupleId() == null) {
+            throw BusinessException.COUPLE_NOT_BIND;
+        }
+
+        LambdaQueryWrapper<CoupleMenu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CoupleMenu::getCoupleId, user.getCoupleId());
+        queryWrapper.eq(CoupleMenu::getIsDeleted, 0);
+        queryWrapper.isNotNull(CoupleMenu::getLatitude);
+        queryWrapper.isNotNull(CoupleMenu::getLongitude);
+
+        // 根据缩放级别调整搜索范围
+        if (centerLat != null && centerLng != null && zoomLevel != null) {
+            double radiusDegrees = getRadiusForZoom(zoomLevel);
+            queryWrapper.between(CoupleMenu::getLatitude,
+                centerLat.doubleValue() - radiusDegrees,
+                centerLat.doubleValue() + radiusDegrees);
+            queryWrapper.between(CoupleMenu::getLongitude,
+                centerLng.doubleValue() - radiusDegrees,
+                centerLng.doubleValue() + radiusDegrees);
+        }
+
+        List<CoupleMenu> menus = menuMapper.selectList(queryWrapper);
+
+        // 如果有中心点，计算距离
+        if (centerLat != null && centerLng != null) {
+            final double centerLatVal = centerLat.doubleValue();
+            final double centerLngVal = centerLng.doubleValue();
+            return menus.stream()
+                .map(menu -> {
+                    MenuDTO dto = buildMenuDTO(menu);
+                    dto.setDistance(calculateDistance(centerLatVal, centerLngVal,
+                        menu.getLatitude().doubleValue(), menu.getLongitude().doubleValue()));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        }
+
+        return buildMenuDTOList(menus);
+    }
+
+    /**
+     * 使用 Haversine 公式计算两点之间的距离（米）
+     */
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final double R = 6371000; // 地球半径（米）
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                   Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                   Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    /**
+     * 根据缩放级别获取搜索范围（度数）
+     */
+    private double getRadiusForZoom(int zoomLevel) {
+        // 缩放级别对应的大致半径（度数）
+        // zoomLevel 18 = 街道级别 ~100米
+        // zoomLevel 15 = 社区级别 ~500米
+        // zoomLevel 12 = 城市级别 ~2公里
+        // zoomLevel 10 = 区域级别 ~10公里
+        double[] radiusTable = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            10.0,  // zoom 10
+            5.0,   // zoom 11
+            2.0,   // zoom 12
+            1.0,   // zoom 13
+            0.5,   // zoom 14
+            0.2,   // zoom 15
+            0.1,   // zoom 16
+            0.05,  // zoom 17
+            0.02,  // zoom 18
+            0.01   // zoom 19+
+        };
+        if (zoomLevel < 10) return 20.0;
+        if (zoomLevel > 20) return 0.005;
+        return radiusTable[zoomLevel];
+    }
+
     private User getUserById(Long userId) {
         User user = userMapper.selectById(userId);
         if (user == null) {

@@ -143,13 +143,10 @@ export const wishApi = {
     return request({ url: `/wish/detail/${id}` })
   },
   addWish(data) {
-    // 后端使用 @RequestParam，需要拼接到URL
-    const params = new URLSearchParams(data).toString()
-    return request({ url: `/wish/add?${params}`, method: 'POST' })
+    return request({ url: '/wish/add', method: 'POST', data })
   },
   updateWish(id, data) {
-    const params = new URLSearchParams(data).toString()
-    return request({ url: `/wish/update/${id}?${params}`, method: 'PUT' })
+    return request({ url: `/wish/update/${id}`, method: 'PUT', data })
   },
   fulfillWish(id) {
     return request({ url: `/wish/fulfill/${id}`, method: 'POST' })

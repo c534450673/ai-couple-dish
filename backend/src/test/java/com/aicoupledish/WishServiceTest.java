@@ -180,7 +180,11 @@ class WishServiceTest {
         void addWish_Success() {
             // Given
             when(userService.getUserById(1L)).thenReturn(testUser);
-            when(wishMapper.insert(any(Wish.class))).thenReturn(1);
+            when(wishMapper.insert(any(Wish.class))).thenAnswer(invocation -> {
+                Wish wish = invocation.getArgument(0);
+                wish.setId(1L);
+                return 1;
+            });
 
             // When
             Long wishId = wishService.addWish(1L, "restaurant", "去海底捞", "服务好", null, 2);

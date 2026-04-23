@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/mood")
 @RequiredArgsConstructor
-public class MoodRecordController {
+public class MoodRecordController extends BaseAuthController {
 
     private final MoodRecordService moodRecordService;
     private final JwtUtils jwtUtils;
@@ -32,7 +32,7 @@ public class MoodRecordController {
     @ApiOperation("发送心情")
     @PostMapping("/send")
     public Result<Long> sendMood(@Valid @RequestBody MoodRecordReq req) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         Long moodId = moodRecordService.sendMood(userId, req);
         return Result.success("心情发送成功", moodId);
     }
@@ -40,7 +40,7 @@ public class MoodRecordController {
     @ApiOperation("获取今日心情")
     @GetMapping("/today")
     public Result<List<MoodRecordDTO>> getTodayMoods() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<MoodRecordDTO> moods = moodRecordService.getTodayMoods(userId);
         return Result.success(moods);
     }
@@ -50,7 +50,7 @@ public class MoodRecordController {
     public Result<List<MoodRecordDTO>> getMoodHistory(
             @ApiParam(value = "数量限制，默认30")
             @RequestParam(required = false, defaultValue = "30") Integer limit) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         List<MoodRecordDTO> moods = moodRecordService.getMoodHistory(userId, limit);
         return Result.success(moods);
     }
@@ -58,7 +58,7 @@ public class MoodRecordController {
     @ApiOperation("获取心情详情")
     @GetMapping("/detail/{id}")
     public Result<MoodRecordDTO> getMoodDetail(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         MoodRecordDTO dto = moodRecordService.getMoodDetail(userId, id);
         return Result.success(dto);
     }
@@ -66,7 +66,7 @@ public class MoodRecordController {
     @ApiOperation("标记心情已读")
     @PostMapping("/read/{id}")
     public Result<Void> markAsRead(@PathVariable Long id) {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         moodRecordService.markAsRead(userId, id);
         return Result.success();
     }
@@ -74,7 +74,7 @@ public class MoodRecordController {
     @ApiOperation("获取心情统计")
     @GetMapping("/stats")
     public Result<MoodRecordDTO.MoodStats> getMoodStats() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         MoodRecordDTO.MoodStats stats = moodRecordService.getMoodStats(userId);
         return Result.success(stats);
     }
@@ -89,23 +89,8 @@ public class MoodRecordController {
     @ApiOperation("获取未读心情数量")
     @GetMapping("/unread/count")
     public Result<Integer> getUnreadCount() {
-        Long userId = getCurrentUserId();
+        Long userId = getCurrentUserId(request, jwtUtils);
         Integer count = moodRecordService.getUnreadCount(userId);
         return Result.success(count);
-    }
-
-    private Long getCurrentUserId() {
-        String token = request.getHeader("Authorization");
-        if (token == null || token.isEmpty()) {
-            throw new BusinessException(9001, "请先登录");
-        }
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-        Long userId = jwtUtils.getUserIdFromToken(token);
-        if (userId == null) {
-            throw new BusinessException(9001, "无效的登录凭证");
-        }
-        return userId;
     }
 }
