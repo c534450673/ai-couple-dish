@@ -169,6 +169,8 @@ class CoupleServiceTest {
             // Given
             when(userMapper.selectById(2L)).thenReturn(testUser);
             when(userMapper.selectById(1L)).thenReturn(partnerUser);
+            when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+            when(valueOperations.setIfAbsent(anyString(), anyString(), anyLong(), any(TimeUnit.class))).thenReturn(true);
             when(redisTemplate.hasKey("couple:code:ABC12345")).thenReturn(true);
             when(redisTemplate.opsForHash()).thenReturn(hashOperations);
             when(hashOperations.get("couple:code:ABC12345", "userId")).thenReturn("1");
@@ -197,6 +199,8 @@ class CoupleServiceTest {
             // Given
             testUser.setCoupleId(1L);
             when(userMapper.selectById(1L)).thenReturn(testUser);
+            when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+            when(valueOperations.setIfAbsent(anyString(), anyString(), anyLong(), any(TimeUnit.class))).thenReturn(true);
 
             BindCoupleReq req = new BindCoupleReq();
             req.setCoupleCode("ABC12345");
@@ -212,6 +216,8 @@ class CoupleServiceTest {
         void bindCouple_InvalidCode_ThrowsException() {
             // Given
             when(userMapper.selectById(1L)).thenReturn(testUser);
+            when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+            when(valueOperations.setIfAbsent(anyString(), anyString(), anyLong(), any(TimeUnit.class))).thenReturn(true);
             when(redisTemplate.hasKey("couple:code:INVALID")).thenReturn(false);
 
             BindCoupleReq req = new BindCoupleReq();
@@ -228,6 +234,8 @@ class CoupleServiceTest {
         void bindCouple_SelfBind_ThrowsException() {
             // Given
             when(userMapper.selectById(1L)).thenReturn(testUser);
+            when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+            when(valueOperations.setIfAbsent(anyString(), anyString(), anyLong(), any(TimeUnit.class))).thenReturn(true);
             when(redisTemplate.hasKey("couple:code:ABC12345")).thenReturn(true);
             when(redisTemplate.opsForHash()).thenReturn(hashOperations);
             when(hashOperations.get("couple:code:ABC12345", "userId")).thenReturn("1");

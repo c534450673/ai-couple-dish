@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
     private final RecipeMapper recipeMapper;
     private final UserMapper userMapper;
     private final CoupleMapper coupleMapper;
+
+    @Value("${pricing.recipe-unit-price:9.9}")
+    private BigDecimal recipeUnitPrice;
 
     /**
      * 订单状态
@@ -76,9 +80,9 @@ public class OrderServiceImpl implements OrderService {
             throw new BusinessException("只能购买伴侣的菜谱");
         }
 
-        // 计算总价（暂时使用固定价格）
+        // 计算总价（使用配置单价）
         int quantity = req.getQuantity() != null ? req.getQuantity() : 1;
-        BigDecimal unitPrice = BigDecimal.valueOf(9.9); // 固定单价
+        BigDecimal unitPrice = recipeUnitPrice;
         BigDecimal totalAmount = unitPrice.multiply(BigDecimal.valueOf(quantity));
 
         // 创建订单

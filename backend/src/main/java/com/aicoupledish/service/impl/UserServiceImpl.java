@@ -325,12 +325,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void logout(Long userId) {
+    public void logout(Long userId, String token) {
         if (userId == null) {
             return;
         }
         // 清除用户缓存
         redisTemplate.delete(USER_CACHE_PREFIX + userId);
+
+        // 将JWT token加入黑名单，使token立即失效
+        if (token != null && !token.trim().isEmpty()) {
+            String jti = jwtUtils.getJtiFromToken(token);
+            if (jti != null) {
+                long remainingTime = jwtUtils.getExpirationTime(token);
+                if (remainingTime > 0) {
+                    String blacklistKey = "logout:blacklist:" + jti;
+                    redisTemplate.opsForValue().set(blacklistKey, userId.toString(), remainingTime, TimeUnit.MILLISECONDS);
+                    log.info("用户退出登录，token已加入黑名单: userId={}, jti={}", userId, jti);
+                }
+            }
+        }
+
         log.info("用户退出登录: userId={}", userId);
+    }
+
+    @Override
+    public void logout(Long userId) {
+        logout(userId, null);
     }
 }

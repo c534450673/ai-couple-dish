@@ -58,10 +58,15 @@ class CartServiceTest {
     private User partner;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         userId = 1L;
         partnerId = 2L;
         coupleId = 100L;
+
+        // 设置@Value字段
+        java.lang.reflect.Field priceField = CartServiceImpl.class.getDeclaredField("recipeUnitPrice");
+        priceField.setAccessible(true);
+        priceField.set(cartService, BigDecimal.valueOf(9.9));
 
         user = new User();
         user.setId(userId);

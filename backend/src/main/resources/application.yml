@@ -80,6 +80,10 @@ file:
     path: ${FILE_UPLOAD_PATH:/app/uploads}
     base-url: ${FILE_BASE_URL:http://localhost:8080/api/uploads}
 
+# 定价配置
+pricing:
+  recipe-unit-price: ${RECIPE_UNIT_PRICE:9.9}
+
 # Knife4j配置
 knife4j:
   enable: true

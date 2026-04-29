@@ -127,9 +127,8 @@ class FileServiceTest {
     @Test
     @DisplayName("删除文件-成功")
     void deleteFile_Success() {
-        // Given - Note: canDelete() is a real method on FileServiceImpl, not a mockable dependency
-        // So we can only test that fileStorageService.deleteFile is called correctly
-        String fileKey = "2024/01/01/abc123.jpg";
+        // Given
+        String fileKey = "user/1/2024/01/01/abc123.jpg";
         when(fileStorageService.deleteFile(fileKey)).thenReturn(true);
 
         // When
@@ -143,18 +142,13 @@ class FileServiceTest {
     @Test
     @DisplayName("删除文件-无权删除应抛异常")
     void deleteFile_NoPermission_ShouldThrowException() {
-        // Given - Note: canDelete() is a real method on FileServiceImpl, not a mockable dependency
-        // Since canDelete() currently always returns true by default, we cannot test the permission failure path
-        // This test documents the expected behavior when canDelete is properly implemented
-        String fileKey = "2024/01/01/abc123.jpg";
-        when(fileStorageService.deleteFile(fileKey)).thenReturn(true);
+        // Given - 使用其他用户的文件路径
+        String fileKey = "user/2/2024/01/01/abc123.jpg";
 
-        // When - Currently canDelete always returns true, so this will succeed
-        // When proper canDelete implementation is added, this test should be updated
-        boolean result = fileService.deleteFile(1L, fileKey);
-
-        // Then - Currently succeeds because canDelete is not implemented
-        assertTrue(result);
+        // When & Then
+        BusinessException exception = assertThrows(BusinessException.class,
+            () -> fileService.deleteFile(1L, fileKey));
+        assertEquals(BusinessException.MENU_NOT_PERMISSION.getCode(), exception.getCode());
     }
 
     @Test
@@ -185,15 +179,36 @@ class FileServiceTest {
     }
 
     @Test
-    @DisplayName("检查用户是否有权删除文件-当前默认允许")
-    void canDelete_Default_ShouldReturnTrue() {
+    @DisplayName("检查用户有权删除自己上传的文件")
+    void canDelete_OwnFile_ShouldReturnTrue() {
         // Given
-        String fileKey = "2024/01/01/abc123.jpg";
+        String fileKey = "user/1/2024/01/01/abc123.jpg";
 
         // When
         boolean result = fileService.canDelete(1L, fileKey);
 
         // Then
         assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("检查用户无权删除他人文件")
+    void canDelete_OtherUserFile_ShouldReturnFalse() {
+        // Given
+        String fileKey = "user/2/2024/01/01/abc123.jpg";
+
+        // When
+        boolean result = fileService.canDelete(1L, fileKey);
+
+        // Then
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("检查删除-空参数应返回false")
+    void canDelete_NullParams_ShouldReturnFalse() {
+        assertFalse(fileService.canDelete(null, "user/1/file.jpg"));
+        assertFalse(fileService.canDelete(1L, null));
+        assertFalse(fileService.canDelete(1L, ""));
     }
 }

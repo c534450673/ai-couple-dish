@@ -118,81 +118,115 @@ public class CoupleServiceImpl implements CoupleService {
     @Override
     @Transactional
     public CoupleInfoDTO bindCouple(Long userId, BindCoupleReq req) {
-        User user = getUserById(userId);
-
-        // 检查是否已有情侣关系
-        if (user.getCoupleId() != null) {
-            throw BusinessException.COUPLE_ALREADY_BIND;
-        }
-
-        // 验证情侣码
         String coupleCode = req.getCoupleCode().toUpperCase();
-        String cacheKey = COUPLE_CODE_PREFIX + coupleCode;
+        String lockKey = "lock:bind:couple:" + coupleCode;
+        String lockValue = java.util.UUID.randomUUID().toString();
+        boolean lockAcquired = false;
 
-        if (!Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey))) {
-            throw BusinessException.COUPLE_CODE_INVALID;
+        try {
+            // 尝试获取分布式锁（5秒超时）
+            lockAcquired = Boolean.TRUE.equals(
+                redisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, 10, TimeUnit.SECONDS)
+            );
+            if (!lockAcquired) {
+                throw new BusinessException("系统繁忙，请稍后再试");
+            }
+
+            User user = getUserById(userId);
+
+            // 检查是否已有情侣关系（重新查询确保最新状态）
+            User freshUser = userMapper.selectById(userId);
+            if (freshUser == null) {
+                throw BusinessException.USER_NOT_FOUND;
+            }
+            if (freshUser.getCoupleId() != null) {
+                throw BusinessException.COUPLE_ALREADY_BIND;
+            }
+
+            // 验证情侣码
+            String cacheKey = COUPLE_CODE_PREFIX + coupleCode;
+            if (!Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey))) {
+                throw BusinessException.COUPLE_CODE_INVALID;
+            }
+
+            // 获取发起方的用户ID
+            String senderIdStr = (String) redisTemplate.opsForHash().get(cacheKey, "userId");
+            Long senderId = Long.parseLong(senderIdStr);
+
+            if (senderId.equals(userId)) {
+                throw BusinessException.COUPLE_BIND_CONFLICT;
+            }
+
+            // 检查发起方是否已有情侣关系
+            User senderUser = userMapper.selectById(senderId);
+            if (senderUser != null && senderUser.getCoupleId() != null) {
+                throw BusinessException.COUPLE_ALREADY_BIND;
+            }
+
+            // 获取恋爱开始日期（添加空值检查）
+            String loveStartDateStr = (String) redisTemplate.opsForHash().get(cacheKey, "loveStartDate");
+            if (loveStartDateStr == null || loveStartDateStr.isEmpty()) {
+                loveStartDateStr = LocalDate.now().toString();
+                log.warn("恋爱开始日期为空，使用当前日期: userId={}", userId);
+            }
+            LocalDate loveStartDate = LocalDate.parse(loveStartDateStr);
+
+            // 计算恋爱天数
+            int loveDays = (int) ChronoUnit.DAYS.between(loveStartDate, LocalDate.now());
+
+            // 创建情侣关系
+            Couple couple = new Couple();
+            couple.setCoupleCode(coupleCode);
+            couple.setUser1Id(senderId);
+            couple.setUser2Id(userId);
+            couple.setStartDate(loveStartDate);
+            couple.setLoveDays(loveDays);
+            couple.setStatus(1); // 已绑定
+
+            // 设置默认情侣昵称
+            User sender = getUserById(senderId);
+            String coupleNickname = (sender.getNickName() != null ? sender.getNickName() : "TA") + "&" +
+                                    (user.getNickName() != null ? user.getNickName() : "TA");
+            couple.setCoupleNickname(coupleNickname);
+
+            coupleMapper.insert(couple);
+
+            // 更新双方用户的情侣ID
+            senderUser.setCoupleId(couple.getId());
+            senderUser.setLoveStartDate(loveStartDate.atStartOfDay());
+            userMapper.updateById(senderUser);
+
+            user.setCoupleId(couple.getId());
+            user.setLoveStartDate(loveStartDate.atStartOfDay());
+            userMapper.updateById(user);
+
+            // 删除情侣码缓存（正向 + 反向映射）
+            redisTemplate.delete(cacheKey);
+            String senderCodeKey = COUPLE_CODE_PREFIX + "user:" + senderId;
+            redisTemplate.delete(senderCodeKey);
+
+            // 发送绑定成功通知
+            if (notificationService != null) {
+                notificationService.sendCoupleNotification(couple.getId(), userId,
+                    2, "🎉 绑定成功", "你们已经成为情侣啦，快去记录你们的美食之旅吧！", couple.getId(), "couple");
+            }
+
+            log.info("绑定情侣: coupleId={}, user1={}, user2={}", couple.getId(), senderId, userId);
+
+            return buildCoupleInfoDTO(couple, userId);
+        } finally {
+            // 安全释放锁（仅当值匹配时才删除，防止误删其他请求的锁）
+            if (lockAcquired) {
+                try {
+                    String currentValue = redisTemplate.opsForValue().get(lockKey);
+                    if (lockValue.equals(currentValue)) {
+                        redisTemplate.delete(lockKey);
+                    }
+                } catch (Exception e) {
+                    log.warn("释放分布式锁失败: lockKey={}", lockKey, e);
+                }
+            }
         }
-
-        // 获取发起方的用户ID
-        String senderIdStr = (String) redisTemplate.opsForHash().get(cacheKey, "userId");
-        Long senderId = Long.parseLong(senderIdStr);
-
-        if (senderId.equals(userId)) {
-            throw BusinessException.COUPLE_BIND_CONFLICT;
-        }
-
-        // 获取恋爱开始日期（添加空值检查）
-        String loveStartDateStr = (String) redisTemplate.opsForHash().get(cacheKey, "loveStartDate");
-        if (loveStartDateStr == null || loveStartDateStr.isEmpty()) {
-            loveStartDateStr = LocalDate.now().toString();
-            log.warn("恋爱开始日期为空，使用当前日期: userId={}", userId);
-        }
-        LocalDate loveStartDate = LocalDate.parse(loveStartDateStr);
-
-        // 计算恋爱天数
-        int loveDays = (int) ChronoUnit.DAYS.between(loveStartDate, LocalDate.now());
-
-        // 创建情侣关系
-        Couple couple = new Couple();
-        couple.setCoupleCode(coupleCode);
-        couple.setUser1Id(senderId);
-        couple.setUser2Id(userId);
-        couple.setStartDate(loveStartDate);
-        couple.setLoveDays(loveDays);
-        couple.setStatus(1); // 已绑定
-
-        // 设置默认情侣昵称
-        User sender = getUserById(senderId);
-        String coupleNickname = (sender.getNickName() != null ? sender.getNickName() : "TA") + "&" +
-                                (user.getNickName() != null ? user.getNickName() : "TA");
-        couple.setCoupleNickname(coupleNickname);
-
-        coupleMapper.insert(couple);
-
-        // 更新双方用户的情侣ID
-        User senderUser = getUserById(senderId);
-        senderUser.setCoupleId(couple.getId());
-        senderUser.setLoveStartDate(loveStartDate.atStartOfDay());
-        userMapper.updateById(senderUser);
-
-        user.setCoupleId(couple.getId());
-        user.setLoveStartDate(loveStartDate.atStartOfDay());
-        userMapper.updateById(user);
-
-        // 删除情侣码缓存（正向 + 反向映射）
-        redisTemplate.delete(cacheKey);
-        String senderCodeKey = COUPLE_CODE_PREFIX + "user:" + senderId;
-        redisTemplate.delete(senderCodeKey);
-
-        // 发送绑定成功通知
-        if (notificationService != null) {
-            notificationService.sendCoupleNotification(couple.getId(), userId,
-                2, "🎉 绑定成功", "你们已经成为情侣啦，快去记录你们的美食之旅吧！", couple.getId(), "couple");
-        }
-
-        log.info("绑定情侣: coupleId={}, user1={}, user2={}", couple.getId(), senderId, userId);
-
-        return buildCoupleInfoDTO(couple, userId);
     }
 
     @Override

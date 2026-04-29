@@ -149,6 +149,8 @@ class CoupleServiceIntegrationTest {
 
         when(userMapper.selectById(1L)).thenReturn(user1);
         when(userMapper.selectById(2L)).thenReturn(user2);
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(valueOperations.setIfAbsent(anyString(), anyString(), anyLong(), any(TimeUnit.class))).thenReturn(true);
         when(redisTemplate.hasKey(anyString())).thenReturn(true);
         when(redisTemplate.opsForHash()).thenReturn(hashOperations);
         when(hashOperations.get(anyString(), eq("userId"))).thenReturn("1");
@@ -175,6 +177,8 @@ class CoupleServiceIntegrationTest {
         // Given
         user2.setCoupleId(null);
         when(userMapper.selectById(2L)).thenReturn(user2);
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(valueOperations.setIfAbsent(anyString(), anyString(), anyLong(), any(TimeUnit.class))).thenReturn(true);
         when(redisTemplate.hasKey(anyString())).thenReturn(false);
 
         BindCoupleReq req = new BindCoupleReq();

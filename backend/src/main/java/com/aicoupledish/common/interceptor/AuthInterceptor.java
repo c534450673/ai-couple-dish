@@ -6,6 +6,7 @@ import com.aicoupledish.common.utils.JwtUtils;
 import com.aicoupledish.common.utils.TokenExtractor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -22,6 +23,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthInterceptor implements HandlerInterceptor {
 
     private final JwtUtils jwtUtils;
+    private final RedisTemplate<String, String> redisTemplate;
+
+    private static final String LOGOUT_BLACKLIST_PREFIX = "logout:blacklist:";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -40,6 +44,13 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         if (!jwtUtils.validateToken(token)) {
             log.warn("请求[{}]Token无效", path);
+            throw new UnauthorizedException("登录已过期，请重新登录");
+        }
+
+        // Check if token is blacklisted (user logged out)
+        String jti = jwtUtils.getJtiFromToken(token);
+        if (jti != null && Boolean.TRUE.equals(redisTemplate.hasKey(LOGOUT_BLACKLIST_PREFIX + jti))) {
+            log.warn("请求[{}]Token已被加入黑名单", path);
             throw new UnauthorizedException("登录已过期，请重新登录");
         }
 

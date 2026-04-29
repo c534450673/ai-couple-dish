@@ -210,15 +210,13 @@ public class WishServiceImpl implements WishService {
             return; // 创建者自己查看不需要记录
         }
 
-        // 如果已经查看过，不重复记录
-        if (wish.getViewerId() != null) {
-            return;
+        // 使用原子更新避免竞态条件（仅当viewer_id为空时更新）
+        int affected = wishMapper.updateViewerAtomic(wishId, userId, java.time.LocalDateTime.now());
+        if (affected > 0) {
+            log.info("标记心愿已查看: userId={}, wishId={}", userId, wishId);
+        } else {
+            log.info("心愿已被其他用户查看，跳过更新: userId={}, wishId={}", userId, wishId);
         }
-
-        wish.setViewerId(userId);
-        wish.setViewTime(java.time.LocalDateTime.now());
-        wishMapper.updateById(wish);
-        log.info("标记心愿已查看: userId={}, wishId={}", userId, wishId);
     }
 
     @Override

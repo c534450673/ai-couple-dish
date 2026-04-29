@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -19,6 +20,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 /**
  * AOP Aspect for handling authentication logic.
@@ -32,6 +34,9 @@ import java.lang.reflect.Method;
 public class AuthAspect {
 
     private final JwtUtils jwtUtils;
+    private final RedisTemplate<String, String> redisTemplate;
+
+    private static final String LOGOUT_BLACKLIST_PREFIX = "logout:blacklist:";
 
     @Around("@annotation(com.aicoupledish.common.annotation.Auth)")
     public Object authenticate(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -62,6 +67,13 @@ public class AuthAspect {
 
         if (!jwtUtils.validateToken(token)) {
             log.warn("Request [{}] invalid token", path);
+            throw new UnauthorizedException("Login expired, please login again");
+        }
+
+        // Check if token is blacklisted (user logged out)
+        String jti = jwtUtils.getJtiFromToken(token);
+        if (jti != null && Boolean.TRUE.equals(redisTemplate.hasKey(LOGOUT_BLACKLIST_PREFIX + jti))) {
+            log.warn("Request [{}] token is blacklisted", path);
             throw new UnauthorizedException("Login expired, please login again");
         }
 

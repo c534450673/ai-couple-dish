@@ -17,6 +17,7 @@ import com.aicoupledish.service.CartService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,10 +40,8 @@ public class CartServiceImpl implements CartService {
     private final CoupleMapper coupleMapper;
     private final OrderMapper orderMapper;
 
-    /**
-     * 固定单价
-     */
-    private static final BigDecimal UNIT_PRICE = BigDecimal.valueOf(9.9);
+    @Value("${pricing.recipe-unit-price:9.9}")
+    private BigDecimal recipeUnitPrice;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -189,8 +188,8 @@ public class CartServiceImpl implements CartService {
                     dto.setRecipeId(cart.getRecipeId());
                     dto.setQuantity(cart.getQuantity());
                     dto.setCreateTime(cart.getCreateTime());
-                    dto.setUnitPrice(UNIT_PRICE);
-                    dto.setSubtotal(UNIT_PRICE.multiply(BigDecimal.valueOf(cart.getQuantity())));
+                    dto.setUnitPrice(recipeUnitPrice);
+                    dto.setSubtotal(recipeUnitPrice.multiply(BigDecimal.valueOf(cart.getQuantity())));
 
                     Recipe recipe = recipeMap.get(cart.getRecipeId());
                     if (recipe != null) {
@@ -256,7 +255,7 @@ public class CartServiceImpl implements CartService {
                 continue;
             }
 
-            BigDecimal totalAmount = UNIT_PRICE.multiply(BigDecimal.valueOf(cart.getQuantity()));
+            BigDecimal totalAmount = recipeUnitPrice.multiply(BigDecimal.valueOf(cart.getQuantity()));
 
             Order order = new Order();
             order.setCoupleId(couple.getId());

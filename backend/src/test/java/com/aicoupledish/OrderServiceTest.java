@@ -58,10 +58,15 @@ class OrderServiceTest {
     private Order order;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         buyerId = 1L;
         sellerId = 2L;
         coupleId = 100L;
+
+        // 设置@Value字段
+        java.lang.reflect.Field priceField = OrderServiceImpl.class.getDeclaredField("recipeUnitPrice");
+        priceField.setAccessible(true);
+        priceField.set(orderService, BigDecimal.valueOf(9.9));
 
         buyer = new User();
         buyer.setId(buyerId);

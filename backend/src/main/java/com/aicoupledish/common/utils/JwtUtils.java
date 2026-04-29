@@ -48,6 +48,7 @@ public class JwtUtils {
     public String generateToken(Long userId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
+        claims.put("jti", java.util.UUID.randomUUID().toString());
         return createToken(claims, userId.toString());
     }
 
@@ -57,6 +58,9 @@ public class JwtUtils {
     public String generateToken(Long userId, Map<String, Object> extraClaims) {
         Map<String, Object> claims = new HashMap<>(extraClaims);
         claims.put("userId", userId);
+        if (!claims.containsKey("jti")) {
+            claims.put("jti", java.util.UUID.randomUUID().toString());
+        }
         return createToken(claims, userId.toString());
     }
 
@@ -89,6 +93,41 @@ public class JwtUtils {
         } catch (NumberFormatException e) {
             log.warn("Token中的用户ID格式错误: {}", e.getMessage());
             return null;
+        }
+    }
+
+    /**
+     * 从Token获取JWT ID (jti)
+     */
+    public String getJtiFromToken(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            Claims claims = getClaimsFromToken(token);
+            if (claims == null) {
+                return null;
+            }
+            return claims.get("jti", String.class);
+        } catch (Exception e) {
+            log.warn("Token中的jti解析失败: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * 获取Token剩余有效时间（毫秒）
+     */
+    public long getExpirationTime(String token) {
+        try {
+            Claims claims = getClaimsFromToken(token);
+            if (claims == null || claims.getExpiration() == null) {
+                return 0;
+            }
+            long remaining = claims.getExpiration().getTime() - System.currentTimeMillis();
+            return Math.max(remaining, 0);
+        } catch (Exception e) {
+            return 0;
         }
     }
 

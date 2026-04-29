@@ -1,7 +1,7 @@
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **ai-couple-dish** (5824 symbols, 13601 relationships, 300 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **ai-couple-dish** (10301 symbols, 24400 relationships, 300 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -97,25 +97,5 @@ To check whether embeddings exist, inspect `.gitnexus/meta.json` — the `stats.
 | Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
 | Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
-| Work in the Impl area (467 symbols) | `.claude/skills/generated/impl/SKILL.md` |
-| Work in the Aicoupledish area (458 symbols) | `.claude/skills/generated/aicoupledish/SKILL.md` |
-| Work in the Service area (125 symbols) | `.claude/skills/generated/service/SKILL.md` |
-| Work in the Controller area (66 symbols) | `.claude/skills/generated/controller/SKILL.md` |
-| Work in the Services area (60 symbols) | `.claude/skills/generated/services/SKILL.md` |
-| Work in the Api area (53 symbols) | `.claude/skills/generated/api/SKILL.md` |
-| Work in the Task area (37 symbols) | `.claude/skills/generated/task/SKILL.md` |
-| Work in the Note-add area (16 symbols) | `.claude/skills/generated/note-add/SKILL.md` |
-| Work in the Exception area (16 symbols) | `.claude/skills/generated/exception/SKILL.md` |
-| Work in the Interceptor area (13 symbols) | `.claude/skills/generated/interceptor/SKILL.md` |
-| Work in the Frontend area (12 symbols) | `.claude/skills/generated/frontend/SKILL.md` |
-| Work in the Dto area (8 symbols) | `.claude/skills/generated/dto/SKILL.md` |
-| Work in the Feed-home area (6 symbols) | `.claude/skills/generated/feed-home/SKILL.md` |
-| Work in the Order-list area (6 symbols) | `.claude/skills/generated/order-list/SKILL.md` |
-| Work in the Photo-list area (6 symbols) | `.claude/skills/generated/photo-list/SKILL.md` |
-| Work in the Menu-list area (5 symbols) | `.claude/skills/generated/menu-list/SKILL.md` |
-| Work in the Wish-list area (5 symbols) | `.claude/skills/generated/wish-list/SKILL.md` |
-| Work in the Config area (5 symbols) | `.claude/skills/generated/config/SKILL.md` |
-| Work in the Store area (4 symbols) | `.claude/skills/generated/store/SKILL.md` |
-| Work in the Stores area (4 symbols) | `.claude/skills/generated/stores/SKILL.md` |
 
 <!-- gitnexus:end -->

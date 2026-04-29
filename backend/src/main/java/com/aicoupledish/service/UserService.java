@@ -65,6 +65,13 @@ public interface UserService {
 
     /**
      * 退出登录（使token缓存失效）
+     * @param userId 用户ID
+     * @param token 当前JWT token（用于加入黑名单）
+     */
+    void logout(Long userId, String token);
+
+    /**
+     * 退出登录（使token缓存失效）- 兼容旧接口
      */
     void logout(Long userId);
 }
