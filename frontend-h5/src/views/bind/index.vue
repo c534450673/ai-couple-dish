@@ -1,18 +1,42 @@
 <template>
   <div class="bind-page">
-    <div class="bind-header">
-      <h1>绑定TA</h1>
-      <p>和亲爱的TA开始私密美食之旅</p>
+    <!-- 渐变头部 -->
+    <div class="bind-hero">
+      <div class="hero-icon">
+        <van-icon name="like" size="32" />
+      </div>
+      <h1>绑定 TA</h1>
+      <p>和亲爱的 TA 开始私密美食之旅</p>
     </div>
 
     <div class="bind-content">
       <!-- 我的情侣码 -->
-      <div class="my-code card">
-        <div class="code-label">我的情侣码</div>
-        <div class="code-value" v-if="myCoupleCode">{{ myCoupleCode }}</div>
-        <div class="code-value loading" v-else>生成中...</div>
-        <div class="code-desc">让TA扫码绑定，或告诉TA这个码</div>
-        <van-button type="primary" size="small" @click="generateCode" :loading="generating">
+      <div class="my-code">
+        <div class="code-label">
+          我的情侣码
+        </div>
+        <div
+          v-if="myCoupleCode"
+          class="code-value"
+        >
+          {{ myCoupleCode }}
+        </div>
+        <div
+          v-else
+          class="code-value loading"
+        >
+          生成中...
+        </div>
+        <div class="code-desc">
+          让 TA 输入这个码，或扫码绑定
+        </div>
+        <van-button
+          type="primary"
+          size="small"
+          round
+          :loading="generating"
+          @click="generateCode"
+        >
           {{ myCoupleCode ? '重新生成' : '生成情侣码' }}
         </van-button>
       </div>
@@ -22,17 +46,21 @@
       </div>
 
       <!-- 绑定TA -->
-      <div class="bind-form card">
-        <div class="form-title">绑定TA的情侣码</div>
+      <div class="bind-form">
+        <div class="form-title">
+          绑定 TA 的情侣码
+        </div>
         <van-field
           v-model="partnerCode"
-          placeholder="请输入TA的情侣码"
+          class="code-field"
+          placeholder="请输入 TA 的情侣码"
           maxlength="8"
           :disabled="binding"
         />
         <van-button
           type="primary"
           block
+          round
           :loading="binding"
           :disabled="!partnerCode || partnerCode.length < 6"
           @click="handleBind"
@@ -68,7 +96,8 @@ const generateCode = async () => {
   generating.value = true
   try {
     const res = await coupleApi.generateCoupleCode()
-    myCoupleCode.value = res.data.coupleCode
+    // 接口直接返回情侣码字符串（兼容对象返回）
+    myCoupleCode.value = typeof res.data === 'string' ? res.data : (res.data?.coupleCode || '')
     showToast('情侣码已生成')
   } catch (error) {
     showToast('生成失败')
@@ -107,60 +136,60 @@ onMounted(() => {
 <style lang="scss" scoped>
 .bind-page {
   min-height: 100vh;
-  background: #f5f5f5;
-  padding: 20px 16px;
+  background: $color-background;
+  padding-bottom: 32px;
 }
 
-.bind-header {
+.bind-hero {
   text-align: center;
-  margin-bottom: 32px;
+  padding: 56px $page-padding 36px;
+  background: $gradient-romance;
+  border-bottom-left-radius: $radius-xl;
+  border-bottom-right-radius: $radius-xl;
 
-  h1 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 8px;
+  .hero-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    border-radius: $radius-xl;
+    background: $color-surface-lowest;
+    color: $color-primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: $shadow-card;
   }
 
-  p {
-    font-size: 14px;
-    color: #999;
-  }
+  h1 { font-size: $fs-headline; font-weight: $fw-bold; color: $color-on-surface; margin-bottom: $space-2; }
+  p { font-size: $fs-label; color: $color-on-surface-variant; }
+}
+
+.bind-content {
+  padding: $space-6 $page-padding 0;
 }
 
 .my-code {
+  @include card($radius-xl, $space-6);
   text-align: center;
-  padding: 24px;
 
-  .code-label {
-    font-size: 14px;
-    color: #999;
-    margin-bottom: 12px;
-  }
+  .code-label { font-size: $fs-label; color: $color-on-surface-variant; margin-bottom: $space-3; }
 
   .code-value {
-    font-size: 36px;
-    font-weight: 700;
-    color: #ff4757;
-    letter-spacing: 4px;
-    margin-bottom: 8px;
+    font-size: 38px;
+    font-weight: $fw-bold;
+    color: $color-primary;
+    letter-spacing: 6px;
+    margin-bottom: $space-2;
 
-    &.loading {
-      font-size: 16px;
-      color: #999;
-    }
+    &.loading { font-size: $fs-body; color: $color-on-surface-variant; letter-spacing: normal; }
   }
 
-  .code-desc {
-    font-size: 12px;
-    color: #999;
-    margin-bottom: 16px;
-  }
+  .code-desc { font-size: $fs-caption; color: $color-on-surface-variant; margin-bottom: $space-4; }
 }
 
 .divider {
   text-align: center;
-  margin: 24px 0;
+  margin: $space-6 0;
   position: relative;
 
   &::before,
@@ -168,35 +197,33 @@ onMounted(() => {
     content: '';
     position: absolute;
     top: 50%;
-    width: 40%;
+    width: 38%;
     height: 1px;
-    background: #ddd;
+    background: $color-outline-variant;
   }
-
   &::before { left: 0; }
   &::after { right: 0; }
 
   span {
-    background: #f5f5f5;
-    padding: 0 16px;
-    color: #999;
-    font-size: 12px;
+    background: $color-background;
+    padding: 0 $space-4;
+    color: $color-on-surface-variant;
+    font-size: $fs-caption;
     position: relative;
     z-index: 1;
   }
 }
 
 .bind-form {
-  .form-title {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 16px;
-  }
+  @include card($radius-xl, $space-6);
 
-  :deep(.van-field) {
-    margin-bottom: 16px;
-    background: #f5f5f5;
-    border-radius: 8px;
+  .form-title { font-size: $fs-label; color: $color-on-surface; font-weight: $fw-medium; margin-bottom: $space-4; }
+
+  .code-field {
+    margin-bottom: $space-4;
+    background: $color-surface-low;
+    border-radius: $radius-md;
+    padding: 6px 12px;
   }
 }
 
@@ -204,9 +231,10 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: 24px;
-  font-size: 12px;
-  color: #999;
+  gap: $space-2;
+  margin-top: $space-6;
+  padding: 0 $page-padding;
+  font-size: $fs-caption;
+  color: $color-on-surface-variant;
 }
 </style>

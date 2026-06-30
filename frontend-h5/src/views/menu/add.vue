@@ -1,11 +1,18 @@
 <template>
   <div class="menu-add-page">
-    <van-nav-bar
-      title="添加餐厅"
-      left-text="返回"
-      left-arrow
-      @click-left="$router.back()"
-    />
+    <header class="page-topbar">
+      <button
+        class="back"
+        @click="$router.back()"
+      >
+        <van-icon
+          name="arrow-left"
+          size="20"
+        />
+      </button>
+      <span class="title">添加餐厅</span>
+      <i class="placeholder" />
+    </header>
 
     <div class="form-content">
       <van-form @submit="handleSubmit">
@@ -23,8 +30,8 @@
             name="location"
             label="位置"
             placeholder="请输入位置"
-            @click="$router.push('/map')"
             readonly
+            @click="$router.push('/map')"
           >
             <template #button>
               <van-icon name="location-o" />
@@ -58,27 +65,46 @@
         </van-cell-group>
 
         <div class="form-section">
-          <div class="section-title">用餐状态</div>
-          <van-radio-group v-model="form.status" direction="horizontal">
-            <van-radio name="0">想去</van-radio>
-            <van-radio name="1">去过</van-radio>
-            <van-radio name="2">种草</van-radio>
+          <div class="section-title">
+            用餐状态
+          </div>
+          <van-radio-group
+            v-model="form.status"
+            direction="horizontal"
+          >
+            <van-radio name="0">
+              想去
+            </van-radio>
+            <van-radio name="1">
+              去过
+            </van-radio>
+            <van-radio name="2">
+              种草
+            </van-radio>
           </van-radio-group>
         </div>
 
         <div class="form-section">
-          <div class="section-title">上传照片</div>
+          <div class="section-title">
+            上传照片
+          </div>
           <van-uploader
             v-model="fileList"
             :max-count="9"
             :after-read="afterRead"
-            @delete="onDelete"
             multiple
+            @delete="onDelete"
           />
         </div>
 
         <div class="form-actions">
-          <van-button block type="primary" native-type="submit" :loading="submitting">
+          <van-button
+            block
+            round
+            type="primary"
+            native-type="submit"
+            :loading="submitting"
+          >
             保存
           </van-button>
         </div>
@@ -164,32 +190,54 @@ const handleSubmit = async () => {
 <style lang="scss" scoped>
 .menu-add-page {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: $color-background;
+}
+
+.page-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $page-padding;
+  @include glass(0.7);
+
+  .back,
+  .placeholder { width: 32px; }
+  .back {
+    border: none;
+    background: transparent;
+    color: $color-on-surface;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .title { font-size: $fs-title; font-weight: $fw-semibold; color: $color-on-surface; }
 }
 
 .form-content {
-  padding: 16px 0;
+  padding: $space-4 0 $space-8;
 }
 
 .form-section {
-  padding: 16px;
-  background: #fff;
-  margin-top: 12px;
+  margin: $space-4 $page-padding 0;
+  padding: $space-5;
+  background: $color-surface-lowest;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
 
   .section-title {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 12px;
+    font-size: $fs-caption;
+    color: $color-on-surface-variant;
+    margin-bottom: $space-4;
   }
+
+  :deep(.van-radio) { margin-right: $space-5; }
 }
 
 .form-actions {
-  padding: 24px 16px;
-
-  .van-button {
-    border-radius: 24px;
-    background: linear-gradient(135deg, #ff6b9d 0%, #ff4757 100%);
-    border: none;
-  }
+  padding: $space-8 $page-padding 0;
 }
 </style>
