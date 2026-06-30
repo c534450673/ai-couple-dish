@@ -1,93 +1,166 @@
 <template>
   <div class="feed-page">
-    <van-nav-bar title="投喂TA" />
+    <header class="feed-topbar">
+      <h1 class="page-title">
+        投喂 TA
+      </h1>
+    </header>
 
-    <!-- 下拉刷新 -->
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+    <van-pull-refresh
+      v-model="refreshing"
+      class="feed-body"
+      @refresh="onRefresh"
+    >
       <!-- 今日状态 -->
-      <div class="today-status card">
-        <div class="status-item" :class="{ active: todayStatus.sentToday }">
-          <van-icon :name="todayStatus.sentToday ? 'checked' : 'plus'" size="24" />
-          <span>{{ todayStatus.sentToday ? '已投喂' : '投喂TA' }}</span>
+      <div class="today-status">
+        <div
+          class="status-item"
+          :class="{ active: todayStatus.sentToday }"
+        >
+          <span class="ic"><van-icon
+            :name="todayStatus.sentToday ? 'checked' : 'add-o'"
+            size="24"
+          /></span>
+          <span class="tx">{{ todayStatus.sentToday ? '已投喂' : '投喂TA' }}</span>
         </div>
-        <div class="status-divider"></div>
-        <div class="status-item" :class="{ active: todayStatus.receivedToday }">
-          <van-icon :name="todayStatus.receivedToday ? 'checked' : 'gift'" size="24" />
-          <span>{{ todayStatus.receivedToday ? '已领取' : '待领取' }}</span>
+        <i class="status-divider" />
+        <div
+          class="status-item"
+          :class="{ active: todayStatus.receivedToday }"
+        >
+          <span class="ic"><van-icon
+            :name="todayStatus.receivedToday ? 'checked' : 'gift-o'"
+            size="24"
+          /></span>
+          <span class="tx">{{ todayStatus.receivedToday ? '已领取' : '待领取' }}</span>
         </div>
       </div>
 
       <!-- 投喂按钮 -->
-      <div class="send-section" v-if="!todayStatus.sentToday">
-        <van-button type="primary" block round size="large" @click="showSendDialog = true">
-          <van-icon name="plus" /> 投喂TA
-        </van-button>
+      <div
+        v-if="!todayStatus.sentToday"
+        class="send-section"
+      >
+        <button
+          class="send-btn"
+          @click="showSendDialog = true"
+        >
+          <van-icon name="plus" /> 投喂 TA
+        </button>
       </div>
 
       <!-- 收到的投喂 -->
       <div class="received-section">
-        <div class="section-title">收到的投喂</div>
+        <div class="section-title">
+          收到的投喂
+        </div>
 
-        <!-- 骨架屏 -->
-        <div v-if="isSkeleton" class="feed-list">
-          <div v-for="n in 3" :key="n" class="feed-item card skeleton-item">
-            <div class="feed-header">
-              <div class="skeleton-avatar"></div>
-              <div class="feed-info">
-                <div class="skeleton-sender"></div>
-                <div class="skeleton-time"></div>
+        <div v-if="isSkeleton">
+          <div
+            v-for="n in 3"
+            :key="n"
+            class="feed-card skeleton"
+          >
+            <div class="head">
+              <div class="sk-avatar sk" />
+              <div class="info">
+                <div class="sk sk-line sk-sender" />
+                <div class="sk sk-line sk-time" />
               </div>
             </div>
-            <div class="skeleton-content"></div>
+            <div class="sk sk-content" />
           </div>
         </div>
 
-        <div v-else class="feed-list">
-          <div v-for="item in receivedFeeds" :key="item.id" class="feed-item card">
-            <div class="feed-header">
-              <van-icon :name="getFeedIcon(item.feedType)" size="32" :color="getFeedColor(item.feedType)" />
-              <div class="feed-info">
-                <div class="feed-sender">{{ item.senderName }}</div>
-                <div class="feed-time">{{ item.createTime }}</div>
+        <div v-else>
+          <div
+            v-for="item in receivedFeeds"
+            :key="item.id"
+            class="feed-card"
+          >
+            <div class="head">
+              <span
+                class="type-ic"
+                :style="{ background: getFeedColor(item.feedType) + '22', color: getFeedColor(item.feedType) }"
+              >
+                <van-icon
+                  :name="getFeedIcon(item.feedType)"
+                  size="20"
+                />
+              </span>
+              <div class="info">
+                <div class="sender">
+                  {{ item.senderName }}
+                </div>
+                <div class="time">
+                  {{ item.createTime }}
+                </div>
               </div>
-              <van-tag :type="getStatusTagType(item.status)">
+              <van-tag
+                :type="getStatusTagType(item.status)"
+                round
+              >
                 {{ getStatusText(item.status) }}
               </van-tag>
             </div>
-            <div class="feed-content">{{ item.content }}</div>
-            <div class="feed-images" v-if="item.imageUrls">
+            <div class="content">
+              {{ item.content }}
+            </div>
+            <div
+              v-if="item.imageUrls"
+              class="images"
+            >
               <img
                 v-for="(url, index) in (typeof item.imageUrls === 'string' ? item.imageUrls.split(',') : item.imageUrls)"
                 :key="index"
                 v-lazy="url"
-                loading="lazy"
-              />
+              >
             </div>
-            <div class="feed-actions" v-if="item.status === 0">
-              <van-button size="small" type="primary" @click="handleAccept(item)">接受</van-button>
-              <van-button size="small" @click="handleReject(item)">拒绝</van-button>
+            <div
+              v-if="item.status === 0"
+              class="actions"
+            >
+              <van-button
+                size="small"
+                type="primary"
+                round
+                @click="handleAccept(item)"
+              >
+                接受
+              </van-button>
+              <van-button
+                size="small"
+                round
+                @click="handleReject(item)"
+              >
+                拒绝
+              </van-button>
             </div>
           </div>
 
-          <van-empty v-if="receivedFeeds.length === 0" description="暂无收到的投喂" />
+          <van-empty
+            v-if="receivedFeeds.length === 0"
+            description="暂无收到的投喂"
+          />
         </div>
       </div>
     </van-pull-refresh>
 
-    <!-- 底部导航 -->
-    <van-tabbar route>
-      <van-tabbar-item to="/home" icon="home-o">首页</van-tabbar-item>
-      <van-tabbar-item to="/menu" icon="shop-o">餐厅</van-tabbar-item>
-      <van-tabbar-item to="/feed" icon="gift-o">投喂</van-tabbar-item>
-      <van-tabbar-item to="/settings" icon="setting-o">我的</van-tabbar-item>
-    </van-tabbar>
+    <app-tabbar />
 
     <!-- 发送投喂弹窗 -->
-    <van-popup v-model:show="showSendDialog" position="bottom" round>
+    <van-popup
+      v-model:show="showSendDialog"
+      position="bottom"
+      round
+    >
       <div class="send-dialog">
         <div class="dialog-header">
-          <span>投喂TA</span>
-          <van-icon name="cross" @click="showSendDialog = false" />
+          <span>投喂 TA</span>
+          <van-icon
+            name="cross"
+            @click="showSendDialog = false"
+          />
         </div>
         <div class="dialog-content">
           <div class="feed-type-select">
@@ -98,7 +171,11 @@
               :class="{ active: sendForm.feedType === type.value }"
               @click="sendForm.feedType = type.value"
             >
-              <van-icon :name="type.icon" size="32" :color="type.color" />
+              <van-icon
+                :name="type.icon"
+                size="26"
+                :color="type.color"
+              />
               <span>{{ type.label }}</span>
             </div>
           </div>
@@ -109,10 +186,21 @@
             rows="3"
             autosize
           />
-          <van-uploader v-model="sendImages" :max-count="3" multiple />
+          <van-uploader
+            v-model="sendImages"
+            :max-count="3"
+            multiple
+          />
         </div>
         <div class="dialog-footer">
-          <van-button type="primary" block round @click="handleSend">发送</van-button>
+          <van-button
+            type="primary"
+            block
+            round
+            @click="handleSend"
+          >
+            发送
+          </van-button>
         </div>
       </div>
     </van-popup>
@@ -123,6 +211,7 @@
 import { ref, onMounted } from 'vue'
 import { showToast, showLoadingToast, closeToast } from 'vant'
 import { feedApi } from '@/api'
+import AppTabbar from '@/components/AppTabbar.vue'
 
 const todayStatus = ref({ sentToday: false, receivedToday: false })
 const receivedFeeds = ref([])
@@ -137,10 +226,10 @@ const sendForm = ref({
 
 const sendImages = ref([])
 const feedTypes = [
-  { value: 'meal', label: '正餐', icon: 'cart-o', color: '#ff6b9d' },
-  { value: 'dessert', label: '甜点', icon: 'cake-o', color: '#ffd93d' },
-  { value: 'snack', label: '零食', icon: 'bag-o', color: '#56ab2f' },
-  { value: 'drink', label: '饮品', icon: 'coupon-o', color: '#4a90e2' }
+  { value: 'meal', label: '正餐', icon: 'cart-o', color: '#894c5c' },
+  { value: 'dessert', label: '甜点', icon: 'cake-o', color: '#c98a00' },
+  { value: 'snack', label: '零食', icon: 'bag-o', color: '#5f7a4f' },
+  { value: 'drink', label: '饮品', icon: 'coupon-o', color: '#4a6fa5' }
 ]
 
 const getFeedIcon = (type) => {
@@ -149,8 +238,8 @@ const getFeedIcon = (type) => {
 }
 
 const getFeedColor = (type) => {
-  const map = { meal: '#ff6b9d', dessert: '#ffd93d', snack: '#56ab2f', drink: '#4a90e2' }
-  return map[type] || '#999'
+  const map = { meal: '#894c5c', dessert: '#c98a00', snack: '#5f7a4f', drink: '#4a6fa5' }
+  return map[type] || '#894c5c'
 }
 
 const getStatusTagType = (status) => {
@@ -237,220 +326,187 @@ onMounted(() => {
 <style lang="scss" scoped>
 .feed-page {
   min-height: 100vh;
-  background: #f5f5f5;
-  padding-bottom: 70px;
+  background: $color-background;
+  padding-bottom: 96px;
+}
+
+.feed-topbar {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include glass(0.7);
+
+  .page-title { font-size: $fs-title; font-weight: $fw-semibold; color: $color-on-surface; }
+}
+
+.feed-body {
+  padding: $space-4 $page-padding 0;
 }
 
 .today-status {
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  margin: 12px 16px;
-  padding: 20px;
+  @include card($radius-lg, $space-5);
+  margin-bottom: $space-4;
 
   .status-item {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    color: #999;
+    gap: $space-2;
+    color: $color-on-surface-variant;
+
+    .ic {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: $color-surface-low;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tx { font-size: $fs-label; }
 
     &.active {
-      color: #ff4757;
-    }
-
-    span {
-      font-size: 14px;
+      color: $color-primary;
+      .ic { background: $color-primary-fixed; }
     }
   }
 
-  .status-divider {
-    width: 1px;
-    height: 40px;
-    background: #eee;
-  }
+  .status-divider { width: 1px; height: 48px; background: $color-surface-variant; }
 }
 
 .send-section {
-  padding: 16px;
+  margin-bottom: $space-5;
 
-  .van-button {
-    background: linear-gradient(135deg, #ff6b9d 0%, #ff4757 100%);
-    border: none;
+  .send-btn {
+    width: 100%;
+    height: 48px;
+    @include btn-primary;
+    font-size: $fs-body;
+    box-shadow: $shadow-float;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    &:active { opacity: 0.9; }
   }
 }
 
 .received-section {
-  padding: 0 16px;
-
   .section-title {
-    font-size: 14px;
-    color: #999;
-    margin-bottom: 12px;
+    font-size: $fs-label;
+    font-weight: $fw-semibold;
+    color: $color-on-surface;
+    margin-bottom: $space-3;
+    padding: 0 $space-1;
   }
 
-  .feed-item {
-    margin-bottom: 12px;
-    padding: 16px;
+  .feed-card {
+    @include card($radius-lg, $space-4);
+    margin-bottom: $space-3;
 
-    .feed-header {
+    .head {
       display: flex;
       align-items: center;
-      margin-bottom: 12px;
+      gap: $space-3;
+      margin-bottom: $space-3;
 
-      .feed-info {
+      .type-ic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .info {
         flex: 1;
-        margin-left: 12px;
-
-        .feed-sender {
-          font-size: 14px;
-          font-weight: 500;
-        }
-
-        .feed-time {
-          font-size: 12px;
-          color: #999;
-        }
+        .sender { font-size: $fs-label; font-weight: $fw-medium; color: $color-on-surface; }
+        .time { font-size: $fs-caption; color: $color-on-surface-variant; }
       }
     }
 
-    .feed-content {
-      font-size: 14px;
-      color: #333;
-      margin-bottom: 12px;
-    }
+    .content { font-size: $fs-label; color: $color-on-surface; margin-bottom: $space-3; line-height: 1.5; }
 
-    .feed-images {
+    .images {
       display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: $space-2;
+      margin-bottom: $space-3;
 
-      img {
-        width: 80px;
-        height: 80px;
-        border-radius: 8px;
-        object-fit: cover;
-      }
+      img { width: 80px; height: 80px; border-radius: $radius-md; object-fit: cover; }
     }
 
-    .feed-actions {
-      display: flex;
-      gap: 12px;
-    }
+    .actions { display: flex; gap: $space-3; }
   }
 }
 
 .send-dialog {
-  padding: 16px;
+  padding: $space-5;
 
   .dialog-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: $space-5;
 
-    span {
-      font-size: 16px;
-      font-weight: 600;
-    }
+    span { font-size: $fs-title; font-weight: $fw-semibold; color: $color-on-surface; }
+    .van-icon { color: $color-on-surface-variant; }
   }
 
   .feed-type-select {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: $space-3;
+    margin-bottom: $space-4;
 
     .type-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      padding: 12px;
-      background: #f5f5f5;
-      border-radius: 12px;
+      gap: $space-2;
+      padding: $space-3 0;
+      background: $color-surface-low;
+      border-radius: $radius-md;
+      transition: background $transition-base;
 
-      &.active {
-        background: #fff0f3;
-        color: #ff4757;
-      }
+      &.active { background: $color-primary-fixed; color: $color-primary; }
 
-      span {
-        font-size: 12px;
-        color: #666;
-      }
+      span { font-size: $fs-caption; color: $color-on-surface-variant; }
     }
   }
 
-  .dialog-footer {
-    margin-top: 16px;
-
-    .van-button {
-      background: linear-gradient(135deg, #ff6b9d 0%, #ff4757 100%);
-      border: none;
-    }
-  }
+  .dialog-footer { margin-top: $space-4; }
 }
 
-// 骨架屏样式
-.skeleton-item {
+// 骨架屏
+.skeleton {
   pointer-events: none;
 
-  .feed-header {
-    display: flex;
-    align-items: center;
-
-    .skeleton-avatar {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: skeleton-loading 1.5s infinite;
-      border-radius: 50%;
-      margin-right: 12px;
-    }
-
-    .feed-info {
-      flex: 1;
-
-      .skeleton-sender {
-        width: 60%;
-        height: 14px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: skeleton-loading 1.5s infinite;
-        border-radius: 4px;
-        margin-bottom: 6px;
-      }
-
-      .skeleton-time {
-        width: 40%;
-        height: 12px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: skeleton-loading 1.5s infinite;
-        border-radius: 4px;
-      }
-    }
-  }
-
-  .skeleton-content {
-    width: 100%;
-    height: 60px;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  .sk {
+    background: linear-gradient(90deg, $color-surface-high 25%, $color-surface-low 50%, $color-surface-high 75%);
     background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite;
-    border-radius: 8px;
-    margin-top: 12px;
+    animation: sk-loading 1.5s infinite;
   }
+
+  .head { display: flex; align-items: center; gap: $space-3; }
+  .sk-avatar { width: 40px; height: 40px; border-radius: 50%; }
+  .info { flex: 1; }
+  .sk-line { border-radius: 4px; }
+  .sk-sender { width: 50%; height: 14px; margin-bottom: 6px; }
+  .sk-time { width: 30%; height: 12px; }
+  .sk-content { width: 100%; height: 56px; border-radius: $radius-md; margin-top: $space-3; }
 }
 
-@keyframes skeleton-loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+@keyframes sk-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 </style>
