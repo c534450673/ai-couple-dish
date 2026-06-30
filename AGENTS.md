@@ -1,3 +1,7 @@
+# 全局约定 / Global Conventions
+
+- **语言**：始终使用中文回答用户的所有问题（代码、命令、标识符等技术内容保持原文）。
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
