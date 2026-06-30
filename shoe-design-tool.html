@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配色配料 - 鞋类设计工具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7c5cff;
+            --primary-light: #f0ecff;
+            --primary-gradient: linear-gradient(135deg, #a855f7 0%, #7c5cff 50%, #6366f1 100%);
+            --bg-main: #f5f6fa;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            height: 48px;
+            background: linear-gradient(135deg, #e0e4f0 0%, #d4d8e8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 16px;
+            gap: 12px;
+            -webkit-app-region: drag;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-btn {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .window-btn.minimize { background: #f5c542; }
+        .window-btn.maximize { background: #6ee7b7; }
+        .window-btn.close { background: #f87171; }
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            height: calc(100vh - 48px);
+        }
+
+        /* Left Sidebar */
+        .sidebar-left {
+            width: 64px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 0;
+            gap: 8px;
+        }
+
+        .nav-item {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(124, 92, 255, 0.3);
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* History Panel */
+        .history-panel {
+            width: 320px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .history-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .history-menu-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .history-menu-btn:hover {
+            background: var(--bg-main);
+        }
+
+        .search-box {
+            margin: 0 16px 16px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.1);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .history-section-title {
+            padding: 8px 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 12px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .history-item:hover {
+            background: var(--bg-main);
+        }
+
+        .history-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .history-thumb svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .history-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .history-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .history-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .history-tag.purple {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .history-tag.blue {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .history-tag.green {
+            background: #d1fae5;
+            color: #10b981;
+        }
+
+        .history-tag.orange {
+            background: #ffedd5;
+            color: #f97316;
+        }
+
+        .history-tag.pink {
+            background: #fce7f3;
+            color: #ec4899;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-tab {
+            padding: 8px 20px;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+        }
+
+        .nav-tab:hover {
+            background: var(--bg-main);
+            color: var(--text-primary);
+        }
+
+        .nav-tab.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        .close-btn:hover {
+            background: var(--bg-main);
+            color: var(--text-primary);
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Left Form Panel */
+        .form-panel {
+            width: 420px;
+            padding: 24px;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+        }
+
+        /* Sub Tabs */
+        .sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .sub-tab {
+            padding: 6px 16px;
+            border-radius: var(--radius-lg);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+        }
+
+        .sub-tab:hover {
+            background: var(--bg-main);
+        }
+
+        .sub-tab.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 28px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .section-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+        }
+
+        .section-action:hover {
+            background: var(--bg-main);
+            color: var(--primary);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-main);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            color: var(--text-muted);
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Radio Options */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-card);
+        }
+
+        .radio-option:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .radio-circle {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .radio-option:hover .radio-circle {
+            border-color: var(--primary);
+        }
+
+        .radio-option.selected .radio-circle {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .radio-option.selected .radio-circle::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .radio-label {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        /* Color Parameter */
+        .param-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+            background: var(--bg-card);
+        }
+
+        .param-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .param-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .param-info {
+            flex: 1;
+        }
+
+        .param-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .param-color {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-preview {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-preview:hover {
+            transform: scale(1.1);
+        }
+
+        .color-value {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-family: 'Courier New', monospace;
+        }
+
+        .color-dropdown {
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-lg);
+            border: none;
+            background: var(--primary-gradient);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+            margin-top: 8px;
+            box-shadow: 0 4px 16px rgba(124, 92, 255, 0.3);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(124, 92, 255, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Right Preview Panel */
+        .preview-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #f0f0f7 0%, #e8e8f2 50%, #f5f0f8 100%);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .preview-toolbar {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toolbar-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toolbar-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .toolbar-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .preview-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .shoe-illustration {
+            width: 280px;
+            height: 160px;
+        }
+
+        .shoe-illustration svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .preview-title {
+            font-size: 32px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="window-controls">
+            <button class="window-btn minimize"></button>
+            <button class="window-btn maximize"></button>
+            <button class="window-btn close"></button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Left Icon Sidebar -->
+        <nav class="sidebar-left">
+            <div class="nav-item" title="AI创作">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <div class="nav-item" title="灵感">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
+                    <path d="M9 21h6"/>
+                </svg>
+            </div>
+            <div class="nav-item" title="历史">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+            </div>
+            <div class="nav-item active" title="工具">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21"/>
+                    <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+            </div>
+            <div class="nav-item" title="设置">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+            </div>
+        </nav>
+
+        <!-- History Panel -->
+        <aside class="history-panel">
+            <div class="history-header">
+                <h2 class="history-title">历史记录</h2>
+                <button class="history-menu-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="search-box">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" placeholder="请输入关键词">
+            </div>
+
+            <div class="history-section-title">今天</div>
+
+            <div class="history-list">
+                <div class="history-item">
+                    <div class="history-thumb">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        </svg>
+                    </div>
+                    <div class="history-info">
+                        <div class="history-name">2026 抖音运动鞋趋势分析报告</div>
+                        <div class="history-meta">
+                            <span>2025-11-19</span>
+                            <span class="history-tag purple">无参考图</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-item">
+                    <div class="history-thumb" style="background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                    </div>
+                    <div class="history-info">
+                        <div class="history-name">2026 抖音运动鞋趋势分析报告</div>
+                        <div class="history-meta">
+                            <span>2025-11-19</span>
+                            <span class="history-tag purple">配色配料</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-item">
+                    <div class="history-thumb" style="background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div class="history-info">
+                        <div class="history-name">2026 抖音运动鞋趋势分析报告</div>
+                        <div class="history-meta">
+                            <span>2025-11-19</span>
+                            <span class="history-tag blue">单款延伸</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-item">
+                    <div class="history-thumb" style="background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    <div class="history-info">
+                        <div class="history-name">2026 抖音运动鞋趋势分析报告</div>
+                        <div class="history-meta">
+                            <span>2025-11-19</span>
+                            <span class="history-tag green">款式融合</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-item">
+                    <div class="history-thumb" style="background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                    </div>
+                    <div class="history-info">
+                        <div class="history-name">2026 抖音运动鞋趋势分析报告</div>
+                        <div class="history-meta">
+                            <span>2025-11-19</span>
+                            <span class="history-tag orange">选取换料</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-item">
+                    <div class="history-thumb" style="background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <polyline points="10 9 9 9 8 9"/>
+                        </svg>
+                    </div>
+                    <div class="history-info">
+                        <div class="history-name">2026 抖音运动鞋趋势分析报告</div>
+                        <div class="history-meta">
+                            <span>2025-11-19</span>
+                            <span class="history-tag pink">文字创款</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-item">
+                    <div class="history-thumb" style="background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="3" y1="9" x2="21" y2="9"/>
+                            <line x1="9" y1="21" x2="9" y2="9"/>
+                        </svg>
+                    </div>
+                    <div class="history-info">
+                        <div class="history-name">2026 抖音运动鞋趋势分析报告</div>
+                        <div class="history-meta">
+                            <span>2025-11-19</span>
+                            <span class="history-tag purple">线框图</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="nav-tabs">
+                    <button class="nav-tab">新款创作</button>
+                    <button class="nav-tab active">配色配料</button>
+                    <button class="nav-tab">单款延伸</button>
+                    <button class="nav-tab">款式融合</button>
+                    <button class="nav-tab">改色改料</button>
+                </div>
+                <button class="close-btn">&times;</button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Form Panel -->
+                <div class="form-panel">
+                    <!-- Sub Tabs -->
+                    <div class="sub-tabs">
+                        <button class="sub-tab active">实物配色</button>
+                        <button class="sub-tab">线稿配色</button>
+                        <button class="sub-tab">随机配色</button>
+                    </div>
+
+                    <!-- Section 1: Upload -->
+                    <div class="section">
+                        <div class="section-header">
+                            <span class="section-title">1. 上传实拍图</span>
+                            <div class="section-action">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                                    <line x1="15" y1="9" x2="9" y2="15"/>
+                                </svg>
+                                背景移除
+                            </div>
+                        </div>
+                        <div class="upload-area">
+                            <div class="upload-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </div>
+                            <div class="upload-text">上传图片</div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Mode -->
+                    <div class="section">
+                        <div class="section-header">
+                            <span class="section-title">2. 选择模式</span>
+                        </div>
+                        <div class="radio-group">
+                            <div class="radio-option selected">
+                                <div class="radio-circle"></div>
+                                <span class="radio-label">色卡配色（指定鞋底）</span>
+                            </div>
+                            <div class="radio-option">
+                                <div class="radio-circle"></div>
+                                <span class="radio-label">色卡配色（随机/组合）</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Parameters -->
+                    <div class="section">
+                        <div class="section-header">
+                            <span class="section-title">3. 选择参数</span>
+                        </div>
+                        <div class="param-item">
+                            <div class="param-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                            </div>
+                            <div class="param-info">
+                                <div class="param-name">鞋面配色</div>
+                            </div>
+                            <div class="param-color">
+                                <div class="color-preview" style="background: #000000;"></div>
+                                <span class="color-value">#000000</span>
+                                <svg class="color-dropdown" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="param-item">
+                            <div class="param-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                            </div>
+                            <div class="param-info">
+                                <div class="param-name">鞋底配色</div>
+                            </div>
+                            <div class="param-color">
+                                <div class="color-preview" style="background: #000000;"></div>
+                                <span class="color-value">#000000</span>
+                                <svg class="color-dropdown" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="generate-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                        生成新款
+                    </button>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="preview-panel">
+                    <div class="preview-toolbar">
+                        <button class="toolbar-btn" title="裁剪">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"/>
+                                <path d="M1 6.13L16 6a2 2 0 0 1 2 2v15"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" title="移动">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="5 9 2 12 5 15"/>
+                                <polyline points="9 5 12 2 15 5"/>
+                                <polyline points="15 19 12 22 9 19"/>
+                                <polyline points="19 9 22 12 19 15"/>
+                                <line x1="2" y1="12" x2="22" y2="12"/>
+                                <line x1="12" y1="2" x2="12" y2="22"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" title="放大">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                <line x1="11" y1="8" x2="11" y2="14"/>
+                                <line x1="8" y1="11" x2="14" y2="11"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" title="缩小">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                <line x1="8" y1="11" x2="14" y2="11"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" title="全屏">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="preview-content">
+                        <div class="shoe-illustration">
+                            <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="shoeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#a855f7"/>
+                                        <stop offset="50%" style="stop-color:#7c5cff"/>
+                                        <stop offset="100%" style="stop-color:#6366f1"/>
+                                    </linearGradient>
+                                </defs>
+                                <!-- Shoe outline -->
+                                <path d="M20 80 Q20 60 40 55 L60 50 Q70 48 80 45 L100 35 Q110 30 120 32 L140 38 Q150 40 160 45 L175 55 Q185 60 185 75 Q185 85 175 88 L160 90 Q140 92 120 92 L80 92 Q60 92 40 90 Q20 88 20 80Z"
+                                      stroke="url(#shoeGrad)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                <!-- Sole -->
+                                <path d="M20 80 Q20 88 40 90 L80 92 L120 92 Q140 92 160 90 L175 88 Q185 85 185 75"
+                                      stroke="url(#shoeGrad)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+                                <!-- Laces area -->
+                                <path d="M80 45 Q85 42 90 45 M95 43 Q100 40 105 43 M110 41 Q115 38 120 41"
+                                      stroke="url(#shoeGrad)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+                                <!-- Details -->
+                                <circle cx="55" cy="65" r="3" stroke="url(#shoeGrad)" stroke-width="1.5" fill="none" opacity="0.5"/>
+                                <circle cx="65" cy="63" r="2.5" stroke="url(#shoeGrad)" stroke-width="1.5" fill="none" opacity="0.5"/>
+                                <circle cx="75" cy="61" r="2" stroke="url(#shoeGrad)" stroke-width="1.5" fill="none" opacity="0.5"/>
+                            </svg>
+                        </div>
+                        <h2 class="preview-title">配色配料</h2>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Radio option selection
+        document.querySelectorAll('.radio-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // Tab switching
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Sub tab switching
+        document.querySelectorAll('.sub-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Nav item switching
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Color preview click
+        document.querySelectorAll('.color-preview').forEach(preview => {
+            preview.addEventListener('click', function() {
+                const colors = ['#000000', '#ffffff', '#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7', '#ec4899'];
+                const currentColor = this.style.background;
+                let currentIndex = colors.findIndex(c => this.style.background.includes(c) || getComputedStyle(this).backgroundColor.includes(c));
+                if (currentIndex === -1) currentIndex = 0;
+                const nextColor = colors[(currentIndex + 1) % colors.length];
+                this.style.background = nextColor;
+                this.nextElementSibling.textContent = nextColor;
+            });
+        });
+    </script>
+</body>
+</html>
