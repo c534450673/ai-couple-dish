@@ -20,6 +20,14 @@ export default defineConfig({
       '@': resolve(__dirname, 'src')
     }
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // 将设计令牌（变量 + mixin）注入到所有 scss / <style lang="scss"> 中
+        additionalData: '@use "@/assets/styles/tokens.scss" as *;'
+      }
+    }
+  },
   server: {
     port: 3000,
     host: '0.0.0.0',

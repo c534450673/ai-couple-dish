@@ -26,7 +26,7 @@ onMounted(() => {
 #app {
   width: 100%;
   min-height: 100vh;
-  background: #f5f5f5;
+  background: $color-background;
 }
 
 .fade-enter-active,
