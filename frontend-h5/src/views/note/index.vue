@@ -1,3 +1,39 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+import { showToast, showLoadingToast, closeToast } from 'vant'
+import { noteApi } from '@/api'
+import AppTabbar from '@/components/AppTabbar.vue'
+
+const activeTab = ref('all')
+const noteList = ref([])
+
+const getNoteTypeText = (type) => {
+  const map = { 0: '美食记录', 1: '心情随笔', 2: '约会日记' }
+  return map[type] || '美食记录'
+}
+
+const loadNoteList = async () => {
+  showLoadingToast({ message: '加载中...', forbidClick: true })
+  try {
+    const params = activeTab.value !== 'all' ? { noteType: activeTab.value } : {}
+    const res = await noteApi.getNoteList(params)
+    noteList.value = res.data?.list || []
+  } catch (error) {
+    showToast('加载失败')
+  } finally {
+    closeToast()
+  }
+}
+
+const onTabChange = () => {
+  loadNoteList()
+}
+
+onMounted(() => {
+  loadNoteList()
+})
+</script>
+
 <template>
   <div class="note-page">
     <header class="page-topbar">
@@ -22,10 +58,22 @@
       offset-top="52"
       @change="onTabChange"
     >
-      <van-tab title="全部" name="all" />
-      <van-tab title="美食记录" name="0" />
-      <van-tab title="心情随笔" name="1" />
-      <van-tab title="约会日记" name="2" />
+      <van-tab
+        title="全部"
+        name="all"
+      />
+      <van-tab
+        title="美食记录"
+        name="0"
+      />
+      <van-tab
+        title="心情随笔"
+        name="1"
+      />
+      <van-tab
+        title="约会日记"
+        name="2"
+      />
     </van-tabs>
 
     <div class="note-body">
@@ -100,42 +148,6 @@
     <app-tabbar />
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from 'vue'
-import { showToast, showLoadingToast, closeToast } from 'vant'
-import { noteApi } from '@/api'
-import AppTabbar from '@/components/AppTabbar.vue'
-
-const activeTab = ref('all')
-const noteList = ref([])
-
-const getNoteTypeText = (type) => {
-  const map = { 0: '美食记录', 1: '心情随笔', 2: '约会日记' }
-  return map[type] || '美食记录'
-}
-
-const loadNoteList = async () => {
-  showLoadingToast({ message: '加载中...', forbidClick: true })
-  try {
-    const params = activeTab.value !== 'all' ? { noteType: activeTab.value } : {}
-    const res = await noteApi.getNoteList(params)
-    noteList.value = res.data?.list || []
-  } catch (error) {
-    showToast('加载失败')
-  } finally {
-    closeToast()
-  }
-}
-
-const onTabChange = () => {
-  loadNoteList()
-}
-
-onMounted(() => {
-  loadNoteList()
-})
-</script>
 
 <style lang="scss" scoped>
 .note-page {

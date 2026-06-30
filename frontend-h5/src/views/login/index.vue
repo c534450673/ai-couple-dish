@@ -101,7 +101,10 @@ const showPrivacy = () => {
     <!-- 顶部 Logo -->
     <div class="login-hero">
       <div class="logo">
-        <van-icon name="like" size="40" />
+        <van-icon
+          name="like"
+          size="40"
+        />
       </div>
       <h1 class="title">
         情侣私密菜单

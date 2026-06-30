@@ -1,139 +1,3 @@
-<template>
-  <div class="map-page">
-    <!-- 地图容器 -->
-    <div class="map-container" ref="mapContainer">
-      <div id="map" class="map-view"></div>
-    </div>
-
-    <!-- 顶部搜索栏 -->
-    <div class="map-header">
-      <div class="search-bar">
-        <van-icon name="search" class="search-icon" />
-        <input
-          type="text"
-          v-model="searchKeyword"
-          placeholder="搜索餐厅"
-          class="search-input"
-          @keyup.enter="handleSearch"
-        />
-        <van-icon
-          v-if="searchKeyword"
-          name="clear"
-          class="clear-icon"
-          @click="searchKeyword = ''"
-        />
-      </div>
-    </div>
-
-    <!-- 定位按钮 -->
-    <div class="location-btn" @click="handleLocation">
-      <van-icon :name="isLocating ? 'loading' : 'location-o'" :class="{ locating: isLocating }" />
-    </div>
-
-    <!-- 缩放控制 -->
-    <div class="zoom-controls">
-      <div class="zoom-btn" @click="handleZoomIn">
-        <van-icon name="plus" />
-      </div>
-      <div class="zoom-btn" @click="handleZoomOut">
-        <van-icon name="minus" />
-      </div>
-    </div>
-
-    <!-- 状态筛选 -->
-    <div class="filter-tabs">
-      <div
-        v-for="tab in statusTabs"
-        :key="tab.value"
-        class="filter-tab"
-        :class="{ active: statusFilter === tab.value }"
-        @click="handleStatusFilter(tab.value)"
-      >
-        {{ tab.label }}
-      </div>
-    </div>
-
-    <!-- 餐厅列表面板 -->
-    <div class="restaurant-panel" :class="{ expanded: isPanelExpanded }">
-      <div class="panel-handle" @click="isPanelExpanded = !isPanelExpanded">
-        <div class="handle-bar"></div>
-      </div>
-
-      <div class="panel-header">
-        <span class="panel-title">附近的餐厅</span>
-        <span class="restaurant-count" v-if="nearbyRestaurants.length">{{ nearbyRestaurants.length }} 家</span>
-      </div>
-
-      <div class="restaurant-list" v-if="!isLoading && nearbyRestaurants.length">
-        <div
-          v-for="restaurant in nearbyRestaurants"
-          :key="restaurant.id"
-          class="restaurant-item"
-          :class="{ selected: selectedId === restaurant.id }"
-          @click="handleRestaurantClick(restaurant)"
-        >
-          <div class="restaurant-cover">
-            <img v-if="restaurant.coverImage" :src="restaurant.coverImage" :alt="restaurant.restaurantName" />
-            <van-icon v-else name="shop-o" size="24" color="#d6c1c5" />
-          </div>
-          <div class="restaurant-info">
-            <div class="restaurant-name">{{ restaurant.restaurantName }}</div>
-            <div class="restaurant-meta">
-              <van-tag type="primary" size="small" round>{{ restaurant.statusName }}</van-tag>
-              <span class="distance" v-if="restaurant.distance">{{ formatDistance(restaurant.distance) }}</span>
-            </div>
-            <div class="restaurant-dish" v-if="restaurant.dishName">{{ restaurant.dishName }}</div>
-          </div>
-          <van-icon name="arrow" class="arrow-icon" />
-        </div>
-      </div>
-
-      <div class="empty-state" v-else-if="!isLoading">
-        <van-empty description="附近暂无餐厅" />
-      </div>
-
-      <van-loading v-if="isLoading" class="loading-state" />
-    </div>
-
-    <!-- 餐厅详情弹窗 -->
-    <van-popup v-model:show="showDetail" position="bottom" round :style="{ height: '40%' }">
-      <div class="detail-popup" v-if="selectedRestaurant">
-        <div class="detail-header">
-          <img
-            v-if="selectedRestaurant.coverImage"
-            :src="selectedRestaurant.coverImage"
-            class="detail-cover"
-          />
-          <div class="detail-info">
-            <div class="detail-name">{{ selectedRestaurant.restaurantName }}</div>
-            <div class="detail-location" v-if="selectedRestaurant.location">
-              <van-icon name="location-o" size="14" />
-              {{ selectedRestaurant.location }}
-            </div>
-            <div class="detail-tags">
-              <van-tag type="primary">{{ selectedRestaurant.statusName }}</van-tag>
-              <van-tag v-if="selectedRestaurant.rating" type="warning">
-                {{ '★'.repeat(selectedRestaurant.rating) }}
-              </van-tag>
-              <span class="detail-price" v-if="selectedRestaurant.price">
-                ¥{{ selectedRestaurant.price }}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="detail-actions">
-          <van-button type="primary" size="small" round @click="handleNavigate(selectedRestaurant)">
-            导航
-          </van-button>
-          <van-button size="small" round @click="handleViewDetail(selectedRestaurant)">
-            查看详情
-          </van-button>
-        </div>
-      </div>
-    </van-popup>
-  </div>
-</template>
-
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -350,6 +214,242 @@ onUnmounted(() => {
   mapStore.reset()
 })
 </script>
+
+<template>
+  <div class="map-page">
+    <!-- 地图容器 -->
+    <div
+      ref="mapContainer"
+      class="map-container"
+    >
+      <div
+        id="map"
+        class="map-view"
+      />
+    </div>
+
+    <!-- 顶部搜索栏 -->
+    <div class="map-header">
+      <div class="search-bar">
+        <van-icon
+          name="search"
+          class="search-icon"
+        />
+        <input
+          v-model="searchKeyword"
+          type="text"
+          placeholder="搜索餐厅"
+          class="search-input"
+          @keyup.enter="handleSearch"
+        >
+        <van-icon
+          v-if="searchKeyword"
+          name="clear"
+          class="clear-icon"
+          @click="searchKeyword = ''"
+        />
+      </div>
+    </div>
+
+    <!-- 定位按钮 -->
+    <div
+      class="location-btn"
+      @click="handleLocation"
+    >
+      <van-icon
+        :name="isLocating ? 'loading' : 'location-o'"
+        :class="{ locating: isLocating }"
+      />
+    </div>
+
+    <!-- 缩放控制 -->
+    <div class="zoom-controls">
+      <div
+        class="zoom-btn"
+        @click="handleZoomIn"
+      >
+        <van-icon name="plus" />
+      </div>
+      <div
+        class="zoom-btn"
+        @click="handleZoomOut"
+      >
+        <van-icon name="minus" />
+      </div>
+    </div>
+
+    <!-- 状态筛选 -->
+    <div class="filter-tabs">
+      <div
+        v-for="tab in statusTabs"
+        :key="tab.value"
+        class="filter-tab"
+        :class="{ active: statusFilter === tab.value }"
+        @click="handleStatusFilter(tab.value)"
+      >
+        {{ tab.label }}
+      </div>
+    </div>
+
+    <!-- 餐厅列表面板 -->
+    <div
+      class="restaurant-panel"
+      :class="{ expanded: isPanelExpanded }"
+    >
+      <div
+        class="panel-handle"
+        @click="isPanelExpanded = !isPanelExpanded"
+      >
+        <div class="handle-bar" />
+      </div>
+
+      <div class="panel-header">
+        <span class="panel-title">附近的餐厅</span>
+        <span
+          v-if="nearbyRestaurants.length"
+          class="restaurant-count"
+        >{{ nearbyRestaurants.length }} 家</span>
+      </div>
+
+      <div
+        v-if="!isLoading && nearbyRestaurants.length"
+        class="restaurant-list"
+      >
+        <div
+          v-for="restaurant in nearbyRestaurants"
+          :key="restaurant.id"
+          class="restaurant-item"
+          :class="{ selected: selectedId === restaurant.id }"
+          @click="handleRestaurantClick(restaurant)"
+        >
+          <div class="restaurant-cover">
+            <img
+              v-if="restaurant.coverImage"
+              :src="restaurant.coverImage"
+              :alt="restaurant.restaurantName"
+            >
+            <van-icon
+              v-else
+              name="shop-o"
+              size="24"
+              color="#d6c1c5"
+            />
+          </div>
+          <div class="restaurant-info">
+            <div class="restaurant-name">
+              {{ restaurant.restaurantName }}
+            </div>
+            <div class="restaurant-meta">
+              <van-tag
+                type="primary"
+                size="small"
+                round
+              >
+                {{ restaurant.statusName }}
+              </van-tag>
+              <span
+                v-if="restaurant.distance"
+                class="distance"
+              >{{ formatDistance(restaurant.distance) }}</span>
+            </div>
+            <div
+              v-if="restaurant.dishName"
+              class="restaurant-dish"
+            >
+              {{ restaurant.dishName }}
+            </div>
+          </div>
+          <van-icon
+            name="arrow"
+            class="arrow-icon"
+          />
+        </div>
+      </div>
+
+      <div
+        v-else-if="!isLoading"
+        class="empty-state"
+      >
+        <van-empty description="附近暂无餐厅" />
+      </div>
+
+      <van-loading
+        v-if="isLoading"
+        class="loading-state"
+      />
+    </div>
+
+    <!-- 餐厅详情弹窗 -->
+    <van-popup
+      v-model:show="showDetail"
+      position="bottom"
+      round
+      :style="{ height: '40%' }"
+    >
+      <div
+        v-if="selectedRestaurant"
+        class="detail-popup"
+      >
+        <div class="detail-header">
+          <img
+            v-if="selectedRestaurant.coverImage"
+            :src="selectedRestaurant.coverImage"
+            class="detail-cover"
+          >
+          <div class="detail-info">
+            <div class="detail-name">
+              {{ selectedRestaurant.restaurantName }}
+            </div>
+            <div
+              v-if="selectedRestaurant.location"
+              class="detail-location"
+            >
+              <van-icon
+                name="location-o"
+                size="14"
+              />
+              {{ selectedRestaurant.location }}
+            </div>
+            <div class="detail-tags">
+              <van-tag type="primary">
+                {{ selectedRestaurant.statusName }}
+              </van-tag>
+              <van-tag
+                v-if="selectedRestaurant.rating"
+                type="warning"
+              >
+                {{ '★'.repeat(selectedRestaurant.rating) }}
+              </van-tag>
+              <span
+                v-if="selectedRestaurant.price"
+                class="detail-price"
+              >
+                ¥{{ selectedRestaurant.price }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <van-button
+            type="primary"
+            size="small"
+            round
+            @click="handleNavigate(selectedRestaurant)"
+          >
+            导航
+          </van-button>
+          <van-button
+            size="small"
+            round
+            @click="handleViewDetail(selectedRestaurant)"
+          >
+            查看详情
+          </van-button>
+        </div>
+      </div>
+    </van-popup>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .map-page {

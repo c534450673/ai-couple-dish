@@ -1,9 +1,68 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { showToast, showLoadingToast, closeToast } from 'vant'
+import { useUserStore } from '@/stores/user'
+import { coupleApi } from '@/api'
+
+const router = useRouter()
+const userStore = useUserStore()
+
+const myCoupleCode = ref('')
+const partnerCode = ref('')
+const generating = ref(false)
+const binding = ref(false)
+
+const generateCode = async () => {
+  generating.value = true
+  try {
+    const res = await coupleApi.generateCoupleCode()
+    // 接口直接返回情侣码字符串（兼容对象返回）
+    myCoupleCode.value = typeof res.data === 'string' ? res.data : (res.data?.coupleCode || '')
+    showToast('情侣码已生成')
+  } catch (error) {
+    showToast('生成失败')
+  } finally {
+    generating.value = false
+  }
+}
+
+const handleBind = async () => {
+  if (!partnerCode.value || partnerCode.value.length < 6) {
+    showToast('请输入正确的情侣码')
+    return
+  }
+
+  binding.value = true
+  showLoadingToast({ message: '绑定中...', forbidClick: true })
+  try {
+    await coupleApi.bindCouple({ coupleCode: partnerCode.value })
+    await userStore.getCoupleInfo()
+    closeToast()
+    showToast('绑定成功')
+    router.replace('/home')
+  } catch (error) {
+    closeToast()
+    showToast(error.message || '绑定失败')
+  } finally {
+    binding.value = false
+  }
+}
+
+onMounted(() => {
+  generateCode()
+})
+</script>
+
 <template>
   <div class="bind-page">
     <!-- 渐变头部 -->
     <div class="bind-hero">
       <div class="hero-icon">
-        <van-icon name="like" size="32" />
+        <van-icon
+          name="like"
+          size="32"
+        />
       </div>
       <h1>绑定 TA</h1>
       <p>和亲爱的 TA 开始私密美食之旅</p>
@@ -76,62 +135,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { showToast, showLoadingToast, closeToast } from 'vant'
-import { useUserStore } from '@/stores/user'
-import { coupleApi } from '@/api'
-
-const router = useRouter()
-const userStore = useUserStore()
-
-const myCoupleCode = ref('')
-const partnerCode = ref('')
-const generating = ref(false)
-const binding = ref(false)
-
-const generateCode = async () => {
-  generating.value = true
-  try {
-    const res = await coupleApi.generateCoupleCode()
-    // 接口直接返回情侣码字符串（兼容对象返回）
-    myCoupleCode.value = typeof res.data === 'string' ? res.data : (res.data?.coupleCode || '')
-    showToast('情侣码已生成')
-  } catch (error) {
-    showToast('生成失败')
-  } finally {
-    generating.value = false
-  }
-}
-
-const handleBind = async () => {
-  if (!partnerCode.value || partnerCode.value.length < 6) {
-    showToast('请输入正确的情侣码')
-    return
-  }
-
-  binding.value = true
-  showLoadingToast({ message: '绑定中...', forbidClick: true })
-  try {
-    await coupleApi.bindCouple({ coupleCode: partnerCode.value })
-    await userStore.getCoupleInfo()
-    closeToast()
-    showToast('绑定成功')
-    router.replace('/home')
-  } catch (error) {
-    closeToast()
-    showToast(error.message || '绑定失败')
-  } finally {
-    binding.value = false
-  }
-}
-
-onMounted(() => {
-  generateCode()
-})
-</script>
 
 <style lang="scss" scoped>
 .bind-page {

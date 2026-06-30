@@ -9,16 +9,32 @@
     :border="false"
     safe-area-inset-bottom
   >
-    <van-tabbar-item replace to="/home" icon="home-o">
+    <van-tabbar-item
+      replace
+      to="/home"
+      icon="home-o"
+    >
       首页
     </van-tabbar-item>
-    <van-tabbar-item replace to="/menu" icon="shop-o">
+    <van-tabbar-item
+      replace
+      to="/menu"
+      icon="shop-o"
+    >
       餐厅
     </van-tabbar-item>
-    <van-tabbar-item replace to="/feed" icon="gift-o">
+    <van-tabbar-item
+      replace
+      to="/feed"
+      icon="gift-o"
+    >
       投喂
     </van-tabbar-item>
-    <van-tabbar-item replace to="/settings" icon="contact">
+    <van-tabbar-item
+      replace
+      to="/settings"
+      icon="contact"
+    >
       我的
     </van-tabbar-item>
   </van-tabbar>

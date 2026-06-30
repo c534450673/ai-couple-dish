@@ -1,3 +1,89 @@
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { showToast } from 'vant'
+import { anniversaryApi } from '@/api'
+import { useUserStore } from '@/stores/user'
+import AppTabbar from '@/components/AppTabbar.vue'
+
+const userStore = useUserStore()
+const anniversaryList = ref([])
+const upcomingList = ref([])
+const showAddDialog = ref(false)
+const refreshing = ref(false)
+const isSkeleton = ref(true)
+
+const addForm = ref({
+  name: '',
+  date: '',
+  type: '2'
+})
+
+let timerInterval = null
+const timer = ref({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+
+const loadAnniversaryList = async () => {
+  try {
+    const res = await anniversaryApi.getAnniversaryList()
+    anniversaryList.value = res.data || []
+    upcomingList.value = anniversaryList.value.filter(a => a.days > 0 && a.days <= 30)
+  } catch (error) {
+    showToast('加载失败')
+  } finally {
+    refreshing.value = false
+    isSkeleton.value = false
+  }
+}
+
+const onRefresh = () => {
+  isSkeleton.value = true
+  refreshing.value = true
+  loadAnniversaryList()
+}
+
+const startTimer = () => {
+  timerInterval = setInterval(() => {
+    const startDate = userStore.coupleInfo?.startDate
+    if (startDate) {
+      const now = new Date()
+      const start = new Date(startDate)
+      const diff = now - start
+
+      timer.value = {
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((diff % (1000 * 60)) / 1000)
+      }
+    }
+  }, 1000)
+}
+
+const handleAdd = async () => {
+  if (!addForm.value.name || !addForm.value.date) {
+    showToast('请填写完整')
+    return
+  }
+
+  try {
+    await anniversaryApi.addAnniversary(addForm.value)
+    showToast('添加成功')
+    showAddDialog.value = false
+    onRefresh()
+  } catch (error) {
+    showToast('添加失败')
+  }
+}
+
+onMounted(() => {
+  loadAnniversaryList()
+  startTimer()
+})
+
+onUnmounted(() => {
+  if (timerInterval) clearInterval(timerInterval)
+})
+</script>
+
 <template>
   <div class="anniversary-page">
     <header class="page-topbar">
@@ -45,7 +131,10 @@
           class="anniversary-card"
         >
           <span class="icon">
-            <van-icon name="underway-o" size="22" />
+            <van-icon
+              name="underway-o"
+              size="22"
+            />
           </span>
           <div class="info">
             <div class="name">
@@ -98,7 +187,10 @@
             class="anniversary-card"
           >
             <span class="icon soft">
-              <van-icon name="gem-o" size="20" />
+              <van-icon
+                name="gem-o"
+                size="20"
+              />
             </span>
             <div class="info">
               <div class="name">
@@ -190,92 +282,6 @@
     </van-popup>
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { showToast } from 'vant'
-import { anniversaryApi } from '@/api'
-import { useUserStore } from '@/stores/user'
-import AppTabbar from '@/components/AppTabbar.vue'
-
-const userStore = useUserStore()
-const anniversaryList = ref([])
-const upcomingList = ref([])
-const showAddDialog = ref(false)
-const refreshing = ref(false)
-const isSkeleton = ref(true)
-
-const addForm = ref({
-  name: '',
-  date: '',
-  type: '2'
-})
-
-let timerInterval = null
-const timer = ref({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-
-const loadAnniversaryList = async () => {
-  try {
-    const res = await anniversaryApi.getAnniversaryList()
-    anniversaryList.value = res.data || []
-    upcomingList.value = anniversaryList.value.filter(a => a.days > 0 && a.days <= 30)
-  } catch (error) {
-    showToast('加载失败')
-  } finally {
-    refreshing.value = false
-    isSkeleton.value = false
-  }
-}
-
-const onRefresh = () => {
-  isSkeleton.value = true
-  refreshing.value = true
-  loadAnniversaryList()
-}
-
-const startTimer = () => {
-  timerInterval = setInterval(() => {
-    const startDate = userStore.coupleInfo?.startDate
-    if (startDate) {
-      const now = new Date()
-      const start = new Date(startDate)
-      const diff = now - start
-
-      timer.value = {
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((diff % (1000 * 60)) / 1000)
-      }
-    }
-  }, 1000)
-}
-
-const handleAdd = async () => {
-  if (!addForm.value.name || !addForm.value.date) {
-    showToast('请填写完整')
-    return
-  }
-
-  try {
-    await anniversaryApi.addAnniversary(addForm.value)
-    showToast('添加成功')
-    showAddDialog.value = false
-    onRefresh()
-  } catch (error) {
-    showToast('添加失败')
-  }
-}
-
-onMounted(() => {
-  loadAnniversaryList()
-  startTimer()
-})
-
-onUnmounted(() => {
-  if (timerInterval) clearInterval(timerInterval)
-})
-</script>
 
 <style lang="scss" scoped>
 .anniversary-page {

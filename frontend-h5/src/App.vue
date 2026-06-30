@@ -1,15 +1,3 @@
-<template>
-  <div id="app">
-    <router-view v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <error-boundary>
-          <component :is="Component" />
-        </error-boundary>
-      </transition>
-    </router-view>
-  </div>
-</template>
-
 <script setup>
 import { onMounted } from 'vue'
 import { useUserStore } from './stores/user'
@@ -21,6 +9,21 @@ onMounted(() => {
   userStore.checkLoginStatus()
 })
 </script>
+
+<template>
+  <div id="app">
+    <router-view v-slot="{ Component }">
+      <transition
+        name="fade"
+        mode="out-in"
+      >
+        <error-boundary>
+          <component :is="Component" />
+        </error-boundary>
+      </transition>
+    </router-view>
+  </div>
+</template>
 
 <style lang="scss">
 #app {

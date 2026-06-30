@@ -1,162 +1,3 @@
-<template>
-  <div class="menu-page">
-    <!-- 顶部标题 -->
-    <header class="menu-topbar">
-      <h1 class="page-title">
-        私密菜单
-      </h1>
-    </header>
-
-    <!-- 标签筛选 -->
-    <van-tabs
-      v-model:active="activeTab"
-      sticky
-      offset-top="52"
-      class="menu-tabs"
-      @change="onTabChange"
-    >
-      <van-tab title="想去" name="wantToGo" />
-      <van-tab title="去过" name="beenTo" />
-      <van-tab title="种草" name="recommended" />
-      <van-tab title="收藏" name="favorite" />
-    </van-tabs>
-
-    <div class="menu-body">
-      <!-- 统计卡片 -->
-      <div class="stats-card">
-        <div class="stat-item">
-          <span class="label">想去</span>
-          <span class="value">{{ stats.wantToGoCount || 0 }}</span>
-        </div>
-        <i class="stat-divider" />
-        <div class="stat-item">
-          <span class="label">去过</span>
-          <span class="value">{{ stats.beenToCount || 0 }}</span>
-        </div>
-        <i class="stat-divider" />
-        <div class="stat-item">
-          <span class="label">收藏</span>
-          <span class="value">{{ stats.recommendedCount || 0 }}</span>
-        </div>
-      </div>
-
-      <!-- 下拉刷新 + 无限滚动列表 -->
-      <van-pull-refresh
-        v-model:loading="refreshing"
-        @refresh="onRefresh"
-      >
-        <van-list
-          v-model:loading="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          :error="error"
-          error-text="加载失败，点击重新加载"
-          @load="onLoad"
-        >
-          <!-- 骨架屏 -->
-          <template v-if="isSkeleton && menuList.length === 0">
-            <div
-              v-for="n in 3"
-              :key="n"
-              class="menu-card skeleton"
-            >
-              <div class="cover sk-block" />
-              <div class="body">
-                <div class="sk-line sk-title" />
-                <div class="sk-line sk-sub" />
-              </div>
-            </div>
-          </template>
-
-          <!-- 菜单列表 -->
-          <div
-            v-for="item in menuList"
-            :key="item.id"
-            class="menu-card"
-            @click="$router.push(`/menu/${item.id}`)"
-          >
-            <div class="cover">
-              <img
-                v-if="item.photoUrl"
-                v-lazy="item.photoUrl"
-                :alt="item.restaurantName"
-              >
-              <van-icon
-                v-else
-                name="shop-o"
-                size="40"
-                color="#d6c1c5"
-              />
-              <span class="status-pill">{{ getStatusText(item.status) }}</span>
-            </div>
-            <div class="body">
-              <div class="title-row">
-                <h3 class="name">
-                  {{ item.restaurantName }}
-                </h3>
-                <span
-                  v-if="item.rating"
-                  class="rating"
-                >
-                  <van-icon name="star" size="13" />{{ item.rating }}
-                </span>
-              </div>
-              <div
-                v-if="item.dishName"
-                class="dish"
-              >
-                <van-icon name="fire-o" size="13" /> 推荐：{{ item.dishName }}
-              </div>
-              <div class="footer">
-                <div class="meta">
-                  <span v-if="item.price"><van-icon name="coupon-o" size="13" /> {{ item.price }}</span>
-                  <span v-if="item.location"><van-icon name="location-o" size="13" /> {{ item.location }}</span>
-                </div>
-                <div class="actions">
-                  <van-icon
-                    name="like-o"
-                    size="18"
-                    @click.stop="handleLike(item)"
-                  />
-                  <van-icon
-                    name="star-o"
-                    size="18"
-                    @click.stop="handleFavorite(item)"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <van-empty
-            v-if="menuList.length === 0 && !loading"
-            description="暂无餐厅记录"
-          >
-            <van-button
-              type="primary"
-              round
-              size="small"
-              @click="$router.push('/menu/add')"
-            >
-              添加餐厅
-            </van-button>
-          </van-empty>
-        </van-list>
-      </van-pull-refresh>
-    </div>
-
-    <!-- 添加按钮 -->
-    <button
-      class="fab"
-      @click="$router.push('/menu/add')"
-    >
-      <van-icon name="plus" size="26" />
-    </button>
-
-    <app-tabbar />
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -276,6 +117,192 @@ onMounted(() => {
   loadStats()
 })
 </script>
+
+<template>
+  <div class="menu-page">
+    <!-- 顶部标题 -->
+    <header class="menu-topbar">
+      <h1 class="page-title">
+        私密菜单
+      </h1>
+    </header>
+
+    <!-- 标签筛选 -->
+    <van-tabs
+      v-model:active="activeTab"
+      sticky
+      offset-top="52"
+      class="menu-tabs"
+      @change="onTabChange"
+    >
+      <van-tab
+        title="想去"
+        name="wantToGo"
+      />
+      <van-tab
+        title="去过"
+        name="beenTo"
+      />
+      <van-tab
+        title="种草"
+        name="recommended"
+      />
+      <van-tab
+        title="收藏"
+        name="favorite"
+      />
+    </van-tabs>
+
+    <div class="menu-body">
+      <!-- 统计卡片 -->
+      <div class="stats-card">
+        <div class="stat-item">
+          <span class="label">想去</span>
+          <span class="value">{{ stats.wantToGoCount || 0 }}</span>
+        </div>
+        <i class="stat-divider" />
+        <div class="stat-item">
+          <span class="label">去过</span>
+          <span class="value">{{ stats.beenToCount || 0 }}</span>
+        </div>
+        <i class="stat-divider" />
+        <div class="stat-item">
+          <span class="label">收藏</span>
+          <span class="value">{{ stats.recommendedCount || 0 }}</span>
+        </div>
+      </div>
+
+      <!-- 下拉刷新 + 无限滚动列表 -->
+      <van-pull-refresh
+        v-model:loading="refreshing"
+        @refresh="onRefresh"
+      >
+        <van-list
+          v-model:loading="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          :error="error"
+          error-text="加载失败，点击重新加载"
+          @load="onLoad"
+        >
+          <!-- 骨架屏 -->
+          <template v-if="isSkeleton && menuList.length === 0">
+            <div
+              v-for="n in 3"
+              :key="n"
+              class="menu-card skeleton"
+            >
+              <div class="cover sk-block" />
+              <div class="body">
+                <div class="sk-line sk-title" />
+                <div class="sk-line sk-sub" />
+              </div>
+            </div>
+          </template>
+
+          <!-- 菜单列表 -->
+          <div
+            v-for="item in menuList"
+            :key="item.id"
+            class="menu-card"
+            @click="$router.push(`/menu/${item.id}`)"
+          >
+            <div class="cover">
+              <img
+                v-if="item.photoUrl"
+                v-lazy="item.photoUrl"
+                :alt="item.restaurantName"
+              >
+              <van-icon
+                v-else
+                name="shop-o"
+                size="40"
+                color="#d6c1c5"
+              />
+              <span class="status-pill">{{ getStatusText(item.status) }}</span>
+            </div>
+            <div class="body">
+              <div class="title-row">
+                <h3 class="name">
+                  {{ item.restaurantName }}
+                </h3>
+                <span
+                  v-if="item.rating"
+                  class="rating"
+                >
+                  <van-icon
+                    name="star"
+                    size="13"
+                  />{{ item.rating }}
+                </span>
+              </div>
+              <div
+                v-if="item.dishName"
+                class="dish"
+              >
+                <van-icon
+                  name="fire-o"
+                  size="13"
+                /> 推荐：{{ item.dishName }}
+              </div>
+              <div class="footer">
+                <div class="meta">
+                  <span v-if="item.price"><van-icon
+                    name="coupon-o"
+                    size="13"
+                  /> {{ item.price }}</span>
+                  <span v-if="item.location"><van-icon
+                    name="location-o"
+                    size="13"
+                  /> {{ item.location }}</span>
+                </div>
+                <div class="actions">
+                  <van-icon
+                    name="like-o"
+                    size="18"
+                    @click.stop="handleLike(item)"
+                  />
+                  <van-icon
+                    name="star-o"
+                    size="18"
+                    @click.stop="handleFavorite(item)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <van-empty
+            v-if="menuList.length === 0 && !loading"
+            description="暂无餐厅记录"
+          >
+            <van-button
+              type="primary"
+              round
+              size="small"
+              @click="$router.push('/menu/add')"
+            >
+              添加餐厅
+            </van-button>
+          </van-empty>
+        </van-list>
+      </van-pull-refresh>
+    </div>
+
+    <!-- 添加按钮 -->
+    <button
+      class="fab"
+      @click="$router.push('/menu/add')"
+    >
+      <van-icon
+        name="plus"
+        size="26"
+      />
+    </button>
+
+    <app-tabbar />
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .menu-page {

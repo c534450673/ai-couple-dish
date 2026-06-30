@@ -1,3 +1,77 @@
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { showToast, showLoadingToast, closeToast } from 'vant'
+import { menuApi, uploadApi } from '@/api'
+
+const router = useRouter()
+
+const form = ref({
+  restaurantName: '',
+  location: '',
+  latitude: '',
+  longitude: '',
+  dishName: '',
+  price: '',
+  note: '',
+  status: '0'
+})
+
+const fileList = ref([])
+const submitting = ref(false)
+const uploadedUrls = ref([])
+
+const afterRead = async (file) => {
+  file.status = 'uploading'
+  file.message = '上传中...'
+
+  try {
+    const res = await uploadApi.uploadImage(file.file)
+    file.url = res.data.url
+    file.status = 'done'
+    uploadedUrls.value.push(res.data.url)
+  } catch (error) {
+    file.status = 'failed'
+    file.message = '上传失败'
+    showToast('图片上传失败')
+  }
+}
+
+const onDelete = (file) => {
+  const index = uploadedUrls.value.findIndex(url => url === file.url)
+  if (index > -1) {
+    uploadedUrls.value.splice(index, 1)
+  }
+}
+
+const handleSubmit = async () => {
+  if (!form.value.restaurantName) {
+    showToast('请输入餐厅名称')
+    return
+  }
+
+  submitting.value = true
+  showLoadingToast({ message: '保存中...', forbidClick: true })
+
+  try {
+    const data = {
+      ...form.value,
+      photoUrls: uploadedUrls.value.join(',')
+    }
+
+    await menuApi.addMenu(data)
+    closeToast()
+    showToast('添加成功')
+    router.back()
+  } catch (error) {
+    closeToast()
+    showToast('保存失败')
+  } finally {
+    submitting.value = false
+  }
+}
+</script>
+
 <template>
   <div class="menu-add-page">
     <header class="page-topbar">
@@ -112,80 +186,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { showToast, showLoadingToast, closeToast } from 'vant'
-import { menuApi, uploadApi } from '@/api'
-
-const router = useRouter()
-
-const form = ref({
-  restaurantName: '',
-  location: '',
-  latitude: '',
-  longitude: '',
-  dishName: '',
-  price: '',
-  note: '',
-  status: '0'
-})
-
-const fileList = ref([])
-const submitting = ref(false)
-const uploadedUrls = ref([])
-
-const afterRead = async (file) => {
-  file.status = 'uploading'
-  file.message = '上传中...'
-
-  try {
-    const res = await uploadApi.uploadImage(file.file)
-    file.url = res.data.url
-    file.status = 'done'
-    uploadedUrls.value.push(res.data.url)
-  } catch (error) {
-    file.status = 'failed'
-    file.message = '上传失败'
-    showToast('图片上传失败')
-  }
-}
-
-const onDelete = (file) => {
-  const index = uploadedUrls.value.findIndex(url => url === file.url)
-  if (index > -1) {
-    uploadedUrls.value.splice(index, 1)
-  }
-}
-
-const handleSubmit = async () => {
-  if (!form.value.restaurantName) {
-    showToast('请输入餐厅名称')
-    return
-  }
-
-  submitting.value = true
-  showLoadingToast({ message: '保存中...', forbidClick: true })
-
-  try {
-    const data = {
-      ...form.value,
-      photoUrls: uploadedUrls.value.join(',')
-    }
-
-    await menuApi.addMenu(data)
-    closeToast()
-    showToast('添加成功')
-    router.back()
-  } catch (error) {
-    closeToast()
-    showToast('保存失败')
-  } finally {
-    submitting.value = false
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .menu-add-page {

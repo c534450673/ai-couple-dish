@@ -1,192 +1,3 @@
-<template>
-  <div class="home-page">
-    <!-- 固定玻璃顶栏：双头像 + 恋爱天数 -->
-    <header class="home-topbar">
-      <img
-        class="avatar"
-        :src="userInfo?.avatarUrl || defaultAvatar"
-        alt="me"
-        @click="$router.push('/settings')"
-      >
-      <div class="love-days">
-        恋爱 <span class="num">{{ loveDays.days }}</span> 天
-      </div>
-      <img
-        class="avatar"
-        :src="coupleInfo?.partner?.avatarUrl || partnerAvatar"
-        alt="ta"
-      >
-    </header>
-
-    <van-pull-refresh
-      v-model="refreshing"
-      class="home-body"
-      @refresh="onRefresh"
-    >
-      <!-- 快捷功能 -->
-      <section class="quick-actions">
-        <button
-          class="qa-item"
-          @click="$router.push('/menu/add')"
-        >
-          <span class="qa-icon qa-add"><van-icon name="plus" size="20" /></span>
-          <span class="qa-text">添加餐厅</span>
-        </button>
-        <button
-          class="qa-item"
-          @click="$router.push('/feed')"
-        >
-          <span class="qa-icon qa-feed"><van-icon name="gift-o" size="20" /></span>
-          <span class="qa-text">投喂</span>
-        </button>
-        <button
-          class="qa-item"
-          @click="$router.push('/anniversary')"
-        >
-          <span class="qa-icon qa-anniv"><van-icon name="calendar-o" size="20" /></span>
-          <span class="qa-text">纪念日</span>
-        </button>
-        <button
-          class="qa-item"
-          @click="$router.push('/wish')"
-        >
-          <span class="qa-icon qa-wish"><van-icon name="like-o" size="20" /></span>
-          <span class="qa-text">心愿单</span>
-        </button>
-      </section>
-
-      <!-- 统计卡片 -->
-      <section class="stats-card">
-        <div
-          class="stat"
-          @click="$router.push('/menu?type=wantToGo')"
-        >
-          <span class="stat-label">想去</span>
-          <span class="stat-value">{{ stats.wantToGoCount || 0 }}</span>
-        </div>
-        <i class="stat-divider" />
-        <div
-          class="stat"
-          @click="$router.push('/menu?type=beenTo')"
-        >
-          <span class="stat-label">去过</span>
-          <span class="stat-value">{{ stats.beenToCount || 0 }}</span>
-        </div>
-        <i class="stat-divider" />
-        <div
-          class="stat"
-          @click="$router.push('/menu?type=recommended')"
-        >
-          <span class="stat-label">种草</span>
-          <span class="stat-value">{{ stats.recommendedCount || 0 }}</span>
-        </div>
-        <i class="stat-divider" />
-        <div
-          class="stat"
-          @click="$router.push('/map')"
-        >
-          <span class="stat-label">地图</span>
-          <span class="stat-value"><van-icon name="location-o" size="20" /></span>
-        </div>
-      </section>
-
-      <!-- 即将到来的纪念日 -->
-      <section
-        v-if="upcomingAnniversary"
-        class="anniversary-card"
-        @click="$router.push('/anniversary')"
-      >
-        <i class="deco" />
-        <div class="anniv-row">
-          <div class="anniv-left">
-            <div class="anniv-label">
-              即将到来的纪念日
-            </div>
-            <div class="anniv-name">
-              {{ upcomingAnniversary.name }}
-            </div>
-          </div>
-          <div class="anniv-right">
-            <span class="anniv-days">{{ upcomingAnniversary.days }}</span>
-            <span class="anniv-unit">天</span>
-          </div>
-        </div>
-        <div class="anniv-progress">
-          <div
-            class="bar"
-            :style="{ width: anniversaryProgress + '%' }"
-          />
-        </div>
-      </section>
-
-      <!-- 最近记录 -->
-      <section class="recent">
-        <div class="section-head">
-          <span class="title">最近记录</span>
-          <span
-            class="more"
-            @click="$router.push('/menu')"
-          >查看全部</span>
-        </div>
-
-        <!-- 骨架屏 -->
-        <div v-if="isSkeleton">
-          <div
-            v-for="n in 2"
-            :key="n"
-            class="recent-card skeleton"
-          >
-            <div class="cover sk-block" />
-            <div class="meta">
-              <div class="sk-line sk-title" />
-              <div class="sk-line sk-sub" />
-            </div>
-          </div>
-        </div>
-
-        <div v-else>
-          <div
-            v-for="item in recentMenus"
-            :key="item.id"
-            class="recent-card"
-            @click="$router.push(`/menu/${item.id}`)"
-          >
-            <div class="cover">
-              <img
-                v-if="item.coverImage"
-                v-lazy="item.coverImage"
-                :alt="item.restaurantName"
-              >
-              <van-icon
-                v-else
-                name="shop-o"
-                size="32"
-                color="#d6c1c5"
-              />
-              <span class="status-pill">{{ getStatusText(item.status) }}</span>
-            </div>
-            <div class="meta">
-              <div class="name">
-                {{ item.restaurantName }}
-              </div>
-              <div class="sub">
-                <van-icon name="location-o" size="13" />
-                {{ item.location || '暂无位置' }}
-              </div>
-            </div>
-          </div>
-          <van-empty
-            v-if="recentMenus.length === 0"
-            description="还没有餐厅记录，去添加第一家吧"
-          />
-        </div>
-      </section>
-    </van-pull-refresh>
-
-    <app-tabbar />
-  </div>
-</template>
-
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useUserStore } from '@/stores/user'
@@ -278,6 +89,213 @@ onUnmounted(() => {
   if (timer) clearInterval(timer)
 })
 </script>
+
+<template>
+  <div class="home-page">
+    <!-- 固定玻璃顶栏：双头像 + 恋爱天数 -->
+    <header class="home-topbar">
+      <img
+        class="avatar"
+        :src="userInfo?.avatarUrl || defaultAvatar"
+        alt="me"
+        @click="$router.push('/settings')"
+      >
+      <div class="love-days">
+        恋爱 <span class="num">{{ loveDays.days }}</span> 天
+      </div>
+      <img
+        class="avatar"
+        :src="coupleInfo?.partner?.avatarUrl || partnerAvatar"
+        alt="ta"
+      >
+    </header>
+
+    <van-pull-refresh
+      v-model="refreshing"
+      class="home-body"
+      @refresh="onRefresh"
+    >
+      <!-- 快捷功能 -->
+      <section class="quick-actions">
+        <button
+          class="qa-item"
+          @click="$router.push('/menu/add')"
+        >
+          <span class="qa-icon qa-add"><van-icon
+            name="plus"
+            size="20"
+          /></span>
+          <span class="qa-text">添加餐厅</span>
+        </button>
+        <button
+          class="qa-item"
+          @click="$router.push('/feed')"
+        >
+          <span class="qa-icon qa-feed"><van-icon
+            name="gift-o"
+            size="20"
+          /></span>
+          <span class="qa-text">投喂</span>
+        </button>
+        <button
+          class="qa-item"
+          @click="$router.push('/anniversary')"
+        >
+          <span class="qa-icon qa-anniv"><van-icon
+            name="calendar-o"
+            size="20"
+          /></span>
+          <span class="qa-text">纪念日</span>
+        </button>
+        <button
+          class="qa-item"
+          @click="$router.push('/wish')"
+        >
+          <span class="qa-icon qa-wish"><van-icon
+            name="like-o"
+            size="20"
+          /></span>
+          <span class="qa-text">心愿单</span>
+        </button>
+      </section>
+
+      <!-- 统计卡片 -->
+      <section class="stats-card">
+        <div
+          class="stat"
+          @click="$router.push('/menu?type=wantToGo')"
+        >
+          <span class="stat-label">想去</span>
+          <span class="stat-value">{{ stats.wantToGoCount || 0 }}</span>
+        </div>
+        <i class="stat-divider" />
+        <div
+          class="stat"
+          @click="$router.push('/menu?type=beenTo')"
+        >
+          <span class="stat-label">去过</span>
+          <span class="stat-value">{{ stats.beenToCount || 0 }}</span>
+        </div>
+        <i class="stat-divider" />
+        <div
+          class="stat"
+          @click="$router.push('/menu?type=recommended')"
+        >
+          <span class="stat-label">种草</span>
+          <span class="stat-value">{{ stats.recommendedCount || 0 }}</span>
+        </div>
+        <i class="stat-divider" />
+        <div
+          class="stat"
+          @click="$router.push('/map')"
+        >
+          <span class="stat-label">地图</span>
+          <span class="stat-value"><van-icon
+            name="location-o"
+            size="20"
+          /></span>
+        </div>
+      </section>
+
+      <!-- 即将到来的纪念日 -->
+      <section
+        v-if="upcomingAnniversary"
+        class="anniversary-card"
+        @click="$router.push('/anniversary')"
+      >
+        <i class="deco" />
+        <div class="anniv-row">
+          <div class="anniv-left">
+            <div class="anniv-label">
+              即将到来的纪念日
+            </div>
+            <div class="anniv-name">
+              {{ upcomingAnniversary.name }}
+            </div>
+          </div>
+          <div class="anniv-right">
+            <span class="anniv-days">{{ upcomingAnniversary.days }}</span>
+            <span class="anniv-unit">天</span>
+          </div>
+        </div>
+        <div class="anniv-progress">
+          <div
+            class="bar"
+            :style="{ width: anniversaryProgress + '%' }"
+          />
+        </div>
+      </section>
+
+      <!-- 最近记录 -->
+      <section class="recent">
+        <div class="section-head">
+          <span class="title">最近记录</span>
+          <span
+            class="more"
+            @click="$router.push('/menu')"
+          >查看全部</span>
+        </div>
+
+        <!-- 骨架屏 -->
+        <div v-if="isSkeleton">
+          <div
+            v-for="n in 2"
+            :key="n"
+            class="recent-card skeleton"
+          >
+            <div class="cover sk-block" />
+            <div class="meta">
+              <div class="sk-line sk-title" />
+              <div class="sk-line sk-sub" />
+            </div>
+          </div>
+        </div>
+
+        <div v-else>
+          <div
+            v-for="item in recentMenus"
+            :key="item.id"
+            class="recent-card"
+            @click="$router.push(`/menu/${item.id}`)"
+          >
+            <div class="cover">
+              <img
+                v-if="item.coverImage"
+                v-lazy="item.coverImage"
+                :alt="item.restaurantName"
+              >
+              <van-icon
+                v-else
+                name="shop-o"
+                size="32"
+                color="#d6c1c5"
+              />
+              <span class="status-pill">{{ getStatusText(item.status) }}</span>
+            </div>
+            <div class="meta">
+              <div class="name">
+                {{ item.restaurantName }}
+              </div>
+              <div class="sub">
+                <van-icon
+                  name="location-o"
+                  size="13"
+                />
+                {{ item.location || '暂无位置' }}
+              </div>
+            </div>
+          </div>
+          <van-empty
+            v-if="recentMenus.length === 0"
+            description="还没有餐厅记录，去添加第一家吧"
+          />
+        </div>
+      </section>
+    </van-pull-refresh>
+
+    <app-tabbar />
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .home-page {

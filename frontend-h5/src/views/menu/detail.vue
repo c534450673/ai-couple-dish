@@ -1,157 +1,3 @@
-<template>
-  <div class="menu-detail-page">
-    <!-- 封面 + 浮动按钮 -->
-    <div class="cover">
-      <van-swipe
-        v-if="photoList.length"
-        @change="onSwipeChange"
-      >
-        <van-swipe-item
-          v-for="(url, index) in photoList"
-          :key="index"
-        >
-          <img
-            :src="url"
-            alt="cover"
-          >
-        </van-swipe-item>
-        <template #indicator>
-          <div class="swipe-indicator">
-            {{ currentSwipe + 1 }} / {{ photoList.length }}
-          </div>
-        </template>
-      </van-swipe>
-      <div
-        v-else
-        class="cover-empty"
-      >
-        <van-icon
-          name="shop-o"
-          size="48"
-          color="#d6c1c5"
-        />
-      </div>
-
-      <button
-        class="float-btn back"
-        @click="$router.back()"
-      >
-        <van-icon
-          name="arrow-left"
-          size="20"
-        />
-      </button>
-      <button
-        class="float-btn more"
-        @click="showActions"
-      >
-        <van-icon
-          name="ellipsis"
-          size="20"
-        />
-      </button>
-    </div>
-
-    <div
-      v-if="menuDetail.id"
-      class="detail-body"
-    >
-      <!-- 餐厅信息 -->
-      <div class="info card">
-        <div class="head">
-          <h2 class="name">
-            {{ menuDetail.restaurantName }}
-          </h2>
-          <span
-            v-if="menuDetail.rating"
-            class="rating"
-          ><van-icon name="star" size="14" /> {{ menuDetail.rating }}</span>
-        </div>
-        <div class="tags">
-          <van-tag
-            :type="getStatusType(menuDetail.status)"
-            round
-          >
-            {{ getStatusText(menuDetail.status) }}
-          </van-tag>
-        </div>
-        <div
-          v-if="menuDetail.price"
-          class="info-row"
-        >
-          <van-icon name="coupon-o" /> <span>{{ menuDetail.price }}</span>
-        </div>
-        <div
-          v-if="menuDetail.location"
-          class="info-row"
-        >
-          <van-icon name="location-o" /> <span>{{ menuDetail.location }}</span>
-        </div>
-      </div>
-
-      <!-- 推荐菜品 -->
-      <div
-        v-if="menuDetail.dishName"
-        class="card section"
-      >
-        <div class="section-title">
-          推荐菜品
-        </div>
-        <div class="section-content">
-          {{ menuDetail.dishName }}
-        </div>
-      </div>
-
-      <!-- 私密笔记 -->
-      <div
-        v-if="menuDetail.note"
-        class="card note-card"
-      >
-        <div class="section-title">
-          <van-icon name="like" size="14" /> 我们的回忆
-        </div>
-        <div class="section-content">
-          {{ menuDetail.note }}
-        </div>
-      </div>
-    </div>
-
-    <van-loading
-      v-else
-      class="loading"
-    />
-
-    <!-- 底部操作栏 -->
-    <div
-      v-if="menuDetail.id"
-      class="action-bar"
-    >
-      <button
-        class="act"
-        @click="handleLike"
-      >
-        <van-icon name="like-o" size="20" />
-        <span>{{ menuDetail.likeCount || 0 }} 点赞</span>
-      </button>
-      <button
-        class="act primary"
-        @click="handleFavorite"
-      >
-        <van-icon name="star-o" size="20" />
-        <span>{{ menuDetail.isFavorite ? '取消收藏' : '收藏' }}</span>
-      </button>
-    </div>
-
-    <!-- 操作菜单 -->
-    <van-action-sheet
-      v-model:show="showActionSheet"
-      :actions="actions"
-      cancel-text="取消"
-      @select="onActionSelect"
-    />
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -253,6 +99,172 @@ onMounted(() => {
   loadDetail()
 })
 </script>
+
+<template>
+  <div class="menu-detail-page">
+    <!-- 封面 + 浮动按钮 -->
+    <div class="cover">
+      <van-swipe
+        v-if="photoList.length"
+        @change="onSwipeChange"
+      >
+        <van-swipe-item
+          v-for="(url, index) in photoList"
+          :key="index"
+        >
+          <img
+            :src="url"
+            alt="cover"
+          >
+        </van-swipe-item>
+        <template #indicator>
+          <div class="swipe-indicator">
+            {{ currentSwipe + 1 }} / {{ photoList.length }}
+          </div>
+        </template>
+      </van-swipe>
+      <div
+        v-else
+        class="cover-empty"
+      >
+        <van-icon
+          name="shop-o"
+          size="48"
+          color="#d6c1c5"
+        />
+      </div>
+
+      <button
+        class="float-btn back"
+        @click="$router.back()"
+      >
+        <van-icon
+          name="arrow-left"
+          size="20"
+        />
+      </button>
+      <button
+        class="float-btn more"
+        @click="showActions"
+      >
+        <van-icon
+          name="ellipsis"
+          size="20"
+        />
+      </button>
+    </div>
+
+    <div
+      v-if="menuDetail.id"
+      class="detail-body"
+    >
+      <!-- 餐厅信息 -->
+      <div class="info card">
+        <div class="head">
+          <h2 class="name">
+            {{ menuDetail.restaurantName }}
+          </h2>
+          <span
+            v-if="menuDetail.rating"
+            class="rating"
+          ><van-icon
+            name="star"
+            size="14"
+          /> {{ menuDetail.rating }}</span>
+        </div>
+        <div class="tags">
+          <van-tag
+            :type="getStatusType(menuDetail.status)"
+            round
+          >
+            {{ getStatusText(menuDetail.status) }}
+          </van-tag>
+        </div>
+        <div
+          v-if="menuDetail.price"
+          class="info-row"
+        >
+          <van-icon name="coupon-o" /> <span>{{ menuDetail.price }}</span>
+        </div>
+        <div
+          v-if="menuDetail.location"
+          class="info-row"
+        >
+          <van-icon name="location-o" /> <span>{{ menuDetail.location }}</span>
+        </div>
+      </div>
+
+      <!-- 推荐菜品 -->
+      <div
+        v-if="menuDetail.dishName"
+        class="card section"
+      >
+        <div class="section-title">
+          推荐菜品
+        </div>
+        <div class="section-content">
+          {{ menuDetail.dishName }}
+        </div>
+      </div>
+
+      <!-- 私密笔记 -->
+      <div
+        v-if="menuDetail.note"
+        class="card note-card"
+      >
+        <div class="section-title">
+          <van-icon
+            name="like"
+            size="14"
+          /> 我们的回忆
+        </div>
+        <div class="section-content">
+          {{ menuDetail.note }}
+        </div>
+      </div>
+    </div>
+
+    <van-loading
+      v-else
+      class="loading"
+    />
+
+    <!-- 底部操作栏 -->
+    <div
+      v-if="menuDetail.id"
+      class="action-bar"
+    >
+      <button
+        class="act"
+        @click="handleLike"
+      >
+        <van-icon
+          name="like-o"
+          size="20"
+        />
+        <span>{{ menuDetail.likeCount || 0 }} 点赞</span>
+      </button>
+      <button
+        class="act primary"
+        @click="handleFavorite"
+      >
+        <van-icon
+          name="star-o"
+          size="20"
+        />
+        <span>{{ menuDetail.isFavorite ? '取消收藏' : '收藏' }}</span>
+      </button>
+    </div>
+
+    <!-- 操作菜单 -->
+    <van-action-sheet
+      v-model:show="showActionSheet"
+      :actions="actions"
+      cancel-text="取消"
+      @select="onActionSelect"
+    />
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .menu-detail-page {

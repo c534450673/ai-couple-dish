@@ -1,3 +1,115 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+import { showToast, showConfirmDialog } from 'vant'
+import { wishApi } from '@/api'
+import AppTabbar from '@/components/AppTabbar.vue'
+
+const activeTab = ref('all')
+const wishList = ref([])
+const showAddDialog = ref(false)
+const refreshing = ref(false)
+const isSkeleton = ref(true)
+
+const addForm = ref({
+  title: '',
+  description: '',
+  wishType: 'restaurant'
+})
+
+const wishTypes = [
+  { value: 'restaurant', label: '餐厅', icon: 'shop-o', color: '#894c5c' },
+  { value: 'dish', label: '菜品', icon: 'cart-o', color: '#c98a00' },
+  { value: 'recipe', label: '食谱', icon: 'tv-o', color: '#5f7a4f' }
+]
+
+const getTypeIcon = (type) => {
+  const map = { restaurant: 'shop-o', dish: 'cart-o', recipe: 'tv-o' }
+  return map[type] || 'star-o'
+}
+
+const getTypeColor = (type) => {
+  const map = { restaurant: '#894c5c', dish: '#c98a00', recipe: '#5f7a4f' }
+  return map[type] || '#894c5c'
+}
+
+const loadWishList = async () => {
+  try {
+    const params = activeTab.value !== 'all' ? { status: activeTab.value } : {}
+    const res = await wishApi.getWishList(params)
+    wishList.value = res.data || []
+  } catch (error) {
+    showToast('加载失败')
+  } finally {
+    refreshing.value = false
+    isSkeleton.value = false
+  }
+}
+
+const onRefresh = () => {
+  isSkeleton.value = true
+  refreshing.value = true
+  loadWishList()
+}
+
+const onTabChange = () => {
+  wishList.value = []
+  isSkeleton.value = true
+  loadWishList()
+}
+
+const handleAdd = async () => {
+  if (!addForm.value.title) {
+    showToast('请输入心愿')
+    return
+  }
+
+  try {
+    await wishApi.addWish(addForm.value)
+    showToast('添加成功')
+    showAddDialog.value = false
+    addForm.value = { title: '', description: '', wishType: 'restaurant' }
+    onRefresh()
+  } catch (error) {
+    showToast('添加失败')
+  }
+}
+
+const handleFulfill = async (item) => {
+  try {
+    await wishApi.fulfillWish(item.id)
+    showToast('已实现')
+    onRefresh()
+  } catch (error) {
+    showToast('操作失败')
+  }
+}
+
+const handleUndo = async (item) => {
+  try {
+    await wishApi.unfulfillWish(item.id)
+    showToast('已撤销')
+    onRefresh()
+  } catch (error) {
+    showToast('操作失败')
+  }
+}
+
+const handleDelete = async (item) => {
+  try {
+    await showConfirmDialog({ title: '确认删除', message: '确定要删除这个心愿吗？' })
+    await wishApi.deleteWish(item.id)
+    showToast('已删除')
+    onRefresh()
+  } catch (error) {
+    if (error !== 'cancel') showToast('删除失败')
+  }
+}
+
+onMounted(() => {
+  loadWishList()
+})
+</script>
+
 <template>
   <div class="wish-page">
     <header class="page-topbar">
@@ -23,9 +135,18 @@
       offset-top="52"
       @change="onTabChange"
     >
-      <van-tab title="全部" name="all" />
-      <van-tab title="待实现" name="0" />
-      <van-tab title="已实现" name="1" />
+      <van-tab
+        title="全部"
+        name="all"
+      />
+      <van-tab
+        title="待实现"
+        name="0"
+      />
+      <van-tab
+        title="已实现"
+        name="1"
+      />
     </van-tabs>
 
     <van-pull-refresh
@@ -189,118 +310,6 @@
     <app-tabbar />
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from 'vue'
-import { showToast, showConfirmDialog } from 'vant'
-import { wishApi } from '@/api'
-import AppTabbar from '@/components/AppTabbar.vue'
-
-const activeTab = ref('all')
-const wishList = ref([])
-const showAddDialog = ref(false)
-const refreshing = ref(false)
-const isSkeleton = ref(true)
-
-const addForm = ref({
-  title: '',
-  description: '',
-  wishType: 'restaurant'
-})
-
-const wishTypes = [
-  { value: 'restaurant', label: '餐厅', icon: 'shop-o', color: '#894c5c' },
-  { value: 'dish', label: '菜品', icon: 'cart-o', color: '#c98a00' },
-  { value: 'recipe', label: '食谱', icon: 'tv-o', color: '#5f7a4f' }
-]
-
-const getTypeIcon = (type) => {
-  const map = { restaurant: 'shop-o', dish: 'cart-o', recipe: 'tv-o' }
-  return map[type] || 'star-o'
-}
-
-const getTypeColor = (type) => {
-  const map = { restaurant: '#894c5c', dish: '#c98a00', recipe: '#5f7a4f' }
-  return map[type] || '#894c5c'
-}
-
-const loadWishList = async () => {
-  try {
-    const params = activeTab.value !== 'all' ? { status: activeTab.value } : {}
-    const res = await wishApi.getWishList(params)
-    wishList.value = res.data || []
-  } catch (error) {
-    showToast('加载失败')
-  } finally {
-    refreshing.value = false
-    isSkeleton.value = false
-  }
-}
-
-const onRefresh = () => {
-  isSkeleton.value = true
-  refreshing.value = true
-  loadWishList()
-}
-
-const onTabChange = () => {
-  wishList.value = []
-  isSkeleton.value = true
-  loadWishList()
-}
-
-const handleAdd = async () => {
-  if (!addForm.value.title) {
-    showToast('请输入心愿')
-    return
-  }
-
-  try {
-    await wishApi.addWish(addForm.value)
-    showToast('添加成功')
-    showAddDialog.value = false
-    addForm.value = { title: '', description: '', wishType: 'restaurant' }
-    onRefresh()
-  } catch (error) {
-    showToast('添加失败')
-  }
-}
-
-const handleFulfill = async (item) => {
-  try {
-    await wishApi.fulfillWish(item.id)
-    showToast('已实现')
-    onRefresh()
-  } catch (error) {
-    showToast('操作失败')
-  }
-}
-
-const handleUndo = async (item) => {
-  try {
-    await wishApi.unfulfillWish(item.id)
-    showToast('已撤销')
-    onRefresh()
-  } catch (error) {
-    showToast('操作失败')
-  }
-}
-
-const handleDelete = async (item) => {
-  try {
-    await showConfirmDialog({ title: '确认删除', message: '确定要删除这个心愿吗？' })
-    await wishApi.deleteWish(item.id)
-    showToast('已删除')
-    onRefresh()
-  } catch (error) {
-    if (error !== 'cancel') showToast('删除失败')
-  }
-}
-
-onMounted(() => {
-  loadWishList()
-})
-</script>
 
 <style lang="scss" scoped>
 .wish-page {

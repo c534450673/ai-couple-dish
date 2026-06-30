@@ -1,3 +1,110 @@
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { showToast, showConfirmDialog } from 'vant'
+import { useUserStore } from '@/stores/user'
+import { userApi, uploadApi, coupleApi } from '@/api'
+import AppTabbar from '@/components/AppTabbar.vue'
+
+const router = useRouter()
+const userStore = useUserStore()
+
+const defaultAvatar = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
+const notifyEnabled = ref(true)
+const isLoading = ref(true)
+const showEditDialog = ref(false)
+const showPhoneDialog = ref(false)
+const showDateDialog = ref(false)
+const showTasteDialog = ref(false)
+const showDietDialog = ref(false)
+const countdown = ref(0)
+
+const editForm = ref({ nickName: '', avatarUrl: '' })
+const phoneForm = ref({ phone: '', verifyCode: '' })
+
+let countdownTimer = null
+
+const userInfo = computed(() => userStore.userInfo)
+const coupleInfo = computed(() => userStore.coupleInfo)
+
+const handleLogout = async () => {
+  try {
+    await showConfirmDialog({ title: '确认退出', message: '确定要退出登录吗？' })
+    userStore.logout()
+    router.replace('/login')
+  } catch (error) {
+    // 用户取消
+  }
+}
+
+const handleSaveEdit = async () => {
+  try {
+    await userApi.updateUserInfo(editForm.value)
+    await userStore.updateUserInfo(editForm.value)
+    showToast('保存成功')
+  } catch (error) {
+    showToast('保存失败')
+  }
+}
+
+const onAvatarRead = async (file) => {
+  try {
+    const res = await uploadApi.uploadImage(file.file)
+    editForm.value.avatarUrl = res.data.url
+  } catch (error) {
+    showToast('上传失败')
+  }
+}
+
+const sendVerifyCode = async () => {
+  if (!phoneForm.value.phone || phoneForm.value.phone.length !== 11) {
+    showToast('请输入正确的手机号')
+    return
+  }
+
+  try {
+    await userApi.sendVerifyCode(phoneForm.value.phone)
+    showToast('验证码已发送')
+    countdown.value = 60
+    countdownTimer = setInterval(() => {
+      countdown.value--
+      if (countdown.value <= 0) clearInterval(countdownTimer)
+    }, 1000)
+  } catch (error) {
+    showToast('发送失败')
+  }
+}
+
+const handleSavePhone = async () => {
+  showToast('手机号修改开发中')
+}
+
+const handleChangeAvatar = () => {
+  showEditDialog.value = true
+}
+
+const handleUnbind = async () => {
+  try {
+    await showConfirmDialog({ title: '确认解除', message: '确定要解除情侣绑定吗？' })
+    await coupleApi.applyUnbind({ coupleId: coupleInfo.value.id })
+    showToast('已申请解绑，等待对方确认')
+    await userStore.getCoupleInfo()
+  } catch (error) {
+    if (error !== 'cancel') showToast('操作失败')
+  }
+}
+
+onMounted(() => {
+  editForm.value = {
+    nickName: userInfo.value?.nickName || '',
+    avatarUrl: userInfo.value?.avatarUrl || ''
+  }
+  setTimeout(() => {
+    isLoading.value = false
+  }, 300)
+})
+</script>
+
 <template>
   <div class="settings-page">
     <header class="settings-topbar">
@@ -34,7 +141,10 @@
               {{ userInfo?.nickName || '未设置昵称' }}
             </div>
             <div class="code">
-              <van-icon name="friends-o" size="13" />
+              <van-icon
+                name="friends-o"
+                size="13"
+              />
               {{ coupleInfo?.coupleNickname || coupleInfo?.partnerName ? (coupleInfo?.coupleNickname || '已绑定 TA') : ('情侣码: ' + (coupleInfo?.coupleCode || '未绑定')) }}
             </div>
           </div>
@@ -199,113 +309,6 @@
     <app-tabbar />
   </div>
 </template>
-
-<script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { showToast, showConfirmDialog } from 'vant'
-import { useUserStore } from '@/stores/user'
-import { userApi, uploadApi, coupleApi } from '@/api'
-import AppTabbar from '@/components/AppTabbar.vue'
-
-const router = useRouter()
-const userStore = useUserStore()
-
-const defaultAvatar = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
-const notifyEnabled = ref(true)
-const isLoading = ref(true)
-const showEditDialog = ref(false)
-const showPhoneDialog = ref(false)
-const showDateDialog = ref(false)
-const showTasteDialog = ref(false)
-const showDietDialog = ref(false)
-const countdown = ref(0)
-
-const editForm = ref({ nickName: '', avatarUrl: '' })
-const phoneForm = ref({ phone: '', verifyCode: '' })
-
-let countdownTimer = null
-
-const userInfo = computed(() => userStore.userInfo)
-const coupleInfo = computed(() => userStore.coupleInfo)
-
-const handleLogout = async () => {
-  try {
-    await showConfirmDialog({ title: '确认退出', message: '确定要退出登录吗？' })
-    userStore.logout()
-    router.replace('/login')
-  } catch (error) {
-    // 用户取消
-  }
-}
-
-const handleSaveEdit = async () => {
-  try {
-    await userApi.updateUserInfo(editForm.value)
-    await userStore.updateUserInfo(editForm.value)
-    showToast('保存成功')
-  } catch (error) {
-    showToast('保存失败')
-  }
-}
-
-const onAvatarRead = async (file) => {
-  try {
-    const res = await uploadApi.uploadImage(file.file)
-    editForm.value.avatarUrl = res.data.url
-  } catch (error) {
-    showToast('上传失败')
-  }
-}
-
-const sendVerifyCode = async () => {
-  if (!phoneForm.value.phone || phoneForm.value.phone.length !== 11) {
-    showToast('请输入正确的手机号')
-    return
-  }
-
-  try {
-    await userApi.sendVerifyCode(phoneForm.value.phone)
-    showToast('验证码已发送')
-    countdown.value = 60
-    countdownTimer = setInterval(() => {
-      countdown.value--
-      if (countdown.value <= 0) clearInterval(countdownTimer)
-    }, 1000)
-  } catch (error) {
-    showToast('发送失败')
-  }
-}
-
-const handleSavePhone = async () => {
-  showToast('手机号修改开发中')
-}
-
-const handleChangeAvatar = () => {
-  showEditDialog.value = true
-}
-
-const handleUnbind = async () => {
-  try {
-    await showConfirmDialog({ title: '确认解除', message: '确定要解除情侣绑定吗？' })
-    await coupleApi.applyUnbind({ coupleId: coupleInfo.value.id })
-    showToast('已申请解绑，等待对方确认')
-    await userStore.getCoupleInfo()
-  } catch (error) {
-    if (error !== 'cancel') showToast('操作失败')
-  }
-}
-
-onMounted(() => {
-  editForm.value = {
-    nickName: userInfo.value?.nickName || '',
-    avatarUrl: userInfo.value?.avatarUrl || ''
-  }
-  setTimeout(() => {
-    isLoading.value = false
-  }, 300)
-})
-</script>
 
 <style lang="scss" scoped>
 .settings-page {

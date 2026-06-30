@@ -1,3 +1,119 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+import { showToast, showLoadingToast, closeToast } from 'vant'
+import { feedApi } from '@/api'
+import AppTabbar from '@/components/AppTabbar.vue'
+
+const todayStatus = ref({ sentToday: false, receivedToday: false })
+const receivedFeeds = ref([])
+const showSendDialog = ref(false)
+const refreshing = ref(false)
+const isSkeleton = ref(true)
+
+const sendForm = ref({
+  feedType: 'meal',
+  content: ''
+})
+
+const sendImages = ref([])
+const feedTypes = [
+  { value: 'meal', label: '正餐', icon: 'cart-o', color: '#894c5c' },
+  { value: 'dessert', label: '甜点', icon: 'cake-o', color: '#c98a00' },
+  { value: 'snack', label: '零食', icon: 'bag-o', color: '#5f7a4f' },
+  { value: 'drink', label: '饮品', icon: 'coupon-o', color: '#4a6fa5' }
+]
+
+const getFeedIcon = (type) => {
+  const map = { meal: 'cart-o', dessert: 'cake-o', snack: 'bag-o', drink: 'coupon-o' }
+  return map[type] || 'gift-o'
+}
+
+const getFeedColor = (type) => {
+  const map = { meal: '#894c5c', dessert: '#c98a00', snack: '#5f7a4f', drink: '#4a6fa5' }
+  return map[type] || '#894c5c'
+}
+
+const getStatusTagType = (status) => {
+  const map = { 0: 'warning', 1: 'success', 2: 'default' }
+  return map[status] || 'default'
+}
+
+const getStatusText = (status) => {
+  const map = { 0: '待领取', 1: '已领取', 2: '已拒绝' }
+  return map[status] || '待领取'
+}
+
+const loadData = async () => {
+  try {
+    const [statusRes, receivedRes] = await Promise.all([
+      feedApi.getTodayFeedStatus(),
+      feedApi.getReceivedFeeds()
+    ])
+    todayStatus.value = statusRes.data || { sentToday: false, receivedToday: false }
+    receivedFeeds.value = receivedRes.data || []
+  } catch (error) {
+    showToast('加载失败')
+  } finally {
+    refreshing.value = false
+    isSkeleton.value = false
+  }
+}
+
+const onRefresh = () => {
+  isSkeleton.value = true
+  refreshing.value = true
+  loadData()
+}
+
+const handleSend = async () => {
+  if (!sendForm.value.content) {
+    showToast('请输入投喂内容')
+    return
+  }
+
+  showLoadingToast({ message: '发送中...', forbidClick: true })
+  try {
+    await feedApi.sendFeed({
+      ...sendForm.value,
+      imageUrls: sendImages.value.map(f => f.url).join(',')
+    })
+    showToast('发送成功')
+    showSendDialog.value = false
+    sendForm.value = { feedType: 'meal', content: '' }
+    sendImages.value = []
+    loadData()
+  } catch (error) {
+    showToast('发送失败')
+  } finally {
+    closeToast()
+  }
+}
+
+const handleAccept = async (item) => {
+  try {
+    await feedApi.acceptFeed(item.id)
+    showToast('已接受')
+    loadData()
+  } catch (error) {
+    showToast('操作失败')
+  }
+}
+
+const handleReject = async (item) => {
+  try {
+    await feedApi.rejectFeed(item.id)
+    showToast('已拒绝')
+    loadData()
+  } catch (error) {
+    showToast('操作失败')
+  }
+}
+
+onMounted(() => {
+  loadData()
+})
+</script>
+
 <template>
   <div class="feed-page">
     <header class="feed-topbar">
@@ -206,122 +322,6 @@
     </van-popup>
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from 'vue'
-import { showToast, showLoadingToast, closeToast } from 'vant'
-import { feedApi } from '@/api'
-import AppTabbar from '@/components/AppTabbar.vue'
-
-const todayStatus = ref({ sentToday: false, receivedToday: false })
-const receivedFeeds = ref([])
-const showSendDialog = ref(false)
-const refreshing = ref(false)
-const isSkeleton = ref(true)
-
-const sendForm = ref({
-  feedType: 'meal',
-  content: ''
-})
-
-const sendImages = ref([])
-const feedTypes = [
-  { value: 'meal', label: '正餐', icon: 'cart-o', color: '#894c5c' },
-  { value: 'dessert', label: '甜点', icon: 'cake-o', color: '#c98a00' },
-  { value: 'snack', label: '零食', icon: 'bag-o', color: '#5f7a4f' },
-  { value: 'drink', label: '饮品', icon: 'coupon-o', color: '#4a6fa5' }
-]
-
-const getFeedIcon = (type) => {
-  const map = { meal: 'cart-o', dessert: 'cake-o', snack: 'bag-o', drink: 'coupon-o' }
-  return map[type] || 'gift-o'
-}
-
-const getFeedColor = (type) => {
-  const map = { meal: '#894c5c', dessert: '#c98a00', snack: '#5f7a4f', drink: '#4a6fa5' }
-  return map[type] || '#894c5c'
-}
-
-const getStatusTagType = (status) => {
-  const map = { 0: 'warning', 1: 'success', 2: 'default' }
-  return map[status] || 'default'
-}
-
-const getStatusText = (status) => {
-  const map = { 0: '待领取', 1: '已领取', 2: '已拒绝' }
-  return map[status] || '待领取'
-}
-
-const loadData = async () => {
-  try {
-    const [statusRes, receivedRes] = await Promise.all([
-      feedApi.getTodayFeedStatus(),
-      feedApi.getReceivedFeeds()
-    ])
-    todayStatus.value = statusRes.data || { sentToday: false, receivedToday: false }
-    receivedFeeds.value = receivedRes.data || []
-  } catch (error) {
-    showToast('加载失败')
-  } finally {
-    refreshing.value = false
-    isSkeleton.value = false
-  }
-}
-
-const onRefresh = () => {
-  isSkeleton.value = true
-  refreshing.value = true
-  loadData()
-}
-
-const handleSend = async () => {
-  if (!sendForm.value.content) {
-    showToast('请输入投喂内容')
-    return
-  }
-
-  showLoadingToast({ message: '发送中...', forbidClick: true })
-  try {
-    await feedApi.sendFeed({
-      ...sendForm.value,
-      imageUrls: sendImages.value.map(f => f.url).join(',')
-    })
-    showToast('发送成功')
-    showSendDialog.value = false
-    sendForm.value = { feedType: 'meal', content: '' }
-    sendImages.value = []
-    loadData()
-  } catch (error) {
-    showToast('发送失败')
-  } finally {
-    closeToast()
-  }
-}
-
-const handleAccept = async (item) => {
-  try {
-    await feedApi.acceptFeed(item.id)
-    showToast('已接受')
-    loadData()
-  } catch (error) {
-    showToast('操作失败')
-  }
-}
-
-const handleReject = async (item) => {
-  try {
-    await feedApi.rejectFeed(item.id)
-    showToast('已拒绝')
-    loadData()
-  } catch (error) {
-    showToast('操作失败')
-  }
-}
-
-onMounted(() => {
-  loadData()
-})
-</script>
 
 <style lang="scss" scoped>
 .feed-page {
