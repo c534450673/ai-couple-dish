@@ -1,3 +1,7 @@
+# 全局约定 / Global Conventions
+
+- **语言**：始终使用中文回答用户的所有问题（代码、命令、标识符等技术内容保持原文）。
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
@@ -99,3 +103,45 @@ To check whether embeddings exist, inspect `.gitnexus/meta.json` — the `stats.
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
 
 <!-- gitnexus:end -->
+
+## Cursor Cloud specific instructions
+
+Stack: Spring Boot 2.7 backend (`backend/`, Maven) + Vue 3/Vite H5 client (`frontend-h5/`), with MySQL 8 and Redis. Standard commands live in `README.md` and `docs/ENVIRONMENT.md`; the notes below are the non-obvious caveats discovered while setting up the cloud environment.
+
+### Services (must be started each session; not auto-started)
+- MySQL 8: `sudo service mysql start` — listens on `127.0.0.1:3306`, root password is `root123` (TCP only; the unix socket is not accessible, so always connect with `-h 127.0.0.1`). Database `ai_couple_dish` is already loaded.
+- Redis: `sudo service redis-server start` — `127.0.0.1:6379`, no password.
+- Use **Java 17** (already the default `java`/alternatives). Spring Boot 2.7 does not target the also-installed Java 21.
+
+### Run the backend
+The app reads config from **environment variables** (not from `.env` files). From `backend/`, the `local` profile points at `127.0.0.1` and auto-creates the DB:
+```
+JWT_SECRET="dev_local_jwt_secret_key_that_is_at_least_64_characters_long_for_hs512_algorithm_ok_1234567890" \
+DB_HOST=127.0.0.1 DB_PORT=3306 DB_NAME=ai_couple_dish DB_USERNAME=root DB_PASSWORD=root123 \
+REDIS_HOST=127.0.0.1 REDIS_PORT=6379 SPRING_PROFILES_ACTIVE=local FILE_UPLOAD_PATH=/tmp/uploads \
+mvn spring-boot:run
+```
+`JWT_SECRET` is mandatory (HS512 needs ≥64 chars) or startup fails. API base is `http://localhost:8080/api`; Knife4j docs at `/api/doc.html`.
+
+### Backend tests (`mvn test`)
+Most tests use H2 + embedded Redis, but `BugFixVerificationTest` is a plain `@SpringBootTest` that hits the **real MySQL** (default/dev profile). Run with `JWT_SECRET` and the `DB_*`/`REDIS_*` env vars above set, otherwise those 8 tests fail. All 617 tests pass when MySQL/Redis are up and the schema matches the models.
+
+### Database schema caveat
+The repo's SQL files have drifted from the entity models. `backend/src/main/resources/schema.sql` and `sql/init.sql` are **incomplete** (e.g. missing `t_anniversary.is_lunar_date`). The schema that matches the models is `backend/src/test/resources/schema-test.sql` (37 tables), but it is H2 syntax. To (re)load MySQL:
+```
+sed -E 's/CREATE (UNIQUE )?INDEX IF NOT EXISTS/CREATE \1INDEX/g' backend/src/test/resources/schema-test.sql > /tmp/mysql-schema.sql
+mysql -uroot -proot123 -h127.0.0.1 -e "DROP DATABASE IF EXISTS ai_couple_dish; CREATE DATABASE ai_couple_dish CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -uroot -proot123 -h127.0.0.1 ai_couple_dish < /tmp/mysql-schema.sql
+```
+
+### Frontend H5 (`frontend-h5/`)
+Run with `npm run dev` (port 3000). It is configured via the gitignored `frontend-h5/.env.development.local`, which sets `VITE_API_BASE_URL` **empty** so axios uses the relative `/api` and goes through the Vite dev proxy (same-origin → `http://localhost:8080`). Do NOT point the browser client directly at `http://localhost:8080/api`: the backend `AuthInterceptor` does not skip CORS `OPTIONS` preflight requests and returns **HTTP 500**, so all cross-origin browser calls fail. If that `.local` file is missing, recreate it with `VITE_API_BASE_URL=` (one line).
+
+### Auth quirks (pre-existing app bugs, do not "fix" as setup)
+- WeChat login `POST /api/user/login` works without any WeChat backend: it treats the request `code` as the openid and auto-registers the user. This is the easiest way to mint a real JWT for testing.
+- The H5 phone login UI is broken for new users: it calls `POST /api/user/register`, which is **not** in the interceptor whitelist (`WebConfig`), so it 401s. Phone verify codes (for `/user/sendCode` → `/user/phoneLogin`) are stored in Redis at `user:verify:code:<phone>` (not logged). To get a logged-in browser session, seed `localStorage` `token`/`userInfo` from a `/api/user/login` response.
+- Most feature endpoints (menu, etc.) require the user to be in a bound couple (`generateCode` on one account, `bind` from the other) or they return code `2006 未绑定情侣关系`.
+
+### Known non-blocking failures
+- `npm run lint` reports 5 pre-existing errors (`no-useless-catch`, `afterEach is not defined`).
+- Frontend `vitest` has ~34 pre-existing failing tests (broken test setup/mocks).
