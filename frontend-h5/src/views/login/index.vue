@@ -1,86 +1,3 @@
-<template>
-  <div class="login-page">
-    <div class="login-header">
-      <div class="logo">
-        <span class="logo-text">美食</span>
-      </div>
-      <h1 class="title">情侣私密菜单</h1>
-      <p class="subtitle">记录我们的美食之旅</p>
-    </div>
-
-    <div class="login-form">
-      <div class="form-item">
-        <van-field
-          v-model="phone"
-          type="tel"
-          maxlength="11"
-          placeholder="请输入手机号"
-          :border="false"
-        >
-          <template #left-icon>
-            <van-icon name="phone-o" />
-          </template>
-        </van-field>
-      </div>
-
-      <div class="form-item captcha-item">
-        <van-field
-          v-model="verifyCode"
-          type="digit"
-          maxlength="6"
-          placeholder="请输入验证码"
-          :border="false"
-        >
-          <template #left-icon>
-            <van-icon name="shield-o" />
-          </template>
-        </van-field>
-        <van-button
-          size="small"
-          type="primary"
-          :disabled="countdown > 0"
-          @click="sendVerifyCode"
-        >
-          {{ countdown > 0 ? `${countdown}s` : '发送验证码' }}
-        </van-button>
-      </div>
-
-      <div class="form-item">
-        <van-button
-          type="primary"
-          size="large"
-          :loading="loading"
-          class="login-btn"
-          @click="handleLogin"
-        >
-          登录/注册
-        </van-button>
-      </div>
-
-      <div class="协议">
-        <van-checkbox v-model="agreed" shape="round" icon-size="14">
-          我已阅读并同意<a href="#" @click.prevent="showAgreement">《用户协议》</a>和<a href="#" @click.prevent="showPrivacy">《隐私政策》</a>
-        </van-checkbox>
-      </div>
-    </div>
-
-    <div class="login-footer">
-      <div class="第三方登录">
-        <span class="line"></span>
-        <span class="text">其他登录方式</span>
-        <span class="line"></span>
-      </div>
-      <div class="第三方图标">
-        <img src="@/assets/images/icon-wechat.png" alt="微信" @click="wechatLogin" />
-        <img src="@/assets/images/icon-apple.png" alt="Apple" @click="appleLogin" />
-      </div>
-    </div>
-
-    <AgreementDialog v-model:show="showAgreementDialog" type="agreement" />
-    <AgreementDialog v-model:show="showPrivacyDialog" type="privacy" />
-  </div>
-</template>
-
 <script setup>
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -88,6 +5,8 @@ import { showToast } from 'vant'
 import { useUserStore } from '@/stores/user'
 import { userApi } from '@/api'
 import AgreementDialog from '@/components/AgreementDialog.vue'
+import wechatIcon from '@/assets/images/wechat.svg'
+import appleIcon from '@/assets/images/apple.svg'
 
 const router = useRouter()
 const route = useRoute()
@@ -150,7 +69,6 @@ const handleLogin = async () => {
 
   loading.value = true
   try {
-    // 注册（会自动降级为登录如果手机号已注册）
     await userStore.registerByPhone(phone.value, verifyCode.value)
     const redirect = route.query.redirect || '/home'
     router.push(redirect)
@@ -178,172 +96,268 @@ const showPrivacy = () => {
 }
 </script>
 
+<template>
+  <div class="login-page">
+    <!-- 顶部 Logo -->
+    <div class="login-hero">
+      <div class="logo">
+        <van-icon
+          name="like"
+          size="40"
+        />
+      </div>
+      <h1 class="title">
+        情侣私密菜单
+      </h1>
+      <p class="subtitle">
+        记录我们的美食之旅
+      </p>
+    </div>
+
+    <!-- 表单卡片 -->
+    <div class="login-card">
+      <van-field
+        v-model="phone"
+        class="field"
+        type="tel"
+        maxlength="11"
+        placeholder="请输入手机号"
+        :border="false"
+      >
+        <template #left-icon>
+          <van-icon name="phone-o" />
+        </template>
+      </van-field>
+
+      <div class="code-row">
+        <van-field
+          v-model="verifyCode"
+          class="field"
+          type="digit"
+          maxlength="6"
+          placeholder="请输入验证码"
+          :border="false"
+        >
+          <template #left-icon>
+            <van-icon name="shield-o" />
+          </template>
+        </van-field>
+        <button
+          class="code-btn"
+          :disabled="countdown > 0"
+          @click="sendVerifyCode"
+        >
+          {{ countdown > 0 ? `${countdown}s` : '发送验证码' }}
+        </button>
+      </div>
+
+      <button
+        class="submit-btn"
+        :class="{ loading }"
+        @click="handleLogin"
+      >
+        登录 / 注册
+      </button>
+
+      <div class="agree">
+        <van-checkbox
+          v-model="agreed"
+          shape="round"
+          icon-size="14"
+        >
+          我已阅读并同意<a
+            href="#"
+            @click.prevent="showAgreement"
+          >《用户协议》</a>和<a
+            href="#"
+            @click.prevent="showPrivacy"
+          >《隐私政策》</a>
+        </van-checkbox>
+      </div>
+    </div>
+
+    <!-- 第三方登录 -->
+    <div class="third-party">
+      <div class="divider">
+        <span>其他登录方式</span>
+      </div>
+      <div class="icons">
+        <button
+          class="icon-btn"
+          @click="wechatLogin"
+        >
+          <img
+            :src="wechatIcon"
+            alt="微信"
+          >
+        </button>
+        <button
+          class="icon-btn"
+          @click="appleLogin"
+        >
+          <img
+            :src="appleIcon"
+            alt="Apple"
+          >
+        </button>
+      </div>
+    </div>
+
+    <AgreementDialog
+      v-model:show="showAgreementDialog"
+      type="agreement"
+    />
+    <AgreementDialog
+      v-model:show="showPrivacyDialog"
+      type="privacy"
+    />
+  </div>
+</template>
+
 <style lang="scss" scoped>
 .login-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #ffd6e0 0%, #ffb3c1 50%, #ff8fa3 100%);
-  padding: 80px 32px 60px;
+  background: $gradient-romance;
+  padding: 72px $page-padding 48px;
   display: flex;
   flex-direction: column;
 }
 
-.login-header {
+.login-hero {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 
   .logo {
-    width: 100px;
-    height: 100px;
+    width: 84px;
+    height: 84px;
     margin: 0 auto 20px;
-    background: linear-gradient(135deg, #ff6b9d 0%, #ff4757 100%);
-    border-radius: 24px;
+    border-radius: $radius-xl;
+    background: $color-surface-lowest;
+    color: $color-primary;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 24px rgba(255, 71, 87, 0.3);
-
-    .logo-text {
-      font-size: 28px;
-      font-weight: 700;
-      color: #fff;
-    }
+    box-shadow: $shadow-card;
   }
 
   .title {
-    font-size: 28px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 8px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: $fs-headline;
+    font-weight: $fw-bold;
+    color: $color-on-surface;
+    letter-spacing: -0.01em;
+    margin-bottom: $space-2;
   }
 
   .subtitle {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: $fs-label;
+    color: $color-on-surface-variant;
   }
 }
 
-.login-form {
-  flex: 1;
+.login-card {
+  @include card($radius-xl, $space-6);
 
-  .form-item {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    margin-bottom: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(255, 71, 87, 0.15);
+  .field {
+    background: $color-surface-low;
+    border-radius: $radius-md;
+    margin-bottom: $space-3;
+    padding: 6px 12px;
 
-    :deep(.van-field) {
-      padding: 16px 20px;
-      background: transparent;
-
-      .van-field__left-icon {
-        color: #ff6b9d;
-      }
-
-      .van-field__control {
-        color: #333;
-        &::placeholder {
-          color: #999;
-        }
-      }
-    }
+    :deep(.van-field__left-icon) { color: $color-primary; margin-right: 8px; }
   }
 
-  .captcha-item {
+  .code-row {
     display: flex;
     align-items: center;
+    gap: $space-3;
+    margin-bottom: $space-5;
 
-    :deep(.van-field) {
-      flex: 1;
-    }
+    .field { flex: 1; margin-bottom: 0; }
 
-    .van-button {
-      margin-right: 12px;
-      height: 36px;
-      background: linear-gradient(135deg, #ff6b9d 0%, #ff4757 100%);
+    .code-btn {
+      flex-shrink: 0;
+      height: 40px;
+      padding: 0 14px;
       border: none;
-      border-radius: 18px;
-      font-size: 13px;
-      color: #fff;
+      border-radius: $radius-pill;
+      background: $color-primary-container;
+      color: $color-on-primary-container;
+      font-size: $fs-caption;
+      font-weight: $fw-semibold;
+      cursor: pointer;
+
+      &:disabled { opacity: 0.6; }
     }
   }
 
-  .login-btn {
+  .submit-btn {
+    width: 100%;
     height: 50px;
-    border-radius: 25px;
-    background: linear-gradient(135deg, #ff6b9d 0%, #ff4757 100%);
-    border: none;
-    font-size: 17px;
-    font-weight: 600;
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(255, 71, 87, 0.4);
+    @include btn-primary;
+    font-size: $fs-body;
+    box-shadow: $shadow-float;
+    cursor: pointer;
+    transition: opacity $transition-base;
+
+    &:active { opacity: 0.9; }
+    &.loading { opacity: 0.7; pointer-events: none; }
   }
 
-  .协议 {
-    margin-top: 20px;
-    text-align: center;
+  .agree {
+    margin-top: $space-4;
+    display: flex;
+    justify-content: center;
 
-    :deep(.van-checkbox) {
-      .van-checkbox__label {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.9);
-        line-height: 1.4;
-      }
-
-      .van-checkbox__icon--checked .van-icon {
-        background: #ff4757;
-        border-color: #ff4757;
-      }
+    :deep(.van-checkbox__label) {
+      font-size: $fs-caption;
+      color: $color-on-surface-variant;
     }
 
-    a {
-      color: #fff;
-      text-decoration: underline;
-    }
+    a { color: $color-primary; }
   }
 }
 
-.login-footer {
+.third-party {
   margin-top: auto;
   padding-top: 40px;
 
-  .第三方登录 {
+  .divider {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 24px;
+    gap: $space-4;
+    margin-bottom: $space-5;
+    color: $color-on-surface-variant;
+    font-size: $fs-caption;
 
-    .line {
-      width: 50px;
+    &::before,
+    &::after {
+      content: '';
+      width: 48px;
       height: 1px;
-      background: rgba(255, 255, 255, 0.5);
-    }
-
-    .text {
-      margin: 0 16px;
-      font-size: 13px;
-      color: rgba(255, 255, 255, 0.9);
+      background: $color-outline-variant;
     }
   }
 
-  .第三方图标 {
+  .icons {
     display: flex;
     justify-content: center;
-    gap: 48px;
+    gap: 32px;
 
-    img {
-      width: 48px;
-      height: 48px;
+    .icon-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: none;
+      background: $color-surface-lowest;
+      box-shadow: $shadow-card;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      opacity: 0.95;
+
+      img { width: 26px; height: 26px; }
     }
   }
-}
-
-.dialog-content {
-  padding: 20px;
-  max-height: 60vh;
-  overflow-y: auto;
 }
 </style>

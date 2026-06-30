@@ -1,127 +1,9 @@
-<template>
-  <div class="menu-page">
-    <!-- 标签筛选 -->
-    <van-tabs v-model:active="activeTab" sticky @change="onTabChange">
-      <van-tab title="想去" name="wantToGo"></van-tab>
-      <van-tab title="去过" name="beenTo"></van-tab>
-      <van-tab title="种草" name="recommended"></van-tab>
-      <van-tab title="收藏" name="favorite"></van-tab>
-    </van-tabs>
-
-    <!-- 统计卡片 -->
-    <div class="stats-card">
-      <div class="stat-item">
-        <span class="value">{{ stats.wantToGoCount || 0 }}</span>
-        <span class="label">想去</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="value">{{ stats.beenToCount || 0 }}</span>
-        <span class="label">去过</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="value">{{ stats.recommendedCount || 0 }}</span>
-        <span class="label">种草</span>
-      </div>
-    </div>
-
-    <!-- 下拉刷新 + 无限滚动列表 -->
-    <van-pull-refresh v-model:loading="refreshing" @refresh="onRefresh">
-      <van-list
-        v-model:loading="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        :error="error"
-        error-text="加载失败，点击重新加载"
-        @load="onLoad"
-      >
-        <!-- 骨架屏 -->
-        <template v-if="isSkeleton && menuList.length === 0">
-          <div v-for="n in 3" :key="n" class="menu-item card skeleton-item">
-            <div class="menu-cover skeleton-cover"></div>
-            <div class="menu-content">
-              <div class="skeleton-title"></div>
-              <div class="skeleton-location"></div>
-              <div class="skeleton-dishes"></div>
-            </div>
-          </div>
-        </template>
-
-        <!-- 菜单列表 -->
-        <div
-          v-for="item in menuList"
-          :key="item.id"
-          class="menu-item card"
-          @click="$router.push(`/menu/${item.id}`)"
-        >
-          <div class="menu-cover">
-            <img
-              v-if="item.photoUrl"
-              v-lazy="item.photoUrl"
-              :alt="item.restaurantName"
-              loading="lazy"
-            />
-            <van-icon v-else name="shop-o" size="40" color="#ccc" />
-          </div>
-          <div class="menu-content">
-            <div class="menu-header">
-              <h3 class="menu-name">{{ item.restaurantName }}</h3>
-              <van-tag :type="getStatusType(item.status)" size="small">
-                {{ getStatusText(item.status) }}
-              </van-tag>
-            </div>
-            <div class="menu-location" v-if="item.location">
-              <van-icon name="location-o" size="12" />
-              {{ item.location }}
-            </div>
-            <div class="menu-dishes" v-if="item.dishName">
-              {{ item.dishName }}
-            </div>
-            <div class="menu-footer">
-              <div class="menu-meta">
-                <span v-if="item.price"><van-icon name="coupon-o" size="12" /> {{ item.price }}</span>
-                <span v-if="item.rating"><van-icon name="star" size="12" color="#ffd21e" /> {{ item.rating }}分</span>
-              </div>
-              <div class="menu-actions">
-                <van-icon name="like-o" size="18" @click.stop="handleLike(item)" />
-                <van-icon name="star-o" size="18" @click.stop="handleFavorite(item)" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <van-empty v-if="menuList.length === 0 && !loading" description="暂无餐厅记录">
-          <template #image>
-            <van-icon name="shop-o" size="40" color="#ccc" />
-          </template>
-          <van-button type="primary" round size="small" @click="$router.push('/menu/add')">
-            添加餐厅
-          </van-button>
-        </van-empty>
-      </van-list>
-    </van-pull-refresh>
-
-    <!-- 添加按钮 -->
-    <van-button class="add-btn" type="primary" size="large" round @click="$router.push('/menu/add')">
-      <van-icon name="plus" />
-    </van-button>
-
-    <!-- 底部导航 -->
-    <van-tabbar route>
-      <van-tabbar-item to="/home" icon="home-o">首页</van-tabbar-item>
-      <van-tabbar-item to="/menu" icon="shop-o">餐厅</van-tabbar-item>
-      <van-tabbar-item to="/feed" icon="gift-o">投喂</van-tabbar-item>
-      <van-tabbar-item to="/settings" icon="setting-o">我的</van-tabbar-item>
-    </van-tabbar>
-  </div>
-</template>
-
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { showToast } from 'vant'
 import { menuApi } from '@/api'
+import AppTabbar from '@/components/AppTabbar.vue'
 
 const route = useRoute()
 const activeTab = ref(route.query.type || 'wantToGo')
@@ -135,11 +17,6 @@ const isSkeleton = ref(true)
 
 const PAGE_SIZE = 10
 let currentPage = 1
-
-const getStatusType = (status) => {
-  const map = { 0: 'primary', 1: 'success', 2: 'warning' }
-  return map[status] || 'primary'
-}
 
 const getStatusText = (status) => {
   const map = { 0: '想去', 1: '去过', 2: '种草' }
@@ -241,198 +118,380 @@ onMounted(() => {
 })
 </script>
 
+<template>
+  <div class="menu-page">
+    <!-- 顶部标题 -->
+    <header class="menu-topbar">
+      <h1 class="page-title">
+        私密菜单
+      </h1>
+    </header>
+
+    <!-- 标签筛选 -->
+    <van-tabs
+      v-model:active="activeTab"
+      sticky
+      offset-top="52"
+      class="menu-tabs"
+      @change="onTabChange"
+    >
+      <van-tab
+        title="想去"
+        name="wantToGo"
+      />
+      <van-tab
+        title="去过"
+        name="beenTo"
+      />
+      <van-tab
+        title="种草"
+        name="recommended"
+      />
+      <van-tab
+        title="收藏"
+        name="favorite"
+      />
+    </van-tabs>
+
+    <div class="menu-body">
+      <!-- 统计卡片 -->
+      <div class="stats-card">
+        <div class="stat-item">
+          <span class="label">想去</span>
+          <span class="value">{{ stats.wantToGoCount || 0 }}</span>
+        </div>
+        <i class="stat-divider" />
+        <div class="stat-item">
+          <span class="label">去过</span>
+          <span class="value">{{ stats.beenToCount || 0 }}</span>
+        </div>
+        <i class="stat-divider" />
+        <div class="stat-item">
+          <span class="label">收藏</span>
+          <span class="value">{{ stats.recommendedCount || 0 }}</span>
+        </div>
+      </div>
+
+      <!-- 下拉刷新 + 无限滚动列表 -->
+      <van-pull-refresh
+        v-model:loading="refreshing"
+        @refresh="onRefresh"
+      >
+        <van-list
+          v-model:loading="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          :error="error"
+          error-text="加载失败，点击重新加载"
+          @load="onLoad"
+        >
+          <!-- 骨架屏 -->
+          <template v-if="isSkeleton && menuList.length === 0">
+            <div
+              v-for="n in 3"
+              :key="n"
+              class="menu-card skeleton"
+            >
+              <div class="cover sk-block" />
+              <div class="body">
+                <div class="sk-line sk-title" />
+                <div class="sk-line sk-sub" />
+              </div>
+            </div>
+          </template>
+
+          <!-- 菜单列表 -->
+          <div
+            v-for="item in menuList"
+            :key="item.id"
+            class="menu-card"
+            @click="$router.push(`/menu/${item.id}`)"
+          >
+            <div class="cover">
+              <img
+                v-if="item.photoUrl"
+                v-lazy="item.photoUrl"
+                :alt="item.restaurantName"
+              >
+              <van-icon
+                v-else
+                name="shop-o"
+                size="40"
+                color="#d6c1c5"
+              />
+              <span class="status-pill">{{ getStatusText(item.status) }}</span>
+            </div>
+            <div class="body">
+              <div class="title-row">
+                <h3 class="name">
+                  {{ item.restaurantName }}
+                </h3>
+                <span
+                  v-if="item.rating"
+                  class="rating"
+                >
+                  <van-icon
+                    name="star"
+                    size="13"
+                  />{{ item.rating }}
+                </span>
+              </div>
+              <div
+                v-if="item.dishName"
+                class="dish"
+              >
+                <van-icon
+                  name="fire-o"
+                  size="13"
+                /> 推荐：{{ item.dishName }}
+              </div>
+              <div class="footer">
+                <div class="meta">
+                  <span v-if="item.price"><van-icon
+                    name="coupon-o"
+                    size="13"
+                  /> {{ item.price }}</span>
+                  <span v-if="item.location"><van-icon
+                    name="location-o"
+                    size="13"
+                  /> {{ item.location }}</span>
+                </div>
+                <div class="actions">
+                  <van-icon
+                    name="like-o"
+                    size="18"
+                    @click.stop="handleLike(item)"
+                  />
+                  <van-icon
+                    name="star-o"
+                    size="18"
+                    @click.stop="handleFavorite(item)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <van-empty
+            v-if="menuList.length === 0 && !loading"
+            description="暂无餐厅记录"
+          >
+            <van-button
+              type="primary"
+              round
+              size="small"
+              @click="$router.push('/menu/add')"
+            >
+              添加餐厅
+            </van-button>
+          </van-empty>
+        </van-list>
+      </van-pull-refresh>
+    </div>
+
+    <!-- 添加按钮 -->
+    <button
+      class="fab"
+      @click="$router.push('/menu/add')"
+    >
+      <van-icon
+        name="plus"
+        size="26"
+      />
+    </button>
+
+    <app-tabbar />
+  </div>
+</template>
+
 <style lang="scss" scoped>
 .menu-page {
   min-height: 100vh;
-  background: #f5f5f5;
-  padding-bottom: 70px;
+  background: $color-background;
+  padding-bottom: 96px;
+}
+
+.menu-topbar {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include glass(0.7);
+
+  .page-title {
+    font-size: $fs-title;
+    font-weight: $fw-semibold;
+    color: $color-on-surface;
+  }
+}
+
+.menu-tabs {
+  :deep(.van-tabs__wrap) {
+    background: $color-background;
+  }
+}
+
+.menu-body {
+  padding: $space-4 $page-padding 0;
 }
 
 .stats-card {
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  margin: 12px 16px;
-  padding: 16px;
-  background: #fff;
-  border-radius: 12px;
+  @include card($radius-lg, $space-4);
+  margin-bottom: $space-5;
 
   .stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .value {
-      font-size: 20px;
-      font-weight: 700;
-      color: #ff4757;
-    }
-
-    .label {
-      font-size: 12px;
-      color: #999;
-      margin-top: 4px;
-    }
-  }
-
-  .stat-divider {
-    width: 1px;
-    height: 30px;
-    background: #eee;
-  }
-}
-
-.menu-list {
-  padding: 0 16px;
-}
-
-.menu-item {
-  display: flex;
-  padding: 12px;
-
-  .menu-cover {
-    width: 100px;
-    height: 100px;
-    background: #f5f5f5;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 12px;
-    overflow: hidden;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  .menu-content {
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: $space-1;
 
-    .menu-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 4px;
+    .value { font-size: $fs-headline; font-weight: $fw-bold; color: $color-primary; line-height: 1; }
+    .label { font-size: $fs-caption; color: $color-on-surface-variant; }
+  }
 
-      .menu-name {
-        font-size: 16px;
-        font-weight: 600;
-        color: #333;
-      }
+  .stat-divider { width: 1px; height: 28px; background: $color-surface-variant; }
+}
+
+.menu-card {
+  background: $color-surface-lowest;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+  margin-bottom: $space-4;
+  transition: transform $transition-base;
+
+  &:active { transform: scale(0.98); }
+
+  .cover {
+    position: relative;
+    height: 168px;
+    background: $color-surface-low;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+
+    .status-pill {
+      position: absolute;
+      top: $space-3;
+      right: $space-3;
+      padding: 3px 12px;
+      font-size: $fs-caption;
+      color: $color-primary;
+      @include glass(0.82);
+      border-radius: $radius-pill;
+    }
+  }
+
+  .body { padding: $space-4; }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $space-2;
+
+    .name {
+      font-size: $fs-title;
+      font-weight: $fw-semibold;
+      color: $color-on-surface;
+      @include ellipsis;
     }
 
-    .menu-location {
-      font-size: 12px;
-      color: #999;
+    .rating {
+      flex-shrink: 0;
       display: flex;
       align-items: center;
-      gap: 4px;
-      margin-bottom: 4px;
+      gap: 2px;
+      font-size: $fs-label;
+      font-weight: $fw-semibold;
+      color: $color-secondary;
+      margin-left: $space-2;
     }
+  }
 
-    .menu-dishes {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 8px;
-    }
+  .dish {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: $fs-label;
+    color: $color-on-surface-variant;
+    margin-bottom: $space-3;
+    @include ellipsis;
+    .van-icon { color: $color-primary; }
+  }
 
-    .menu-footer {
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .meta {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: auto;
+      gap: $space-4;
 
-      .menu-meta {
+      span {
         display: flex;
-        gap: 12px;
-
-        span {
-          font-size: 12px;
-          color: #999;
-          display: flex;
-          align-items: center;
-          gap: 2px;
-        }
+        align-items: center;
+        gap: 3px;
+        font-size: $fs-caption;
+        color: $color-on-surface-variant;
       }
+    }
 
-      .menu-actions {
-        display: flex;
-        gap: 12px;
-        color: #999;
-      }
+    .actions {
+      display: flex;
+      gap: $space-4;
+      color: $color-primary;
     }
   }
 }
 
-// 骨架屏样式
-.skeleton-item {
+// 骨架屏
+.skeleton {
   pointer-events: none;
 
-  .skeleton-cover {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  .sk-block,
+  .sk-line {
+    background: linear-gradient(90deg, $color-surface-high 25%, $color-surface-low 50%, $color-surface-high 75%);
     background-size: 200% 100%;
-    animation: skeleton-loading 1.5s infinite;
+    animation: sk-loading 1.5s infinite;
   }
 
-  .menu-content {
-    .skeleton-title {
-      width: 60%;
-      height: 16px;
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: skeleton-loading 1.5s infinite;
-      border-radius: 4px;
-      margin-bottom: 8px;
-    }
-
-    .skeleton-location {
-      width: 80%;
-      height: 12px;
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: skeleton-loading 1.5s infinite;
-      border-radius: 4px;
-      margin-bottom: 8px;
-    }
-
-    .skeleton-dishes {
-      width: 40%;
-      height: 12px;
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: skeleton-loading 1.5s infinite;
-      border-radius: 4px;
-    }
-  }
+  .sk-block { height: 168px; }
+  .body { padding: $space-4; }
+  .sk-line { height: 14px; border-radius: 4px; }
+  .sk-title { width: 55%; margin-bottom: $space-2; }
+  .sk-sub { width: 75%; height: 12px; }
 }
 
-@keyframes skeleton-loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+@keyframes sk-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-.add-btn {
+.fab {
   position: fixed;
-  right: 20px;
-  bottom: 80px;
+  right: $page-padding;
+  bottom: 84px;
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff6b9d 0%, #ff4757 100%);
   border: none;
-  box-shadow: 0 4px 16px rgba(255, 71, 87, 0.4);
+  background: $color-primary;
+  color: $color-on-primary;
+  box-shadow: $shadow-float;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 30;
+  transition: transform $transition-base;
 
-  :deep(.van-icon) {
-    font-size: 24px;
-  }
+  &:active { transform: scale(0.92); }
 }
 </style>

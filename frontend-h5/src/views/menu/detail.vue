@@ -1,90 +1,3 @@
-<template>
-  <div class="menu-detail-page">
-    <van-nav-bar
-      :title="menuDetail.restaurantName || '餐厅详情'"
-      left-text="返回"
-      left-arrow
-      @click-left="$router.back()"
-    >
-      <template #right>
-        <van-icon name="ellipsis" size="20" @click="showActions" />
-      </template>
-    </van-nav-bar>
-
-    <div class="detail-content" v-if="menuDetail.id">
-      <!-- 封面图片 -->
-      <div class="cover-section" v-if="menuDetail.photoUrls">
-        <van-swipe @change="onSwipeChange">
-          <van-swipe-item v-for="(url, index) in photoList" :key="index">
-            <img :src="url" alt="cover" />
-          </van-swipe-item>
-          <template #indicator>
-            <div class="swipe-indicator">
-              {{ currentSwipe + 1 }} / {{ photoList.length }}
-            </div>
-          </template>
-        </van-swipe>
-      </div>
-
-      <!-- 餐厅信息 -->
-      <div class="info-section card">
-        <div class="restaurant-header">
-          <h2 class="restaurant-name">{{ menuDetail.restaurantName }}</h2>
-          <van-tag :type="getStatusType(menuDetail.status)">
-            {{ getStatusText(menuDetail.status) }}
-          </van-tag>
-        </div>
-
-        <div class="info-row" v-if="menuDetail.location">
-          <van-icon name="location-o" />
-          <span>{{ menuDetail.location }}</span>
-        </div>
-
-        <div class="info-row" v-if="menuDetail.price">
-          <van-icon name="coupon-o" />
-          <span>{{ menuDetail.price }}</span>
-        </div>
-
-        <div class="info-row" v-if="menuDetail.rating">
-          <van-icon name="star" color="#ffd21e" />
-          <span>{{ menuDetail.rating }}分</span>
-        </div>
-      </div>
-
-      <!-- 推荐菜品 -->
-      <div class="dishes-section card" v-if="menuDetail.dishName">
-        <div class="section-title">推荐菜品</div>
-        <div class="dishes-content">{{ menuDetail.dishName }}</div>
-      </div>
-
-      <!-- 私密笔记 -->
-      <div class="note-section card" v-if="menuDetail.note">
-        <div class="section-title">私密笔记</div>
-        <div class="note-content">{{ menuDetail.note }}</div>
-      </div>
-
-      <!-- 操作按钮 -->
-      <div class="action-section">
-        <van-button type="primary" icon="like-o" @click="handleLike">
-          {{ menuDetail.likeCount || 0 }} 点赞
-        </van-button>
-        <van-button type="default" icon="star-o" @click="handleFavorite">
-          {{ menuDetail.isFavorite ? '取消收藏' : '收藏' }}
-        </van-button>
-      </div>
-    </div>
-
-    <van-loading v-else class="loading" />
-
-    <!-- 操作菜单 -->
-    <van-action-sheet
-      v-model:show="showActionSheet"
-      :actions="actions"
-      @select="onActionSelect"
-    />
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -187,85 +100,293 @@ onMounted(() => {
 })
 </script>
 
+<template>
+  <div class="menu-detail-page">
+    <!-- 封面 + 浮动按钮 -->
+    <div class="cover">
+      <van-swipe
+        v-if="photoList.length"
+        @change="onSwipeChange"
+      >
+        <van-swipe-item
+          v-for="(url, index) in photoList"
+          :key="index"
+        >
+          <img
+            :src="url"
+            alt="cover"
+          >
+        </van-swipe-item>
+        <template #indicator>
+          <div class="swipe-indicator">
+            {{ currentSwipe + 1 }} / {{ photoList.length }}
+          </div>
+        </template>
+      </van-swipe>
+      <div
+        v-else
+        class="cover-empty"
+      >
+        <van-icon
+          name="shop-o"
+          size="48"
+          color="#d6c1c5"
+        />
+      </div>
+
+      <button
+        class="float-btn back"
+        @click="$router.back()"
+      >
+        <van-icon
+          name="arrow-left"
+          size="20"
+        />
+      </button>
+      <button
+        class="float-btn more"
+        @click="showActions"
+      >
+        <van-icon
+          name="ellipsis"
+          size="20"
+        />
+      </button>
+    </div>
+
+    <div
+      v-if="menuDetail.id"
+      class="detail-body"
+    >
+      <!-- 餐厅信息 -->
+      <div class="info card">
+        <div class="head">
+          <h2 class="name">
+            {{ menuDetail.restaurantName }}
+          </h2>
+          <span
+            v-if="menuDetail.rating"
+            class="rating"
+          ><van-icon
+            name="star"
+            size="14"
+          /> {{ menuDetail.rating }}</span>
+        </div>
+        <div class="tags">
+          <van-tag
+            :type="getStatusType(menuDetail.status)"
+            round
+          >
+            {{ getStatusText(menuDetail.status) }}
+          </van-tag>
+        </div>
+        <div
+          v-if="menuDetail.price"
+          class="info-row"
+        >
+          <van-icon name="coupon-o" /> <span>{{ menuDetail.price }}</span>
+        </div>
+        <div
+          v-if="menuDetail.location"
+          class="info-row"
+        >
+          <van-icon name="location-o" /> <span>{{ menuDetail.location }}</span>
+        </div>
+      </div>
+
+      <!-- 推荐菜品 -->
+      <div
+        v-if="menuDetail.dishName"
+        class="card section"
+      >
+        <div class="section-title">
+          推荐菜品
+        </div>
+        <div class="section-content">
+          {{ menuDetail.dishName }}
+        </div>
+      </div>
+
+      <!-- 私密笔记 -->
+      <div
+        v-if="menuDetail.note"
+        class="card note-card"
+      >
+        <div class="section-title">
+          <van-icon
+            name="like"
+            size="14"
+          /> 我们的回忆
+        </div>
+        <div class="section-content">
+          {{ menuDetail.note }}
+        </div>
+      </div>
+    </div>
+
+    <van-loading
+      v-else
+      class="loading"
+    />
+
+    <!-- 底部操作栏 -->
+    <div
+      v-if="menuDetail.id"
+      class="action-bar"
+    >
+      <button
+        class="act"
+        @click="handleLike"
+      >
+        <van-icon
+          name="like-o"
+          size="20"
+        />
+        <span>{{ menuDetail.likeCount || 0 }} 点赞</span>
+      </button>
+      <button
+        class="act primary"
+        @click="handleFavorite"
+      >
+        <van-icon
+          name="star-o"
+          size="20"
+        />
+        <span>{{ menuDetail.isFavorite ? '取消收藏' : '收藏' }}</span>
+      </button>
+    </div>
+
+    <!-- 操作菜单 -->
+    <van-action-sheet
+      v-model:show="showActionSheet"
+      :actions="actions"
+      cancel-text="取消"
+      @select="onActionSelect"
+    />
+  </div>
+</template>
+
 <style lang="scss" scoped>
 .menu-detail-page {
   min-height: 100vh;
-  background: #f5f5f5;
-  padding-bottom: 20px;
+  background: $color-background;
+  padding-bottom: 88px;
 }
 
-.cover-section {
+.cover {
   position: relative;
 
-  img {
+  :deep(.van-swipe),
+  img,
+  .cover-empty {
     width: 100%;
-    height: 250px;
-    object-fit: cover;
+    height: 260px;
+  }
+
+  img { object-fit: cover; }
+
+  .cover-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $color-surface-low;
   }
 
   .swipe-indicator {
     position: absolute;
-    right: 16px;
-    bottom: 16px;
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 12px;
+    right: $space-4;
+    bottom: $space-4;
+    @include glass(0.6);
+    color: $color-on-surface;
+    padding: 3px 12px;
+    border-radius: $radius-pill;
+    font-size: $fs-caption;
+  }
+
+  .float-btn {
+    position: absolute;
+    top: 16px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    @include glass(0.7);
+    color: $color-on-surface;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: $shadow-sm;
+    cursor: pointer;
+
+    &.back { left: $page-padding; }
+    &.more { right: $page-padding; }
   }
 }
 
-.info-section,
-.dishes-section,
-.note-section {
-  margin: 12px 16px;
-  padding: 16px;
+.detail-body {
+  position: relative;
+  margin-top: -20px;
+  padding: 0 $page-padding;
+}
 
-  .restaurant-header {
+.card {
+  @include card($radius-lg, $space-5);
+  margin-bottom: $space-4;
+}
+
+.info {
+  .head {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    justify-content: space-between;
+    margin-bottom: $space-3;
 
-    .restaurant-name {
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
+    .name { font-size: $fs-headline; font-weight: $fw-bold; color: $color-on-surface; }
+    .rating {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: $fs-label;
+      font-weight: $fw-semibold;
+      color: $color-secondary;
     }
   }
+
+  .tags { margin-bottom: $space-3; }
 
   .info-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 8px;
-  }
-
-  .section-title {
-    font-size: 14px;
-    color: #999;
-    margin-bottom: 12px;
-  }
-
-  .dishes-content,
-  .note-content {
-    font-size: 14px;
-    color: #333;
-    line-height: 1.6;
+    gap: $space-2;
+    font-size: $fs-label;
+    color: $color-on-surface-variant;
+    margin-bottom: $space-2;
+    .van-icon { color: $color-primary; }
   }
 }
 
-.action-section {
+.section-title {
   display: flex;
-  gap: 12px;
-  padding: 16px;
+  align-items: center;
+  gap: 4px;
+  font-size: $fs-caption;
+  color: $color-on-surface-variant;
+  margin-bottom: $space-3;
+  .van-icon { color: $color-primary; }
+}
 
-  .van-button {
-    flex: 1;
-    border-radius: 24px;
-  }
+.section-content {
+  font-size: $fs-label;
+  color: $color-on-surface;
+  line-height: 1.7;
+}
+
+.note-card {
+  background: $color-primary-fixed;
+
+  .section-title { color: $color-on-primary-container; }
+  .section-content { color: $color-on-primary-container; }
 }
 
 .loading {
@@ -273,5 +394,39 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   height: 200px;
+}
+
+.action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  gap: $space-3;
+  padding: $space-3 $page-padding;
+  padding-bottom: calc(#{$space-3} + env(safe-area-inset-bottom));
+  @include glass(0.9);
+  box-shadow: $shadow-nav;
+
+  .act {
+    flex: 1;
+    height: 46px;
+    border-radius: $radius-pill;
+    border: 1px solid $color-outline-variant;
+    background: $color-surface-lowest;
+    color: $color-on-surface;
+    font-size: $fs-label;
+    font-weight: $fw-medium;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+
+    &.primary {
+      @include btn-primary;
+      border: none;
+    }
+  }
 }
 </style>

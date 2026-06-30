@@ -1,0 +1,121 @@
+{
+  "bodyFont": "PLUS_JAKARTA_SANS",
+  "bodyFontFamily": "Plus Jakarta Sans",
+  "colorMode": "LIGHT",
+  "colorVariant": "FIDELITY",
+  "customColor": "#f4a7b9",
+  "font": "PLUS_JAKARTA_SANS",
+  "headlineFont": "PLUS_JAKARTA_SANS",
+  "headlineFontFamily": "Plus Jakarta Sans",
+  "labelFont": "PLUS_JAKARTA_SANS",
+  "labelFontFamily": "Plus Jakarta Sans",
+  "namedColors": {
+    "background": "#fff8f5",
+    "error": "#ba1a1a",
+    "error_container": "#ffdad6",
+    "inverse_on_surface": "#f8efea",
+    "inverse_primary": "#ffb1c3",
+    "inverse_surface": "#34302c",
+    "on_background": "#1e1b18",
+    "on_error": "#ffffff",
+    "on_error_container": "#93000a",
+    "on_primary": "#ffffff",
+    "on_primary_container": "#733949",
+    "on_primary_fixed": "#380a1a",
+    "on_primary_fixed_variant": "#6e3545",
+    "on_secondary": "#ffffff",
+    "on_secondary_container": "#795e37",
+    "on_secondary_fixed": "#291800",
+    "on_secondary_fixed_variant": "#5b421e",
+    "on_surface": "#1e1b18",
+    "on_surface_variant": "#524346",
+    "on_tertiary": "#ffffff",
+    "on_tertiary_container": "#4c4c46",
+    "on_tertiary_fixed": "#1b1c17",
+    "on_tertiary_fixed_variant": "#474742",
+    "outline": "#847376",
+    "outline_variant": "#d6c1c5",
+    "primary": "#894c5c",
+    "primary_container": "#f4a7b9",
+    "primary_fixed": "#ffd9e0",
+    "primary_fixed_dim": "#ffb1c3",
+    "secondary": "#755a33",
+    "secondary_container": "#ffdaaa",
+    "secondary_fixed": "#ffddb2",
+    "secondary_fixed_dim": "#e4c192",
+    "surface": "#fff8f5",
+    "surface_bright": "#fff8f5",
+    "surface_container": "#f5ece7",
+    "surface_container_high": "#efe6e2",
+    "surface_container_highest": "#e9e1dc",
+    "surface_container_low": "#fbf2ed",
+    "surface_container_lowest": "#ffffff",
+    "surface_dim": "#e1d8d4",
+    "surface_tint": "#894c5c",
+    "surface_variant": "#e9e1dc",
+    "tertiary": "#5f5f59",
+    "tertiary_container": "#bdbcb5",
+    "tertiary_fixed": "#e4e3db",
+    "tertiary_fixed_dim": "#c8c7bf"
+  },
+  "overrideNeutralColor": "#2d2926",
+  "overridePrimaryColor": "#f4a7b9",
+  "overrideSecondaryColor": "#fad5a5",
+  "overrideTertiaryColor": "#fffdf5",
+  "roundness": "ROUND_EIGHT",
+  "spacing": {
+    "base": "8px",
+    "container-padding-desktop": "40px",
+    "container-padding-mobile": "20px",
+    "gutter": "16px",
+    "section-gap": "32px"
+  },
+  "spacingScale": 2,
+  "typography": {
+    "body-lg": {
+      "fontFamily": "Plus Jakarta Sans",
+      "fontSize": "18px",
+      "fontWeight": "400",
+      "lineHeight": "28px"
+    },
+    "body-md": {
+      "fontFamily": "Plus Jakarta Sans",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": "24px"
+    },
+    "caption": {
+      "fontFamily": "Plus Jakarta Sans",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "lineHeight": "16px"
+    },
+    "display-lg": {
+      "fontFamily": "Plus Jakarta Sans",
+      "fontSize": "40px",
+      "fontWeight": "700",
+      "letterSpacing": "-0.02em",
+      "lineHeight": "48px"
+    },
+    "display-lg-mobile": {
+      "fontFamily": "Plus Jakarta Sans",
+      "fontSize": "32px",
+      "fontWeight": "700",
+      "letterSpacing": "-0.02em",
+      "lineHeight": "40px"
+    },
+    "headline-md": {
+      "fontFamily": "Plus Jakarta Sans",
+      "fontSize": "24px",
+      "fontWeight": "600",
+      "lineHeight": "32px"
+    },
+    "label-sm": {
+      "fontFamily": "Plus Jakarta Sans",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "letterSpacing": "0.01em",
+      "lineHeight": "20px"
+    }
+  }
+}

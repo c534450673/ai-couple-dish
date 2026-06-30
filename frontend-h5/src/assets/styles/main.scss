@@ -1,97 +1,155 @@
-// 全局样式
+// =============================================================
+// 全局样式 — 基于 Stitch "Intimate Culinary Romance" 设计系统
+// 设计令牌（变量/mixin）已由 vite additionalData 自动注入（tokens.scss）
+// =============================================================
+
+// ---------- Reset ----------
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: #f5f5f5;
-  color: #333;
+  font-family: $font-family-base;
+  font-size: $fs-body;
+  line-height: $lh-body;
+  background: $color-background;
+  color: $color-on-surface;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-// 容器
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button { font-family: inherit; }
+
+// ---------- Vant 主题覆盖 ----------
+:root {
+  // 基础色
+  --van-primary-color: #{$color-primary};
+  --van-danger-color: #{$color-error};
+  --van-success-color: #{$color-secondary};
+  --van-text-color: #{$color-on-surface};
+  --van-text-color-2: #{$color-on-surface-variant};
+  --van-text-color-3: #{$color-outline};
+  --van-background: #{$color-background};
+  --van-background-2: #{$color-surface-lowest};
+  --van-border-color: #{$color-outline-variant};
+
+  // 圆角
+  --van-radius-sm: #{$radius-sm};
+  --van-radius-md: #{$radius-md};
+  --van-radius-lg: #{$radius-lg};
+
+  // 按钮（pill + 玫瑰主色）
+  --van-button-border-radius: #{$radius-pill};
+  --van-button-primary-background: #{$color-primary};
+  --van-button-primary-border-color: #{$color-primary};
+  --van-button-default-background: #{$color-surface-lowest};
+
+  // Cell / 列表
+  --van-cell-background: #{$color-surface-lowest};
+  --van-cell-text-color: #{$color-on-surface};
+  --van-cell-group-inset-radius: #{$radius-lg};
+  --van-cell-group-background: transparent;
+
+  // Field
+  --van-field-input-text-color: #{$color-on-surface};
+  --van-field-label-color: #{$color-on-surface-variant};
+
+  // Tabs
+  --van-tabs-bottom-bar-color: #{$color-primary};
+  --van-tab-active-text-color: #{$color-primary};
+  --van-tab-text-color: #{$color-on-surface-variant};
+
+  // TabBar（玻璃态）
+  --van-tabbar-background: rgba(255, 248, 245, 0.85);
+  --van-tabbar-item-active-color: #{$color-primary};
+  --van-tabbar-item-text-color: #{$color-on-surface-variant};
+  --van-tabbar-item-active-background: transparent;
+
+  // NavBar
+  --van-nav-bar-background: transparent;
+  --van-nav-bar-icon-color: #{$color-primary};
+  --van-nav-bar-title-text-color: #{$color-on-surface};
+  --van-nav-bar-text-color: #{$color-primary};
+
+  // 其它
+  --van-tag-primary-color: #{$color-primary};
+  --van-switch-on-background: #{$color-primary};
+  --van-popup-background: #{$color-surface-lowest};
+  --van-popup-round-border-radius: #{$radius-xl};
+  --van-overlay-background: rgba(30, 27, 24, 0.45);
+  --van-empty-description-color: #{$color-on-surface-variant};
+  --van-loading-spinner-color: #{$color-primary};
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+  background: $color-background;
+}
+
+// ---------- 通用布局/组件类（兼容旧页面，套用新风格） ----------
 .container {
   width: 100%;
   min-height: 100vh;
-  background: #f5f5f5;
+  background: $color-background;
 }
 
-// 页面padding
 .page {
-  padding: 16px;
-  padding-bottom: 80px;
+  padding: $page-padding;
+  padding-bottom: 96px;
 }
 
-// 通用卡片
 .card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  @include card($radius-lg, $space-5);
+  margin-bottom: $space-3;
 }
 
-// 标题
 .title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 12px;
+  font-size: $fs-title;
+  font-weight: $fw-semibold;
+  color: $color-on-surface;
+  margin-bottom: $space-3;
 }
 
-// 副标题
 .subtitle {
-  font-size: 14px;
-  color: #999;
-  margin-bottom: 8px;
+  font-size: $fs-label;
+  color: $color-on-surface-variant;
+  margin-bottom: $space-2;
 }
 
-// 按钮样式
 .btn-primary {
   width: 100%;
   height: 48px;
-  background: linear-gradient(135deg, #ff6b9d 0%, #ff4757 100%);
-  color: #fff;
-  border: none;
-  border-radius: 24px;
-  font-size: 16px;
-  font-weight: 500;
+  @include btn-primary;
+  font-size: $fs-body;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: opacity $transition-base;
 
-  &:active {
-    opacity: 0.8;
-  }
-
-  &.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  &:active { opacity: 0.85; }
+  &.disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 .btn-secondary {
   width: 100%;
   height: 48px;
-  background: #fff;
-  color: #ff4757;
-  border: 1px solid #ff4757;
-  border-radius: 24px;
-  font-size: 16px;
-  font-weight: 500;
+  background: $color-surface-lowest;
+  color: $color-primary;
+  border: 1px solid $color-primary-container;
+  border-radius: $radius-pill;
+  font-size: $fs-body;
+  font-weight: $fw-medium;
   cursor: pointer;
 
-  &:active {
-    background: #fff0f3;
-  }
+  &:active { background: $color-surface-low; }
 }
 
-// 空状态
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -100,20 +158,10 @@ html, body {
   padding: 60px 20px;
   text-align: center;
 
-  &__icon {
-    width: 120px;
-    height: 120px;
-    margin-bottom: 20px;
-    opacity: 0.5;
-  }
-
-  &__text {
-    font-size: 14px;
-    color: #999;
-  }
+  &__icon { width: 120px; height: 120px; margin-bottom: 20px; opacity: 0.6; }
+  &__text { font-size: $fs-label; color: $color-on-surface-variant; }
 }
 
-// 加载状态
 .loading {
   display: flex;
   align-items: center;
@@ -121,79 +169,50 @@ html, body {
   padding: 60px 20px;
 }
 
-// 列表项
 .list-item {
   display: flex;
   align-items: center;
-  padding: 16px;
-  background: #fff;
-  border-radius: 12px;
-  margin-bottom: 12px;
+  padding: $space-4;
+  background: $color-surface-lowest;
+  border-radius: $radius-lg;
+  margin-bottom: $space-3;
+  box-shadow: $shadow-card;
 
-  &__avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    margin-right: 12px;
-    background: #f0f0f0;
-  }
-
-  &__content {
-    flex: 1;
-  }
-
-  &__title {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-    margin-bottom: 4px;
-  }
-
-  &__desc {
-    font-size: 13px;
-    color: #999;
-  }
-
-  &__arrow {
-    color: #ccc;
-  }
+  &__avatar { width: 48px; height: 48px; border-radius: 50%; margin-right: $space-3; background: $color-surface-high; }
+  &__content { flex: 1; }
+  &__title { font-size: $fs-body; font-weight: $fw-medium; color: $color-on-surface; margin-bottom: $space-1; }
+  &__desc { font-size: $fs-caption; color: $color-on-surface-variant; }
+  &__arrow { color: $color-outline-variant; }
 }
 
-// 底部导航
+// 旧自定义 tabbar（页面逐步迁移到 MainLayout 后不再使用）
 .tabbar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px;
-  background: #fff;
+  height: 64px;
+  @include glass(0.85);
   display: flex;
   justify-content: space-around;
   align-items: center;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: $shadow-nav;
   z-index: 100;
 
   &__item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-size: 11px;
-    color: #999;
+    font-size: $fs-caption;
+    color: $color-on-surface-variant;
     cursor: pointer;
 
-    &.active {
-      color: #ff4757;
-    }
-
-    &-icon {
-      width: 24px;
-      height: 24px;
-      margin-bottom: 4px;
-    }
+    &.active { color: $color-primary; }
+    &-icon { width: 24px; height: 24px; margin-bottom: 4px; }
   }
 }
 
-// 工具函数
+// ---------- 工具类 ----------
 .text-center { text-align: center; }
 .text-left { text-align: left; }
 .text-right { text-align: right; }
@@ -205,6 +224,15 @@ html, body {
 .mb-12 { margin-bottom: 12px; }
 .mb-16 { margin-bottom: 16px; }
 
-.text-pink { color: #ff4757; }
-.text-gray { color: #999; }
-.text-bold { font-weight: 600; }
+.text-pink { color: $color-primary; }  // 旧别名 → 新主色
+.text-primary { color: $color-primary; }
+.text-muted { color: $color-on-surface-variant; }
+.text-gray { color: $color-on-surface-variant; }
+.text-bold { font-weight: $fw-semibold; }
+
+// 渐变背景工具
+.bg-romance { background: $gradient-romance; }
+.bg-gradient-primary { background: $gradient-primary; }
+
+// ---------- 滚动条 ----------
+::-webkit-scrollbar { width: 0; height: 0; }

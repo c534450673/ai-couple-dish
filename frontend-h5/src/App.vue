@@ -1,15 +1,3 @@
-<template>
-  <div id="app">
-    <router-view v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <error-boundary>
-          <component :is="Component" />
-        </error-boundary>
-      </transition>
-    </router-view>
-  </div>
-</template>
-
 <script setup>
 import { onMounted } from 'vue'
 import { useUserStore } from './stores/user'
@@ -22,11 +10,26 @@ onMounted(() => {
 })
 </script>
 
+<template>
+  <div id="app">
+    <router-view v-slot="{ Component }">
+      <transition
+        name="fade"
+        mode="out-in"
+      >
+        <error-boundary>
+          <component :is="Component" />
+        </error-boundary>
+      </transition>
+    </router-view>
+  </div>
+</template>
+
 <style lang="scss">
 #app {
   width: 100%;
   min-height: 100vh;
-  background: #f5f5f5;
+  background: $color-background;
 }
 
 .fade-enter-active,
