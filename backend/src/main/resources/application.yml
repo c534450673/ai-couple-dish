@@ -84,6 +84,15 @@ file:
 pricing:
   recipe-unit-price: ${RECIPE_UNIT_PRICE:9.9}
 
+# AI 助手（Kimi / OpenAI 兼容网关）
+ai:
+  base-url: ${AI_BASE_URL:}
+  api-key: ${AI_API_KEY:}
+  model: ${AI_MODEL:kimi-k2.6}
+  timeout-ms: ${AI_TIMEOUT_MS:120000}
+  max-history: ${AI_MAX_HISTORY:20}
+  max-tool-rounds: ${AI_MAX_TOOL_ROUNDS:5}
+
 # Knife4j配置
 knife4j:
   enable: true

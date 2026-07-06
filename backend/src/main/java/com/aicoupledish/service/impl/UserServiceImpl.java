@@ -236,6 +236,7 @@ public class UserServiceImpl implements UserService {
 
     private User createNewPhoneUser(String phone) {
         User user = new User();
+        user.setOpenid("phone_" + phone);
         user.setPhone(phone);
         user.setNickName("用户" + phone.substring(phone.length() - 4));
         user.setStatus(DEFAULT_USER_STATUS);

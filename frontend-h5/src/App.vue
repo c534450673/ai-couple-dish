@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import { useUserStore } from './stores/user'
 import ErrorBoundary from './components/ErrorBoundary.vue'
+import AiAssistantFab from './components/AiAssistantFab.vue'
 
 const userStore = useUserStore()
 
@@ -22,6 +23,7 @@ onMounted(() => {
         </error-boundary>
       </transition>
     </router-view>
+    <AiAssistantFab />
   </div>
 </template>
 

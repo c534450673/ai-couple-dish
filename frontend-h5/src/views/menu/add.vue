@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { showToast, showLoadingToast, closeToast } from 'vant'
 import { menuApi, uploadApi } from '@/api'
+import { generateForm } from '@/api/ai'
 
 const router = useRouter()
 
@@ -19,6 +20,9 @@ const form = ref({
 
 const fileList = ref([])
 const submitting = ref(false)
+const aiLoading = ref(false)
+const aiPrompt = ref('')
+const showAiDialog = ref(false)
 const uploadedUrls = ref([])
 
 const afterRead = async (file) => {
@@ -41,6 +45,37 @@ const onDelete = (file) => {
   const index = uploadedUrls.value.findIndex(url => url === file.url)
   if (index > -1) {
     uploadedUrls.value.splice(index, 1)
+  }
+}
+
+const handleAiFill = async () => {
+  if (!aiPrompt.value.trim()) {
+    showToast('请先描述餐厅或用餐经历')
+    return
+  }
+  aiLoading.value = true
+  showLoadingToast({ message: 'AI 生成中...', forbidClick: true })
+  try {
+    const res = await generateForm('menu', aiPrompt.value.trim())
+    closeToast()
+    if (res.code === 200 && res.data?.data) {
+      const d = res.data.data
+      if (d.restaurantName) form.value.restaurantName = String(d.restaurantName)
+      if (d.dishName) form.value.dishName = String(d.dishName)
+      if (d.location) form.value.location = String(d.location)
+      if (d.price != null) form.value.price = String(d.price)
+      if (d.note) form.value.note = String(d.note)
+      if (d.status != null) form.value.status = String(d.status)
+      showAiDialog.value = false
+      showToast('已填入表单，请核对后保存')
+    } else {
+      showToast(res.message || 'AI 生成失败')
+    }
+  } catch {
+    closeToast()
+    showToast('AI 生成失败')
+  } finally {
+    aiLoading.value = false
   }
 }
 
@@ -89,6 +124,19 @@ const handleSubmit = async () => {
     </header>
 
     <div class="form-content">
+      <div class="ai-fill-bar">
+        <van-button
+          size="small"
+          round
+          plain
+          type="primary"
+          icon="fire-o"
+          @click="showAiDialog = true"
+        >
+          AI 帮填
+        </van-button>
+      </div>
+
       <van-form @submit="handleSubmit">
         <van-cell-group inset>
           <van-field
@@ -184,6 +232,23 @@ const handleSubmit = async () => {
         </div>
       </van-form>
     </div>
+
+    <van-dialog
+      v-model:show="showAiDialog"
+      title="AI 帮填菜单"
+      show-cancel-button
+      confirm-button-text="生成"
+      :before-close="(action) => action !== 'confirm' || !aiLoading"
+      @confirm="handleAiFill"
+    >
+      <van-field
+        v-model="aiPrompt"
+        type="textarea"
+        rows="3"
+        placeholder="描述一下，例如：昨天和 TA 去了海底捞，点了番茄锅和毛肚，人均120，很满意"
+        style="padding: 12px 16px"
+      />
+    </van-dialog>
   </div>
 </template>
 
@@ -219,6 +284,12 @@ const handleSubmit = async () => {
 
 .form-content {
   padding: $space-4 0 $space-8;
+}
+
+.ai-fill-bar {
+  padding: 0 $page-padding $space-3;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .form-section {

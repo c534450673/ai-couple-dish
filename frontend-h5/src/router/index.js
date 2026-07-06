@@ -45,6 +45,12 @@ const routes = [
     meta: { title: '菜单详情', requiresAuth: true }
   },
   {
+    path: '/recipe/add',
+    name: 'RecipeAdd',
+    component: () => import('@/views/recipe/add.vue'),
+    meta: { title: '创建菜谱', requiresAuth: true }
+  },
+  {
     path: '/anniversary',
     name: 'Anniversary',
     component: () => import('@/views/anniversary/index.vue'),
