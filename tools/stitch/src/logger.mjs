@@ -1,15 +1,13 @@
-const SENSITIVE_NAMES = new Set([
+const SENSITIVE_NAMES = [
   "apikey",
-  "api_key",
   "token",
-  "accesstoken",
-  "access_token",
-  "authorization"
-]);
+  "authorization",
+  "secret"
+];
 
 function sanitize(value, key = "") {
-  const normalizedKey = key.toLowerCase();
-  if (SENSITIVE_NAMES.has(normalizedKey)) {
+  const normalizedKey = key.toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (SENSITIVE_NAMES.some(name => normalizedKey.includes(name))) {
     return "[REDACTED]";
   }
   if (Array.isArray(value)) {
@@ -28,11 +26,17 @@ export function logEvent(
   fields = {},
   write = line => process.stderr.write(line + String.fromCharCode(10))
 ) {
+  const sanitizedFields = sanitize(fields);
+  const result = sanitizedFields.result ?? "unknown";
+  const durationMs = sanitizedFields.durationMs ?? 0;
+
   write(
     JSON.stringify({
+      ...sanitizedFields,
       timestamp: new Date().toISOString(),
-      event,
-      ...sanitize(fields)
+      event: event ?? "unknown",
+      result,
+      durationMs
     })
   );
 }
