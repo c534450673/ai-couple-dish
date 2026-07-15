@@ -98,3 +98,32 @@ test("logEvent keeps protected metadata after context fields", () => {
   assert.equal(output.durationMs, 37);
   assert.equal(output.screenId, "screen-3");
 });
+
+test("logEvent never executes enumerable toJSON hooks", () => {
+  const lines = [];
+  let toJSONCalls = 0;
+  logEvent(
+    "stitch.health",
+    {
+      apiKey: "source-key",
+      result: "ok",
+      durationMs: 19,
+      toJSON() {
+        toJSONCalls += 1;
+        return { apiKey: "reinjected-key" };
+      }
+    },
+    line => lines.push(line)
+  );
+
+  assert.equal(toJSONCalls, 0);
+  assert.equal(lines[0].includes("source-key"), false);
+  assert.equal(lines[0].includes("reinjected-key"), false);
+
+  const output = JSON.parse(lines[0]);
+  assert.equal(output.apiKey, "[REDACTED]");
+  assert.equal(output.event, "stitch.health");
+  assert.equal(output.result, "ok");
+  assert.equal(output.durationMs, 19);
+  assert.equal(Object.hasOwn(output, "toJSON"), false);
+});

@@ -6,6 +6,9 @@ const SENSITIVE_NAMES = [
 ];
 
 function sanitize(value, key = "") {
+  if (key === "toJSON" || typeof value === "function") {
+    return undefined;
+  }
   const normalizedKey = key.toLowerCase().replace(/[^a-z0-9]/g, "");
   if (SENSITIVE_NAMES.some(name => normalizedKey.includes(name))) {
     return "[REDACTED]";
