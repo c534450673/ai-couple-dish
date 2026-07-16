@@ -20,9 +20,22 @@ export async function generateHomeDesign(sdk, state) {
     },
     "MOBILE"
   );
+  if (!Array.isArray(variants)) {
+    throw new Error("Expected home variants to be an array");
+  }
   if (variants.length !== VARIANT_KEYS.length) {
     throw new Error(
       `Expected ${VARIANT_KEYS.length} home variants, received ${variants.length}`
+    );
+  }
+  if (
+    !variants.every(
+      (screen) =>
+        typeof screen?.screenId === "string" && screen.screenId.trim().length > 0
+    )
+  ) {
+    throw new Error(
+      "Expected every home variant to include a non-empty screenId"
     );
   }
 

@@ -144,3 +144,62 @@ for (const variantCount of [2, 4]) {
     assert.equal(Object.hasOwn(state.screens, "undefined"), false);
   });
 }
+
+for (const { name, variants, expectedError } of [
+  {
+    name: "a non-array result",
+    variants: { length: 3 },
+    expectedError: /Expected home variants to be an array/
+  },
+  {
+    name: "a null item",
+    variants: [
+      null,
+      { screenId: "home-food-id" },
+      { screenId: "home-memory-id" }
+    ],
+    expectedError: /Expected every home variant to include a non-empty screenId/
+  },
+  {
+    name: "an item without screenId",
+    variants: [
+      {},
+      { screenId: "home-food-id" },
+      { screenId: "home-memory-id" }
+    ],
+    expectedError: /Expected every home variant to include a non-empty screenId/
+  },
+  {
+    name: "an item with blank screenId",
+    variants: [
+      { screenId: "   " },
+      { screenId: "home-food-id" },
+      { screenId: "home-memory-id" }
+    ],
+    expectedError: /Expected every home variant to include a non-empty screenId/
+  }
+]) {
+  test(`generateHomeDesign rejects ${name} without changing state`, async () => {
+    const sdk = {
+      async createProject() {
+        return {
+          projectId: "project-1",
+          async generate() {
+            return {
+              screenId: "home-base-id",
+              async variants() {
+                return variants;
+              }
+            };
+          }
+        };
+      }
+    };
+    const state = emptyGenerationState();
+    const originalState = structuredClone(state);
+
+    await assert.rejects(generateHomeDesign(sdk, state), expectedError);
+    assert.deepEqual(state, originalState);
+    assert.equal(Object.hasOwn(state.screens, "undefined"), false);
+  });
+}
