@@ -25,6 +25,7 @@ function screenEntry(localId = "login", overrides = {}) {
     screenshotSha256: hash("image"),
     html: `html/${localId}.html`,
     htmlSha256: hash("html"),
+    htmlSource: "stitch",
     exportedAt: "2026-07-15T00:00:00.000Z",
     ...overrides
   };
@@ -223,10 +224,35 @@ for (const [mutation, expectedError] of [
 }
 
 test("legacy one-project fixture remains valid", async () => {
-  const { root } = await fixture();
+  const data = await fixture();
+  delete data.manifest.screens[0].htmlSource;
+  await writeJson(join(data.root, "manifest.json"), data.manifest);
+  const { root } = data;
   assert.deepEqual(await verifyDesignExport(root, ["login"], [], () => {}), {
     screenCount: 1
   });
+});
+
+test("verifyDesignExport accepts screenshot fallback HTML source", async () => {
+  const data = await fixture();
+  data.manifest.screens[0].htmlSource = "screenshot-fallback";
+  await writeJson(join(data.root, "manifest.json"), data.manifest);
+
+  assert.deepEqual(
+    await verifyDesignExport(data.root, ["login"], [], () => {}),
+    { screenCount: 1 }
+  );
+});
+
+test("verifyDesignExport rejects unknown HTML source", async () => {
+  const data = await fixture();
+  data.manifest.screens[0].htmlSource = "generated-preview";
+  await writeJson(join(data.root, "manifest.json"), data.manifest);
+
+  await assert.rejects(
+    () => verifyDesignExport(data.root, ["login"], [], () => {}),
+    /Invalid HTML source: login/
+  );
 });
 
 test("verifyDesignExport rejects malformed explicit state projects", async t => {

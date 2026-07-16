@@ -5,6 +5,7 @@ import { performance } from "node:perf_hooks";
 import { logEvent } from "./logger.mjs";
 
 const VALID_KINDS = new Set(["base", "variant"]);
+const VALID_HTML_SOURCES = new Set(["stitch", "screenshot-fallback"]);
 
 function hash(buffer) {
   return createHash("sha256").update(buffer).digest("hex");
@@ -212,6 +213,12 @@ function validateScreenEntry(root, state, screen) {
   }
   if (screen.kind !== reference.kind) {
     throw new Error("Screen kind mismatch: " + screen.localId);
+  }
+  const htmlSource = screen.htmlSource === undefined
+    ? "stitch"
+    : screen.htmlSource;
+  if (!VALID_HTML_SOURCES.has(htmlSource)) {
+    throw new Error("Invalid HTML source: " + screen.localId);
   }
   assertArtifactPath(
     root,

@@ -5,8 +5,48 @@ import { performance } from "node:perf_hooks";
 import { logEvent } from "./logger.mjs";
 import { effectiveProjectId, projectRegistry } from "./project-shards.mjs";
 
+const SCREENSHOT_FALLBACK_SOURCE = "screenshot-fallback";
+
 function sha256(buffer) {
   return createHash("sha256").update(buffer).digest("hex");
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
+function screenshotFallbackHtml(localId) {
+  const safeLocalId = escapeHtml(localId);
+  const notice = escapeHtml(
+    "仅视觉参考：Stitch 未提供可下载的 HTML，以下内容来自真实截图。"
+  );
+  return `<!doctype html>
+<html lang="zh-CN" data-stitch-html-source="${SCREENSHOT_FALLBACK_SOURCE}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${safeLocalId} - ${notice}</title>
+  <style>
+    body { margin: 0; padding: 24px; background: #f5f5f5; color: #222; font-family: sans-serif; }
+    main { max-width: 960px; margin: 0 auto; }
+    .notice { margin: 0 0 16px; padding: 12px 16px; background: #fff4d6; border: 1px solid #e7c765; }
+    img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="notice">${notice}</p>
+    <img src="../screenshots/${safeLocalId}.png" alt="${safeLocalId} ${notice}">
+  </main>
+</body>
+</html>
+`;
 }
 
 export async function downloadArtifact(url, outputPath, fetchImpl = fetch) {
@@ -42,6 +82,7 @@ async function exportArtifact({
   outputRoot,
   fetchImpl,
   getUrl,
+  fallbackContent,
   write
 }) {
   const started = performance.now();
@@ -54,23 +95,32 @@ async function exportArtifact({
   };
   logEvent("stitch.export.screen", { result: "started", ...context }, write);
   try {
-    const result = await downloadArtifact(
-      await getUrl(),
-      join(outputRoot, artifact),
-      fetchImpl
-    );
+    const url = await getUrl();
+    const usesFallback =
+      fallbackContent !== undefined &&
+      (typeof url !== "string" || !url.trim());
+    const artifactSource = usesFallback ? SCREENSHOT_FALLBACK_SOURCE : "stitch";
+    let result;
+    if (usesFallback) {
+      const buffer = Buffer.from(fallbackContent, "utf8");
+      await writeFile(join(outputRoot, artifact), buffer);
+      result = { sha256: sha256(buffer), bytes: buffer.length };
+    } else {
+      result = await downloadArtifact(url, join(outputRoot, artifact), fetchImpl);
+    }
     logEvent(
       "stitch.export.screen",
       {
         result: "ok",
         ...context,
+        artifactSource,
         bytes: result.bytes,
         hash: result.sha256,
         durationMs: Math.round(performance.now() - started)
       },
       write
     );
-    return result;
+    return { ...result, artifactSource };
   } catch (error) {
     const details = toErrorDetails(redactStagingPath(error, outputRoot));
     logEvent(
@@ -138,6 +188,7 @@ export async function exportDesignProject(
         outputRoot: stagingRoot,
         fetchImpl,
         getUrl: () => screen.getHtml(),
+        fallbackContent: screenshotFallbackHtml(localId),
         write
       });
       screens.push({
@@ -149,6 +200,7 @@ export async function exportDesignProject(
         screenshotSha256: imageResult.sha256,
         html,
         htmlSha256: htmlResult.sha256,
+        htmlSource: htmlResult.artifactSource,
         exportedAt: new Date().toISOString()
       });
     }

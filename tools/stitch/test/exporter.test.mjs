@@ -126,7 +126,7 @@ test("exportDesignProject writes multi-screen artifacts, manifest and detailed l
     const htmlBytes = `${reference.screenId}-html`;
     assert.deepEqual(Object.keys(screen), [
       "localId", "projectId", "screenId", "kind", "screenshot",
-      "screenshotSha256", "html", "htmlSha256", "exportedAt"
+      "screenshotSha256", "html", "htmlSha256", "htmlSource", "exportedAt"
     ]);
     assert.equal(screen.projectId, "project-1");
     assert.equal(screen.screenId, reference.screenId);
@@ -135,6 +135,7 @@ test("exportDesignProject writes multi-screen artifacts, manifest and detailed l
     assert.equal(screen.html, `html/${screen.localId}.html`);
     assert.equal(screen.screenshotSha256, digest(screenshotBytes));
     assert.equal(screen.htmlSha256, digest(htmlBytes));
+    assert.equal(screen.htmlSource, "stitch");
     assert.match(screen.exportedAt, /^\d{4}-\d{2}-\d{2}T/);
     assert.equal(await readFile(join(root, screen.screenshot), "utf8"), screenshotBytes);
     assert.equal(await readFile(join(root, screen.html), "utf8"), htmlBytes);
@@ -156,7 +157,80 @@ test("exportDesignProject writes multi-screen artifacts, manifest and detailed l
   assert.ok(events.every(event => Number.isInteger(event.durationMs)));
   assert.ok(events.filter(event => event.result === "ok")
     .every(event => event.bytes > 0 && event.hash.length === 64));
+  assert.ok(events.filter(event => event.result === "ok")
+    .every(event => event.artifactSource === "stitch"));
   assert.doesNotMatch(lines.join("\n"), /token=secret/);
+});
+
+test("exportDesignProject writes a traceable screenshot fallback when HTML is unavailable", async () => {
+  const root = await mkdtemp(join(tmpdir(), "stitch-export-fallback-"));
+  const localId = 'login&"<script>';
+  const state = {
+    projectId: "project-1",
+    projectTitle: "AI Couple Dish - Couple Cosmos",
+    screens: {
+      [localId]: { screenId: "screen-1", kind: "base" }
+    }
+  };
+  const requestedUrls = [];
+  const fetchImpl = async (url, options) => {
+    requestedUrls.push(url);
+    assert.notEqual(url, "", "fetch must not receive an empty URL");
+    return makeFetch()(url, options);
+  };
+  const sdk = {
+    project(projectId) {
+      assert.equal(projectId, "project-1");
+      return {
+        async getScreen(screenId) {
+          assert.equal(screenId, "screen-1");
+          return {
+            async getImage() {
+              return "https://assets.example/screen-1/image?token=secret";
+            },
+            async getHtml() {
+              return "";
+            }
+          };
+        }
+      };
+    }
+  };
+  const lines = [];
+
+  const manifest = await exportDesignProject(
+    sdk,
+    state,
+    root,
+    fetchImpl,
+    line => lines.push(line)
+  );
+
+  assert.deepEqual(requestedUrls, [
+    "https://assets.example/screen-1/image?token=secret"
+  ]);
+  const screen = manifest.screens[0];
+  const fallback = await readFile(join(root, screen.html), "utf8");
+  assert.equal(screen.htmlSource, "screenshot-fallback");
+  assert.equal(screen.htmlSha256, digest(fallback));
+  assert.match(fallback, /data-stitch-html-source="screenshot-fallback"/);
+  assert.match(
+    fallback,
+    /src="\.\.\/screenshots\/login&amp;&quot;&lt;script&gt;\.png"/
+  );
+  assert.match(fallback, /仅视觉参考/);
+  assert.doesNotMatch(fallback, /<script>/);
+
+  const okEvents = lines
+    .map(line => JSON.parse(line))
+    .filter(event => event.result === "ok");
+  assert.deepEqual(
+    okEvents.map(event => [event.artifact, event.artifactSource]),
+    [
+      [`screenshots/${localId}.png`, "stitch"],
+      [`html/${localId}.html`, "screenshot-fallback"]
+    ]
+  );
 });
 
 test("exportDesignProject reads each screen from its owning project", async () => {
