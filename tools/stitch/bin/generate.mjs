@@ -100,6 +100,7 @@ export async function runStitchGenerate(dependencies = {}) {
 
     await writeState(statePath, state);
     state = await generateScreens(sdk, state, {
+      write,
       async checkpoint(nextState) {
         await writeState(statePath, nextState);
       }

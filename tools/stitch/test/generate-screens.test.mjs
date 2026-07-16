@@ -137,8 +137,12 @@ test("generateRemainingScreens skips completed screens and checkpoints each new 
 
 test("generateRemainingScreens retries only recoverable failures", async t => {
   const cases = [
-    { name: "recoverable", recoverable: true, maxAttempts: 2, expectedAttempts: 2 },
-    { name: "unrecoverable", recoverable: false, maxAttempts: 3, expectedAttempts: 1 }
+    { name: "recoverable success", recoverable: true, succeeds: true,
+      maxAttempts: 2, expectedAttempts: 2, expectedDelays: [1000] },
+    { name: "unrecoverable", recoverable: false,
+      maxAttempts: 3, expectedAttempts: 1, expectedDelays: [] },
+    { name: "recoverable exhausted", recoverable: true,
+      maxAttempts: 3, expectedAttempts: 3, expectedDelays: [1000, 2000] }
   ];
   for (const scenario of cases) {
     await t.test(scenario.name, async () => {
@@ -148,7 +152,7 @@ test("generateRemainingScreens retries only recoverable failures", async t => {
         generateRemainingScreens(
           makeSdk(async () => {
             attempts += 1;
-            if (scenario.recoverable && attempts === 2) return { screenId: "login-ok" };
+            if (scenario.succeeds && attempts === 2) return { screenId: "login-ok" };
             const error = new TypeError(scenario.name + " failure");
             error.recoverable = scenario.recoverable;
             throw error;
@@ -160,17 +164,29 @@ test("generateRemainingScreens retries only recoverable failures", async t => {
       );
 
       assert.equal(attempts, scenario.expectedAttempts);
-      if (scenario.recoverable) {
+      assert.deepEqual(delays, scenario.expectedDelays);
+      if (scenario.succeeds) {
         assert.equal(result.value.screens.login.screenId, "login-ok");
-        assert.deepEqual(delays, [1000]);
         const retry = result.events.find(event => event.event === "stitch.screen.retry");
         assert.deepEqual(
           [retry.result, retry.attempt, retry.delayMs, retry.errorName, retry.errorMessage],
-          ["retry", 1, 1000, "TypeError", "recoverable failure"]
+          ["retry", 1, 1000, "TypeError", "recoverable success failure"]
         );
       } else {
-        assert.match(result.error.message, /unrecoverable failure/);
-        assert.deepEqual(delays, []);
+        assert.match(result.error.message, new RegExp(scenario.name + " failure"));
+        const failures = result.events.filter(event =>
+          event.event === "stitch.screen.generate" && event.result === "error");
+        assert.equal(failures.length, 1);
+        assert.deepEqual(
+          [failures[0].projectId, failures[0].screenId,
+            failures[0].screenTitle, failures[0].deviceType,
+            failures[0].attempt, failures[0].maxAttempts, failures[0].stage,
+            failures[0].errorName, failures[0].errorMessage],
+          ["project-1", "login", "登录与注册", "MOBILE",
+            scenario.expectedAttempts, scenario.maxAttempts, "generate",
+            "TypeError", scenario.name + " failure"]
+        );
+        assert.ok(Number.isInteger(failures[0].durationMs));
       }
     });
   }
@@ -190,6 +206,52 @@ test("generateRemainingScreens stops when a checkpoint fails", async () => {
   assert.match(result.error.message, /checkpoint failed/);
   assert.equal(generated, 1);
   assert.deepEqual(state.screens, { "home-base": { screenId: "home-id", kind: "base" } });
+  const failure = result.events.find(event => event.result === "error");
+  assert.deepEqual(
+    [failure.projectId, failure.screenId, failure.screenTitle,
+      failure.deviceType, failure.attempt, failure.maxAttempts,
+      failure.stage, failure.errorName, failure.errorMessage],
+    ["project-1", "login", "登录与注册", "MOBILE", 1, 1,
+      "checkpoint", "Error", "checkpoint failed"]
+  );
+  assert.ok(Number.isInteger(failure.durationMs));
+});
+
+test("generateRemainingScreens sends every screen event to the injected writer", async () => {
+  const customLines = [];
+  const leakedLines = [];
+  const originalWrite = process.stderr.write;
+  let calls = 0;
+  process.stderr.write = line => { leakedLines.push(String(line)); return true; };
+  try {
+    await assert.rejects(
+      generateRemainingScreens(
+        makeSdk(async () => {
+          calls += 1;
+          if (calls === 1) {
+            const error = new Error("retry once");
+            error.recoverable = true;
+            throw error;
+          }
+          if (calls === 2) return { screenId: "bind-ok" };
+          throw new TypeError("menu failed");
+        }),
+        makeState({ completed: ["login"] }),
+        { maxAttempts: 2, sleep: async () => {}, checkpoint: async () => {},
+          write: line => customLines.push(line) }
+      ),
+      /menu failed/
+    );
+  } finally {
+    process.stderr.write = originalWrite;
+  }
+  const events = customLines.map(line => JSON.parse(line));
+  assert.deepEqual(leakedLines, []);
+  assert.equal(events.filter(event => event.event === "stitch.screen.skip").length, 1);
+  assert.equal(events.filter(event => event.result === "started").length, 3);
+  assert.equal(events.filter(event => event.event === "stitch.screen.retry").length, 1);
+  assert.equal(events.filter(event => event.result === "ok" && event.remoteScreenId).length, 1);
+  assert.equal(events.filter(event => event.result === "error").length, 1);
 });
 
 test("generateRemainingScreens rejects a blank remote screen id before checkpoint", async () => {
@@ -251,6 +313,19 @@ test("runStitchGenerate logs create, resume and skip home phases", async t => {
       assert.equal(result.events.filter(event => event.event === "stitch.generate").length, 1);
     });
   }
+});
+
+test("runStitchGenerate forwards its injected writer to screen generation", async () => {
+  const result = await captureGenerate({
+    overrides: {
+      generateScreens: async (_sdk, state, options) => {
+        options.write(JSON.stringify({ event: "stitch.screen.probe", result: "ok" }));
+        return state;
+      }
+    }
+  });
+  assert.equal(result.exitCode, 0);
+  assert.equal(result.events.filter(event => event.event === "stitch.screen.probe").length, 1);
 });
 
 test("runStitchGenerate anchors its default state path to the repository", async () => {

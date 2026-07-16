@@ -2,14 +2,18 @@ import { performance } from "node:perf_hooks";
 import { logEvent } from "./logger.mjs";
 import { SCREEN_SPECS, getScreenPrompt } from "./prompts.mjs";
 
-async function withRetry(operation, { maxAttempts, sleep, onRetry }) {
+async function withRetry(
+  operation,
+  { maxAttempts, sleep, onRetry, onFailure }
+) {
   let lastError;
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     try {
-      return await operation(attempt);
+      return { value: await operation(attempt), attempt };
     } catch (error) {
       lastError = error;
       if (error?.recoverable !== true || attempt >= maxAttempts) {
+        await onFailure(error, attempt);
         throw error;
       }
       const delayMs = 1000 * attempt;
@@ -27,7 +31,8 @@ export async function generateRemainingScreens(
     checkpoint,
     sleep = milliseconds =>
       new Promise(resolve => setTimeout(resolve, milliseconds)),
-    maxAttempts = 3
+    maxAttempts = 3,
+    write
   }
 ) {
   let state = initialState;
@@ -42,12 +47,12 @@ export async function generateRemainingScreens(
         screenId: screen.id,
         screenTitle: screen.title,
         reason: "already-generated"
-      });
+      }, write);
       continue;
     }
 
     const started = performance.now();
-    const generated = await withRetry(
+    const { value: generated, attempt } = await withRetry(
       async attempt => {
         logEvent("stitch.screen.generate", {
           result: "started",
@@ -56,7 +61,7 @@ export async function generateRemainingScreens(
           screenTitle: screen.title,
           deviceType: screen.deviceType,
           attempt
-        });
+        }, write);
         return project.generate(
           getScreenPrompt(screen.id),
           screen.deviceType
@@ -76,7 +81,22 @@ export async function generateRemainingScreens(
             delayMs,
             errorName: error?.name || "Error",
             errorMessage: error?.message || String(error)
-          });
+          }, write);
+        },
+        async onFailure(error, failedAttempt) {
+          logEvent("stitch.screen.generate", {
+            result: "error",
+            projectId: state.projectId,
+            screenId: screen.id,
+            screenTitle: screen.title,
+            deviceType: screen.deviceType,
+            attempt: failedAttempt,
+            maxAttempts,
+            stage: "generate",
+            errorName: error?.name || "Error",
+            errorMessage: error?.message || String(error),
+            durationMs: Math.round(performance.now() - started)
+          }, write);
         }
       }
     );
@@ -99,7 +119,24 @@ export async function generateRemainingScreens(
         }
       }
     };
-    await checkpoint(state);
+    try {
+      await checkpoint(state);
+    } catch (error) {
+      logEvent("stitch.screen.generate", {
+        result: "error",
+        projectId: state.projectId,
+        screenId: screen.id,
+        screenTitle: screen.title,
+        deviceType: screen.deviceType,
+        attempt,
+        maxAttempts,
+        stage: "checkpoint",
+        errorName: error?.name || "Error",
+        errorMessage: error?.message || String(error),
+        durationMs: Math.round(performance.now() - started)
+      }, write);
+      throw error;
+    }
     logEvent("stitch.screen.generate", {
       result: "ok",
       projectId: state.projectId,
@@ -108,7 +145,7 @@ export async function generateRemainingScreens(
       deviceType: screen.deviceType,
       remoteScreenId: generated.screenId,
       durationMs: Math.round(performance.now() - started)
-    });
+    }, write);
   }
 
   return state;
