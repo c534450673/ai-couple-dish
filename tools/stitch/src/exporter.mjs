@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdir, rename, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, rename, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { performance } from "node:perf_hooks";
 import { logEvent } from "./logger.mjs";
@@ -71,7 +71,7 @@ async function exportArtifact({
         result: "error",
         ...context,
         errorName: details.name,
-        errorMessage: details.message,
+        errorMessage: details.message.replaceAll(outputRoot, "[STAGING]"),
         durationMs: Math.round(performance.now() - started)
       },
       write
@@ -87,54 +87,69 @@ export async function exportDesignProject(
   fetchImpl = fetch,
   write = line => process.stderr.write(line + String.fromCharCode(10))
 ) {
-  await mkdir(join(outputRoot, "screenshots"), { recursive: true });
-  await mkdir(join(outputRoot, "html"), { recursive: true });
+  await mkdir(outputRoot, { recursive: true });
+  const stagingRoot = await mkdtemp(join(outputRoot, ".stitch-export-"));
 
-  const project = sdk.project(state.projectId);
-  const screens = [];
-  for (const [localId, reference] of Object.entries(state.screens)) {
-    let screen;
-    const screenshot = "screenshots/" + localId + ".png";
-    const html = "html/" + localId + ".html";
-    const imageResult = await exportArtifact({
-      projectId: state.projectId,
-      localId,
-      reference,
-      artifact: screenshot,
-      outputRoot,
-      fetchImpl,
-      async getUrl() {
-        screen = await project.getScreen(reference.screenId);
-        return screen.getImage();
-      },
-      write
-    });
-    const htmlResult = await exportArtifact({
-      projectId: state.projectId,
-      localId,
-      reference,
-      artifact: html,
-      outputRoot,
-      fetchImpl,
-      getUrl: () => screen.getHtml(),
-      write
-    });
-    screens.push({
-      localId,
-      projectId: state.projectId,
-      screenId: reference.screenId,
-      kind: reference.kind,
-      screenshot,
-      screenshotSha256: imageResult.sha256,
-      html,
-      htmlSha256: htmlResult.sha256,
-      exportedAt: new Date().toISOString()
-    });
+  try {
+    await mkdir(join(stagingRoot, "screenshots"));
+    await mkdir(join(stagingRoot, "html"));
+    const project = sdk.project(state.projectId);
+    const screens = [];
+    for (const [localId, reference] of Object.entries(state.screens)) {
+      let screen;
+      const screenshot = "screenshots/" + localId + ".png";
+      const html = "html/" + localId + ".html";
+      const imageResult = await exportArtifact({
+        projectId: state.projectId,
+        localId,
+        reference,
+        artifact: screenshot,
+        outputRoot: stagingRoot,
+        fetchImpl,
+        async getUrl() {
+          screen = await project.getScreen(reference.screenId);
+          return screen.getImage();
+        },
+        write
+      });
+      const htmlResult = await exportArtifact({
+        projectId: state.projectId,
+        localId,
+        reference,
+        artifact: html,
+        outputRoot: stagingRoot,
+        fetchImpl,
+        getUrl: () => screen.getHtml(),
+        write
+      });
+      screens.push({
+        localId,
+        projectId: state.projectId,
+        screenId: reference.screenId,
+        kind: reference.kind,
+        screenshot,
+        screenshotSha256: imageResult.sha256,
+        html,
+        htmlSha256: htmlResult.sha256,
+        exportedAt: new Date().toISOString()
+      });
+    }
+
+    const manifest = { version: 1, projectId: state.projectId, screens };
+    const stagedManifest = join(stagingRoot, "manifest.json");
+    await writeFile(stagedManifest, JSON.stringify(manifest, null, 2) + "\n");
+    await mkdir(join(outputRoot, "screenshots"), { recursive: true });
+    await mkdir(join(outputRoot, "html"), { recursive: true });
+    for (const screen of screens) {
+      await rename(
+        join(stagingRoot, screen.screenshot),
+        join(outputRoot, screen.screenshot)
+      );
+      await rename(join(stagingRoot, screen.html), join(outputRoot, screen.html));
+    }
+    await rename(stagedManifest, join(outputRoot, "manifest.json"));
+    return manifest;
+  } finally {
+    await rm(stagingRoot, { recursive: true, force: true });
   }
-
-  const manifest = { version: 1, projectId: state.projectId, screens };
-  const temporary = join(outputRoot, "manifest.json.tmp");
-  await writeFile(temporary, JSON.stringify(manifest, null, 2) + "\n");
-  await rename(temporary, join(outputRoot, "manifest.json"));
-  return manifest;
 }

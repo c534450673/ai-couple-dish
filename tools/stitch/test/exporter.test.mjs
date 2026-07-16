@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { access, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { access, mkdtemp, readFile, readdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { isAbsolute, join } from "node:path";
 import test from "node:test";
@@ -124,25 +124,62 @@ test("exportDesignProject writes multi-screen artifacts, manifest and detailed l
   assert.doesNotMatch(lines.join("\n"), /token=secret/);
 });
 
-test("exportDesignProject preserves the manifest and logs one error on mid-export failure", async () => {
+test("exportDesignProject preserves the prior export on mid-download failure", async () => {
   const root = await mkdtemp(join(tmpdir(), "stitch-export-failure-"));
   const manifestPath = join(root, "manifest.json");
   const lines = [];
-  await writeFile(manifestPath, "stable-manifest\n");
+  await exportDesignProject(
+    makeSdk(["screen-1", "screen-2"]),
+    makeState(),
+    root,
+    makeFetch(),
+    () => {}
+  );
+  const priorManifestText = await readFile(manifestPath, "utf8");
+  const priorManifest = JSON.parse(priorManifestText);
+  const priorArtifacts = new Map();
+  for (const screen of priorManifest.screens) {
+    priorArtifacts.set(screen.screenshot, await readFile(join(root, screen.screenshot)));
+    priorArtifacts.set(screen.html, await readFile(join(root, screen.html)));
+  }
+  const failingFetch = async (url, options) => {
+    assert.deepEqual(options, { redirect: "follow" });
+    const path = new URL(url).pathname;
+    if (path === "/screen-2/html") return { ok: false, status: 503 };
+    return {
+      ok: true,
+      status: 200,
+      async arrayBuffer() {
+        return Buffer.from("new-" + path.slice(1).replaceAll("/", "-"));
+      }
+    };
+  };
 
   await assert.rejects(
     exportDesignProject(
       makeSdk(["screen-1", "screen-2"]),
       makeState(),
       root,
-      makeFetch("/screen-2/html"),
+      failingFetch,
       line => lines.push(line)
     ),
     /Artifact download failed with HTTP 503/
   );
 
-  assert.equal(await readFile(manifestPath, "utf8"), "stable-manifest\n");
+  assert.equal(await readFile(manifestPath, "utf8"), priorManifestText);
+  for (const screen of priorManifest.screens) {
+    for (const [artifact, hash] of [
+      [screen.screenshot, screen.screenshotSha256],
+      [screen.html, screen.htmlSha256]
+    ]) {
+      const content = await readFile(join(root, artifact));
+      assert.deepEqual(content, priorArtifacts.get(artifact));
+      assert.equal(digest(content), hash);
+      assert.doesNotMatch(content.toString(), /^new-/);
+    }
+  }
   await assert.rejects(access(join(root, "manifest.json.tmp")), { code: "ENOENT" });
+  assert.deepEqual((await readdir(root)).sort(), ["html", "manifest.json", "screenshots"]);
   const errors = lines.map(line => JSON.parse(line)).filter(event => event.result === "error");
   assert.equal(errors.length, 1);
   assert.deepEqual(
