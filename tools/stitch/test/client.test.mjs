@@ -105,6 +105,10 @@ test("generation state persists with an atomic round trip", async () => {
   assert.deepEqual(await readGenerationState(filePath), state);
 });
 
+test("empty generation state starts with an empty project registry", () => {
+  assert.deepEqual(emptyGenerationState().projects, []);
+});
+
 test("health closes once and suppresses only the expected close AbortError", async () => {
   const fake = makeFakeClient({
     close() {

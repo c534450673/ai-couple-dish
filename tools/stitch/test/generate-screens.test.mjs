@@ -4,6 +4,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { runStitchGenerate } from "../bin/generate.mjs";
 import { generateRemainingScreens } from "../src/generate-screens.mjs";
+import { PROJECT_SCREEN_LIMIT } from "../src/project-shards.mjs";
 import { SCREEN_SPECS, getScreenPrompt } from "../src/prompts.mjs";
 
 const REMAINING_SCREENS = SCREEN_SPECS.filter(screen => screen.id !== "home");
@@ -25,11 +26,60 @@ function makeState({
 }
 
 function makeSdk(generate) {
+  let projectCount = 1;
   return {
+    async createProject() {
+      projectCount += 1;
+      return { projectId: `project-${projectCount}` };
+    },
     project(projectId) {
-      assert.equal(projectId, "project-1");
+      assert.match(projectId, /^project-\d+$/);
       return { generate };
     }
+  };
+}
+
+function stateWithProjectScreenCount(screenCount) {
+  const state = makeState({ completed: [], home: false });
+  state.projects = [
+    { projectId: "project-1", title: state.projectTitle }
+  ];
+  const homeScreens = ["home-base", "home-emotion", "home-food", "home-memory"];
+  const screenIds = [
+    ...homeScreens,
+    ...REMAINING_SCREENS.map(screen => screen.id)
+  ].slice(0, screenCount);
+  for (const id of screenIds) {
+    state.screens[id] = {
+      screenId: `${id}-id`,
+      kind: id === "home-base" || !homeScreens.includes(id) ? "base" : "variant",
+      projectId: "project-1"
+    };
+  }
+  return state;
+}
+
+function stateWithProjectsAndOneShardScreen() {
+  const state = stateWithProjectScreenCount(PROJECT_SCREEN_LIMIT);
+  state.projects.push({
+    projectId: "project-2",
+    title: `${state.projectTitle} - Part 2`
+  });
+  state.screens.memories = {
+    screenId: "memories-2",
+    kind: "base",
+    projectId: "project-2"
+  };
+  return state;
+}
+
+function noDelayOptions(overrides = {}) {
+  return {
+    maxAttempts: 1,
+    sleep: async () => {},
+    checkpoint: async () => {},
+    write: () => {},
+    ...overrides
   };
 }
 
@@ -124,15 +174,110 @@ test("generateRemainingScreens skips completed screens and checkpoints each new 
       deviceType: "MOBILE"
     }))
   );
+  const checkpointScreenCounts = checkpoints.map(
+    checkpoint => Object.keys(checkpoint.screens).length
+  );
   assert.deepEqual(
-    checkpoints.map(checkpoint => Object.keys(checkpoint.screens).length),
+    [...new Set(checkpointScreenCounts)],
     Array.from({ length: 15 }, (_, index) => index + 3)
   );
+  assert.equal(checkpointScreenCounts.length, 16);
   assert.equal(result.events.filter(event => event.event === "stitch.screen.skip").length, 1);
-  assert.equal(result.events.filter(event => event.result === "started").length, 15);
+  assert.equal(result.events.filter(event =>
+    event.event === "stitch.screen.generate" && event.result === "started"
+  ).length, 15);
   const successes = result.events.filter(event => event.result === "ok" && event.remoteScreenId);
   assert.equal(successes.length, 15);
   assert.ok(successes.every(event => Number.isInteger(event.durationMs)));
+});
+
+test("generation checkpoints a new shard before its first screen", async () => {
+  const order = [];
+  const state = stateWithProjectScreenCount(PROJECT_SCREEN_LIMIT);
+  const sdk = {
+    async createProject(title) {
+      order.push(["create", title]);
+      return { projectId: "project-2" };
+    },
+    project(projectId) {
+      assert.equal(projectId, "project-2");
+      return {
+        async generate() {
+          order.push(["generate", projectId]);
+          return { screenId: "generated-on-project-2" };
+        }
+      };
+    }
+  };
+
+  const result = await generateRemainingScreens(
+    sdk,
+    state,
+    noDelayOptions({
+      async checkpoint(next) {
+        order.push(["checkpoint", structuredClone(next)]);
+      }
+    })
+  );
+
+  assert.equal(order[0][0], "create");
+  assert.equal(order[1][0], "checkpoint");
+  assert.equal(order[2][0], "generate");
+  assert.equal(result.projects[1].projectId, "project-2");
+  assert.equal(result.screens.memories.projectId, "project-2");
+});
+
+test("generation resumes an existing non-full shard without creating another", async () => {
+  const state = stateWithProjectsAndOneShardScreen();
+  const sdk = {
+    async createProject() {
+      assert.fail("createProject must not be called");
+    },
+    project(projectId) {
+      assert.equal(projectId, "project-2");
+      return {
+        async generate(prompt) {
+          return { screenId: `project-2-${prompt.length}` };
+        }
+      };
+    }
+  };
+
+  const result = await generateRemainingScreens(sdk, state, noDelayOptions());
+
+  assert.equal(result.projects.length, 2);
+  assert.equal(result.screens["note-editor"].projectId, "project-2");
+});
+
+test("generation rejects a blank shard project id before checkpoint", async () => {
+  let checkpoints = 0;
+  const state = stateWithProjectScreenCount(PROJECT_SCREEN_LIMIT);
+  const sdk = {
+    async createProject() {
+      return { projectId: "   " };
+    },
+    project() {
+      return {
+        async generate() {
+          return { screenId: "must-not-be-generated" };
+        }
+      };
+    }
+  };
+
+  await assert.rejects(
+    generateRemainingScreens(
+      sdk,
+      state,
+      noDelayOptions({
+        checkpoint: async () => {
+          checkpoints += 1;
+        }
+      })
+    ),
+    /non-empty Stitch shard projectId/
+  );
+  assert.equal(checkpoints, 0);
 });
 
 test("generateRemainingScreens retries only recoverable failures", async t => {
@@ -182,7 +327,7 @@ test("generateRemainingScreens retries only recoverable failures", async t => {
             failures[0].screenTitle, failures[0].deviceType,
             failures[0].attempt, failures[0].maxAttempts, failures[0].stage,
             failures[0].errorName, failures[0].errorMessage],
-          ["project-1", "login", "登录与注册", "MOBILE",
+          ["project-2", "login", "登录与注册", "MOBILE",
             scenario.expectedAttempts, scenario.maxAttempts, "generate",
             "TypeError", scenario.name + " failure"]
         );
@@ -255,17 +400,19 @@ test("generateRemainingScreens sends every screen event to the injected writer",
 });
 
 test("generateRemainingScreens rejects a blank remote screen id before checkpoint", async () => {
-  let checkpoints = 0;
+  const checkpoints = [];
   const completed = REMAINING_SCREENS.map(screen => screen.id).filter(id => id !== "login");
   const result = await captureEvents(() => generateRemainingScreens(
     makeSdk(async () => ({ screenId: "   " })), makeState({ completed }), {
       maxAttempts: 1,
       sleep: async () => {},
-      checkpoint: async () => { checkpoints += 1; }
+      checkpoint: async next => checkpoints.push(next)
     }
   ));
   assert.match(result.error.message, /non-empty screenId/);
-  assert.equal(checkpoints, 0);
+  assert.equal(checkpoints.length, 1);
+  assert.equal(checkpoints[0].projects.length, 2);
+  assert.equal(Object.hasOwn(checkpoints[0].screens, "login"), false);
 });
 
 test("runStitchGenerate serializes every lifecycle failure into one final event", async t => {

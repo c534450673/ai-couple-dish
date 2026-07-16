@@ -1,5 +1,10 @@
 import { performance } from "node:perf_hooks";
 import { logEvent } from "./logger.mjs";
+import {
+  PROJECT_SCREEN_LIMIT,
+  effectiveProjectId,
+  ensureProjectRegistry
+} from "./project-shards.mjs";
 import { SCREEN_SPECS, getScreenPrompt } from "./prompts.mjs";
 
 async function withRetry(
@@ -24,6 +29,49 @@ async function withRetry(
   throw lastError;
 }
 
+function countScreens(state, projectId) {
+  return Object.values(state.screens).filter(
+    reference => effectiveProjectId(state, reference) === projectId
+  ).length;
+}
+
+async function ensureWritableProject(sdk, state, checkpoint, write) {
+  const active = state.projects.at(-1);
+  if (active && countScreens(state, active.projectId) < PROJECT_SCREEN_LIMIT) {
+    return { state, projectId: active.projectId };
+  }
+
+  const shardNumber = state.projects.length + 1;
+  const title = `${state.projectTitle} - Part ${shardNumber}`;
+  const currentScreenCount = active
+    ? countScreens(state, active.projectId)
+    : 0;
+  const started = performance.now();
+  logEvent("stitch.project.shard", {
+    result: "started",
+    shardNumber,
+    title,
+    currentScreenCount
+  }, write);
+  const project = await sdk.createProject(title);
+  if (typeof project?.projectId !== "string" || !project.projectId.trim()) {
+    throw new Error("Expected a non-empty Stitch shard projectId");
+  }
+  const next = {
+    ...state,
+    projects: [...state.projects, { projectId: project.projectId, title }]
+  };
+  await checkpoint(next);
+  logEvent("stitch.project.shard", {
+    result: "ok",
+    shardNumber,
+    projectId: project.projectId,
+    title,
+    durationMs: Math.round(performance.now() - started)
+  }, write);
+  return { state: next, projectId: project.projectId };
+}
+
 export async function generateRemainingScreens(
   sdk,
   initialState,
@@ -35,15 +83,14 @@ export async function generateRemainingScreens(
     write
   }
 ) {
-  let state = initialState;
-  const project = sdk.project(state.projectId);
+  let state = ensureProjectRegistry(initialState);
   const remaining = SCREEN_SPECS.filter(screen => screen.id !== "home");
 
   for (const screen of remaining) {
     if (state.screens[screen.id]) {
       logEvent("stitch.screen.skip", {
         result: "ok",
-        projectId: state.projectId,
+        projectId: effectiveProjectId(state, state.screens[screen.id]),
         screenId: screen.id,
         screenTitle: screen.title,
         reason: "already-generated"
@@ -51,12 +98,16 @@ export async function generateRemainingScreens(
       continue;
     }
 
+    const writable = await ensureWritableProject(sdk, state, checkpoint, write);
+    state = writable.state;
+    const projectId = writable.projectId;
+    const project = sdk.project(projectId);
     const started = performance.now();
     const { value: generated, attempt } = await withRetry(
       async attempt => {
         logEvent("stitch.screen.generate", {
           result: "started",
-          projectId: state.projectId,
+          projectId,
           screenId: screen.id,
           screenTitle: screen.title,
           deviceType: screen.deviceType,
@@ -73,7 +124,7 @@ export async function generateRemainingScreens(
         async onRetry(error, attempt, delayMs) {
           logEvent("stitch.screen.retry", {
             result: "retry",
-            projectId: state.projectId,
+            projectId,
             screenId: screen.id,
             screenTitle: screen.title,
             deviceType: screen.deviceType,
@@ -86,7 +137,7 @@ export async function generateRemainingScreens(
         async onFailure(error, failedAttempt) {
           logEvent("stitch.screen.generate", {
             result: "error",
-            projectId: state.projectId,
+            projectId,
             screenId: screen.id,
             screenTitle: screen.title,
             deviceType: screen.deviceType,
@@ -115,7 +166,8 @@ export async function generateRemainingScreens(
         ...state.screens,
         [screen.id]: {
           screenId: generated.screenId,
-          kind: "base"
+          kind: "base",
+          projectId
         }
       }
     };
@@ -124,7 +176,7 @@ export async function generateRemainingScreens(
     } catch (error) {
       logEvent("stitch.screen.generate", {
         result: "error",
-        projectId: state.projectId,
+        projectId,
         screenId: screen.id,
         screenTitle: screen.title,
         deviceType: screen.deviceType,
@@ -139,7 +191,7 @@ export async function generateRemainingScreens(
     }
     logEvent("stitch.screen.generate", {
       result: "ok",
-      projectId: state.projectId,
+      projectId,
       screenId: screen.id,
       screenTitle: screen.title,
       deviceType: screen.deviceType,

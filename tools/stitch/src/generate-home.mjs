@@ -1,15 +1,17 @@
 import { getScreenPrompt, HOME_VARIANT_PROMPT } from "./prompts.mjs";
+import { ensureProjectRegistry } from "./project-shards.mjs";
 
 const VARIANT_KEYS = ["home-emotion", "home-food", "home-memory"];
 
 export async function generateHomeDesign(sdk, state) {
-  if (state.projectId && state.screens["home-base"]) {
-    return state;
+  const normalizedState = ensureProjectRegistry(state);
+  if (normalizedState.projectId && normalizedState.screens["home-base"]) {
+    return normalizedState;
   }
 
-  const project = state.projectId
-    ? sdk.project(state.projectId)
-    : await sdk.createProject(state.projectTitle);
+  const project = normalizedState.projectId
+    ? sdk.project(normalizedState.projectId)
+    : await sdk.createProject(normalizedState.projectTitle);
   const base = await project.generate(getScreenPrompt("home"), "MOBILE");
   const variants = await base.variants(
     HOME_VARIANT_PROMPT,
@@ -40,19 +42,30 @@ export async function generateHomeDesign(sdk, state) {
   }
 
   const screens = {
-    ...state.screens,
-    "home-base": { screenId: base.screenId, kind: "base" }
+    ...normalizedState.screens,
+    "home-base": {
+      screenId: base.screenId,
+      kind: "base",
+      projectId: project.projectId
+    }
   };
   for (const [index, screen] of variants.entries()) {
     screens[VARIANT_KEYS[index]] = {
       screenId: screen.screenId,
-      kind: "variant"
+      kind: "variant",
+      projectId: project.projectId
     };
   }
 
   return {
-    ...state,
+    ...normalizedState,
     projectId: project.projectId,
+    projects: [
+      {
+        projectId: project.projectId,
+        title: normalizedState.projectTitle
+      }
+    ],
     screens
   };
 }

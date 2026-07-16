@@ -4,7 +4,7 @@ import { generateHomeDesign } from "../src/generate-home.mjs";
 import { HOME_VARIANT_PROMPT } from "../src/prompts.mjs";
 import { emptyGenerationState } from "../src/state-store.mjs";
 
-test("generateHomeDesign creates a project, base screen and three variants", async () => {
+test("home generation registers its primary project and owns every home screen", async () => {
   const calls = [];
   const baseScreen = {
     screenId: "home-base-id",
@@ -34,11 +34,30 @@ test("generateHomeDesign creates a project, base screen and three variants", asy
   const result = await generateHomeDesign(sdk, emptyGenerationState());
 
   assert.equal(result.projectId, "project-1");
+  assert.deepEqual(result.projects, [
+    { projectId: "project-1", title: "AI Couple Dish - Couple Cosmos" }
+  ]);
   assert.deepEqual(result.screens, {
-    "home-base": { screenId: "home-base-id", kind: "base" },
-    "home-emotion": { screenId: "home-emotion-id", kind: "variant" },
-    "home-food": { screenId: "home-food-id", kind: "variant" },
-    "home-memory": { screenId: "home-memory-id", kind: "variant" }
+    "home-base": {
+      screenId: "home-base-id",
+      kind: "base",
+      projectId: "project-1"
+    },
+    "home-emotion": {
+      screenId: "home-emotion-id",
+      kind: "variant",
+      projectId: "project-1"
+    },
+    "home-food": {
+      screenId: "home-food-id",
+      kind: "variant",
+      projectId: "project-1"
+    },
+    "home-memory": {
+      screenId: "home-memory-id",
+      kind: "variant",
+      projectId: "project-1"
+    }
   });
   assert.deepEqual(calls, [
     {
@@ -103,14 +122,47 @@ test("generateHomeDesign returns a completed home state without calling the SDK"
   const state = {
     ...emptyGenerationState(),
     projectId: "project-1",
+    projects: [
+      {
+        projectId: "project-1",
+        title: "AI Couple Dish - Couple Cosmos"
+      }
+    ],
     screens: {
-      "home-base": { screenId: "home-base-id", kind: "base" }
+      "home-base": {
+        screenId: "home-base-id",
+        kind: "base",
+        projectId: "project-1"
+      }
     }
   };
 
   const result = await generateHomeDesign(sdk, state);
 
   assert.strictEqual(result, state);
+});
+
+test("completed legacy home state gains a primary project registry", async () => {
+  const sdk = {
+    async createProject() {
+      assert.fail("createProject must not be called");
+    },
+    project() {
+      assert.fail("project must not be called");
+    }
+  };
+  const legacy = {
+    ...emptyGenerationState(),
+    projectId: "project-1",
+    projects: undefined,
+    screens: { "home-base": { screenId: "home-1", kind: "base" } }
+  };
+
+  const result = await generateHomeDesign(sdk, legacy);
+
+  assert.deepEqual(result.projects, [
+    { projectId: "project-1", title: legacy.projectTitle }
+  ]);
 });
 
 for (const variantCount of [2, 4]) {

@@ -5,6 +5,7 @@ export function emptyGenerationState() {
   return {
     projectId: null,
     projectTitle: "AI Couple Dish - Couple Cosmos",
+    projects: [],
     screens: {}
   };
 }
