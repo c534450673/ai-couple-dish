@@ -58,6 +58,40 @@ function makeState() {
   };
 }
 
+function twoProjectState() {
+  const state = makeState();
+  return {
+    ...state,
+    projects: [
+      { projectId: "project-1", title: state.projectTitle },
+      { projectId: "project-2", title: `${state.projectTitle} - Part 2` }
+    ],
+    screens: {
+      ...state.screens,
+      memories: {
+        screenId: "screen-3",
+        kind: "base",
+        projectId: "project-2"
+      }
+    }
+  };
+}
+
+function fakeExportProject(projectId) {
+  return {
+    async getScreen(screenId) {
+      return {
+        async getImage() {
+          return `https://assets.example/${projectId}/${screenId}/image?token=secret`;
+        },
+        async getHtml() {
+          return `https://assets.example/${projectId}/${screenId}/html?token=secret`;
+        }
+      };
+    }
+  };
+}
+
 test("downloadArtifact rejects non-2xx responses without writing the target", async () => {
   const root = await mkdtemp(join(tmpdir(), "stitch-download-"));
   const output = join(root, "artifact.png");
@@ -122,6 +156,39 @@ test("exportDesignProject writes multi-screen artifacts, manifest and detailed l
   assert.ok(events.filter(event => event.result === "ok")
     .every(event => event.bytes > 0 && event.hash.length === 64));
   assert.doesNotMatch(lines.join("\n"), /token=secret/);
+});
+
+test("exportDesignProject reads each screen from its owning project", async () => {
+  const root = await mkdtemp(join(tmpdir(), "stitch-export-shards-"));
+  const calls = [];
+  const lines = [];
+  const state = twoProjectState();
+  const sdk = {
+    project(projectId) {
+      calls.push(projectId);
+      return fakeExportProject(projectId);
+    }
+  };
+
+  const manifest = await exportDesignProject(
+    sdk,
+    state,
+    root,
+    makeFetch(),
+    line => lines.push(line)
+  );
+
+  assert.deepEqual(calls, ["project-1", "project-2"]);
+  assert.deepEqual(manifest.projectIds, ["project-1", "project-2"]);
+  assert.equal(
+    manifest.screens.find(screen => screen.localId === "memories").projectId,
+    "project-2"
+  );
+  const memoryEvents = lines
+    .map(line => JSON.parse(line))
+    .filter(event => event.localId === "memories");
+  assert.ok(memoryEvents.length > 0);
+  assert.ok(memoryEvents.every(event => event.projectId === "project-2"));
 });
 
 test("exportDesignProject preserves the prior export on mid-download failure", async () => {

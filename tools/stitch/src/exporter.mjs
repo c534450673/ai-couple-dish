@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, rename, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { performance } from "node:perf_hooks";
 import { logEvent } from "./logger.mjs";
+import { effectiveProjectId, projectRegistry } from "./project-shards.mjs";
 
 function sha256(buffer) {
   return createHash("sha256").update(buffer).digest("hex");
@@ -100,27 +101,37 @@ export async function exportDesignProject(
   try {
     await mkdir(join(stagingRoot, "screenshots"));
     await mkdir(join(stagingRoot, "html"));
-    const project = sdk.project(state.projectId);
+    const projectHandles = new Map();
+    function projectFor(projectId) {
+      if (!projectHandles.has(projectId)) {
+        projectHandles.set(projectId, sdk.project(projectId));
+      }
+      return projectHandles.get(projectId);
+    }
     const screens = [];
     for (const [localId, reference] of Object.entries(state.screens)) {
+      const projectId = effectiveProjectId(state, reference);
+      if (typeof projectId !== "string" || !projectId.trim()) {
+        throw new Error("Expected every exported screen to have a projectId");
+      }
       let screen;
       const screenshot = "screenshots/" + localId + ".png";
       const html = "html/" + localId + ".html";
       const imageResult = await exportArtifact({
-        projectId: state.projectId,
+        projectId,
         localId,
         reference,
         artifact: screenshot,
         outputRoot: stagingRoot,
         fetchImpl,
         async getUrl() {
-          screen = await project.getScreen(reference.screenId);
+          screen = await projectFor(projectId).getScreen(reference.screenId);
           return screen.getImage();
         },
         write
       });
       const htmlResult = await exportArtifact({
-        projectId: state.projectId,
+        projectId,
         localId,
         reference,
         artifact: html,
@@ -131,7 +142,7 @@ export async function exportDesignProject(
       });
       screens.push({
         localId,
-        projectId: state.projectId,
+        projectId,
         screenId: reference.screenId,
         kind: reference.kind,
         screenshot,
@@ -142,7 +153,12 @@ export async function exportDesignProject(
       });
     }
 
-    const manifest = { version: 1, projectId: state.projectId, screens };
+    const manifest = {
+      version: 1,
+      projectId: state.projectId,
+      projectIds: projectRegistry(state).map(project => project.projectId),
+      screens
+    };
     const stagedManifest = join(stagingRoot, "manifest.json");
     await writeFile(stagedManifest, JSON.stringify(manifest, null, 2) + "\n");
     await mkdir(join(outputRoot, "screenshots"), { recursive: true });
