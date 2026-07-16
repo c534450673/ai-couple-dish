@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
-import { isAbsolute, join, resolve, sep } from "node:path";
+import { readFile, realpath } from "node:fs/promises";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { performance } from "node:perf_hooks";
 import { logEvent } from "./logger.mjs";
 
@@ -18,6 +18,24 @@ function assertNoForbiddenValue(buffer, forbiddenValues, label) {
     if (value.length > 0 && buffer.includes(value)) {
       throw new Error("Forbidden secret value found: " + label);
     }
+  }
+}
+
+function assertNoForbiddenJsonValue(value, forbiddenValues, label) {
+  if (typeof value === "string") {
+    assertNoForbiddenValue(Buffer.from(value), forbiddenValues, label);
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      assertNoForbiddenJsonValue(item, forbiddenValues, label);
+    }
+    return;
+  }
+  if (!value || typeof value !== "object") return;
+  for (const [key, item] of Object.entries(value)) {
+    assertNoForbiddenValue(Buffer.from(key), forbiddenValues, label);
+    assertNoForbiddenJsonValue(item, forbiddenValues, label);
   }
 }
 
@@ -143,6 +161,20 @@ function validateScreenEntry(root, manifest, state, screen) {
   );
 }
 
+async function readVerifiedArtifact(root, realRoot, localId, artifactPath) {
+  const resolvedArtifactPath = await realpath(join(root, artifactPath));
+  const relativeRealPath = relative(realRoot, resolvedArtifactPath);
+  if (
+    !relativeRealPath ||
+    relativeRealPath === ".." ||
+    relativeRealPath.startsWith(".." + sep) ||
+    isAbsolute(relativeRealPath)
+  ) {
+    throw new Error("Invalid artifact path: " + localId);
+  }
+  return readFile(resolvedArtifactPath);
+}
+
 export async function verifyDesignExport(
   root,
   expectedIds,
@@ -161,7 +193,14 @@ export async function verifyDesignExport(
 
   const manifest = JSON.parse(manifestBuffer.toString("utf8"));
   const state = JSON.parse(stateBuffer.toString("utf8"));
+  assertNoForbiddenJsonValue(manifest, activeForbiddenValues, "manifest.json");
+  assertNoForbiddenJsonValue(
+    state,
+    activeForbiddenValues,
+    "generation-state.json"
+  );
   validateManifestAndState(manifest, state, expectedIds);
+  const realRoot = await realpath(root);
 
   for (const screen of manifest.screens) {
     const started = performance.now();
@@ -176,13 +215,23 @@ export async function verifyDesignExport(
     logEvent("stitch.verify.screen", { result: "started", ...context }, write);
     try {
       validateScreenEntry(root, manifest, state, screen);
-      const screenshot = await readFile(join(root, screen.screenshot));
+      const screenshot = await readVerifiedArtifact(
+        root,
+        realRoot,
+        screen.localId,
+        screen.screenshot
+      );
       assertNoForbiddenValue(
         screenshot,
         activeForbiddenValues,
         screen.localId
       );
-      const html = await readFile(join(root, screen.html));
+      const html = await readVerifiedArtifact(
+        root,
+        realRoot,
+        screen.localId,
+        screen.html
+      );
       assertNoForbiddenValue(html, activeForbiddenValues, screen.localId);
       if (hash(screenshot) !== screen.screenshotSha256) {
         throw new Error("Screenshot hash mismatch: " + screen.localId);

@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { runStitchVerify } from "../bin/verify.mjs";
 import { verifyDesignExport } from "../src/verifier.mjs";
 
@@ -222,6 +224,60 @@ test("verifyDesignExport scans every raw buffer before hashes", async t => {
   }
 });
 
+test("verifyDesignExport scans decoded JSON keys and values before logs", async t => {
+  const secret = "decoded-test-secret";
+  const encodedSecret = [...secret]
+    .map(character => "\\u" + character.charCodeAt(0).toString(16).padStart(4, "0"))
+    .join("");
+  const cases = [
+    ["project id", data => {
+      data.manifest.projectId = secret;
+      data.manifest.screens[0].projectId = secret;
+      data.state.projectId = secret;
+    }],
+    ["screen id", data => {
+      data.manifest.screens[0].screenId = secret;
+      data.state.screens.login.screenId = secret;
+    }],
+    ["extra string value", data => {
+      data.manifest.metadata = { note: secret };
+    }],
+    ["extra object key", data => {
+      data.state.metadata = { [secret]: "safe" };
+    }]
+  ];
+
+  for (const [name, mutate] of cases) {
+    await t.test(name, async () => {
+      const data = await fixture();
+      mutate(data);
+      const manifestJson = JSON.stringify(data.manifest).replaceAll(
+        secret,
+        encodedSecret
+      );
+      const stateJson = JSON.stringify(data.state).replaceAll(
+        secret,
+        encodedSecret
+      );
+      assert.equal(manifestJson.includes(secret), false);
+      assert.equal(stateJson.includes(secret), false);
+      await writeFile(join(data.root, "manifest.json"), manifestJson);
+      await writeFile(join(data.root, "generation-state.json"), stateJson);
+      const lines = [];
+      await assert.rejects(
+        () => verifyDesignExport(
+          data.root,
+          ["login"],
+          [secret],
+          line => lines.push(line)
+        ),
+        /Forbidden secret value found/
+      );
+      assert.equal(lines.join("\n").includes(secret), false);
+    });
+  }
+});
+
 test("verifyDesignExport rejects unsafe paths before reading outside root", async t => {
   const cases = [
     ["absolute screenshot", "screenshot", "absolute"],
@@ -249,6 +305,47 @@ test("verifyDesignExport rejects unsafe paths before reading outside root", asyn
           data.root,
           ["login"],
           ["outside-secret"],
+          () => {}
+        ),
+        error => {
+          assert.match(error.message, /Invalid artifact path: login/);
+          assert.doesNotMatch(error.message, /Forbidden secret value found/);
+          return true;
+        }
+      );
+    });
+  }
+});
+
+test("verifyDesignExport rejects symlinks that resolve outside root", async t => {
+  const secret = "outside-symlink-secret";
+  const cases = [
+    ["artifact symlink", async data => {
+      const outsidePath = join(data.root, "..", basename(data.root) + "-image");
+      await writeFile(outsidePath, secret);
+      await rm(join(data.root, "screenshots/login.png"));
+      await symlink(outsidePath, join(data.root, "screenshots/login.png"));
+    }],
+    ["parent directory symlink", async data => {
+      const outsideRoot = join(data.root, "..", basename(data.root) + "-dir");
+      await mkdir(outsideRoot);
+      await writeFile(join(outsideRoot, "login.png"), secret);
+      await rm(join(data.root, "screenshots"), { recursive: true });
+      await symlink(outsideRoot, join(data.root, "screenshots"), "dir");
+    }]
+  ];
+
+  for (const [name, linkOutside] of cases) {
+    await t.test(name, async () => {
+      const data = await fixture();
+      data.manifest.screens[0].screenshotSha256 = hash(secret);
+      await writeJson(join(data.root, "manifest.json"), data.manifest);
+      await linkOutside(data);
+      await assert.rejects(
+        () => verifyDesignExport(
+          data.root,
+          ["login"],
+          [secret],
           () => {}
         ),
         error => {
@@ -337,4 +434,29 @@ test("runStitchVerify emits one safe final error for forbidden content", async (
   assert.equal(finalEvents[0].result, "error");
   assert.match(finalEvents[0].errorMessage, /Forbidden secret value found/);
   assert.doesNotMatch(finalEvents[0].errorMessage, /hash mismatch/);
+});
+
+test("verify CLI main guard emits one JSON error when docs are absent", async () => {
+  const cwd = await mkdtemp(join(tmpdir(), "stitch-cli-"));
+  const cliPath = fileURLToPath(new URL("../bin/verify.mjs", import.meta.url));
+  const child = spawn(process.execPath, [cliPath], { cwd, env: {} });
+  let stdout = "";
+  let stderr = "";
+  child.stdout.setEncoding("utf8").on("data", chunk => {
+    stdout += chunk;
+  });
+  child.stderr.setEncoding("utf8").on("data", chunk => {
+    stderr += chunk;
+  });
+  const exitCode = await new Promise((resolveExit, rejectExit) => {
+    child.once("error", rejectExit);
+    child.once("close", resolveExit);
+  });
+  assert.equal(exitCode, 1);
+  assert.equal(stdout, "");
+  const lines = stderr.trim().split("\n");
+  assert.equal(lines.length, 1);
+  const event = JSON.parse(lines[0]);
+  assert.equal(event.event, "stitch.verify");
+  assert.equal(event.result, "error");
 });
