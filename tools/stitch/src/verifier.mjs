@@ -270,8 +270,10 @@ export async function verifyDesignExport(
 
   for (const screen of manifest.screens) {
     const started = performance.now();
+    const reference = state.screens[screen.localId];
     const context = {
-      projectId: screen.projectId,
+      projectId: reference?.projectId || state.projectId,
+      manifestProjectId: screen.projectId,
       localId: screen.localId,
       screenId: screen.screenId,
       kind: screen.kind,

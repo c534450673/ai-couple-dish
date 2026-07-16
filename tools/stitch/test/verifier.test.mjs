@@ -179,6 +179,31 @@ test("verifyDesignExport logs secondary project ownership on errors", async () =
   assert.ok(bindEvents.every(event => event.projectId === "project-2"));
 });
 
+test("verifyDesignExport logs effective ownership on manifest mismatch", async () => {
+  const data = await multiProjectFixture();
+  await manifestEntryProjectMismatch(data);
+  const lines = [];
+  await assert.rejects(
+    () => verifyDesignExport(
+      data.root,
+      MULTI_PROJECT_IDS,
+      [],
+      line => lines.push(line)
+    ),
+    /Manifest project id mismatch: bind/
+  );
+  const bindEvents = lines
+    .map(line => JSON.parse(line))
+    .filter(event => event.localId === "bind");
+  assert.deepEqual(bindEvents.map(event => event.result), ["started", "error"]);
+  assert.ok(bindEvents.every(event => event.projectId === "project-2"));
+  assert.ok(bindEvents.every(event => event.manifestProjectId === "project-1"));
+  assert.match(
+    bindEvents.at(-1).errorMessage,
+    /Manifest project id mismatch: bind/
+  );
+});
+
 for (const [mutation, expectedError] of [
   [duplicateStateProject, /Duplicate state projects: project-1/],
   [duplicateManifestProject, /Duplicate manifest projects: project-2/],
