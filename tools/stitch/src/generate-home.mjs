@@ -20,6 +20,11 @@ export async function generateHomeDesign(sdk, state) {
     },
     "MOBILE"
   );
+  if (variants.length !== VARIANT_KEYS.length) {
+    throw new Error(
+      `Expected ${VARIANT_KEYS.length} home variants, received ${variants.length}`
+    );
+  }
 
   const screens = {
     ...state.screens,

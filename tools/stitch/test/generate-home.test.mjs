@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { generateHomeDesign } from "../src/generate-home.mjs";
+import { HOME_VARIANT_PROMPT } from "../src/prompts.mjs";
 import { emptyGenerationState } from "../src/state-store.mjs";
 
 test("generateHomeDesign creates a project, base screen and three variants", async () => {
@@ -33,9 +34,23 @@ test("generateHomeDesign creates a project, base screen and three variants", asy
   const result = await generateHomeDesign(sdk, emptyGenerationState());
 
   assert.equal(result.projectId, "project-1");
-  assert.equal(result.screens["home-base"].screenId, "home-base-id");
-  assert.equal(result.screens["home-emotion"].screenId, "home-emotion-id");
-  assert.equal(calls[0].options.variantCount, 3);
+  assert.deepEqual(result.screens, {
+    "home-base": { screenId: "home-base-id", kind: "base" },
+    "home-emotion": { screenId: "home-emotion-id", kind: "variant" },
+    "home-food": { screenId: "home-food-id", kind: "variant" },
+    "home-memory": { screenId: "home-memory-id", kind: "variant" }
+  });
+  assert.deepEqual(calls, [
+    {
+      prompt: HOME_VARIANT_PROMPT,
+      options: {
+        variantCount: 3,
+        creativeRange: "EXPLORE",
+        aspects: ["LAYOUT", "COLOR_SCHEME", "IMAGES", "TEXT_CONTENT"]
+      },
+      deviceType: "MOBILE"
+    }
+  ]);
 });
 
 test("generateHomeDesign resumes an existing project without creating another", async () => {
@@ -75,3 +90,57 @@ test("generateHomeDesign resumes an existing project without creating another", 
   assert.equal(createCalls, 0);
   assert.equal(result.projectId, "project-1");
 });
+
+test("generateHomeDesign returns a completed home state without calling the SDK", async () => {
+  const sdk = {
+    async createProject() {
+      assert.fail("createProject must not be called");
+    },
+    project() {
+      assert.fail("project must not be called");
+    }
+  };
+  const state = {
+    ...emptyGenerationState(),
+    projectId: "project-1",
+    screens: {
+      "home-base": { screenId: "home-base-id", kind: "base" }
+    }
+  };
+
+  const result = await generateHomeDesign(sdk, state);
+
+  assert.strictEqual(result, state);
+});
+
+for (const variantCount of [2, 4]) {
+  test(`generateHomeDesign rejects ${variantCount} home variants without changing state`, async () => {
+    const variants = Array.from({ length: variantCount }, (_, index) => ({
+      screenId: `variant-${index + 1}`
+    }));
+    const sdk = {
+      async createProject() {
+        return {
+          projectId: "project-1",
+          async generate() {
+            return {
+              screenId: "home-base-id",
+              async variants() {
+                return variants;
+              }
+            };
+          }
+        };
+      }
+    };
+    const state = emptyGenerationState();
+    const originalState = structuredClone(state);
+
+    await assert.rejects(
+      generateHomeDesign(sdk, state),
+      new RegExp(`Expected 3 home variants, received ${variantCount}`)
+    );
+    assert.deepEqual(state, originalState);
+    assert.equal(Object.hasOwn(state.screens, "undefined"), false);
+  });
+}
