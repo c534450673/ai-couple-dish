@@ -147,10 +147,36 @@ async function manifestEntryProjectMismatch(data) {
 
 test("verifyDesignExport accepts exact multi-project ownership", async () => {
   const { root } = await multiProjectFixture();
+  const lines = [];
   assert.deepEqual(
-    await verifyDesignExport(root, MULTI_PROJECT_IDS, [], () => {}),
+    await verifyDesignExport(root, MULTI_PROJECT_IDS, [], line => lines.push(line)),
     { screenCount: MULTI_PROJECT_IDS.length }
   );
+  const bindEvents = lines
+    .map(line => JSON.parse(line))
+    .filter(event => event.localId === "bind");
+  assert.deepEqual(bindEvents.map(event => event.result), ["started", "ok"]);
+  assert.ok(bindEvents.every(event => event.projectId === "project-2"));
+});
+
+test("verifyDesignExport logs secondary project ownership on errors", async () => {
+  const { root } = await multiProjectFixture();
+  await writeFile(join(root, "screenshots", "bind.png"), "tampered");
+  const lines = [];
+  await assert.rejects(
+    () => verifyDesignExport(
+      root,
+      MULTI_PROJECT_IDS,
+      [],
+      line => lines.push(line)
+    ),
+    /Screenshot hash mismatch: bind/
+  );
+  const bindEvents = lines
+    .map(line => JSON.parse(line))
+    .filter(event => event.localId === "bind");
+  assert.deepEqual(bindEvents.map(event => event.result), ["started", "error"]);
+  assert.ok(bindEvents.every(event => event.projectId === "project-2"));
 });
 
 for (const [mutation, expectedError] of [
@@ -176,6 +202,47 @@ test("legacy one-project fixture remains valid", async () => {
   assert.deepEqual(await verifyDesignExport(root, ["login"], [], () => {}), {
     screenCount: 1
   });
+});
+
+test("verifyDesignExport rejects malformed explicit state projects", async t => {
+  const cases = [
+    ["missing title", data => {
+      delete data.state.projects[1].title;
+    }],
+    ["null title", data => {
+      data.state.projects[1].title = null;
+    }],
+    ["blank title", data => {
+      data.state.projects[1].title = " ";
+    }],
+    ["blank project id", data => {
+      data.state.projects[1].projectId = " ";
+    }],
+    ["empty registry", data => {
+      data.state.projects = [];
+    }],
+    ["null entry", data => {
+      data.state.projects[1] = null;
+    }],
+    ["array entry", data => {
+      data.state.projects[1] = [];
+    }],
+    ["non-object entry", data => {
+      data.state.projects[1] = "project-2";
+    }]
+  ];
+
+  for (const [name, mutate] of cases) {
+    await t.test(name, async () => {
+      const data = await multiProjectFixture();
+      mutate(data);
+      await persistMultiProjectFixture(data);
+      await assert.rejects(
+        () => verifyDesignExport(data.root, MULTI_PROJECT_IDS, [], () => {}),
+        /Invalid state projects/
+      );
+    });
+  }
 });
 
 test("verifyDesignExport accepts complete matching files", async () => {

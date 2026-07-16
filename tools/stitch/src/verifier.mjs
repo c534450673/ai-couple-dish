@@ -71,7 +71,18 @@ function stateProjects(state) {
   if (state.projects === undefined) {
     return [{ projectId: state.projectId, title: state.projectTitle }];
   }
-  if (!Array.isArray(state.projects)) {
+  if (
+    !Array.isArray(state.projects) ||
+    state.projects.some(project =>
+      !project ||
+      typeof project !== "object" ||
+      Array.isArray(project) ||
+      typeof project.projectId !== "string" ||
+      !project.projectId.trim() ||
+      typeof project.title !== "string" ||
+      !project.title.trim()
+    )
+  ) {
     throw new Error("Invalid state projects");
   }
   return state.projects;
@@ -260,7 +271,7 @@ export async function verifyDesignExport(
   for (const screen of manifest.screens) {
     const started = performance.now();
     const context = {
-      projectId: manifest.projectId,
+      projectId: screen.projectId,
       localId: screen.localId,
       screenId: screen.screenId,
       kind: screen.kind,
