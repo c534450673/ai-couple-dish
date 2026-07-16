@@ -67,19 +67,20 @@ function twoProjectState() {
       { projectId: "project-2", title: `${state.projectTitle} - Part 2` }
     ],
     screens: {
-      ...state.screens,
       memories: {
         screenId: "screen-3",
         kind: "base",
         projectId: "project-2"
-      }
+      },
+      ...state.screens
     }
   };
 }
 
-function fakeExportProject(projectId) {
+function fakeExportProject(projectId, screenReads) {
   return {
     async getScreen(screenId) {
+      screenReads.push([projectId, screenId]);
       return {
         async getImage() {
           return `https://assets.example/${projectId}/${screenId}/image?token=secret`;
@@ -161,12 +162,13 @@ test("exportDesignProject writes multi-screen artifacts, manifest and detailed l
 test("exportDesignProject reads each screen from its owning project", async () => {
   const root = await mkdtemp(join(tmpdir(), "stitch-export-shards-"));
   const calls = [];
+  const screenReads = [];
   const lines = [];
   const state = twoProjectState();
   const sdk = {
     project(projectId) {
       calls.push(projectId);
-      return fakeExportProject(projectId);
+      return fakeExportProject(projectId, screenReads);
     }
   };
 
@@ -178,7 +180,12 @@ test("exportDesignProject reads each screen from its owning project", async () =
     line => lines.push(line)
   );
 
-  assert.deepEqual(calls, ["project-1", "project-2"]);
+  assert.deepEqual(calls, ["project-2", "project-1"]);
+  assert.deepEqual(screenReads, [
+    ["project-2", "screen-3"],
+    ["project-1", "screen-1"],
+    ["project-1", "screen-2"]
+  ]);
   assert.deepEqual(manifest.projectIds, ["project-1", "project-2"]);
   assert.equal(
     manifest.screens.find(screen => screen.localId === "memories").projectId,
