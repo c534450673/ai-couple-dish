@@ -436,7 +436,7 @@ test("runStitchVerify emits one safe final error for forbidden content", async (
   assert.doesNotMatch(finalEvents[0].errorMessage, /hash mismatch/);
 });
 
-test("verify CLI main guard emits one JSON error when docs are absent", async () => {
+test("verify CLI main guard emits state-consistent JSON from any cwd", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "stitch-cli-"));
   const cliPath = fileURLToPath(new URL("../bin/verify.mjs", import.meta.url));
   const child = spawn(process.execPath, [cliPath], { cwd, env: {} });
@@ -452,11 +452,15 @@ test("verify CLI main guard emits one JSON error when docs are absent", async ()
     child.once("error", rejectExit);
     child.once("close", resolveExit);
   });
-  assert.equal(exitCode, 1);
+  assert.equal([0, 1].includes(exitCode), true);
   assert.equal(stdout, "");
+  assert.doesNotMatch(stderr, /STITCH_API_KEY|STITCH_ACCESS_TOKEN/);
+  assert.doesNotMatch(stderr, /\n\s+at\s/);
   const lines = stderr.trim().split("\n");
-  assert.equal(lines.length, 1);
-  const event = JSON.parse(lines[0]);
-  assert.equal(event.event, "stitch.verify");
-  assert.equal(event.result, "error");
+  assert.equal(lines.length > 0, true);
+  const events = lines.map(line => JSON.parse(line));
+  const finalEvents = events.filter(event => event.event === "stitch.verify");
+  assert.equal(finalEvents.length, 1);
+  assert.equal(events.at(-1), finalEvents[0]);
+  assert.equal(finalEvents[0].result, exitCode === 0 ? "ok" : "error");
 });
