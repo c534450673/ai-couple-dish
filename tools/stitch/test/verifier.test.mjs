@@ -9,6 +9,8 @@ import { fileURLToPath } from "node:url";
 import { runStitchVerify } from "../bin/verify.mjs";
 import { verifyDesignExport } from "../src/verifier.mjs";
 
+const MULTI_PROJECT_IDS = ["login", "bind"];
+
 function hash(value) {
   return createHash("sha256").update(value).digest("hex");
 }
@@ -53,6 +55,128 @@ async function fixture() {
   await writeJson(join(root, "generation-state.json"), state);
   return { root, manifest, state };
 }
+
+async function multiProjectFixture() {
+  const root = await mkdtemp(join(tmpdir(), "stitch-verify-shards-"));
+  await mkdir(join(root, "screenshots"));
+  await mkdir(join(root, "html"));
+  const artifacts = {
+    login: { screenshot: "login-image", html: "login-html" },
+    bind: { screenshot: "bind-image", html: "bind-html" }
+  };
+  for (const [localId, content] of Object.entries(artifacts)) {
+    await writeFile(join(root, "screenshots", `${localId}.png`), content.screenshot);
+    await writeFile(join(root, "html", `${localId}.html`), content.html);
+  }
+  const manifest = {
+    version: 1,
+    projectId: "project-1",
+    projectIds: ["project-1", "project-2"],
+    screens: [
+      screenEntry("login", {
+        screenshotSha256: hash(artifacts.login.screenshot),
+        htmlSha256: hash(artifacts.login.html)
+      }),
+      screenEntry("bind", {
+        projectId: "project-2",
+        screenId: "screen-2",
+        screenshotSha256: hash(artifacts.bind.screenshot),
+        htmlSha256: hash(artifacts.bind.html)
+      })
+    ]
+  };
+  const state = {
+    projectId: "project-1",
+    projectTitle: "AI Couple Dish - Couple Cosmos",
+    projects: [
+      { projectId: "project-1", title: "AI Couple Dish - Couple Cosmos" },
+      { projectId: "project-2", title: "AI Couple Dish - Couple Cosmos - Part 2" }
+    ],
+    screens: {
+      login: { screenId: "screen-1", kind: "base" },
+      bind: { screenId: "screen-2", kind: "base", projectId: "project-2" }
+    }
+  };
+  await writeJson(join(root, "manifest.json"), manifest);
+  await writeJson(join(root, "generation-state.json"), state);
+  return { root, manifest, state };
+}
+
+async function persistMultiProjectFixture(data) {
+  await writeJson(join(data.root, "manifest.json"), data.manifest);
+  await writeJson(join(data.root, "generation-state.json"), data.state);
+}
+
+async function duplicateStateProject(data) {
+  data.state.projects.push({
+    projectId: "project-1",
+    title: "AI Couple Dish - Couple Cosmos duplicate"
+  });
+  await persistMultiProjectFixture(data);
+}
+
+async function duplicateManifestProject(data) {
+  data.manifest.projectIds.push("project-2");
+  await persistMultiProjectFixture(data);
+}
+
+async function unknownScreenProject(data) {
+  data.state.screens.bind.projectId = "project-unknown";
+  await persistMultiProjectFixture(data);
+}
+
+async function manifestProjectOrderMismatch(data) {
+  data.state.projects.push({
+    projectId: "project-3",
+    title: "AI Couple Dish - Couple Cosmos - Part 3"
+  });
+  data.manifest.projectIds = ["project-1", "project-3", "project-2"];
+  await persistMultiProjectFixture(data);
+}
+
+async function manifestPrimaryProjectMismatch(data) {
+  data.manifest.projectIds.reverse();
+  await persistMultiProjectFixture(data);
+}
+
+async function manifestEntryProjectMismatch(data) {
+  data.manifest.screens.find(screen => screen.localId === "bind").projectId =
+    "project-1";
+  await persistMultiProjectFixture(data);
+}
+
+test("verifyDesignExport accepts exact multi-project ownership", async () => {
+  const { root } = await multiProjectFixture();
+  assert.deepEqual(
+    await verifyDesignExport(root, MULTI_PROJECT_IDS, [], () => {}),
+    { screenCount: MULTI_PROJECT_IDS.length }
+  );
+});
+
+for (const [mutation, expectedError] of [
+  [duplicateStateProject, /Duplicate state projects: project-1/],
+  [duplicateManifestProject, /Duplicate manifest projects: project-2/],
+  [unknownScreenProject, /Unknown screen project id: bind/],
+  [manifestProjectOrderMismatch, /Project registry mismatch/],
+  [manifestPrimaryProjectMismatch, /Primary project id mismatch/],
+  [manifestEntryProjectMismatch, /Manifest project id mismatch: bind/]
+]) {
+  test(`verifyDesignExport rejects ${mutation.name}`, async () => {
+    const data = await multiProjectFixture();
+    await mutation(data);
+    await assert.rejects(
+      () => verifyDesignExport(data.root, MULTI_PROJECT_IDS, [], () => {}),
+      expectedError
+    );
+  });
+}
+
+test("legacy one-project fixture remains valid", async () => {
+  const { root } = await fixture();
+  assert.deepEqual(await verifyDesignExport(root, ["login"], [], () => {}), {
+    screenCount: 1
+  });
+});
 
 test("verifyDesignExport accepts complete matching files", async () => {
   const { root } = await fixture();

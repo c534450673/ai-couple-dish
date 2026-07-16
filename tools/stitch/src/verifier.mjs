@@ -67,6 +67,39 @@ function assertExactIds(actualIds, expectedIds, label) {
   }
 }
 
+function stateProjects(state) {
+  if (state.projects === undefined) {
+    return [{ projectId: state.projectId, title: state.projectTitle }];
+  }
+  if (!Array.isArray(state.projects)) {
+    throw new Error("Invalid state projects");
+  }
+  return state.projects;
+}
+
+function manifestProjectIds(manifest) {
+  if (manifest.projectIds === undefined) {
+    return [manifest.projectId];
+  }
+  if (!Array.isArray(manifest.projectIds)) {
+    throw new Error("Invalid manifest projects");
+  }
+  return manifest.projectIds;
+}
+
+function assertNonEmptyUniqueIds(ids, label) {
+  if (
+    ids.length === 0 ||
+    ids.some(projectId => typeof projectId !== "string" || !projectId.trim())
+  ) {
+    throw new Error("Invalid " + label);
+  }
+  const duplicates = duplicateIds(ids);
+  if (duplicates.length > 0) {
+    throw new Error(`Duplicate ${label}: ${duplicates.join(", ")}`);
+  }
+}
+
 function validateManifestAndState(manifest, state, expectedIds) {
   if (manifest?.version !== 1) {
     throw new Error("Invalid manifest version");
@@ -106,6 +139,27 @@ function validateManifestAndState(manifest, state, expectedIds) {
   if (state.projectId !== manifest.projectId) {
     throw new Error("Project id mismatch");
   }
+
+  const projects = stateProjects(state);
+  const stateProjectIds = projects.map(project => project?.projectId);
+  const exportedProjectIds = manifestProjectIds(manifest);
+  assertNonEmptyUniqueIds(stateProjectIds, "state projects");
+  assertNonEmptyUniqueIds(exportedProjectIds, "manifest projects");
+  if (
+    stateProjectIds[0] !== state.projectId ||
+    exportedProjectIds[0] !== manifest.projectId
+  ) {
+    throw new Error("Primary project id mismatch");
+  }
+  if (JSON.stringify(stateProjectIds) !== JSON.stringify(exportedProjectIds)) {
+    throw new Error("Project registry mismatch");
+  }
+  for (const [localId, reference] of Object.entries(state.screens)) {
+    const projectId = reference?.projectId || state.projectId;
+    if (!stateProjectIds.includes(projectId)) {
+      throw new Error("Unknown screen project id: " + localId);
+    }
+  }
 }
 
 function assertArtifactPath(root, localId, actual, expected) {
@@ -125,9 +179,10 @@ function assertArtifactPath(root, localId, actual, expected) {
   }
 }
 
-function validateScreenEntry(root, manifest, state, screen) {
+function validateScreenEntry(root, state, screen) {
   const reference = state.screens[screen.localId];
-  if (screen.projectId !== manifest.projectId) {
+  const projectId = reference?.projectId || state.projectId;
+  if (screen.projectId !== projectId) {
     throw new Error("Manifest project id mismatch: " + screen.localId);
   }
   if (
@@ -214,7 +269,7 @@ export async function verifyDesignExport(
     };
     logEvent("stitch.verify.screen", { result: "started", ...context }, write);
     try {
-      validateScreenEntry(root, manifest, state, screen);
+      validateScreenEntry(root, state, screen);
       const screenshot = await readVerifiedArtifact(
         root,
         realRoot,
