@@ -26,6 +26,13 @@ function toErrorDetails(error) {
   };
 }
 
+function redactStagingPath(error, stagingRoot) {
+  if (error && typeof error.message === "string") {
+    error.message = error.message.replaceAll(stagingRoot, "[STAGING]");
+  }
+  return error;
+}
+
 async function exportArtifact({
   projectId,
   localId,
@@ -64,14 +71,14 @@ async function exportArtifact({
     );
     return result;
   } catch (error) {
-    const details = toErrorDetails(error);
+    const details = toErrorDetails(redactStagingPath(error, outputRoot));
     logEvent(
       "stitch.export.screen",
       {
         result: "error",
         ...context,
         errorName: details.name,
-        errorMessage: details.message.replaceAll(outputRoot, "[STAGING]"),
+        errorMessage: details.message,
         durationMs: Math.round(performance.now() - started)
       },
       write
@@ -149,7 +156,13 @@ export async function exportDesignProject(
     }
     await rename(stagedManifest, join(outputRoot, "manifest.json"));
     return manifest;
+  } catch (error) {
+    throw redactStagingPath(error, stagingRoot);
   } finally {
-    await rm(stagingRoot, { recursive: true, force: true });
+    try {
+      await rm(stagingRoot, { recursive: true, force: true });
+    } catch (error) {
+      throw redactStagingPath(error, stagingRoot);
+    }
   }
 }

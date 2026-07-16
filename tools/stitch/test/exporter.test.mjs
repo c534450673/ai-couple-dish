@@ -241,6 +241,36 @@ async function captureExport({ close, overrides = {}, onExport } = {}) {
   }
 }
 
+test("runStitchExport redacts real staging paths from exporter failures", async () => {
+  const root = await mkdtemp(join(tmpdir(), "stitch-export-redaction-"));
+  const result = await captureExport({
+    overrides: {
+      readState: async () => ({
+        ...makeState(),
+        screens: {
+          "nested/path": { screenId: "screen-1", kind: "base" }
+        }
+      }),
+      createSdk: () => ({
+        sdk: makeSdk(["screen-1"]),
+        client: { async close() {} }
+      }),
+      exportProject: exportDesignProject,
+      outputRoot: root,
+      fetchImpl: makeFetch()
+    }
+  });
+
+  const serialized = result.events.map(event => JSON.stringify(event)).join("\n");
+  const final = result.events.find(event => event.event === "stitch.export");
+  assert.equal(result.exitCode, 1);
+  assert.match(serialized, /\[STAGING\]/);
+  assert.equal(serialized.includes(root), false);
+  assert.doesNotMatch(serialized, /\.stitch-export-/);
+  assert.equal(final.result, "error");
+  assert.equal("stack" in final, false);
+});
+
 test("runStitchExport serializes setup failures into one final JSON event", async t => {
   const cases = [
     ["missing state", { readState: async () => { throw new Error("state missing"); } }, /state missing/],
