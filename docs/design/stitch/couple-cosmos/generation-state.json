@@ -1,0 +1,109 @@
+{
+  "projectId": "13684427438355291075",
+  "projectTitle": "AI Couple Dish - Couple Cosmos",
+  "projects": [
+    {
+      "projectId": "13684427438355291075",
+      "title": "AI Couple Dish - Couple Cosmos"
+    },
+    {
+      "projectId": "11248542621689718164",
+      "title": "AI Couple Dish - Couple Cosmos - Part 2"
+    },
+    {
+      "projectId": "3134958192996908783",
+      "title": "AI Couple Dish - Couple Cosmos - Part 3"
+    }
+  ],
+  "screens": {
+    "home-base": {
+      "screenId": "ec99a409385942d096b6c087713a8813",
+      "kind": "base",
+      "projectId": "11248542621689718164"
+    },
+    "home-emotion": {
+      "screenId": "a902119c6e2544d69838abf43dbf0995",
+      "kind": "variant"
+    },
+    "home-food": {
+      "screenId": "b1068cb3dd864a2a9203b75c891fab6f",
+      "kind": "variant"
+    },
+    "home-memory": {
+      "screenId": "46a73105d5674c0480a492a90316e0e1",
+      "kind": "variant"
+    },
+    "login": {
+      "screenId": "57343ad1f0bf466dbccb7de6e656a89b",
+      "kind": "base"
+    },
+    "bind": {
+      "screenId": "d2ed27ae7ce34a70be87c6c6ec566183",
+      "kind": "base"
+    },
+    "menu-list": {
+      "screenId": "7599e03e0b25440a93e9b69a0e3d5ef0",
+      "kind": "base"
+    },
+    "menu-detail": {
+      "screenId": "a0f94c7466204bf4abc38c2617c84df5",
+      "kind": "base"
+    },
+    "recipe-list": {
+      "screenId": "fd67228d334f42ae8943089fd767b563",
+      "kind": "base"
+    },
+    "recipe-detail": {
+      "screenId": "6dbfaef0605746428ae0eb7942f5c8db",
+      "kind": "base"
+    },
+    "recipe-editor": {
+      "screenId": "d0e789b5177341c3b26b552c796ed5ab",
+      "kind": "base"
+    },
+    "feed": {
+      "screenId": "1b46f25fec5048378fead9bb0c659f0f",
+      "kind": "base"
+    },
+    "memories": {
+      "screenId": "5cdad0d948b84747be632fd7bbf38c25",
+      "kind": "base",
+      "projectId": "11248542621689718164"
+    },
+    "note-editor": {
+      "screenId": "b3b5e3e8ca0c4b96a426ce9e753617d3",
+      "kind": "base",
+      "projectId": "11248542621689718164"
+    },
+    "map": {
+      "screenId": "66b692347eae4695b6d124ff003ea02b",
+      "kind": "base",
+      "projectId": "11248542621689718164"
+    },
+    "ai-chat": {
+      "screenId": "0d76bb97c0c248bc99d65bd4cea24414",
+      "kind": "base",
+      "projectId": "11248542621689718164"
+    },
+    "settings": {
+      "screenId": "b58813c0ca81442682573707041df23e",
+      "kind": "base",
+      "projectId": "11248542621689718164"
+    },
+    "notification-center": {
+      "screenId": "5b54e13f3b9e4d29856c409b307f93fe",
+      "kind": "base",
+      "projectId": "11248542621689718164"
+    },
+    "legal-privacy": {
+      "screenId": "43cf69c557ba485c81e7fa2c9474701b",
+      "kind": "base",
+      "projectId": "11248542621689718164"
+    },
+    "system-states": {
+      "screenId": "37a96b4033734d769f8da1b2ce047c89",
+      "kind": "base",
+      "projectId": "11248542621689718164"
+    }
+  }
+}
