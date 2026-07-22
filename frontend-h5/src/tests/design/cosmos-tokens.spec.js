@@ -1,8 +1,24 @@
 import { readFile } from 'node:fs/promises'
+import { execFile as execFileCallback } from 'node:child_process'
 import { resolve } from 'node:path'
+import { promisify } from 'node:util'
 import { describe, expect, it } from 'vitest'
 
 const stylesDirectory = resolve(process.cwd(), 'src/assets/styles')
+const execFile = promisify(execFileCallback)
+
+const negativeLetterSpacing = async () => {
+  try {
+    return (await execFile('rg', ['-n', 'letter-spacing\\s*:\\s*-', 'src'], {
+      cwd: process.cwd()
+    })).stdout
+  } catch (error) {
+    if (error.code === 1) {
+      return ''
+    }
+    throw error
+  }
+}
 
 describe('Couple Cosmos 设计令牌', () => {
   it('提供深色 Cosmos 色彩和圆角令牌', async () => {
@@ -34,5 +50,12 @@ describe('Couple Cosmos 设计令牌', () => {
     expect(motion).toContain('@keyframes cosmos-orbit')
     expect(motion).toContain('@media (prefers-reduced-motion: reduce)')
     expect(motion).toMatch(/animation-duration:\s*0\.01ms\s*!important/)
+  })
+
+  it('为中文全局字距归零且 src 中不存在负字距', async () => {
+    const main = await readFile(resolve(stylesDirectory, 'main.scss'), 'utf8')
+
+    expect(main).toMatch(/body\s*\{[\s\S]*letter-spacing:\s*0;/)
+    expect(await negativeLetterSpacing()).toBe('')
   })
 })

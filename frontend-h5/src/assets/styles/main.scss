@@ -17,6 +17,7 @@ body {
   font-family: $font-family-base;
   font-size: $fs-body;
   line-height: $lh-body;
+  letter-spacing: 0;
   background: $color-background;
   color: $color-on-surface;
   -webkit-font-smoothing: antialiased;
@@ -106,6 +107,21 @@ button { font-family: inherit; }
   width: 100%;
   min-height: 100vh;
   background: $color-background;
+}
+
+// ---------- 本地 Cosmos 运行时媒体 ----------
+.cosmos-media {
+  --cosmos-media-image: none;
+  display: block;
+  width: 100%;
+  background-image: var(--cosmos-media-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  &--food { --cosmos-media-image: url('../cosmos/food-hero.webp'); }
+  &--partner { --cosmos-media-image: url('../cosmos/partner-avatar.webp'); }
+  &--place { --cosmos-media-image: url('../cosmos/place-restaurant.webp'); }
 }
 
 // ---------- 通用布局/组件类（兼容旧页面，套用新风格） ----------

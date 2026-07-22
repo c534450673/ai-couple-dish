@@ -330,7 +330,7 @@ onUnmounted(() => {
     font-size: $fs-title;
     font-weight: $fw-semibold;
     color: $color-primary;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
 
     .num { font-size: 22px; }
   }

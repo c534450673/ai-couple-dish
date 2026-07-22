@@ -244,7 +244,7 @@ const showPrivacy = () => {
     font-size: $fs-headline;
     font-weight: $fw-bold;
     color: $color-on-surface;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
     margin-bottom: $space-2;
   }
 
