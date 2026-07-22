@@ -220,6 +220,12 @@ function validateScreenEntry(root, state, screen) {
   if (!VALID_HTML_SOURCES.has(htmlSource)) {
     throw new Error("Invalid HTML source: " + screen.localId);
   }
+  if (screen.localId === "login" && screen.htmlSource !== "screenshot-fallback") {
+    throw new Error("Login must use screenshot-fallback HTML");
+  }
+  if (screen.localId !== "login" && screen.htmlSource !== "stitch") {
+    throw new Error("Only login may use screenshot-fallback HTML: " + screen.localId);
+  }
   assertArtifactPath(
     root,
     screen.localId,
