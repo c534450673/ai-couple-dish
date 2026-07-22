@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Couple Cosmos - 编辑星系味觉</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#151024",
+                    "tertiary-fixed-dim": "#f4be4e",
+                    "inverse-surface": "#e7defa",
+                    "secondary": "#45dcc8",
+                    "surface-container": "#211d31",
+                    "inverse-on-surface": "#322d42",
+                    "secondary-fixed-dim": "#45dcc8",
+                    "tertiary-fixed": "#ffdea4",
+                    "on-tertiary-fixed-variant": "#5d4200",
+                    "surface-variant": "#363247",
+                    "outline-variant": "#594042",
+                    "on-secondary-fixed": "#00201c",
+                    "on-secondary-fixed-variant": "#005047",
+                    "on-primary-container": "#63001a",
+                    "error-container": "#93000a",
+                    "on-tertiary": "#412d00",
+                    "on-tertiary-container": "#3e2b00",
+                    "outline": "#a8898a",
+                    "inverse-primary": "#b42440",
+                    "on-primary-fixed-variant": "#91002a",
+                    "background": "#151024",
+                    "tertiary": "#f4be4e",
+                    "on-primary": "#67001c",
+                    "on-surface-variant": "#e1bebf",
+                    "surface-container-low": "#1d192c",
+                    "on-tertiary-fixed": "#261900",
+                    "surface-bright": "#3b364b",
+                    "on-secondary-container": "#00463e",
+                    "surface": "#151024",
+                    "on-error-container": "#ffdad6",
+                    "on-error": "#690005",
+                    "surface-container-lowest": "#0f0b1e",
+                    "secondary-fixed": "#68f9e4",
+                    "surface-tint": "#ffb2b7",
+                    "surface-container-high": "#2b273c",
+                    "on-primary-fixed": "#40000e",
+                    "surface-container-highest": "#363247",
+                    "primary-container": "#ff5d73",
+                    "primary-fixed": "#ffdadb",
+                    "error": "#ffb4ab",
+                    "primary-fixed-dim": "#ffb2b7",
+                    "on-secondary": "#003731",
+                    "tertiary-container": "#be8e20",
+                    "secondary-container": "#00bdaa",
+                    "on-background": "#e7defa",
+                    "primary": "#ffb2b7",
+                    "on-surface": "#e7defa"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "12px",
+                    "stack-md": "16px",
+                    "stack-lg": "24px",
+                    "touch-target": "44px",
+                    "stack-sm": "8px",
+                    "container-margin": "20px"
+            },
+            "fontFamily": {
+                    "label-md": ["Noto Sans SC"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-md": ["Noto Sans SC"],
+                    "body-lg": ["Noto Sans SC"],
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "label-md": ["13px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "display-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-md": ["15px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-lg": ["17px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background: radial-gradient(circle at top right, #322d42 0%, #151024 100%);
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nebula-glow {
+            box-shadow: 0 0 40px rgba(255, 93, 115, 0.15);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface font-body-md min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full rounded-b-xl bg-surface/40 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-primary/20 z-50 flex justify-between items-center px-5 py-4">
+<button class="flex items-center justify-center w-touch-target h-touch-target text-primary active:scale-95 transition-transform">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</button>
+<h1 class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary">Couple Cosmos</h1>
+<button class="flex items-center justify-center w-touch-target h-touch-target text-on-surface-variant active:scale-95 transition-transform">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</header>
+<main class="pt-24 px-5 space-y-6">
+<!-- Section Header -->
+<div class="flex items-end justify-between">
+<h2 class="font-headline-md text-headline-md text-secondary">编辑星系味觉</h2>
+<span class="font-label-md text-label-md text-on-surface-variant opacity-60">草稿已于 14:20 自动保存</span>
+</div>
+<!-- Progressive Form -->
+<div class="space-y-6">
+<!-- Image Upload Area -->
+<div class="relative group h-72 rounded-[24px] overflow-hidden glass-card nebula-glow">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A cinematic, high-end food photograph of a gourmet dessert shaped like a purple nebula planet, resting on a crystalline translucent plate. The background is a deep space galaxy with shimmering stars and swirling violet nebulae. The lighting is dramatic and ethereal, with soft coral glows and mint highlights reflecting off the dessert's glossy surface. The overall mood is mysterious, romantic, and highly aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDQPsVfuQNNRJscnHYgjWLgdCa9HvS3g9O6cCUHM8-hsgvPkozkYRUvWxgg09QS-vWdh6XTqgY7sH0I6XXz28USVPduaqDo4a2xshzKCYOJJJ4L7f1_kb_5VWie4oQ1pUAVL2MEpu0241MvXlTLuOX0p8ie4ruYGev40CmZ_d2XEU1IQTZEsGeIdTnG-lsIXlDU3BqodkkDtnHpqtq8rXsoSX20ntMkma1UBGL1UqUy8VQjxN4WUMiUcht3AhKXP5ek15a1gQmzolE')">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<button class="absolute bottom-4 right-4 px-4 py-2 glass-card rounded-full flex items-center gap-2 text-label-md font-label-md text-white border-white/20 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]">photo_camera</span>
+                    更换封面
+                </button>
+</div>
+<!-- Basic Info Card -->
+<section class="glass-card rounded-[24px] p-5 space-y-5">
+<div class="space-y-2">
+<label class="block font-label-md text-label-md text-secondary-fixed-dim">星系菜名</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 h-[44px] focus:ring-2 focus:ring-secondary/50 placeholder:text-on-surface-variant/40 text-on-surface" placeholder="给这道菜起个宇宙代号" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="block font-label-md text-label-md text-secondary-fixed-dim">味觉故事</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-secondary/50 placeholder:text-on-surface-variant/40 text-on-surface resize-none" placeholder="在这颗星球上，我们曾品尝到的..." rows="3"></textarea>
+</div>
+</section>
+<!-- Ingredients Card -->
+<section class="glass-card rounded-[24px] p-5 space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-primary">食材星图</h3>
+<button class="text-secondary flex items-center gap-1 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-md text-label-md">添加食材</span>
+</button>
+</div>
+<div class="space-y-4">
+<!-- Ingredient Row 1 (Success) -->
+<div class="flex items-start gap-3">
+<div class="flex-grow">
+<input class="w-full bg-surface-container-high border-none rounded-xl px-4 h-[44px] text-on-surface" type="text" value="彗星碎冰"/>
+</div>
+<div class="w-24">
+<input class="w-full bg-surface-container-high border-none rounded-xl px-4 h-[44px] text-on-surface text-center" type="text" value="200g"/>
+</div>
+<button class="h-[44px] text-on-surface-variant/40">
+<span class="material-symbols-outlined">remove_circle_outline</span>
+</button>
+</div>
+<!-- Ingredient Row 2 (Error State) -->
+<div class="space-y-1">
+<div class="flex items-start gap-3">
+<div class="flex-grow">
+<input class="w-full bg-surface-container-high border-2 border-primary-container/40 rounded-xl px-4 h-[44px] text-on-surface" placeholder="食材名称" type="text"/>
+</div>
+<div class="w-24">
+<input class="w-full bg-surface-container-high border-none rounded-xl px-4 h-[44px] text-on-surface text-center" placeholder="克重" type="text"/>
+</div>
+<button class="h-[44px] text-on-surface-variant/40">
+<span class="material-symbols-outlined">remove_circle_outline</span>
+</button>
+</div>
+<p class="text-primary-container text-[12px] px-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">error</span>
+                            请填写食材名称
+                        </p>
+</div>
+</div>
+</section>
+<!-- Privacy Toggle -->
+<section class="glass-card rounded-[24px] p-5 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">cloud_done</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">公开至星云</p>
+<p class="text-[11px] text-on-surface-variant/60">让其他伴侣也能发现你的创作</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</section>
+</div>
+</main>
+<!-- Sticky Bottom Actions -->
+<div class="fixed bottom-0 left-0 w-full p-5 bg-gradient-to-t from-surface-dim via-surface-dim/95 to-transparent z-40">
+<div class="flex gap-4 max-w-md mx-auto">
+<button class="flex-1 h-touch-target rounded-full font-label-md text-label-md glass-card text-on-surface-variant hover:opacity-80 transition-opacity">
+                取消
+            </button>
+<button class="flex-[2] h-touch-target rounded-full font-label-md text-label-md bg-gradient-to-r from-primary-container to-[#ff7d8f] text-on-primary shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                同步至星系
+            </button>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface/40 backdrop-blur-2xl border-t border-white/10 shadow-[0_-8px_24px_rgba(255,93,115,0.15)] rounded-t-xl md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">public</span>
+<span class="font-label-sm text-label-md">星球</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary scale-110 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+<span class="font-label-sm text-label-md">菜单</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm text-label-md">投喂</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="font-label-sm text-label-md">回忆</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-sm text-label-md">我们</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction: Focus effects for inputs
+        document.querySelectorAll('input, textarea').forEach(el => {
+            el.addEventListener('focus', () => {
+                el.parentElement.closest('.glass-card').style.borderColor = 'rgba(69, 220, 200, 0.4)';
+            });
+            el.addEventListener('blur', () => {
+                el.parentElement.closest('.glass-card').style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            });
+        });
+
+        // Floating particles effect
+        const createParticle = () => {
+            const p = document.createElement('div');
+            p.className = 'fixed bg-white rounded-full pointer-events-none opacity-20';
+            const size = Math.random() * 3;
+            p.style.width = `${size}px`;
+            p.style.height = `${size}px`;
+            p.style.left = `${Math.random() * 100}vw`;
+            p.style.top = `${Math.random() * 100}vh`;
+            p.style.transition = `all ${Math.random() * 10 + 5}s linear`;
+            document.body.appendChild(p);
+
+            setTimeout(() => {
+                p.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)`;
+                p.style.opacity = '0';
+            }, 100);
+
+            setTimeout(() => p.remove(), 15000);
+        };
+
+        setInterval(createParticle, 2000);
+    </script>
+</body></html>

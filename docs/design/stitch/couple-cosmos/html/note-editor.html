@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>记录星系美味 - Couple Cosmos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-blur: blur(20px);
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #2b1d42 0%, #151024 100%);
+            color: #e7defa;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,93,115,0) 0%, rgba(255,93,115,0.2) 50%, rgba(255,93,115,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        /* Safe area handling */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-surface-variant": "#e1bebf",
+                        "on-secondary-fixed": "#00201c",
+                        "on-secondary-container": "#00463e",
+                        "error": "#ffb4ab",
+                        "primary-container": "#ff5d73",
+                        "outline": "#a8898a",
+                        "surface-dim": "#151024",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdea4",
+                        "surface-container-lowest": "#0f0b1e",
+                        "on-tertiary-fixed-variant": "#5d4200",
+                        "background": "#151024",
+                        "on-error": "#690005",
+                        "surface-container": "#211d31",
+                        "primary-fixed-dim": "#ffb2b7",
+                        "error-container": "#93000a",
+                        "on-surface": "#e7defa",
+                        "surface-container-highest": "#363247",
+                        "secondary-container": "#00bdaa",
+                        "inverse-primary": "#b42440",
+                        "surface-container-low": "#1d192c",
+                        "on-primary-container": "#63001a",
+                        "inverse-surface": "#e7defa",
+                        "primary-fixed": "#ffdadb",
+                        "secondary-fixed-dim": "#45dcc8",
+                        "secondary-fixed": "#68f9e4",
+                        "surface-tint": "#ffb2b7",
+                        "on-tertiary": "#412d00",
+                        "surface-bright": "#3b364b",
+                        "primary": "#ffb2b7",
+                        "on-secondary-fixed-variant": "#005047",
+                        "on-tertiary-fixed": "#261900",
+                        "on-primary": "#67001c",
+                        "tertiary": "#f4be4e",
+                        "tertiary-fixed-dim": "#f4be4e",
+                        "on-tertiary-container": "#3e2b00",
+                        "surface": "#151024",
+                        "surface-container-high": "#2b273c",
+                        "on-background": "#e7defa",
+                        "outline-variant": "#594042",
+                        "on-secondary": "#003731",
+                        "secondary": "#45dcc8",
+                        "on-primary-fixed-variant": "#91002a",
+                        "inverse-on-surface": "#322d42",
+                        "tertiary-container": "#be8e20",
+                        "surface-variant": "#363247",
+                        "on-primary-fixed": "#40000e",
+                        "brand-coral": "#FF5D73",
+                        "brand-mint": "#54E8D3",
+                        "brand-gold": "#FFC857"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "24px",
+                        "3xl": "28px",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin-mobile": "20px",
+                        "stack-lg": "24px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "touch-target": "44px"
+                    },
+                    fontFamily: {
+                        "body-md": ["Noto Sans SC"],
+                        "body-lg": ["Noto Sans SC"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-md": ["Noto Sans SC"]
+                    },
+                    fontSize: {
+                        "body-md": ["15px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["17px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-md": ["13px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-body-md text-on-surface pb-32">
+<!-- Top AppBar Component -->
+<header class="fixed top-0 w-full z-50 bg-surface/40 backdrop-blur-xl border-b border-white/10 flex justify-between items-center px-5 py-4">
+<button aria-label="返回" class="flex items-center justify-center w-11 h-11 rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back_ios_new</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-primary">记录星系美味</h1>
+<div class="w-11 h-11 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary opacity-60">more_horiz</span>
+</div>
+</header>
+<main class="mt-20 px-margin-mobile flex flex-col gap-stack-lg">
+<!-- Image Upload & Display Section -->
+<section class="relative">
+<div class="glass-card rounded-2xl overflow-hidden aspect-[4/5] relative flex flex-col items-center justify-center border-white/20">
+<!-- Background Image Placeholder -->
+<div class="absolute inset-0 w-full h-full">
+<img alt="星系美食作品" class="w-full h-full object-cover opacity-90 transition-transform duration-700 hover:scale-105" src="https://lh3.googleusercontent.com/aida/AP1WRLs4TNDkUyaK3_K188YWBwZkhH1GdM-Qqwa80BMNQSX-lVtH9x3XFRuh1UQEe0YwtsZF6eN7Je4ST-yXU2WGd49DZEcNCL0IINqnTpDQIrqViwgz8au5LBJDdiGcYjT0RLN8N284Ru2NYXhsRpqpj4CZCvrU4u1E0H4WZUMIIHvSJO_Se33OHf_8iM9Ll6TtjG5LfPpEY6fHbbl1ir_DSilgWZfsZaspaH7kdOcSu3vtfb2ve1toOJMm3A"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+</div>
+<!-- Progress Indicator Overlay -->
+<div class="absolute bottom-6 left-6 right-6 z-10">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-label-md text-brand-mint flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">cloud_upload</span>
+                            正在同步至星云...
+                        </span>
+<span class="font-label-md text-label-md text-brand-mint">95%</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-brand-mint shimmer rounded-full" style="width: 95%"></div>
+</div>
+</div>
+<!-- Retry Option (Hidden by default, shown if error occurs) -->
+<button class="hidden absolute top-6 right-6 z-20 bg-error-container/40 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-2 text-error border border-error/30 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm">refresh</span>
+<span class="font-label-md text-label-md">重试</span>
+</button>
+</div>
+</section>
+<!-- Taste Story Entry -->
+<section class="glass-card rounded-2xl p-5 flex flex-col gap-3">
+<label class="font-label-md text-label-md text-brand-gold flex items-center gap-2 uppercase tracking-widest" for="taste-story">
+<span class="material-symbols-outlined text-lg">auto_awesome</span>
+                味觉故事
+            </label>
+<textarea class="w-full bg-transparent border-none focus:ring-0 p-0 text-body-lg font-body-lg text-on-surface placeholder:text-on-surface-variant/40 resize-none min-h-[120px]" id="taste-story" placeholder="在此记录属于你们的味觉宇宙..." spellcheck="false"></textarea>
+<div class="flex items-center justify-between pt-2 border-t border-white/5">
+<span class="text-on-surface-variant/40 font-label-md text-label-md">草稿已于 14:20 自动保存</span>
+<span class="text-on-surface-variant/60 font-label-md text-label-md">0/1000</span>
+</div>
+</section>
+<!-- Metadata Cluster -->
+<section class="flex flex-col gap-stack-md">
+<!-- Location -->
+<div class="glass-card rounded-2xl p-4 flex items-center justify-between active:scale-[0.98] transition-transform duration-150">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div>
+<div class="text-on-surface-variant/60 text-label-md font-label-md">位置</div>
+<div class="text-on-surface text-body-md font-body-md">星河云端餐厅</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+</div>
+<!-- Linked Recipe -->
+<div class="glass-card rounded-2xl p-4 flex items-center justify-between active:scale-[0.98] transition-transform duration-150">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-brand-mint/10 flex items-center justify-center text-brand-mint">
+<span class="material-symbols-outlined">restaurant_menu</span>
+</div>
+<div>
+<div class="text-on-surface-variant/60 text-label-md font-label-md">关联食谱</div>
+<div class="text-on-surface text-body-md font-body-md">极光莓果星云挞</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+</div>
+<!-- Privacy Setting -->
+<div class="glass-card rounded-2xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div>
+<div class="text-on-surface-variant/60 text-label-md font-label-md">私密同步</div>
+<div class="text-on-surface text-body-md font-body-md">仅限你们二人可见</div>
+</div>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-coral"></div>
+</div>
+</div>
+</section>
+<!-- Main CTA -->
+<button class="w-full h-14 bg-brand-coral text-white rounded-2xl font-bold text-lg shadow-lg shadow-brand-coral/25 flex items-center justify-center gap-3 active:scale-95 transition-all mt-4 mb-8">
+<span class="material-symbols-outlined">rocket_launch</span>
+            同步至星系
+        </button>
+</main>
+<!-- Bottom Navigation Bar Component -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface/40 backdrop-blur-2xl border-t border-white/10 flex justify-around items-center px-4 pb-8 pt-3 shadow-[0_-8px_24px_rgba(255,93,115,0.15)]">
+<!-- Tab: 星球 -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60">
+<span class="material-symbols-outlined">public</span>
+<span class="font-label-md text-label-md mt-1">星球</span>
+</div>
+<!-- Tab: 菜单 -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-label-md text-label-md mt-1">菜单</span>
+</div>
+<!-- Tab: 投喂 -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-md text-label-md mt-1">投喂</span>
+</div>
+<!-- Tab: 回忆 (Active State) -->
+<div class="flex flex-col items-center justify-center text-primary scale-110 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+<span class="font-label-md text-label-md mt-1">回忆</span>
+</div>
+<!-- Tab: 我们 -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-md text-label-md mt-1">我们</span>
+</div>
+</nav>
+<!-- Background Atmospheric Effect -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute top-[20%] right-[-10%] w-[300px] h-[300px] bg-brand-coral/10 blur-[100px] rounded-full"></div>
+<div class="absolute bottom-[30%] left-[-10%] w-[250px] h-[250px] bg-brand-mint/10 blur-[80px] rounded-full"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-20 mix-blend-overlay" style="background-image: url('https://www.transparenttextures.com/patterns/stardust.png');"></div>
+</div>
+<script>
+        // Simple Interaction Feedback
+        document.querySelectorAll('.glass-card, button').forEach(el => {
+            el.addEventListener('touchstart', () => {
+                el.classList.add('opacity-80');
+            });
+            el.addEventListener('touchend', () => {
+                el.classList.remove('opacity-80');
+            });
+        });
+
+        // Dynamic Textarea Auto-height
+        const textarea = document.getElementById('taste-story');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
+</body></html>

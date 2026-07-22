@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>星空焦糖法式甜点 - Recipe Horizon</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Shared Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#3e2b00",
+                        "on-primary-fixed-variant": "#91002a",
+                        "secondary-fixed-dim": "#45dcc8",
+                        "inverse-surface": "#dee0ff",
+                        "surface-tint": "#ffb2b7",
+                        "on-surface": "#dee0ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-variant": "#2f334e",
+                        "on-background": "#dee0ff",
+                        "surface-dim": "#0d112a",
+                        "tertiary-fixed-dim": "#f4be4e",
+                        "tertiary": "#f4be4e",
+                        "outline-variant": "#594042",
+                        "surface-container-high": "#242842",
+                        "background": "#0d112a",
+                        "surface": "#0d112a",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#343752",
+                        "secondary-container": "#00bdaa",
+                        "outline": "#a8898a",
+                        "on-secondary-fixed": "#00201c",
+                        "primary": "#ffb2b7",
+                        "on-error": "#690005",
+                        "on-secondary": "#003731",
+                        "on-tertiary": "#412d00",
+                        "surface-container-lowest": "#080c25",
+                        "primary-fixed-dim": "#ffb2b7",
+                        "secondary-fixed": "#68f9e4",
+                        "on-tertiary-fixed": "#261900",
+                        "on-primary": "#67001c",
+                        "primary-container": "#ff5d73",
+                        "on-surface-variant": "#e1bebf",
+                        "surface-container-highest": "#2f334e",
+                        "tertiary-container": "#be8e20",
+                        "on-secondary-fixed-variant": "#005047",
+                        "on-secondary-container": "#00463e",
+                        "on-primary-container": "#63001a",
+                        "surface-container": "#1a1e37",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#ffdadb",
+                        "secondary": "#45dcc8",
+                        "on-primary-fixed": "#40000e",
+                        "surface-container-low": "#161a33",
+                        "inverse-on-surface": "#2b2f49",
+                        "on-tertiary-fixed-variant": "#5d4200",
+                        "inverse-primary": "#b42440",
+                        "tertiary-fixed": "#ffdea4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "40px",
+                        "stack-md": "16px",
+                        "stack-sm": "8px",
+                        "gutter": "20px",
+                        "container-max": "1200px",
+                        "stack-lg": "32px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Geist"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0d112a;
+            color: #dee0ff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        
+        .glass-card {
+            background: rgba(26, 30, 55, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .active-glow {
+            box-shadow: 0 0 15px rgba(69, 220, 200, 0.3);
+        }
+
+        .step-line {
+            position: absolute;
+            left: 19px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(69, 220, 200, 0.4), transparent);
+        }
+
+        .cinematic-zoom {
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .cinematic-zoom:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes nebula-pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.7; }
+        }
+
+        .nebula-bg {
+            animation: nebula-pulse 8s ease-in-out infinite;
+        }
+
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-y-auto pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 bg-surface/10 backdrop-blur-xl border-b border-white/10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border border-primary/30 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a loving couple in a high-tech kitchen environment, lit by soft violet and teal neon lights, creating a cinematic and romantic atmosphere. The style is futuristic and polished, with a shallow depth of field focusing on their warm expressions as they prepare to cook together." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDphX7tFgbdA6UGueOMk05hPzkLGtujbDDJr_wdwEEQKUPew7texhtRbH6zIQtObic3l2fdG3PDAA6JsRvLpf-2_y6DYwxOOup4qwilsjIekiEsvPt5x9vdrkRTmltWYwb3H5PFCdt-iyEx_hLjpIcgK53rYGpdP3A6Mu6_9yF2LCltoHPCPf7MpfJKYk1NedNAe795HUt9yOjKaoaRt7-epORogS0NtPLIOU67CTRaZJUiqS4yQBpmj4xd0O20EXlioa1eqUpRHL2U"/>
+</div>
+<span class="font-display-lg-mobile text-primary text-[20px] font-bold">Recipe Horizon</span>
+</div>
+<div class="flex items-center bg-secondary-container/20 px-3 py-1.5 rounded-full border border-secondary/20">
+<span class="material-symbols-outlined text-secondary text-[18px] mr-1">favorite</span>
+<span class="font-label-sm text-secondary">42 Days Together</span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-16 max-w-lg mx-auto">
+<!-- Hero Section -->
+<section class="relative w-full aspect-[4/5] overflow-hidden">
+<img class="w-full h-full object-cover cinematic-zoom" src="https://lh3.googleusercontent.com/aida/AP1WRLvzFAYjr2cfz5yPXoA1KCqCftusZqHpRfygS6iFZM0Rp9fKFx10CacYlxsQs6ocvMBKKs02ewo2e1QHeZWTW7LyCOQghRfZOn2scsn3lwvrK_MMGuDQNcqffEqEtKXqd2ICw0n9OWjWYLnZuTAiZi6Fzco0FvzaP-GCEIKvsu-yQJyr0HzcyMHABLN58lY3jXx9nJ1kjrMDHK6s0mPoCEQgXkGNQV6UgINLLFUP00PquzelIismGoPC3xzB"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0d112a] via-transparent to-transparent opacity-90"></div>
+<!-- Floating Badge -->
+<div class="absolute bottom-6 left-margin-mobile right-margin-mobile">
+<div class="inline-flex items-center gap-2 bg-primary-container/90 text-on-primary-container px-4 py-2 rounded-full mb-4 shadow-lg backdrop-blur-md">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-label-sm font-bold tracking-wider">两人共同完成</span>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-on-surface leading-tight">星空焦糖<br/>法式甜点</h1>
+<div class="flex gap-3 mt-4">
+<span class="bg-secondary/10 text-secondary border border-secondary/20 px-3 py-1 rounded-full font-label-sm">法式艺术</span>
+<span class="bg-secondary/10 text-secondary border border-secondary/20 px-3 py-1 rounded-full font-label-sm">难度: 中等</span>
+<span class="bg-secondary/10 text-secondary border border-secondary/20 px-3 py-1 rounded-full font-label-sm">45 分钟</span>
+</div>
+</div>
+</section>
+<!-- AI Adaptation Note -->
+<section class="px-margin-mobile mt-6">
+<div class="glass-card p-5 rounded-[24px] flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary">auto_awesome</span>
+</div>
+<div>
+<h3 class="font-headline-md text-primary mb-1 text-[18px]">AI 智能适配</h3>
+<p class="text-on-surface-variant font-body-md text-sm opacity-80">
+                        基于你们最近的口味偏好，AI 已微调焦糖甜度（-15%）并建议加入少量海盐增强风味。
+                    </p>
+</div>
+</div>
+</section>
+<!-- Ingredients Bento Grid -->
+<section class="px-margin-mobile mt-8">
+<div class="flex justify-between items-end mb-4">
+<h2 class="font-headline-md text-headline-md-mobile">主要食材</h2>
+<button class="text-secondary font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">exposure</span>
+                    2人份 (可调)
+                </button>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="glass-card p-4 rounded-[20px] flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">egg</span>
+<div>
+<p class="font-label-sm text-on-surface">蛋黄</p>
+<p class="font-label-sm text-on-surface-variant opacity-60">4 个</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-[20px] flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">icecream</span>
+<div>
+<p class="font-label-sm text-on-surface">淡奶油</p>
+<p class="font-label-sm text-on-surface-variant opacity-60">250ml</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-[20px] flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">grain</span>
+<div>
+<p class="font-label-sm text-on-surface">香草籽</p>
+<p class="font-label-sm text-on-surface-variant opacity-60">1/2 根</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-[20px] flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">bakery_dining</span>
+<div>
+<p class="font-label-sm text-on-surface">细砂糖</p>
+<p class="font-label-sm text-on-surface-variant opacity-60">40g</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Steps Section -->
+<section class="px-margin-mobile mt-10">
+<h2 class="font-headline-md text-headline-md-mobile mb-6">制作步骤</h2>
+<!-- Step 1 -->
+<div class="relative mb-10 pl-14">
+<div class="step-line"></div>
+<div class="absolute left-0 top-0 w-10 h-10 rounded-full border-2 border-secondary flex items-center justify-center bg-background z-10">
+<span class="text-secondary font-bold">01</span>
+</div>
+<h3 class="font-headline-md text-[18px] text-on-surface mb-2">融合基底</h3>
+<p class="text-on-surface-variant font-body-md mb-4 leading-relaxed">
+                    将淡奶油与香草籽共同加热至微沸。在这个过程中，建议两人分工：一人观察火候，一人轻轻搅拌。
+                </p>
+<div class="glass-card rounded-xl p-3 flex items-center gap-3 border-l-4 border-secondary">
+<span class="material-symbols-outlined text-secondary text-[20px]">smart_toy</span>
+<p class="font-label-sm text-secondary-fixed">AI 微调：小火慢熬，香气会更浓郁。</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="relative mb-10 pl-14">
+<div class="step-line"></div>
+<div class="absolute left-0 top-0 w-10 h-10 rounded-full border-2 border-primary/50 flex items-center justify-center bg-background z-10">
+<span class="text-primary font-bold">02</span>
+</div>
+<h3 class="font-headline-md text-[18px] text-on-surface mb-2">蛋糖混合</h3>
+<p class="text-on-surface-variant font-body-md mb-4 leading-relaxed">
+                    将蛋黄与细砂糖充分搅拌。这是互动的最佳时刻，可以轮流操作，感受食材质地的变化。
+                </p>
+<div class="w-full aspect-video rounded-2xl overflow-hidden glass-card">
+<img class="w-full h-full object-cover" data-alt="A close-up action shot of two hands together whisking golden egg yolks and sugar in a crystal bowl. Tiny bubbles form as the mixture becomes creamy. The lighting is focused and warm, highlighting the texture and the glisten of the sugar crystals against a deep navy background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBv9RvjX3_2YjqDQ-3xU6MXGwfHJdVdfBamXLG9REXqw0O7FvPnNzoW87pPZ-xiA_SAfFSSiXLaz3qGztFrUECZKzOxah7D5MAWr4iSoJb7gTr7aRQNq0861aTrQBpMdoGX7WlIQ0VG8aiuK_o6vASb3am-GrKoc_9nqvVrYECL0-NjDTnp7KAEpaUV5eeRcBo8c_erUVxvm6bj5fZWt65BuuaR-RmkGXztG09zlheSLh63pa7inU6uTqpoKXPn1x0NiZy87Jdduuuq"/>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative mb-10 pl-14">
+<div class="absolute left-0 top-0 w-10 h-10 rounded-full border-2 border-primary/50 flex items-center justify-center bg-background z-10">
+<span class="text-primary font-bold">03</span>
+</div>
+<h3 class="font-headline-md text-[18px] text-on-surface mb-2">星空点缀</h3>
+<p class="text-on-surface-variant font-body-md mb-4 leading-relaxed">
+                    最后在冷却的表面撒上焦糖粉，用喷枪掠过，形成如星云般的焦香脆壳。
+                </p>
+</div>
+</section>
+</main>
+<!-- Bottom Actions -->
+<div class="fixed bottom-24 left-margin-mobile right-margin-mobile z-40 flex gap-3">
+<button class="flex-1 touch-target flex items-center justify-center gap-2 bg-surface-container-highest/60 backdrop-blur-xl border border-white/10 rounded-full text-on-surface font-label-sm transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+            加入购物车
+        </button>
+<button class="flex-1 touch-target flex items-center justify-center gap-2 bg-gradient-to-r from-primary-container to-primary text-on-primary-container rounded-full font-label-sm font-bold shadow-lg shadow-primary/20 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">auto_fix_high</span>
+            AI 智能适配
+        </button>
+</div>
+<!-- Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface-container/20 backdrop-blur-2xl border-t border-white/5 rounded-t-[28px] shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant/70 touch-target">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm text-label-sm mt-1">Universe</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container/40 text-on-secondary-container rounded-full px-4 py-1.5 shadow-[0_0_15px_rgba(69,220,200,0.3)] touch-target translate-y-[-2px] transition-all">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-label-sm text-label-sm mt-1">Recipes</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/70 touch-target">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="font-label-sm text-label-sm mt-1">Feed</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/70 touch-target">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm mt-1">Settings</span>
+</div>
+</nav>
+<!-- Interactive Background Particles -->
+<div class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden opacity-30 nebula-bg">
+<div class="absolute top-[20%] left-[10%] w-64 h-64 bg-primary/20 rounded-full blur-[100px]"></div>
+<div class="absolute bottom-[30%] right-[10%] w-80 h-80 bg-secondary/15 rounded-full blur-[120px]"></div>
+</div>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('touchstart', () => {
+                button.classList.add('opacity-80');
+            });
+            button.addEventListener('touchend', () => {
+                button.classList.remove('opacity-80');
+            });
+        });
+
+        // Simple step activation logic
+        const steps = document.querySelectorAll('.pl-14');
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelector('.rounded-full').classList.add('active-glow');
+                    entry.target.querySelector('.rounded-full').style.borderColor = 'var(--secondary)';
+                }
+            });
+        }, observerOptions);
+
+        steps.forEach(step => observer.observe(step));
+    </script>
+</body></html>

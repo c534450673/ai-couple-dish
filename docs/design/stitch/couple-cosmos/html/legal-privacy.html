@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Couple Cosmos - 法律与隐私中心</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --stardust-gradient: linear-gradient(135deg, #0d112a 0%, #1a1e37 100%);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0d112a;
+            color: #dee0ff;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+        }
+
+        .glass-bottom-sheet {
+            background: rgba(13, 17, 42, 0.85);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-top: 1px solid var(--glass-border);
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        @keyframes stardust-fade {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .animate-stardust {
+            animation: stardust-fade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animate-stardust {
+                animation: none;
+                transition: opacity 0.3s ease;
+            }
+        }
+
+        .nav-anchor-active {
+            color: #45dcc8;
+            border-bottom: 2px solid #45dcc8;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .cosmic-sync {
+            background: radial-gradient(circle, rgba(84, 232, 211, 0.2) 0%, transparent 70%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffb2b7",
+                        "secondary": "#45dcc8",
+                        "tertiary": "#f4be4e",
+                        "surface": "#0d112a",
+                        "surface-container": "#1a1e37",
+                        "surface-container-low": "#161a33",
+                        "surface-container-lowest": "#080c25",
+                        "on-surface": "#dee0ff",
+                        "on-surface-variant": "#e1bebf",
+                        "error": "#ffb4ab",
+                        "coral": "#FF5D73",
+                        "mint": "#54E8D3",
+                        "star-gold": "#FFC857"
+                    },
+                    spacing: {
+                        "container-padding": "24px",
+                    },
+                    fontFamily: {
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    fontSize: {
+                        "display-lg-mobile": ["32px", { lineHeight: "40px", fontWeight: "700" }],
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "600" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface pb-32">
+<!-- Background Layer -->
+<div class="fixed inset-0 z-[-1] overflow-hidden">
+
+</div>
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-container-padding h-16 backdrop-blur-[20px] border-b border-white/10 bg-surface/10">
+<button class="w-11 h-11 flex items-center justify-center rounded-full glass-card hover:opacity-80" onclick="window.history.back()">
+<span class="material-symbols-outlined text-secondary">arrow_back_ios_new</span>
+</button>
+<h1 class="font-display-lg-mobile text-[20px] bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">法律与隐私</h1>
+<button class="w-11 h-11 flex items-center justify-center rounded-full glass-card hover:opacity-80">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+</button>
+</header>
+<!-- State Controllers (Hidden by default, used for demo) -->
+<div class="fixed top-20 right-4 z-[100] flex flex-col gap-2 scale-75 origin-top-right opacity-0 hover:opacity-100 transition-opacity" id="state-controls">
+<button class="p-2 glass-card text-[10px]" onclick="switchState('normal')">Normal</button>
+<button class="p-2 glass-card text-[10px]" onclick="switchState('loading')">Loading</button>
+<button class="p-2 glass-card text-[10px]" onclick="switchState('empty')">Empty</button>
+<button class="p-2 glass-card text-[10px]" onclick="switchState('error')">Error</button>
+<button class="p-2 glass-card text-[10px]" onclick="switchState('unauthorized')">Locked</button>
+<button class="p-2 glass-card text-[10px]" onclick="switchState('unbound')">Unbound</button>
+</div>
+<main class="pt-24 px-container-padding space-y-8 animate-stardust" id="main-content">
+<!-- SECTION NAVIGATOR (Sticky Anchors) -->
+<nav class="sticky top-[72px] z-40 overflow-x-auto no-scrollbar py-2 -mx-6 px-6 bg-surface/20 backdrop-blur-md">
+<div class="flex gap-6 whitespace-nowrap">
+<a class="nav-anchor-active pb-2 font-label-sm transition-all" href="#privacy">隐私政策</a>
+<a class="text-on-surface-variant pb-2 font-label-sm transition-all hover:text-secondary" href="#terms">服务协议</a>
+<a class="text-on-surface-variant pb-2 font-label-sm transition-all hover:text-secondary" href="#third-party">第三方服务</a>
+<a class="text-on-surface-variant pb-2 font-label-sm transition-all hover:text-secondary" href="#data-export">数据导出</a>
+<a class="text-on-surface-variant pb-2 font-label-sm transition-all hover:text-secondary" href="#account">账号管理</a>
+<a class="text-on-surface-variant pb-2 font-label-sm transition-all hover:text-secondary" href="#ownership">数据所有权</a>
+</div>
+</nav>
+<!-- STATE: NORMAL CONTENT -->
+<section class="space-y-12" id="state-normal">
+<!-- Privacy Policy -->
+<article class="glass-card p-6 space-y-4 border-l-4 border-l-mint" id="privacy">
+<h2 class="font-headline-md text-mint flex items-center gap-2">
+<span class="material-symbols-outlined">security</span>
+                    隐私政策
+                </h2>
+<div class="space-y-4 text-on-surface leading-relaxed font-body-md opacity-90">
+<p>在 Couple Cosmos，我们相信情侣之间的每一刻数据都是神圣的。我们的“灵魂签名”加密技术确保只有您和您的伴侣能够解密共享的对话、照片和 AI 合成的共同记忆。</p>
+<p>我们承诺：</p>
+<ul class="list-disc list-inside space-y-2 marker:text-secondary">
+<li>端到端加密保护所有私人聊天。</li>
+<li>绝不向第三方出售您的个人偏好数据。</li>
+<li>AI 学习仅限于优化您的专属合盘体验。</li>
+</ul>
+</div>
+</article>
+<!-- Ownership (Bento Style) -->
+<article class="space-y-4" id="ownership">
+<h2 class="font-headline-md text-star-gold flex items-center gap-2">
+<span class="material-symbols-outlined">stars</span>
+                    数据所有权 (共享灵魂签名)
+                </h2>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card p-4 flex flex-col justify-between h-40">
+<span class="material-symbols-outlined text-secondary text-3xl">hub</span>
+<p class="font-label-sm text-secondary">双向确权</p>
+<p class="text-[12px] leading-tight">每一份记忆都需要双方密钥共同开启。</p>
+</div>
+<div class="glass-card p-4 flex flex-col justify-between h-40">
+<span class="material-symbols-outlined text-coral text-3xl">favorite</span>
+<p class="font-label-sm text-coral">情感遗产</p>
+<p class="text-[12px] leading-tight">即使解绑，您的个人部分始终属于您。</p>
+</div>
+</div>
+</article>
+<!-- Actions -->
+<article class="glass-card p-6 space-y-6" id="account">
+<h2 class="font-headline-md text-primary">关键操作</h2>
+<div class="space-y-4">
+<button class="w-full flex items-center justify-between p-4 glass-card border-none bg-white/5 active:scale-95 transition-transform" style="min-height: 44px;">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">download</span>
+<span class="font-body-md">导出“宇宙记忆库”</span>
+</div>
+<span class="material-symbols-outlined opacity-50">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 glass-card border-none bg-coral/10 text-coral active:scale-95 transition-transform" onclick="switchState('unbound')" style="min-height: 44px;">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">link_off</span>
+<span class="font-body-md">断开星系连接 (解绑)</span>
+</div>
+<span class="material-symbols-outlined opacity-50">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 glass-card border-none bg-error/10 text-error active:scale-95 transition-transform" style="min-height: 44px;">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">delete_forever</span>
+<span class="font-body-md">注销当前星籍</span>
+</div>
+<span class="material-symbols-outlined opacity-50">chevron_right</span>
+</button>
+</div>
+</article>
+</section>
+<!-- STATE: LOADING -->
+<section class="hidden flex flex-col items-center justify-center min-h-[530px] space-y-6" id="state-loading">
+<div class="relative w-24 h-24">
+
+<div class="absolute inset-0 cosmic-sync rounded-full animate-pulse"></div>
+</div>
+<p class="font-headline-md text-mint animate-pulse">正在同步星系法律...</p>
+<p class="text-on-surface-variant font-label-sm">量子数据传输中</p>
+</section>
+<!-- STATE: EMPTY -->
+<section class="hidden flex flex-col items-center justify-center min-h-[530px] space-y-6 text-center" id="state-empty">
+<span class="material-symbols-outlined text-8xl text-on-surface-variant/20">blur_off</span>
+<h2 class="font-headline-md text-on-surface-variant">虚空星系</h2>
+<p class="text-on-surface-variant max-w-xs font-body-md">此处尚无任何数据记录，请先建立您的情侣星系。</p>
+<button class="px-8 py-3 bg-secondary text-surface font-bold rounded-full shadow-[0_0_15px_rgba(84,232,211,0.4)] active:scale-95 transition-all" onclick="switchState('normal')">
+                返回中心
+            </button>
+</section>
+<!-- STATE: ERROR -->
+<section class="hidden flex flex-col items-center justify-center min-h-[530px] space-y-6 text-center" id="state-error">
+<div class="w-20 h-20 glass-card flex items-center justify-center rounded-full border-coral/50">
+<span class="material-symbols-outlined text-4xl text-coral">signal_cellular_connected_no_internet_4_bar</span>
+</div>
+<h2 class="font-headline-md text-coral">信号丢失</h2>
+<p class="text-on-surface-variant max-w-xs font-body-md">无法连接到 Cosmos 核心节点，请检查您的跨星系网络。</p>
+<button class="flex items-center gap-2 px-8 py-3 border border-star-gold text-star-gold font-bold rounded-full hover:bg-star-gold/10 active:scale-95 transition-all" onclick="location.reload()">
+<span class="material-symbols-outlined">refresh</span> 重试连接
+            </button>
+</section>
+<!-- STATE: UNAUTHORIZED -->
+<section class="hidden flex flex-col items-center justify-center min-h-[530px] space-y-6 text-center" id="state-unauthorized">
+<span class="material-symbols-outlined text-8xl text-star-gold">lock_person</span>
+<h2 class="font-headline-md text-star-gold">受限轨道</h2>
+<p class="text-on-surface-variant max-w-xs font-body-md">您需要高级“星际通行证”或伴侣的联合授权才能访问此法律文档。</p>
+<button class="px-8 py-3 bg-primary text-on-primary font-bold rounded-full active:scale-95 transition-all">
+                申请访问权限
+            </button>
+</section>
+<!-- STATE: UNBOUND (Warning Modal-like Overlay) -->
+<section class="hidden flex flex-col items-center justify-center min-h-[530px] space-y-6 text-center" id="state-unbound">
+<div class="glass-card p-8 border-coral max-w-sm space-y-6">
+<span class="material-symbols-outlined text-6xl text-coral animate-bounce">warning</span>
+<h2 class="font-headline-md text-coral">引力崩解预警</h2>
+<p class="text-on-surface font-body-md">一旦断开情侣连接，所有共同生成的 AI 记忆及交互数据将在 24 小时后进入不可逆的湮灭程序。</p>
+<div class="space-y-3">
+<button class="w-full py-3 bg-coral text-white font-bold rounded-xl">确认解绑 (数据抹除)</button>
+<button class="w-full py-3 glass-card border-none text-on-surface-variant" onclick="switchState('normal')">保持连接</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation (Shell Component) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-20 backdrop-blur-[40px] border-t border-white/10 bg-surface-container/15 rounded-t-xl shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant/70">
+<span class="material-symbols-outlined">auto_graph</span>
+<span class="font-label-sm">时间轴</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/70">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-sm">发现</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/70">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-sm">心愿单</span>
+</div>
+<div class="flex flex-col items-center justify-center text-secondary drop-shadow-[0_0_8px_rgba(69,220,200,0.4)]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home_app_logo</span>
+<span class="font-label-sm">我们的窝</span>
+</div>
+</nav>
+<script>
+        function switchState(state) {
+            const states = ['normal', 'loading', 'empty', 'error', 'unauthorized', 'unbound'];
+            states.forEach(s => {
+                document.getElementById(`state-${s}`).classList.add('hidden');
+            });
+            document.getElementById(`state-${state}`).classList.remove('hidden');
+            
+            // Re-trigger animation
+            const main = document.getElementById('main-content');
+            main.classList.remove('animate-stardust');
+            void main.offsetWidth; // Trigger reflow
+            main.classList.add('animate-stardust');
+
+            // Toggle visibility of navigation and header based on state if needed
+            const nav = document.querySelector('nav.sticky');
+            if(state !== 'normal') {
+                nav.classList.add('hidden');
+            } else {
+                nav.classList.remove('hidden');
+            }
+        }
+
+        // Smooth Scroll for Anchors
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 120,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active class
+                    document.querySelectorAll('nav a').forEach(a => a.className = 'text-on-surface-variant pb-2 font-label-sm transition-all hover:text-secondary');
+                    this.className = 'nav-anchor-active pb-2 font-label-sm transition-all';
+                }
+            });
+        });
+
+        // Simple Intersection Observer to update nav highlights
+        const sections = document.querySelectorAll('article[id]');
+        const navLinks = document.querySelectorAll('nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.className = 'text-on-surface-variant pb-2 font-label-sm transition-all hover:text-secondary';
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.className = 'nav-anchor-active pb-2 font-label-sm transition-all';
+                }
+            });
+        });
+    </script>
+</body></html>

@@ -17,9 +17,9 @@
   ],
   "screens": {
     "home-base": {
-      "screenId": "ec99a409385942d096b6c087713a8813",
+      "screenId": "ea311b21e75c4d6eb3c4cbdc17d201a1",
       "kind": "base",
-      "projectId": "11248542621689718164"
+      "projectId": "3134958192996908783"
     },
     "home-emotion": {
       "screenId": "a902119c6e2544d69838abf43dbf0995",
@@ -38,32 +38,37 @@
       "kind": "base"
     },
     "bind": {
-      "screenId": "d2ed27ae7ce34a70be87c6c6ec566183",
-      "kind": "base"
+      "screenId": "3e9b738799ca4bceab0820b654cc4e34",
+      "kind": "base",
+      "projectId": "3134958192996908783"
     },
     "menu-list": {
       "screenId": "7599e03e0b25440a93e9b69a0e3d5ef0",
       "kind": "base"
     },
     "menu-detail": {
-      "screenId": "a0f94c7466204bf4abc38c2617c84df5",
-      "kind": "base"
+      "screenId": "9d9704f395374e19a59998fa71d045bb",
+      "kind": "base",
+      "projectId": "3134958192996908783"
     },
     "recipe-list": {
-      "screenId": "fd67228d334f42ae8943089fd767b563",
-      "kind": "base"
+      "screenId": "61e7289380d54ef48dcbb9d6d286937c",
+      "kind": "base",
+      "projectId": "3134958192996908783"
     },
     "recipe-detail": {
       "screenId": "6dbfaef0605746428ae0eb7942f5c8db",
       "kind": "base"
     },
     "recipe-editor": {
-      "screenId": "d0e789b5177341c3b26b552c796ed5ab",
-      "kind": "base"
+      "screenId": "727678a7a4b941cbad4c3d9b0be95dd2",
+      "kind": "base",
+      "projectId": "3134958192996908783"
     },
     "feed": {
-      "screenId": "1b46f25fec5048378fead9bb0c659f0f",
-      "kind": "base"
+      "screenId": "8ca66e2481ae429399882530745d6e7e",
+      "kind": "base",
+      "projectId": "3134958192996908783"
     },
     "memories": {
       "screenId": "5cdad0d948b84747be632fd7bbf38c25",
@@ -71,19 +76,19 @@
       "projectId": "11248542621689718164"
     },
     "note-editor": {
-      "screenId": "b3b5e3e8ca0c4b96a426ce9e753617d3",
+      "screenId": "ce0230acb7174903b7730453b2ece451",
       "kind": "base",
-      "projectId": "11248542621689718164"
+      "projectId": "3134958192996908783"
     },
     "map": {
-      "screenId": "66b692347eae4695b6d124ff003ea02b",
+      "screenId": "83989301678846dd9ecfd6946e00848d",
       "kind": "base",
-      "projectId": "11248542621689718164"
+      "projectId": "3134958192996908783"
     },
     "ai-chat": {
-      "screenId": "0d76bb97c0c248bc99d65bd4cea24414",
+      "screenId": "df71145425b145168ad453bc40d241e1",
       "kind": "base",
-      "projectId": "11248542621689718164"
+      "projectId": "3134958192996908783"
     },
     "settings": {
       "screenId": "b58813c0ca81442682573707041df23e",
@@ -91,9 +96,9 @@
       "projectId": "11248542621689718164"
     },
     "notification-center": {
-      "screenId": "5b54e13f3b9e4d29856c409b307f93fe",
+      "screenId": "da801196f5f64e18a7d5f9609548e4c9",
       "kind": "base",
-      "projectId": "11248542621689718164"
+      "projectId": "3134958192996908783"
     },
     "legal-privacy": {
       "screenId": "43cf69c557ba485c81e7fa2c9474701b",
@@ -101,9 +106,9 @@
       "projectId": "11248542621689718164"
     },
     "system-states": {
-      "screenId": "37a96b4033734d769f8da1b2ce047c89",
+      "screenId": "997cefbe5cc646118c0e82d6a788afc1",
       "kind": "base",
-      "projectId": "11248542621689718164"
+      "projectId": "3134958192996908783"
     }
   }
 }

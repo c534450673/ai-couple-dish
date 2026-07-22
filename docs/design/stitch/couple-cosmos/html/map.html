@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Include Tailwind Config from System -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#ffb2b7",
+                    "error": "#ffb4ab",
+                    "on-tertiary-fixed": "#261900",
+                    "error-container": "#93000a",
+                    "tertiary": "#f4be4e",
+                    "on-primary-fixed": "#40000e",
+                    "tertiary-container": "#be8e20",
+                    "secondary": "#45dcc8",
+                    "background": "#151024",
+                    "on-tertiary": "#412d00",
+                    "surface-container-high": "#2b273c",
+                    "surface": "#151024",
+                    "on-primary": "#67001c",
+                    "tertiary-fixed-dim": "#f4be4e",
+                    "on-surface": "#e7defa",
+                    "primary": "#ffb2b7",
+                    "surface-variant": "#363247",
+                    "on-surface-variant": "#e1bebf",
+                    "on-secondary-container": "#00463e",
+                    "surface-container-highest": "#363247",
+                    "surface-container": "#211d31",
+                    "tertiary-fixed": "#ffdea4",
+                    "surface-container-low": "#1d192c",
+                    "outline": "#a8898a",
+                    "inverse-surface": "#e7defa",
+                    "inverse-primary": "#b42440",
+                    "inverse-on-surface": "#322d42",
+                    "surface-bright": "#3b364b",
+                    "secondary-fixed-dim": "#45dcc8",
+                    "surface-dim": "#151024",
+                    "secondary-container": "#00bdaa",
+                    "on-error": "#690005",
+                    "primary-fixed-dim": "#ffb2b7",
+                    "outline-variant": "#594042",
+                    "on-secondary-fixed": "#00201c",
+                    "on-secondary-fixed-variant": "#005047",
+                    "on-secondary": "#003731",
+                    "on-tertiary-container": "#3e2b00",
+                    "surface-container-lowest": "#0f0b1e",
+                    "on-error-container": "#ffdad6",
+                    "primary-container": "#ff5d73",
+                    "secondary-fixed": "#68f9e4",
+                    "on-tertiary-fixed-variant": "#5d4200",
+                    "primary-fixed": "#ffdadb",
+                    "on-primary-fixed-variant": "#91002a",
+                    "on-background": "#e7defa",
+                    "on-primary-container": "#63001a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "24px",
+                    "container-margin": "20px",
+                    "touch-target": "44px",
+                    "stack-md": "16px",
+                    "gutter": "12px",
+                    "stack-sm": "8px"
+            },
+            "fontFamily": {
+                    "label-md": ["Noto Sans SC"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Noto Sans SC"],
+                    "body-lg": ["Noto Sans SC"]
+            },
+            "fontSize": {
+                    "label-md": ["13px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "display-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["15px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-lg": ["17px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #151024;
+            color: #e7defa;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .map-container {
+            background: radial-gradient(circle at center, #2b273c 0%, #151024 100%);
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .star-field {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        @keyframes pulse-coral {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 93, 115, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 93, 115, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 93, 115, 0); }
+        }
+
+        @keyframes pulse-mint {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(69, 220, 200, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(69, 220, 200, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(69, 220, 200, 0); }
+        }
+
+        .pin-coral { animation: pulse-coral 2s infinite; }
+        .pin-mint { animation: pulse-mint 2.5s infinite; }
+
+        .bottom-sheet {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: translateY(calc(100% - 140px));
+        }
+        
+        .bottom-sheet.expanded {
+            transform: translateY(60px);
+        }
+
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            margin: 12px auto;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md">
+<!-- Cosmic Map Background -->
+<div class="map-container overflow-hidden">
+<canvas class="star-field" id="starCanvas"></canvas>
+<!-- Map Pins / Location Clustered -->
+<div class="absolute top-[30%] left-[20%] z-10">
+<div class="pin-coral w-4 h-4 bg-primary-container rounded-full border-2 border-white flex items-center justify-center">
+<div class="w-1 h-1 bg-white rounded-full"></div>
+</div>
+<div class="mt-2 text-label-md font-label-md text-white bg-surface-container-low/80 px-2 py-1 rounded-full backdrop-blur-sm whitespace-nowrap">云海甜心府</div>
+</div>
+<div class="absolute top-[55%] left-[65%] z-10">
+<div class="pin-mint w-4 h-4 bg-secondary rounded-full border-2 border-white flex items-center justify-center">
+<div class="w-1 h-1 bg-white rounded-full"></div>
+</div>
+<div class="mt-2 text-label-md font-label-md text-white bg-surface-container-low/80 px-2 py-1 rounded-full backdrop-blur-sm whitespace-nowrap">梦幻甜点星</div>
+</div>
+<div class="absolute top-[40%] right-[15%] z-10 opacity-60">
+<div class="w-3 h-3 bg-tertiary rounded-full border-2 border-white"></div>
+</div>
+<div class="absolute bottom-[40%] left-[40%] z-10">
+<div class="pin-coral w-5 h-5 bg-primary-container rounded-full border-2 border-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px] text-white" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+</div>
+</div>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/40 backdrop-blur-xl border-b border-white/10 flex justify-between items-center px-5 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-primary/30">
+<img class="w-full h-full object-cover" data-alt="A stylish 3D avatar of a futuristic space explorer with silver hair and glowing neon accents on their suit, set against a deep nebula background. The art style is premium and cinematic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOiOvXZBIJYF-jxjaRhQKD9BjYqUZIx7ytvsi7q3RveQQI5o1kpBpSHjCSWB--DVUvgQ-hgVItvLAK08VVRWCiZBZtcyeMthDYACzeVW6W6fBhRXf-eH1MEJ6mdv3ElI9AaHXGT-HgFJBwzWS9vdF0cvtZRz8RmcnD4dUPR0LpIHvmE12OUoftpi21dLjeFCu0iYTX6DMbYkrAmdZgqfNEd3FK-R3JmfOxu7tK1TCy4u8dl5NSbzCbjWAndB9PUY7r3ZQGS5YPz3E"/>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary">星系足迹</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-touch-target h-touch-target flex items-center justify-center text-primary bg-primary-container/20 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+</button>
+<button class="w-touch-target h-touch-target flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Floating UI: Neary Filter & Offline Status -->
+<div class="fixed top-24 left-5 z-40">
+<div class="glass-card px-4 py-2 rounded-full flex items-center gap-2">
+<div class="w-2 h-2 bg-secondary rounded-full"></div>
+<span class="text-label-md font-label-md text-on-surface/80">星系在线 · 5.2光年</span>
+</div>
+</div>
+<div class="fixed top-24 right-5 z-40">
+<button class="glass-card w-touch-target h-touch-target rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+<!-- Bottom Sheet: Memory Card -->
+<section class="bottom-sheet fixed bottom-0 left-0 w-full z-50 bg-surface-container-high rounded-t-[28px] shadow-[0_-20px_50px_rgba(0,0,0,0.5)] border-t border-white/5 pb-32" id="memorySheet">
+<div class="sheet-handle" onclick="toggleSheet()"></div>
+<div class="px-5 pt-2">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">最新星系足迹</h2>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-label-md font-label-md text-tertiary">推荐足迹</span>
+</div>
+</div>
+<!-- Memory Card Content -->
+<div class="glass-card rounded-xl overflow-hidden p-0 mb-6">
+<div class="relative w-full h-48">
+<img alt="Dreamy Dessert Coronation" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLs4TNDkUyaK3_K188YWBwZkhH1GdM-Qqwa80BMNQSX-lVtH9x3XFRuh1UQEe0YwtsZF6eN7Je4ST-yXU2WGd49DZEcNCL0IINqnTpDQIrqViwgz8au5LBJDdiGcYjT0RLN8N284Ru2NYXhsRpqpj4CZCvrU4u1E0H4WZUMIIHvSJO_Se33OHf_8iM9Ll6TtjG5LfPpEY6fHbbl1ir_DSilgWZfsZaspaH7kdOcSu3vtfb2ve1toOJMm3A"/>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-label-md text-white border border-white/10">浪漫值 MAX</span>
+</div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="font-headline-sm text-headline-sm mb-1 text-on-surface">梦幻甜点星的加冕仪式</h3>
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+                                这是我们在星系中发现的最甜美的一角。蓝莓浆果的酸甜与焦糖蛋白霜的轻盈完美融合...
+                            </p>
+</div>
+<div class="text-right">
+<div class="text-display-lg-mobile font-display-lg-mobile text-secondary leading-none">9.8</div>
+<div class="text-label-md text-on-secondary-container">美味指数</div>
+</div>
+</div>
+<div class="flex items-center gap-4 mt-6">
+<button class="flex-1 bg-primary-container hover:opacity-90 active:scale-95 transition-all text-on-primary-container font-bold h-touch-target rounded-full flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-xl">auto_stories</span>
+                            重返这一刻
+                        </button>
+<button class="w-touch-target h-touch-target border border-outline/30 rounded-full flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card p-4 rounded-xl flex items-center gap-3">
+<div class="w-10 h-10 bg-secondary/10 rounded-full flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<div class="text-label-md text-on-surface-variant">共赴星宴</div>
+<div class="font-headline-sm text-on-surface">128次</div>
+</div>
+</div>
+<div class="glass-card p-4 rounded-xl flex items-center gap-3">
+<div class="w-10 h-10 bg-tertiary/10 rounded-full flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">star</span>
+</div>
+<div>
+<div class="text-label-md text-on-surface-variant">足迹解锁</div>
+<div class="font-headline-sm text-on-surface">84%</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-[60] bg-surface/40 backdrop-blur-2xl border-t border-white/10 flex justify-around items-center px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(255,93,115,0.15)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">public</span>
+<span class="font-label-sm text-label-md mt-1">星球</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-label-sm text-label-md mt-1">菜单</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm text-label-md mt-1">投喂</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary scale-110 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+<span class="font-label-sm text-label-md mt-1">回忆</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-sm text-label-md mt-1">我们</span>
+</a>
+</nav>
+<script>
+        // Simple Bottom Sheet Interaction
+        const sheet = document.getElementById('memorySheet');
+        let isExpanded = false;
+
+        function toggleSheet() {
+            isExpanded = !isExpanded;
+            if (isExpanded) {
+                sheet.classList.add('expanded');
+            } else {
+                sheet.classList.remove('expanded');
+            }
+        }
+
+        // Stars Background Animation
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    opacity: Math.random(),
+                    speed: Math.random() * 0.05
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.opacity += star.speed;
+                if (star.opacity > 1 || star.opacity < 0) star.speed *= -1;
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+
+        // Drag simulation for sheet
+        let startY = 0;
+        sheet.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+        });
+
+        sheet.addEventListener('touchend', (e) => {
+            const endY = e.changedTouches[0].clientY;
+            if (startY - endY > 50) { // swipe up
+                sheet.classList.add('expanded');
+                isExpanded = true;
+            } else if (endY - startY > 50) { // swipe down
+                sheet.classList.remove('expanded');
+                isExpanded = false;
+            }
+        });
+    </script>
+</body></html>

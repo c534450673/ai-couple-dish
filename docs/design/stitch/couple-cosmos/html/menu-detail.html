@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Couple Cosmos - 星河云端餐厅</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Inter:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-primary": "#b42440",
+                    "surface-container-lowest": "#170b0c",
+                    "tertiary-fixed": "#ffdea4",
+                    "surface": "#1d1011",
+                    "surface-variant": "#413131",
+                    "on-tertiary-fixed-variant": "#5d4200",
+                    "background": "#1d1011",
+                    "surface-container": "#2a1c1d",
+                    "primary": "#ffb2b7",
+                    "surface-container-highest": "#413131",
+                    "outline-variant": "#594042",
+                    "error": "#ffb4ab",
+                    "on-primary-container": "#63001a",
+                    "surface-tint": "#ffb2b7",
+                    "tertiary": "#f4be4e",
+                    "on-secondary-fixed": "#00201c",
+                    "on-primary-fixed": "#40000e",
+                    "inverse-on-surface": "#3c2c2d",
+                    "secondary-container": "#00bdaa",
+                    "on-primary-fixed-variant": "#91002a",
+                    "on-primary": "#67001c",
+                    "on-surface-variant": "#e1bebf",
+                    "primary-fixed-dim": "#ffb2b7",
+                    "tertiary-fixed-dim": "#f4be4e",
+                    "on-secondary-container": "#00463e",
+                    "on-tertiary-fixed": "#261900",
+                    "inverse-surface": "#f6dcdd",
+                    "surface-dim": "#1d1011",
+                    "primary-fixed": "#ffdadb",
+                    "on-tertiary-container": "#3e2b00",
+                    "surface-container-high": "#352627",
+                    "tertiary-fixed-dim": "#f4be4e",
+                    "on-secondary-fixed-variant": "#005047",
+                    "on-error": "#690005",
+                    "on-surface": "#f6dcdd",
+                    "on-tertiary": "#412d00",
+                    "error-container": "#93000a",
+                    "surface-bright": "#453536",
+                    "secondary": "#45dcc8",
+                    "outline": "#a8898a",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-low": "#261819",
+                    "secondary-fixed-dim": "#45dcc8",
+                    "on-background": "#f6dcdd",
+                    "on-secondary": "#003731",
+                    "secondary-fixed": "#68f9e4",
+                    "primary-container": "#ff5d73"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "8px",
+                    "stack-lg": "48px",
+                    "margin-desktop": "40px",
+                    "gutter": "16px",
+                    "stack-md": "24px",
+                    "margin-mobile": "20px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #1d1011;
+            color: #f6dcdd;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-sheet {
+            background: rgba(29, 16, 17, 0.4);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .coral-glow {
+            box-shadow: 0 8px 32px rgba(255, 93, 115, 0.3);
+        }
+        .nebula-bg {
+            background: radial-gradient(circle at 20% 30%, rgba(255, 93, 115, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(84, 232, 211, 0.1) 0%, transparent 50%);
+        }
+        .pulse-mint {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .orbital-item {
+            animation: orbit 20s linear infinite;
+        }
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+        }
+        .light-leak {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1) 50%, transparent);
+            height: 1px;
+            width: 100%;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md nebula-bg min-h-screen pb-32">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full rounded-b-xl bg-surface/40 backdrop-blur-xl border-b border-white/10 z-50 flex justify-between items-center px-margin-mobile py-4 shadow-lg shadow-primary/20">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-primary/30 p-0.5 overflow-hidden">
+<img class="w-full h-full object-cover rounded-full" data-alt="A high-quality 3D rendered profile avatar of a starship traveler, featuring glowing neural interfaces on their temple, set against a deep indigo and purple space nebula background. The lighting is dramatic and cinematic, emphasizing the high-tech, romantic atmosphere of a private universe for a couple." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFQhnszyT00bgxG-BrFdu8RqychNN7J2J_OmwGZTxUbQ6HvG7veGV-IXPylcHgFWZtzVzIq9XJxaMv4G1Y_Zq5tRmZvUmkEYImAGG5uhs-VzCajmK_SZW563ZmEKdez9MSuQVwbaKWX35XG2H8r88HXTYGl-czQwEUUXbsb3WgeQpFTi3rxscoNDWR6ArgoTmVFp3BqIqKBnoY2UmNTkiwEI1K9Yh55f9cbIL9cLJNzRrhazAikOJ2duKKuJMBSZ-fCaNByMkRQUU"/>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary">Couple Cosmos</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center text-primary active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-2xl">settings</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-margin-mobile">
+<!-- Hero Section -->
+<section class="relative w-full aspect-[4/5] rounded-[28px] overflow-hidden mb-8">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A cinematic, high-saturation food photography shot of a celestial dessert floating in a dark midnight navy space nebula. The dish is a white toasted meringue sphere drizzled with vibrant violet berry sauce and gold flakes, resting on a crystal-clear floating glass plate surrounded by tiny glowing planets and soft purple star clusters. The atmosphere is intimate, magical, and luxurious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3TR_4ObQxfSYQHLS7fcY5lcNh5KFGX8PQ1x-5TAqImW5JJfY25qzUBo5S66OI3RRsl1jC-F86b4PHAbsjOZRyVcvdTbl__zPAsccXuUU7kBtU2Zaok83dBd_rOZtC1gWKLXcdYYyWhibFUD79LCtxJOi0hyc0d5kqIHP5SqRk-6u0vY7V0drq45T6hyPWQK2Giazb9cssydKXY1NL8yIZiZY0sKi0tDrQCRtaj9k_olXADTBm6pBLPJUjL9FrPTKOwAXyw-2hbB0"/>
+<!-- Dynamic Orbitals -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="orbital-item absolute">
+<span class="material-symbols-outlined text-tertiary-fixed text-xl" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<!-- Overlay Content -->
+<div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-background to-transparent">
+<div class="flex justify-between items-end">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary pulse-mint shadow-[0_0_8px_#54E8D3]"></span>
+<span class="font-label-sm text-label-sm text-secondary">正在营业</span>
+</div>
+<h2 class="text-3xl font-bold text-on-surface">星河云端餐厅</h2>
+</div>
+<div class="glass-sheet px-3 py-1 rounded-full flex items-center gap-1">
+<span class="text-primary font-bold">¥520</span>
+<span class="text-on-surface-variant/70 text-xs">/ 人均</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Restaurant Details Card -->
+<div class="glass-sheet rounded-[24px] p-6 space-y-6 relative overflow-hidden">
+<div class="space-y-3">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary-container">location_on</span>
+<div>
+<p class="text-on-surface font-semibold">银河系第三旋臂 · 浪漫路1314号</p>
+<p class="text-on-surface-variant text-sm">距离您的星途 52.1 光分</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 pt-2">
+<span class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-label-sm">氛围感</span>
+<span class="px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs font-label-sm">AI推荐</span>
+<span class="px-3 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary text-xs font-label-sm">周年必选</span>
+</div>
+</div>
+<div class="light-leak"></div>
+<!-- Partner Activity -->
+<div class="flex items-center justify-between bg-white/5 rounded-2xl p-4">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img class="w-10 h-10 rounded-full border border-secondary/40" data-alt="A close-up high-fidelity 3D profile picture of a partner, stylized as a futuristic astronaut with a soft pink glowing visor, set in a cozy, neon-lit cabin of a spaceship. Warm lighting and shallow depth of field create a sense of intimacy and connection." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC1OYWNyI_5D6OuO5dwqOcEwAGdiceiQ1csLSz8YH9HCKWGstA6yXg7P7dJPc1VEQg1gzcky7czOAl4H9r71BROtLlGRN8OXX1zi0VeBplq-aR8rfqz4Qp0qcRoOAlK9DNLPzX2RWhiLe1YEPAyAd8xAhD618OdjxVeHhqxRXBXl3SAy7ZKYOB2AJfq4UDa-7JTRiIBUoYIMCGA79R1-vjFD0j0ZGvsvuNNZBr8bfd5Pzmis5V_M3eablaM_cBglS5Mgn8eVRMb5M"/>
+<div class="absolute -bottom-1 -right-1 bg-primary rounded-full p-0.5">
+<span class="material-symbols-outlined text-[12px] text-white" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+</div>
+<span class="text-on-surface/90 text-sm">TA 刚刚收藏了这家店</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/50">chevron_right</span>
+</div>
+<!-- Main Actions -->
+<div class="grid grid-cols-4 gap-4 pt-4">
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-primary coral-glow flex items-center justify-center text-white active:scale-90 transition-all">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">点餐</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full border-1.5 border-secondary/40 flex items-center justify-center text-secondary active:scale-90 transition-all">
+<span class="material-symbols-outlined text-2xl">favorite</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">收藏</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full border-1.5 border-secondary/40 flex items-center justify-center text-secondary active:scale-90 transition-all">
+<span class="material-symbols-outlined text-2xl">map</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">打卡</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full border-1.5 border-secondary/40 flex items-center justify-center text-secondary active:scale-90 transition-all">
+<span class="material-symbols-outlined text-2xl">edit_note</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">记录</span>
+</button>
+</div>
+</div>
+<!-- Featured Dish Preview -->
+<div class="mt-8 space-y-4">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+                今日甄选 <span class="text-tertiary material-symbols-outlined">auto_awesome</span>
+</h3>
+<div class="relative rounded-[24px] overflow-hidden glass-sheet p-3">
+<div class="flex gap-4">
+<img class="w-24 h-24 rounded-2xl object-cover" data-alt="A close-up shot of an artistic 'AI Couple Dish', featuring a glowing blue sphere of molecular gastronomy ice cream served in a ring of liquid nitrogen fog. Tiny edible silver stars and violet petals decorate the plate. The lighting is cinematic, highlighting the translucent texture of the dish against a dark, cosmic background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT6DUYWP_UnIXZlT1f5Rs4IdP8OGRMHX-84z-GVoC-AOnJlw_unOKn9tqNDx6lwEKEa440O2fAGGJIdlBljPJbXRsdYUJez4CvVQpTnB05LjUCilUGMXhIfVBbHgSErYfoppSU9MZAsH2XuHLSghrEl6ixr3GCcoFK-ACotqgbO4gcvZxPkb-z9jhXJgPCgGjL9miFB39tuymkMOJTqK-n43BAJlipO5nELQgphYilACya3MCEbY0NOapEJdc2V30o7TH9KM5wUd4"/>
+<div class="flex-1 flex flex-col justify-center">
+<h4 class="font-bold text-on-surface">星云分子慕斯</h4>
+<p class="text-xs text-on-surface-variant mt-1">定制化的味觉记忆，融合星光与浆果的极致体验。</p>
+<div class="flex items-center gap-1 mt-2">
+<span class="text-primary-fixed-dim text-sm font-bold">98% 匹配</span>
+<span class="text-on-surface-variant/40 text-[10px]">根据您的喜好推荐</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface/40 backdrop-blur-2xl border-t border-white/10 shadow-[0_-8px_24px_rgba(255,93,115,0.15)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="public">public</span>
+<span class="font-label-sm text-label-sm mt-1">星球</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary scale-110 transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="restaurant_menu" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+<span class="font-label-sm text-label-sm mt-1">菜单</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-sm text-label-sm mt-1">投喂</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="auto_stories">auto_stories</span>
+<span class="font-label-sm text-label-sm mt-1">回忆</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="favorite">favorite</span>
+<span class="font-label-sm text-label-sm mt-1">我们</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('touchstart', function() {
+                this.classList.add('scale-95');
+            });
+            btn.addEventListener('touchend', function() {
+                this.classList.remove('scale-95');
+            });
+        });
+
+        // Atmospheric parallax on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroImg = document.querySelector('section img');
+            if(heroImg) {
+                heroImg.style.transform = `translateY(${scrolled * 0.2}px)`;
+            }
+        });
+    </script>
+</body></html>

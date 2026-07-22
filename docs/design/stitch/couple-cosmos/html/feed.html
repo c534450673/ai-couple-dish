@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Couple Cosmos - 投喂</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#e7defa",
+                    "inverse-primary": "#b42440",
+                    "error": "#ffb4ab",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-fixed": "#40000e",
+                    "surface-dim": "#151024",
+                    "tertiary-fixed": "#ffdea4",
+                    "on-surface": "#e7defa",
+                    "on-tertiary-fixed": "#261900",
+                    "surface-variant": "#363247",
+                    "surface-container-low": "#1d192c",
+                    "secondary-fixed-dim": "#45dcc8",
+                    "surface-container-high": "#2b273c",
+                    "on-tertiary": "#412d00",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed": "#00201c",
+                    "primary-container": "#ff5d73",
+                    "on-secondary": "#003731",
+                    "on-primary-fixed-variant": "#91002a",
+                    "on-secondary-container": "#00463e",
+                    "surface-container-lowest": "#0f0b1e",
+                    "primary-fixed": "#ffdadb",
+                    "tertiary-container": "#be8e20",
+                    "on-secondary-fixed-variant": "#005047",
+                    "secondary-fixed": "#68f9e4",
+                    "background": "#151024",
+                    "on-tertiary-fixed-variant": "#5d4200",
+                    "on-tertiary-container": "#3e2b00",
+                    "on-surface-variant": "#e1bebf",
+                    "surface-container": "#211d31",
+                    "secondary-container": "#00bdaa",
+                    "outline": "#a8898a",
+                    "surface": "#151024",
+                    "on-primary-container": "#63001a",
+                    "on-error": "#690005",
+                    "tertiary": "#f4be4e",
+                    "surface-container-highest": "#363247",
+                    "primary": "#ffb2b7",
+                    "surface-bright": "#3b364b",
+                    "outline-variant": "#594042",
+                    "on-primary": "#67001c",
+                    "secondary": "#45dcc8",
+                    "inverse-surface": "#e7defa",
+                    "primary-fixed-dim": "#ffb2b7",
+                    "tertiary-fixed-dim": "#f4be4e",
+                    "surface-tint": "#ffb2b7",
+                    "inverse-on-surface": "#322d42"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1.5rem",
+                    "3xl": "1.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "12px",
+                    "container-margin": "20px",
+                    "stack-sm": "8px",
+                    "touch-target": "44px",
+                    "stack-md": "16px",
+                    "stack-lg": "24px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "label-md": ["Noto Sans SC"],
+                    "body-md": ["Noto Sans SC"],
+                    "body-lg": ["Noto Sans SC"],
+                    "headline-sm": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "display-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["13px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-md": ["15px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-lg": ["17px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background: radial-gradient(circle at top right, #1d192c 0%, #151024 100%);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-sheet {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(69, 220, 200, 0.4); transform: scale(1); }
+            70% { box-shadow: 0 0 0 20px rgba(69, 220, 200, 0); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(69, 220, 200, 0); transform: scale(1); }
+        }
+
+        .pulse-mint {
+            animation: pulse-glow 2s infinite;
+        }
+
+        .stardust {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background min-h-screen pb-32">
+<!-- Background Atmospheric Particles -->
+<div class="fixed inset-0 pointer-events-none z-0" id="particle-container"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full rounded-b-xl bg-surface/40 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-primary/20 flex justify-between items-center px-5 py-4 z-50">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A premium 3D avatar of a futuristic starship pilot with glowing holographic interfaces, rendered in a cinematic cyberpunk style with deep purple and coral neon lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFmVxV_xN-qvnx6Ak8bh6lZRZbFM13dKKKP6tf_qr0pi-WZQuVaDtOtX7DSaQO-NkEnbiiMrq7MvWmZD3mU1grPzdB0BWecla_PpxHeNDrnV8TSeALaHwLnZJFzXCxILDio4K8HLYAleVejn9yeJLOLez5gPsKSBKiXzeOg7PSARYUMaIqErnxf3MfDfQwz6sAjOD1kqeEE-x5MX3Sd15NJ8LE5YG0WAXMKxGoJFJgXGdTexnkOShTVnAAmDrof8FiAudKOSt5gnw"/>
+</div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-secondary rounded-full border-2 border-background"></div>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary">Couple Cosmos</h1>
+</div>
+<button class="w-11 h-11 flex items-center justify-center rounded-full hover:opacity-80 transition-opacity active:scale-95 transition-transform text-primary">
+<span class="material-symbols-outlined text-2xl" data-icon="settings">settings</span>
+</button>
+</header>
+<main class="relative z-10 pt-24 px-5">
+<!-- Centerpiece Dish -->
+<div class="relative w-full aspect-square flex items-center justify-center mb-8">
+<div class="absolute inset-0 bg-secondary/5 blur-[100px] rounded-full"></div>
+<div class="relative z-10 w-full h-full flex flex-col items-center justify-center">
+<div class="relative w-72 h-72 rounded-full overflow-hidden shadow-[0_0_60px_rgba(255,93,115,0.3)] border border-white/10 group">
+<img class="w-full h-full object-cover" data-alt="A cinematic, ultra-detailed gourmet dessert titled Aurora Berry Nebula Tart, featuring swirling layers of purple cream and golden toasted meringue on a crystalline floating glass platter. The dessert is surrounded by micro-planets and cosmic stardust, set against a deep navy celestial background with vibrant pink and violet nebulae lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDocH28hz6Inp68ORwygqD8JrD2RSaU_eMHf0AkqYL0sWnf-Ler-ubvU5WtYS9G8RBMWB5RatrVg7EOdMXlMDqHUBAUqBHEjaNbCSNqocdPskqkFh5OWHJWs1_aHNZdc2yeOelPYDJJpVoz1Zje2A5E4HoT9PbrhhqSdVWoaheRlHChYosMKuIJRsRrfMl6AIUPMRXtv0PVIffgvXu_IlYZp9yjHJUf2G0HulJY4d68PenBbC0un-ggcHwlGXeoRf0F6FwUqNR1O9Q"/>
+<!-- Glass Overlay Shine -->
+<div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
+</div>
+<!-- Floating Labels -->
+<div class="absolute top-4 right-4 glass-card px-3 py-1 rounded-full text-secondary font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                    惊喜模式
+                </div>
+</div>
+</div>
+<!-- Feeding Interaction -->
+<div class="flex flex-col items-center gap-8 mb-10">
+<div class="text-center">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">极光莓果星云挞</h2>
+<div class="flex items-center justify-center gap-2 text-on-surface-variant/80 font-body-md text-body-md">
+<span class="material-symbols-outlined text-base">schedule</span>
+<span>今晚 20:00</span>
+</div>
+</div>
+<button class="w-48 h-48 rounded-full bg-gradient-to-br from-secondary-container to-secondary flex flex-col items-center justify-center pulse-mint shadow-xl active:scale-90 transition-all duration-300 relative overflow-hidden group" id="feed-button">
+<div class="absolute inset-0 bg-white/20 opacity-0 group-active:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-5xl text-on-secondary mb-2" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-on-secondary font-headline-sm text-headline-sm">长按投喂</span>
+</button>
+<div class="glass-card w-full rounded-2xl p-5 text-center">
+<p class="font-body-lg text-body-lg text-on-surface italic leading-relaxed">
+                    “在这颗星球上，想和你一起品尝星光的味道。”
+                </p>
+</div>
+</div>
+<!-- Status Sheet (Active Invitation Flow) -->
+<div class="glass-sheet rounded-3xl p-6 mb-8 border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-secondary mb-1 flex items-center gap-2">
+                        等待回应
+                        <span class="inline-block w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+</h3>
+<p class="font-label-md text-label-md text-on-surface-variant">信号已发送至对方星球...</p>
+</div>
+<div class="text-right">
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary tabular-nums">04:59</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-3 gap-3">
+<button class="flex flex-col items-center justify-center gap-1 bg-surface-container-high h-20 rounded-2xl border border-white/5 active:bg-surface-variant transition-colors group">
+<span class="material-symbols-outlined text-on-surface-variant group-active:text-secondary" data-icon="restaurant">restaurant</span>
+<span class="font-label-md text-label-md text-on-surface-variant">换个口味</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 bg-surface-container-high h-20 rounded-2xl border border-white/5 active:bg-error transition-colors group">
+<span class="material-symbols-outlined text-on-surface-variant group-active:text-on-error" data-icon="close">close</span>
+<span class="font-label-md text-label-md text-on-surface-variant">婉拒</span>
+</button>
+<button class="col-span-1 flex flex-col items-center justify-center gap-1 bg-secondary-container h-20 rounded-2xl active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-label-md text-on-secondary-container font-bold">接受</span>
+</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-3 bg-surface/40 backdrop-blur-2xl border-t border-white/10 shadow-[0_-8px_24px_rgba(255,93,115,0.15)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="public">public</span>
+<span class="font-label-sm text-xs">星球</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-label-sm text-xs">菜单</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary scale-110 transition-all active:scale-90 duration-150" href="#">
+<div class="relative">
+<span class="material-symbols-outlined mb-1" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<div class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></div>
+</div>
+<span class="font-label-sm text-xs">投喂</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="auto_stories">auto_stories</span>
+<span class="font-label-sm text-xs">回忆</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="favorite">favorite</span>
+<span class="font-label-sm text-xs">我们</span>
+</a>
+</nav>
+<script>
+        // Simple particle generator for stardust background
+        const container = document.getElementById('particle-container');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'stardust';
+            const size = Math.random() * 3 + 1;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animation = `pulse-glow ${2 + Math.random() * 4}s infinite ease-in-out`;
+            star.style.opacity = Math.random() * 0.5;
+            container.appendChild(star);
+        }
+
+        // Long press simulation for the feed button
+        const feedBtn = document.getElementById('feed-button');
+        let pressTimer;
+
+        feedBtn.addEventListener('mousedown', startPress);
+        feedBtn.addEventListener('touchstart', startPress);
+        feedBtn.addEventListener('mouseup', endPress);
+        feedBtn.addEventListener('mouseleave', endPress);
+        feedBtn.addEventListener('touchend', endPress);
+
+        function startPress(e) {
+            e.preventDefault();
+            feedBtn.classList.add('scale-95');
+            pressTimer = window.setTimeout(function() {
+                // Success trigger
+                feedBtn.classList.remove('pulse-mint');
+                feedBtn.classList.add('bg-primary-container');
+                const icon = feedBtn.querySelector('.material-symbols-outlined');
+                icon.textContent = 'star';
+                navigator.vibrate && navigator.vibrate([100, 50, 100]);
+                alert('✨ 投喂请求已成功跨越星河发送！');
+            }, 1000);
+        }
+
+        function endPress() {
+            feedBtn.classList.remove('scale-95');
+            clearTimeout(pressTimer);
+        }
+    </script>
+</body></html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Couple Cosmos - Global Status Sheet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#00463e",
+                        "background": "#151024",
+                        "on-error": "#690005",
+                        "on-background": "#e7defa",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdea4",
+                        "secondary-fixed-dim": "#45dcc8",
+                        "on-tertiary-container": "#3e2b00",
+                        "secondary-container": "#00bdaa",
+                        "inverse-primary": "#b42440",
+                        "surface-bright": "#3b364b",
+                        "surface-container-low": "#1d192c",
+                        "surface-tint": "#ffb2b7",
+                        "on-tertiary-fixed-variant": "#5d4200",
+                        "tertiary": "#f4be4e",
+                        "surface-container-lowest": "#0f0b1e",
+                        "secondary": "#45dcc8",
+                        "on-primary-container": "#63001a",
+                        "on-primary-fixed-variant": "#91002a",
+                        "on-primary-fixed": "#40000e",
+                        "inverse-surface": "#e7defa",
+                        "on-surface-variant": "#e1bebf",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed": "#00201c",
+                        "tertiary-fixed-dim": "#f4be4e",
+                        "surface-variant": "#363247",
+                        "on-secondary-fixed-variant": "#005047",
+                        "surface-container-high": "#2b273c",
+                        "primary-fixed": "#ffdadb",
+                        "surface-dim": "#151024",
+                        "on-secondary": "#003731",
+                        "on-primary": "#67001c",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#261900",
+                        "surface": "#151024",
+                        "tertiary-container": "#be8e20",
+                        "surface-container": "#211d31",
+                        "primary-container": "#ff5d73",
+                        "outline-variant": "#594042",
+                        "inverse-on-surface": "#322d42",
+                        "primary-fixed-dim": "#ffb2b7",
+                        "secondary-fixed": "#68f9e4",
+                        "on-surface": "#e7defa",
+                        "outline": "#a8898a",
+                        "on-tertiary": "#412d00",
+                        "surface-container-highest": "#363247",
+                        "primary": "#ffb2b7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "sheet": "28px",
+                        "card": "24px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "stack-lg": "24px",
+                        "gutter": "12px",
+                        "touch-target": "44px",
+                        "container-margin": "20px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Plus Jakarta Sans", "Noto Sans SC"],
+                        "body-md": ["Noto Sans SC"],
+                        "display-lg": ["Plus Jakarta Sans", "Noto Sans SC"],
+                        "body-lg": ["Noto Sans SC"],
+                        "label-md": ["Noto Sans SC"],
+                        "headline-sm": ["Plus Jakarta Sans", "Noto Sans SC"],
+                        "headline-md": ["Plus Jakarta Sans", "Noto Sans SC"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-md": ["15px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["17px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-md": ["13px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background: radial-gradient(circle at top right, #2d1b4d 0%, #151024 100%);
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-sheet {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .coral-glow {
+            box-shadow: 0 0 20px rgba(255, 93, 115, 0.4);
+        }
+
+        .mint-glow {
+            box-shadow: 0 0 20px rgba(84, 232, 211, 0.3);
+        }
+
+        .star-pulse {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.95); }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="text-on-background min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/40 backdrop-blur-xl border-b border-white/10 px-5 py-4 flex justify-between items-center shadow-lg shadow-primary/20">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30">
+<img class="w-full h-full object-cover" data-alt="A stylized portrait of a user as a cosmic explorer, wearing a sleek iridescent space helmet with star reflections on the visor, set against a deep purple nebula background in a high-quality 3D cinematic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgzRVURx-V5fAgFy2yGrZBgQKp1hRqV9qmpisvs8D5N5J7Zj4VX2KlpHxtDZCOMB0R0W1ZT94wqn4Gfi-oPCV3emwKFqWRQ4z-BErvfvpyPtufbANfl32UKg6rYNeJOP1sHoOwAuMn_y2agd10unGVczYNf17_0yZfHF0GIttXp7n7jf_UCxYY9m4CuVWI_w20xk8MfSGT_HkWVBnTps_SCcOxCboyLdPwzlVkXFq_lFWDcXP9t8bFasHgEwxXZZEjzt5Wst-TzMw"/>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary">Couple Cosmos</h1>
+</div>
+<button class="w-11 h-11 flex items-center justify-center rounded-full glass-card hover:opacity-80 transition-opacity active:scale-95">
+<span class="material-symbols-outlined text-primary text-2xl">settings</span>
+</button>
+</header>
+<main class="pt-24 px-5 space-y-12">
+<!-- 1. Skeleton States -->
+<section class="space-y-4">
+<h2 class="text-on-surface-variant font-label-md text-label-md tracking-widest uppercase opacity-60">Skeleton States</h2>
+<!-- Profile Header Skeleton -->
+<div class="glass-card rounded-card p-5 space-y-4 relative overflow-hidden">
+<div class="shimmer absolute inset-0"></div>
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-full bg-white/10"></div>
+<div class="space-y-2 flex-1">
+<div class="h-6 w-1/2 bg-white/10 rounded-full"></div>
+<div class="h-4 w-1/3 bg-white/5 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Recipe Card Skeleton -->
+<div class="glass-card rounded-card overflow-hidden relative">
+<div class="shimmer absolute inset-0"></div>
+<div class="aspect-video bg-white/10"></div>
+<div class="p-5 space-y-3">
+<div class="h-6 w-3/4 bg-white/10 rounded-full"></div>
+<div class="flex gap-2">
+<div class="h-4 w-16 bg-white/5 rounded-full"></div>
+<div class="h-4 w-16 bg-white/5 rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Empty Data State -->
+<section class="space-y-4 text-center py-8">
+<h2 class="text-left text-on-surface-variant font-label-md text-label-md tracking-widest uppercase opacity-60">Empty Data State</h2>
+<div class="py-10 flex flex-col items-center">
+<div class="w-48 h-48 relative mb-6">
+<div class="absolute inset-0 bg-secondary/10 rounded-full blur-3xl"></div>
+<!-- 3D Planet Placeholder with Animation -->
+<div class="w-full h-full relative star-pulse">
+<div class="absolute inset-4 rounded-full border border-secondary/20 animate-[spin_10s_linear_infinite]"></div>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-gradient-to-br from-surface-variant to-background rounded-full border border-white/10 flex items-center justify-center shadow-2xl">
+<span class="material-symbols-outlined text-secondary/40 text-6xl">public_off</span>
+</div>
+</div>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-8">这里还没有星际美味</p>
+<button class="h-touch-target px-8 bg-primary-container text-on-primary-container rounded-full font-bold coral-glow active:scale-95 transition-transform">
+                    去投喂
+                </button>
+</div>
+</section>
+<!-- 3. Network Failure -->
+<section class="space-y-4">
+<h2 class="text-on-surface-variant font-label-md text-label-md tracking-widest uppercase opacity-60">Network Failure</h2>
+<div class="glass-card rounded-card p-10 flex flex-col items-center text-center">
+<div class="mb-6">
+<span class="material-symbols-outlined text-tertiary text-6xl animate-pulse">wifi_off</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">时空信号中断</h3>
+<p class="text-on-surface-variant mb-8 font-body-md text-body-md">请检查您的星际网络连接</p>
+<button class="h-touch-target px-10 border border-secondary/50 text-secondary rounded-full font-bold hover:bg-secondary/5 transition-colors">
+                    重试
+                </button>
+</div>
+</section>
+<!-- 4. Unauthorized / Login -->
+<section class="space-y-4">
+<h2 class="text-on-surface-variant font-label-md text-label-md tracking-widest uppercase opacity-60">Unauthorized</h2>
+<div class="relative rounded-card overflow-hidden aspect-[4/5] flex flex-col justify-end p-8 shadow-2xl">
+<img class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLuROOUjdFcd_pnSXwmbBs-kzTquqRWl--ZCQtAi0xUFeowvGvXmburFDbJNL-aYim1iUp8QdSREAasSovV3YtF6kqaW4xtcmniSqil2db-zmXSOC46YuMPtssUS2QSZ9vUk3xZ_ch2IPQRvUqVubDied2mYO5hcHmUzsLQgqvkwnlUBJZuUjLxEklVQt5Ya6mK4ubb4ELl47zKYhq3j8Rnp5Yc4t6i7ABaY5z5Wpf4rclIgYmdPp53NRnU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
+<div class="relative z-10 space-y-6">
+<h3 class="font-display-lg-mobile text-display-lg-mobile text-on-surface">开启私人<br/>美味宇宙</h3>
+<p class="text-on-surface-variant/80 font-body-lg text-body-lg">登录即刻同步双人味蕾记忆</p>
+<button class="w-full h-touch-target bg-white text-background rounded-full font-bold text-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">rocket_launch</span>
+                        立即起航
+                    </button>
+</div>
+</div>
+</section>
+<!-- 5. Unbound Couple -->
+<section class="space-y-4">
+<h2 class="text-on-surface-variant font-label-md text-label-md tracking-widest uppercase opacity-60">Unbound Couple</h2>
+<div class="glass-card rounded-card p-8 flex flex-col items-center text-center">
+<div class="flex items-center gap-8 mb-8">
+<div class="w-16 h-16 rounded-full border-2 border-primary border-dashed p-1">
+<img class="w-full h-full rounded-full object-cover grayscale opacity-50" data-alt="A portrait of a male user avatar, digital art style with glowing neon blue highlights, clean modern minimalist aesthetics, centered on a deep cosmic background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6VtKlKWSMLUx7WqCQsQRFKijJB4fwy_huirFHC-tVXhxW-83xYlu2kd64WkPZavdZjSrPWD1g1gSqCk88USy9R5h3QoHxES5XIvoiav0_QPQ8dlGpF3fKADSYqOAXraXUDT88my6HohAylpyKEo_5qciFvWvM6ACoZ0cwDQpGir83noCqoGjdea9om2TN4B__2KsgPTaiqA5nQXzbQsvtjBut7KnUarnSEXi3P9VgpGjWZUVxBKgbLMCpzbFXVxIuPG9aHWAdVxM"/>
+</div>
+<span class="material-symbols-outlined text-primary-container text-4xl animate-[pulse_2s_infinite]">link_off</span>
+<div class="w-16 h-16 rounded-full border-2 border-white/20 border-dashed flex items-center justify-center">
+<span class="material-symbols-outlined text-white/20 text-3xl">person_add</span>
+</div>
+</div>
+<p class="text-on-surface mb-8 font-body-lg text-body-lg">正在等待另一颗星球的响应...</p>
+<button class="w-full h-touch-target bg-primary-container text-on-primary-container rounded-full font-bold flex items-center justify-center gap-2 coral-glow">
+<span class="material-symbols-outlined">favorite</span>
+                    邀请伴侣
+                </button>
+</div>
+</section>
+<!-- 6. Offline Draft Banner -->
+<section class="space-y-4">
+<h2 class="text-on-surface-variant font-label-md text-label-md tracking-widest uppercase opacity-60">Offline Draft</h2>
+<div class="flex items-center justify-between px-5 py-3 bg-surface-container-high/80 backdrop-blur-md rounded-full border border-white/5 shadow-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm">cloud_off</span>
+<span class="font-label-md text-label-md text-on-surface-variant">离线草稿已保存</span>
+</div>
+<button class="text-secondary font-bold text-sm">查看</button>
+</div>
+</section>
+<!-- 7. Global Feedback -->
+<section class="space-y-4">
+<h2 class="text-on-surface-variant font-label-md text-label-md tracking-widest uppercase opacity-60">Global Feedback</h2>
+<!-- Toast Example -->
+<div class="flex items-center gap-3 bg-secondary-container text-on-secondary-container px-6 py-4 rounded-full w-fit shadow-xl mint-glow mx-auto animate-bounce">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-bold">同步成功</span>
+</div>
+<!-- Modal Example -->
+<div class="glass-sheet rounded-sheet p-8 mt-12 space-y-6 relative border-t-2 border-white/20 shadow-2xl">
+<div class="w-12 h-1 bg-white/20 rounded-full mx-auto mb-4"></div>
+<div class="text-center space-y-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">确认删除回忆？</h3>
+<p class="text-on-surface-variant/80 font-body-md text-body-md">此操作将永久抹除星际记录中的这段时光</p>
+</div>
+<div class="flex flex-col gap-3">
+<button class="h-touch-target w-full bg-error-container text-on-error-container rounded-full font-bold active:scale-95 transition-all">
+                        确认删除
+                    </button>
+<button class="h-touch-target w-full bg-white/5 text-on-surface rounded-full font-bold active:bg-white/10 transition-all">
+                        取消
+                    </button>
+</div>
+</div>
+</section>
+<!-- 8. Motion Note -->
+<section class="p-6 rounded-card border border-white/5 bg-surface-container-lowest">
+<div class="flex items-center gap-3 mb-3 text-tertiary">
+<span class="material-symbols-outlined">motion_photos_off</span>
+<h4 class="font-bold">Motion Variants Note</h4>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md leading-relaxed opacity-70">
+                Reduced-motion behavior is enabled system-wide. When active, bouncy cubic-bezier transitions are replaced by simple 300ms opacity fades to ensure accessibility and comfort for all cosmic explorers.
+            </p>
+</section>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface/40 backdrop-blur-2xl border-t border-white/10 px-4 pb-6 pt-3 flex justify-around items-center shadow-[0_-8px_24px_rgba(255,93,115,0.15)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">public</span>
+<span class="font-label-sm text-[10px] mt-1">星球</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">restaurant_menu</span>
+<span class="font-label-sm text-[10px] mt-1">菜单</span>
+</a>
+<!-- Active Tab: Global Sheet/Status conceptually fits under Dashboard or "Feeds" -->
+<a class="flex flex-col items-center justify-center text-primary scale-110 transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-sm text-[10px] mt-1">投喂</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">auto_stories</span>
+<span class="font-label-sm text-[10px] mt-1">回忆</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">favorite</span>
+<span class="font-label-sm text-[10px] mt-1">我们</span>
+</a>
+</nav>
+<!-- Background Atmospheric Elements -->
+<div class="fixed inset-0 pointer-events-none z-[-1]">
+<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 blur-[120px] rounded-full"></div>
+</div>
+<script>
+        // Micro-interaction for feedback modal
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.add('scale-95');
+                setTimeout(() => this.classList.remove('scale-95'), 150);
+            });
+        });
+
+        // Simple scroll parallax for glass cards
+        window.addEventListener('scroll', () => {
+            const scroll = window.scrollY;
+            document.querySelectorAll('.glass-card').forEach((card, index) => {
+                const speed = 0.02 * (index + 1);
+                card.style.transform = `translateY(${scroll * speed}px)`;
+            });
+        });
+    </script>
+</body></html>

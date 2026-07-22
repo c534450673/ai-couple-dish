@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Couple Cosmos Timeline</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=Geist:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#161a33",
+                        "secondary-fixed": "#68f9e4",
+                        "tertiary-fixed-dim": "#f4be4e",
+                        "primary-fixed": "#ffdadb",
+                        "on-secondary": "#003731",
+                        "surface-tint": "#ffb2b7",
+                        "tertiary": "#f4be4e",
+                        "on-surface": "#dee0ff",
+                        "surface-container": "#1a1e37",
+                        "on-tertiary": "#412d00",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#343752",
+                        "surface-container-highest": "#2f334e",
+                        "primary-fixed-dim": "#ffb2b7",
+                        "secondary-container": "#00bdaa",
+                        "surface-variant": "#2f334e",
+                        "outline": "#a8898a",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#45dcc8",
+                        "inverse-primary": "#b42440",
+                        "on-secondary-fixed-variant": "#005047",
+                        "outline-variant": "#594042",
+                        "on-primary": "#67001c",
+                        "on-primary-container": "#63001a",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#2b2f49",
+                        "surface-container-lowest": "#080c25",
+                        "secondary-fixed-dim": "#45dcc8",
+                        "on-surface-variant": "#e1bebf",
+                        "tertiary-container": "#be8e20",
+                        "on-primary-fixed-variant": "#91002a",
+                        "primary-container": "#ff5d73",
+                        "on-secondary-fixed": "#00201c",
+                        "tertiary-fixed": "#ffdea4",
+                        "on-tertiary-fixed": "#261900",
+                        "on-background": "#dee0ff",
+                        "inverse-surface": "#dee0ff",
+                        "on-tertiary-container": "#3e2b00",
+                        "on-tertiary-fixed-variant": "#5d4200",
+                        "on-primary-fixed": "#40000e",
+                        "background": "#0d112a",
+                        "surface-container-high": "#242842",
+                        "surface": "#0d112a",
+                        "primary": "#ffb2b7",
+                        "on-secondary-container": "#00463e",
+                        "surface-dim": "#0d112a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "stack-sm": "8px",
+                        "gutter": "16px",
+                        "container-padding": "20px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Noto Sans SC"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Geist"],
+                        "body-md": ["Noto Sans SC"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "display-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0d112a;
+            color: #dee0ff;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .star-glow {
+            filter: drop-shadow(0 0 8px #f4be4e);
+        }
+        .mint-glow {
+            filter: drop-shadow(0 0 8px #45dcc8);
+        }
+        .coral-glow {
+            filter: drop-shadow(0 0 8px #ffb2b7);
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            z-index: -1;
+        }
+        .orbit-animation {
+            animation: rotate 10s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .stardust-field {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Background Animation -->
+
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-white/5 backdrop-blur-[40px] border-b border-white/15 h-16 flex justify-between items-center px-container-padding">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A cinematic, dreamy illustration of two celestial beings, a male and a female inspired by traditional Chinese folklore, holding hands against a backdrop of the Milky Way. The style is romantic and ethereal, with deep navy, violet, and soft gold highlights. The lighting is soft and glowing, emphasizing the intimacy of the couple." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_cQq-VFDvkiTs5yBF2U_TlJMO8SOSDEATiAvGJar8yG_uozPXNuJq04H3kmXdrWT2TfRc-jAAy5-Wx9Qkk9FJ3zPFtmwU0kNddMv2SdMMWW9XSn3Z1YW57qdulm3K9ZcNVQCuvsi5kCdJGfN5y8z01iWIVzYKNZ7efkRvLR8ET1rjm5GXvQ1nx2oEbTtbrOCesmU4ZuyGgpJinonUDzn9FDXVs9MJ_8pF7Vq2TbbwaSQ6Pg8ihF-G5K836JXMeNa_W19ZEYAkd0f1"/>
+</div>
+<h1 class="font-headline-md text-headline-md-mobile text-on-surface">织女与牛郎的星空</h1>
+</div>
+<!-- Orbit Countdown -->
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="absolute inset-0 w-full h-full -rotate-90">
+<circle cx="24" cy="24" fill="none" r="20" stroke="rgba(255,255,255,0.1)" stroke-width="2"></circle>
+<circle class="orbit-animation" cx="24" cy="24" fill="none" r="20" stroke="#45dcc8" stroke-dasharray="125.6" stroke-dashoffset="30" stroke-width="2"></circle>
+</svg>
+<div class="flex flex-col items-center">
+<span class="font-label-sm text-[10px] text-secondary">100</span>
+<span class="font-label-sm text-[8px] text-on-surface-variant">DAYS</span>
+</div>
+</div>
+</header>
+<!-- Scrollable Content -->
+<main class="relative z-10 pt-24 pb-24 px-container-padding timeline-line min-h-screen">
+<!-- Filter Bar -->
+<div class="flex gap-3 overflow-x-auto pb-6 no-scrollbar">
+<button class="px-5 py-2 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm whitespace-nowrap">全部</button>
+<button class="px-5 py-2 rounded-full glass-card text-on-surface font-label-sm text-label-sm whitespace-nowrap hover:opacity-80 transition-all">纪念日</button>
+<button class="px-5 py-2 rounded-full glass-card text-on-surface font-label-sm text-label-sm whitespace-nowrap hover:opacity-80 transition-all">愿望清单</button>
+<button class="px-5 py-2 rounded-full glass-card text-on-surface font-label-sm text-label-sm whitespace-nowrap hover:opacity-80 transition-all">足迹</button>
+<button class="px-5 py-2 rounded-full glass-card text-on-surface font-label-sm text-label-sm whitespace-nowrap hover:opacity-80 transition-all">笔记</button>
+</div>
+<!-- Year Header -->
+<div class="relative mb-8">
+<div class="absolute left-[-5px] top-1/2 -translate-y-1/2 w-[11px] h-[11px] rounded-full bg-secondary shadow-[0_0_10px_#45dcc8]"></div>
+<h2 class="ml-8 font-display-lg-mobile text-display-lg-mobile text-primary">2024</h2>
+</div>
+<!-- Timeline Items -->
+<div class="space-y-10">
+<!-- Item 1: Anniversary -->
+<div class="relative pl-8 group">
+<div class="absolute left-[-4px] top-4 w-2 h-2 rounded-full bg-tertiary star-glow group-hover:scale-125 transition-transform"></div>
+<div class="glass-card rounded-[24px] p-5 flex items-center justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">05月20日</p>
+<h3 class="font-headline-md text-headline-md-mobile text-tertiary">恋爱一周年</h3>
+</div>
+<span class="material-symbols-outlined text-tertiary text-4xl star-glow" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+</div>
+<!-- Item 2: Footprint -->
+<div class="relative pl-8 group">
+<div class="absolute left-[-4px] top-4 w-2 h-2 rounded-full bg-white/40 group-hover:scale-125 transition-transform"></div>
+<div class="glass-card rounded-[24px] overflow-hidden">
+<div class="relative h-48 w-full">
+<img class="w-full h-full object-cover" data-alt="A top-down, high-end cinematic food photograph of a steaming, vibrant Sichuan Spicy Hot Pot. The red broth is bubbling with peppercorns and chilies, surrounded by fresh ingredients like marbled beef and green vegetables. The lighting is warm and dramatic, capturing the steam and rich textures. Set in a dark, moody restaurant with soft bokeh in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkwPUboxr_NeACEROKX-cFqB6dVq2O-AGYsJIoTbH_VlNiz692a2-sk9vDMZ4-Loyy1QK4E5-xzMd1SSC3mUUX69CbGtCcesKyS8Jj7fbB3kioqAdBFXWtdviTJWSXjM6bsc7J5emStnyLRYxZ99b1Z3GPn1gsLCgjec01JMOQgOPIe12lY6G8jv-FF_1wM_nXXyj96DCwznGW0NZAp3ZvTkH0FlPqkHc7JApkoUWGHwOjUFjpdkIO4JOhXJutL-KgPqGAfFZRHPWo"/>
+<div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/80 to-transparent"></div>
+<div class="absolute bottom-4 left-5">
+<p class="font-label-sm text-label-sm text-primary mb-1">美食足迹</p>
+<h3 class="font-headline-md text-headline-md-mobile text-white">四川麻辣火锅</h3>
+</div>
+</div>
+<div class="p-5 flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">成都市 · 锦江区</span>
+<span class="material-symbols-outlined text-on-surface-variant">location_on</span>
+</div>
+</div>
+</div>
+<!-- Item 3: Wish -->
+<div class="relative pl-8 group">
+<div class="absolute left-[-4px] top-4 w-2 h-2 rounded-full bg-secondary mint-glow group-hover:scale-125 transition-transform"></div>
+<div class="glass-card rounded-[24px] p-5 flex items-center justify-between border-secondary/30">
+<div>
+<p class="font-label-sm text-label-sm text-secondary mb-1">愿望清单 · 已达成</p>
+<h3 class="font-headline-md text-headline-md-mobile text-on-surface">一起去海边野餐</h3>
+</div>
+<span class="material-symbols-outlined text-secondary text-4xl mint-glow" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+</div>
+<!-- Item 4: Note -->
+<div class="relative pl-8 group">
+<div class="absolute left-[-4px] top-4 w-2 h-2 rounded-full bg-primary coral-glow group-hover:scale-125 transition-transform"></div>
+<div class="glass-card rounded-[24px] p-6">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-xl coral-glow" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-label-sm text-label-sm text-primary">甜蜜日记</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                        今天在厨房一起尝试了新的配方，虽然稍微有点咸，但是和你在一起的每分每秒都比蜂蜜还要甜。期待我们的下一个宇宙探险。
+                    </p>
+<p class="mt-4 font-label-sm text-label-sm text-on-surface-variant text-right">08月12日 · 22:30</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 bg-white/5 backdrop-blur-[40px] border-t border-white/15 rounded-t-xl h-20 flex justify-around items-center px-gutter">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary bg-secondary-container/20 rounded-xl px-4 py-2" href="#">
+<span class="material-symbols-outlined mb-1 scale-110 mint-glow" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-sm text-label-sm font-bold">Universe</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">restaurant</span>
+<span class="font-label-sm text-label-sm">AI Chef</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for glass cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'scale(0.98)';
+                card.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            });
+            card.addEventListener('touchend', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+
+        // Floating particle effect logic can be extended here if needed
+        // but current webgl-shader handles the atmospheric background.
+    </script>
+</body></html>

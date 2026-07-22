@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Couple Cosmos - Profile &amp; Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Geist:wght@400;500;600&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Noto+Sans+SC:wght@100..900&amp;family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdea4",
+                    "on-secondary": "#003731",
+                    "primary": "#ffb2b7",
+                    "error": "#ffb4ab",
+                    "tertiary-container": "#be8e20",
+                    "surface-container-high": "#242842",
+                    "on-surface": "#dee0ff",
+                    "surface-tint": "#ffb2b7",
+                    "tertiary-fixed-dim": "#f4be4e",
+                    "on-primary-container": "#63001a",
+                    "on-tertiary-fixed": "#261900",
+                    "on-primary-fixed": "#40000e",
+                    "outline": "#a8898a",
+                    "on-tertiary-container": "#3e2b00",
+                    "on-primary": "#67001c",
+                    "on-error": "#690005",
+                    "inverse-primary": "#b42440",
+                    "secondary-container": "#00bdaa",
+                    "on-secondary-fixed": "#00201c",
+                    "on-tertiary": "#412d00",
+                    "secondary-fixed": "#68f9e4",
+                    "primary-fixed-dim": "#ffb2b7",
+                    "surface-container": "#1a1e37",
+                    "secondary-fixed-dim": "#45dcc8",
+                    "inverse-surface": "#dee0ff",
+                    "surface-container-lowest": "#080c25",
+                    "background": "#0d112a",
+                    "on-primary-fixed-variant": "#91002a",
+                    "tertiary": "#f4be4e",
+                    "inverse-on-surface": "#2b2f49",
+                    "surface-container-low": "#161a33",
+                    "primary-container": "#ff5d73",
+                    "on-secondary-container": "#00463e",
+                    "on-surface-variant": "#e1bebf",
+                    "surface-variant": "#2f334e",
+                    "secondary": "#45dcc8",
+                    "primary-fixed": "#ffdadb",
+                    "error-container": "#93000a",
+                    "on-error-container": "#ffdad6",
+                    "outline-variant": "#594042",
+                    "surface-bright": "#343752",
+                    "on-background": "#dee0ff",
+                    "surface-dim": "#0d112a",
+                    "surface-container-highest": "#2f334e",
+                    "surface": "#0d112a",
+                    "on-tertiary-fixed-variant": "#5d4200",
+                    "on-secondary-fixed-variant": "#005047"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-padding": "20px",
+                    "unit": "4px",
+                    "stack-lg": "32px",
+                    "stack-md": "16px",
+                    "stack-sm": "8px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "label-sm": ["Geist"],
+                    "body-lg": ["Noto Sans SC"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Noto Sans SC"],
+                    "display-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "display-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0d112a;
+            background: radial-gradient(circle at top left, #1a1e37, #0d112a), 
+                        radial-gradient(circle at bottom right, #161a33, #080c25);
+            min-height: 100vh;
+            color: #dee0ff;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+        }
+
+        @keyframes shimmer {
+            from { background-position: 200% 0; }
+            to { background-position: -200% 0; }
+        }
+
+        .orbital-glow {
+            box-shadow: 0 0 20px rgba(69, 220, 200, 0.2);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .safe-pb {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .nebula-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Atmospheric Background -->
+<div class="nebula-bg">
+
+</div>
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-[40px] border-b border-white/15 h-16 flex items-center justify-between px-container-padding">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+<h1 class="font-display-lg-mobile text-[24px] text-primary tracking-tighter">Couple Cosmos</h1>
+</div>
+<button aria-label="Account" class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</header>
+<main class="pt-20 pb-32 px-container-padding max-w-md mx-auto space-y-gutter">
+<!-- Normal State: Couple Profile Header -->
+<section class="glass-card p-6 flex flex-col items-center text-center space-y-4" id="profile-header">
+<div class="relative flex items-center justify-center">
+<!-- Dual Avatar -->
+<div class="flex -space-x-4">
+<div class="w-20 h-20 rounded-full border-4 border-secondary overflow-hidden orbital-glow">
+<img class="w-full h-full object-cover" data-alt="A portrait of a smiling young woman with warm lighting, set against a dark celestial background, 8k resolution, cinematic digital art style with a soft glow." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYqKQYkjFe9eZW7W_2mo2wD2GH3Xkjt4mgLs2rv7pqm3xsdTqHIbjJ5pn7XyOZfB3ZLSRlD1A_lpiDdsmcwkCq9tr3CFmbMHJx_hXKI2LaPOUC81HlDEaFDC2VeuWABDxra2_Bp3P6sGTlcMBZNTgnHrcjxYvyp1b2ona1ToiTOuSl-LK9C_Tu9F3fRCMvCfrAt4w-JqV5b4iigTgslr3dCbMulDhB1nI4DNf-tcqJGVOPvItlb_jtUUzQEIvxuhq_8vCuSp6LuILA"/>
+</div>
+<div class="w-20 h-20 rounded-full border-4 border-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a smiling young man with soft shadows, set against a deep navy cosmic background, high-fidelity digital painting style, modern and intimate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCs6gd-LHSqj0v8KZ5v9hOU2S9IaXr7etrzufbAIedj6YfDMbOyULpjQ8HspiHni8v67zUh2EXmBoyqJZ2JC6fOjbW_-NcZflo-_9Sv5_AW-KfWmvO0E5_o5DEks9bOrypA83_ZEnZ3x79oaOTw23PL1iMBbN9AlnJwr7FwT4RSNVat_SUsgOdQcsIZJUSs-J22zZCJ9mDt6pU_eT_X8S6hN-JndoMF2ywLqDtNRtsAPe_Ob7up5aOJHF3af_lyLp6w3nrquzgOR3zR"/>
+</div>
+</div>
+<div class="absolute -bottom-2 bg-secondary text-on-secondary px-3 py-1 rounded-full text-label-sm font-label-sm">
+                    100 Days in the Universe
+                </div>
+</div>
+<div class="mt-4">
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">林沐 &amp; 周泽</h2>
+<p class="text-on-surface-variant/70 text-label-sm font-label-sm mt-1 uppercase tracking-widest">Shared Soul Signature</p>
+</div>
+</section>
+<!-- Shared Metrics Section -->
+<section class="grid grid-cols-2 gap-4">
+<div class="glass-card p-4 flex flex-col items-center justify-center space-y-2 aspect-square">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-white/10" cx="32" cy="32" fill="none" r="28" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-secondary" cx="32" cy="32" fill="none" r="28" stroke="currentColor" stroke-dasharray="175" stroke-dashoffset="17" stroke-width="4"></circle>
+</svg>
+<span class="absolute text-secondary font-bold text-lg">92%</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Taste Harmony</span>
+</div>
+<div class="grid grid-rows-2 gap-4">
+<div class="glass-card px-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" data-icon="restaurant_menu">restaurant_menu</span>
+<div>
+<div class="text-xl font-bold text-on-surface">42</div>
+<div class="text-[10px] text-on-surface-variant leading-none">Cosmic Recipes</div>
+</div>
+</div>
+<div class="glass-card px-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="favorite">favorite</span>
+<div>
+<div class="text-xl font-bold text-on-surface">158</div>
+<div class="text-[10px] text-on-surface-variant leading-none">Shared Favorites</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Menu List -->
+<section class="space-y-3">
+<h3 class="text-on-surface-variant font-label-sm text-label-sm ml-2 mb-2 uppercase tracking-widest">General Settings</h3>
+<button class="w-full glass-card p-5 flex items-center justify-between group active:scale-[0.98] transition-transform">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary" data-icon="lock">lock</span>
+<span class="text-on-surface font-medium">Privacy Settings</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full glass-card p-5 flex items-center justify-between group active:scale-[0.98] transition-transform">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-tertiary" data-icon="palette">palette</span>
+<div class="text-left">
+<span class="block text-on-surface font-medium">Theme Style</span>
+<span class="text-xs text-on-surface-variant">Couple Cosmos (Dark)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full glass-card p-5 flex items-center justify-between group active:scale-[0.98] transition-transform">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="cloud_done">cloud_done</span>
+<span class="text-on-surface font-medium">Shared Files Vault</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full glass-card p-5 flex items-center justify-between group active:scale-[0.98] transition-transform">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user">verified_user</span>
+<span class="text-on-surface font-medium">Password &amp; Security</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+</section>
+<!-- Danger Zone -->
+<section class="mt-8 space-y-4">
+<h3 class="text-error font-label-sm text-label-sm ml-2 uppercase tracking-widest">Danger Zone</h3>
+<div class="glass-card p-6 border-error/20 bg-error/5">
+<h4 class="text-on-surface font-bold">Unbind Couple</h4>
+<p class="text-on-surface-variant text-sm mt-1 mb-6 leading-relaxed">Breaking this connection will immediately delete all shared taste data, recipe history, and cosmic memories. This action is permanent.</p>
+<button class="w-full py-4 rounded-xl border border-error text-error font-bold active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="link_off">link_off</span>
+                    Unbind Star Link
+                </button>
+</div>
+<button class="w-full py-4 text-on-surface-variant/60 font-medium active:opacity-40 transition-opacity">
+                Log Out of Universe
+            </button>
+</section>
+<!-- System State: Empty/Unbound (Hidden by default, for demonstration) -->
+<section class="hidden glass-card p-10 flex flex-col items-center text-center space-y-6" id="empty-state">
+<div class="w-24 h-24 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-5xl text-on-surface-variant/30" data-icon="auto_fix_off">auto_fix_off</span>
+</div>
+<div>
+<h2 class="text-2xl font-bold text-on-surface">Find your other star</h2>
+<p class="text-on-surface-variant mt-2">Couple Cosmos works best with a partner. Invite them to start your shared culinary journey.</p>
+</div>
+<div class="w-full space-y-3">
+<input class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-center focus:ring-secondary focus:border-secondary transition-all" placeholder="Enter Invite Code" type="text"/>
+<button class="w-full bg-primary-container text-on-primary-container py-4 rounded-xl font-bold shadow-lg shadow-primary-container/20">Send Connection Signal</button>
+</div>
+</section>
+<!-- System State: Error (Hidden by default) -->
+<section class="hidden glass-card p-8 border-error/20 flex flex-col items-center text-center space-y-4" id="error-state">
+<span class="material-symbols-outlined text-5xl text-error" data-icon="wifi_off">wifi_off</span>
+<h2 class="text-xl font-bold text-error">Signal Lost</h2>
+<p class="text-on-surface-variant">We've lost connection to the galactic servers. Please check your star-link and try again.</p>
+<button class="px-8 py-3 bg-white/10 rounded-full font-medium hover:bg-white/20 transition-colors">Retry Signal</button>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full rounded-t-xl z-50 bg-background/80 backdrop-blur-[60px] border-t border-white/15 shadow-[0_-8px_32px_rgba(69,220,200,0.1)] h-20 pb-safe px-4 flex justify-around items-center">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary/80 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="auto_graph">auto_graph</span>
+<span class="font-label-sm text-label-sm">Timeline</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary/80 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-sm text-label-sm">Discover</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary/80 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="star">star</span>
+<span class="font-label-sm text-label-sm">Wishlist</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary bg-secondary-container/20 rounded-xl px-3 py-1 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-label-sm text-label-sm">Our Nest</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions and state handling
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('click', function(e) {
+                // Subtle haptic-like effect logic would go here
+            });
+        });
+
+        // Toggle states demo (Optional for presentation)
+        function showState(stateId) {
+            const sections = ['profile-header', 'empty-state', 'error-state'];
+            sections.forEach(s => {
+                const el = document.getElementById(s);
+                if(el) el.classList.add('hidden');
+            });
+            document.getElementById(stateId).classList.remove('hidden');
+        }
+
+        // Example: setTimeout(() => showState('error-state'), 5000);
+    </script>
+</body></html>

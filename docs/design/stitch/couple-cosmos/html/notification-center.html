@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>星际消息 - Couple Cosmos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#363247",
+                        "on-tertiary-fixed-variant": "#5d4200",
+                        "background": "#151024",
+                        "surface": "#151024",
+                        "surface-container-lowest": "#0f0b1e",
+                        "tertiary-fixed": "#ffdea4",
+                        "inverse-primary": "#b42440",
+                        "primary-fixed-dim": "#ffb2b7",
+                        "tertiary-fixed-dim": "#f4be4e",
+                        "on-secondary-container": "#00463e",
+                        "tertiary": "#f4be4e",
+                        "on-secondary-fixed": "#00201c",
+                        "on-primary-fixed": "#40000e",
+                        "inverse-on-surface": "#322d42",
+                        "secondary-container": "#00bdaa",
+                        "on-primary-fixed-variant": "#91002a",
+                        "on-primary": "#67001c",
+                        "on-surface-variant": "#e1bebf",
+                        "error": "#ffb4ab",
+                        "on-primary-container": "#63001a",
+                        "surface-tint": "#ffb2b7",
+                        "surface-container": "#211d31",
+                        "primary": "#ffb2b7",
+                        "surface-container-highest": "#363247",
+                        "outline-variant": "#594042",
+                        "on-secondary-fixed-variant": "#005047",
+                        "on-error": "#690005",
+                        "on-surface": "#e7defa",
+                        "on-tertiary-container": "#3e2b00",
+                        "surface-container-high": "#2b273c",
+                        "tertiary-container": "#be8e20",
+                        "inverse-surface": "#e7defa",
+                        "surface-dim": "#151024",
+                        "primary-fixed": "#ffdadb",
+                        "on-tertiary-fixed": "#261900",
+                        "secondary-fixed-dim": "#45dcc8",
+                        "on-background": "#e7defa",
+                        "on-secondary": "#003731",
+                        "secondary-fixed": "#68f9e4",
+                        "primary-container": "#ff5d73",
+                        "secondary": "#45dcc8",
+                        "outline": "#a8898a",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-low": "#1d192c",
+                        "surface-bright": "#3b364b",
+                        "on-tertiary": "#412d00",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "12px",
+                        "container-margin": "20px",
+                        "touch-target": "44px",
+                        "stack-sm": "8px",
+                        "stack-lg": "24px",
+                        "stack-md": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Noto Sans SC"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "body-md": ["Noto Sans SC"],
+                        "label-md": ["Noto Sans SC"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["17px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "display-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["15px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-md": ["13px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "label-sm": ["11px", { "lineHeight": "1.2", "fontWeight": "500" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background: radial-gradient(circle at top right, #2a1b54 0%, #151024 100%);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .coral-gradient {
+            background: linear-gradient(135deg, #ff5d73 0%, #ff8c94 100%);
+        }
+        .mint-glow {
+            box-shadow: 0 0 15px rgba(84, 232, 211, 0.3);
+        }
+        .active-tab::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 4px;
+            background: #ffb2b7;
+            border-radius: 2px;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body-md text-on-surface selection:bg-primary/30 min-h-screen">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/40 backdrop-blur-xl border-b border-white/10 flex justify-between items-center px-5 py-4 shadow-lg shadow-primary/10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30">
+<img class="w-full h-full object-cover" data-alt="A stylized futuristic avatar of a cosmic traveler in a high-tech starship suit, glowing with soft pink and neon cyan light, set against a dark deep-space background with distant nebulae in the Couple Cosmos aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFGi0bO4KZVJKECHuWTyvK02uIMjdAJlWPrgxbmrvHEcsjpLFnbPfJlaK4UeaX8ThBdBlFQikktWMs4py31JZBmFnHxZw4WDQscZPaZd8hAmxgDIWBmxhJfQTZFRiiEH2EZ6K1XSpF_iwB4Wift3NagKZoNWDLO4LQGGKQ9mnqxwaM7A3mU89gPPrh4Z0Ptr3CBUQci1g_0gDNHj_KMzl91c9U-NnMrEnDJ28QpiONlezkhwdMTt6GXcy9JMbg5heeFUcuWaIoFGo"/>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile font-bold text-primary tracking-tight">星际消息</h1>
+</div>
+<button class="text-secondary font-label-md hover:opacity-80 transition-opacity flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+            全部已读
+        </button>
+</header>
+<main class="pt-24 pb-32 px-5 max-w-md mx-auto">
+<!-- Tab Filter System -->
+<nav class="flex space-x-6 mb-6 overflow-x-auto hide-scrollbar py-2">
+<button class="relative font-headline-sm text-primary active-tab">全部</button>
+<button class="font-headline-sm text-on-surface-variant/60 hover:text-on-surface transition-colors">互动</button>
+<button class="font-headline-sm text-on-surface-variant/60 hover:text-on-surface transition-colors">系统</button>
+</nav>
+<!-- Notification List -->
+<div class="space-y-4">
+<!-- Type: Shared Feed -->
+<section class="glass-card rounded-2xl p-5 flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+<div class="flex items-start justify-between">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div>
+<p class="font-headline-sm text-on-surface mb-1">投喂提醒</p>
+<p class="text-on-surface-variant font-body-md leading-relaxed">TA 刚刚投喂了你一个 <span class="text-secondary font-bold">[极光莓果星云挞]</span></p>
+</div>
+</div>
+<span class="text-label-md text-on-surface-variant/40 mt-1">2分钟前</span>
+</div>
+<div class="relative w-full h-40 rounded-xl overflow-hidden group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Cinematic high-contrast food photography of a futuristic dessert called Aurora Berry Nebula Tart, glowing with neon purple and pink berry fillings, topped with shimmering edible stardust, presented on a dark metallic plate in a deep space-themed kitchen." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYiR_dX05OvvuXphkb1E2QcByS73fhlcQkFo87AP82740PI7whcJq9stzl0mx3bgkahCR_l_8jRQ51U68QWQsIIMpIZKPLa8TxIygAW7MiGPnO-G1l13ZiOjs0bIzWYz3v08BcBmxsIpw8oP26-tB_ZELA-aDQOJdXXZcDiHrqMB3vZOJxP8rynQIowHRN850axGr5fI9D9Y-p5T26LYEIOt6zqPj8g_STVeaKHxIpdwa98MUtlgkm4bF0sfP9moRkO7F_6srwBcM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+</div>
+<button class="coral-gradient h-touch-target rounded-full font-headline-sm text-on-primary-container shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                    立即查看
+                </button>
+</section>
+<!-- Type: Wish List -->
+<section class="glass-card rounded-2xl p-5 flex items-start justify-between animate-in fade-in slide-in-from-bottom-6 duration-700">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<div>
+<p class="font-headline-sm text-on-surface mb-1">心愿单更新</p>
+<p class="text-on-surface-variant font-body-md leading-relaxed">TA 更新了愿望清单：想和你一起去 <span class="text-secondary font-bold">[星河云端餐厅]</span></p>
+<div class="mt-3 flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/10 w-fit">
+<span class="material-symbols-outlined text-[16px] text-error" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="text-label-md text-on-surface/80">心愿指数：99%</span>
+</div>
+</div>
+</div>
+<span class="text-label-md text-on-surface-variant/40 mt-1 shrink-0">1小时前</span>
+</section>
+<!-- Type: Anniversary -->
+<section class="glass-card rounded-2xl p-5 border-l-4 border-primary relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
+
+<div class="relative z-10 flex flex-col gap-4">
+<div class="flex items-start justify-between">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<p class="font-headline-sm text-primary mb-1">纪念日提醒</p>
+<p class="text-on-surface font-headline-md tracking-tight">我们的相爱第 <span class="text-secondary text-[26px]">1314</span> 天即将到来</p>
+</div>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md">这是属于你们的星系里程碑，准备好迎接这一刻了吗？</p>
+<button class="h-touch-target rounded-full bg-white/10 border border-primary/30 font-headline-sm text-primary hover:bg-primary/10 active:scale-95 transition-all">
+                        筹备惊喜
+                    </button>
+</div>
+</section>
+<!-- Type: System -->
+<section class="glass-card rounded-2xl p-5 flex items-start justify-between animate-in fade-in slide-in-from-bottom-10 duration-1000">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div>
+<p class="font-headline-sm text-on-surface mb-1">AI 厨娘建议</p>
+<p class="text-on-surface-variant font-body-md">AI 厨娘为你生成了新的星系味觉建议，基于你们最近的投喂偏好。</p>
+<button class="mt-4 flex items-center gap-2 text-secondary font-label-md group">
+                            查看味觉地图
+                            <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<span class="text-label-md text-on-surface-variant/40 mt-1 shrink-0">昨天</span>
+</section>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface/40 backdrop-blur-2xl border-t border-white/10 flex justify-around items-center px-4 pb-6 pt-3 shadow-[0_-8px_24px_rgba(255,93,115,0.15)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">public</span>
+<span class="font-label-sm mt-1">星球</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-label-sm mt-1">菜单</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm mt-1">投喂</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary scale-110 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+<span class="font-label-sm mt-1">回忆</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-sm mt-1">我们</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for active feedback
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', () => el.classList.add('scale-95'));
+            el.addEventListener('mouseup', () => el.classList.remove('scale-95'));
+            el.addEventListener('mouseleave', () => el.classList.remove('scale-95'));
+        });
+
+        // Tab switching logic (UI only)
+        const tabs = document.querySelectorAll('nav button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('text-primary', 'active-tab');
+                    t.classList.add('text-on-surface-variant/60');
+                });
+                tab.classList.remove('text-on-surface-variant/60');
+                tab.classList.add('text-primary', 'active-tab');
+            });
+        });
+    </script>
+</body></html>
