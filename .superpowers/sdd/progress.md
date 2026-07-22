@@ -29,4 +29,4 @@ Minor ledger: shard checkpoint order test does not assert the checkpoint snapsho
 Subtask S2: complete (commits a9cd6ed, 01bf1e2; review Ready after Important test fix; 128/128 tests; GitNexus LOW)
 Subtask S3: complete (commits 96d41f2, ae813b7, 3a23f7b; final review Ready; 147/147 tests; GitNexus LOW)
 Stitch multi-project sharding subplan: complete — all three subtasks independently reviewed with no open Critical/Important/Minor findings.
-Subtask S4: in progress (commit 13316a9, 150/150 tests) — independent review found one Important URL path-segment encoding gap for fallback screenshot references; fix pending.
+Subtask S4: complete (commits 13316a9, 8790e7a; independent re-review Approved; 151/151 tests; GitNexus LOW, 0 flows) — fallback screenshot URL path segments are encoded, and URL plus HTML/XSS regression coverage is preserved.

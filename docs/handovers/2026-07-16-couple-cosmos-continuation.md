@@ -49,21 +49,14 @@ npm test
 
 ## 5. 当前代码验证状态
 
-- Stitch 工具全量测试最近一次为 `150/150` 通过。
+- Stitch 工具全量测试最近一次为 `151/151` 通过。
 - 多项目生成、跨项目导出、严格 verifier、secret scanning、SHA-256、路径穿越和 symlink containment 已实现。
 - 提交 `13316a9` 增加了 `screenshot-fallback` HTML：当 Stitch HTML URL 为空时，用真实截图生成明确标注“仅视觉参考”的本地 HTML，并在 manifest/log 中记录来源。
-- 独立审查仍有一个 Important 未修复：fallback HTML 的截图 `src` 必须对 `localId` 做 URL path-segment 编码。`login#detail`、`login?mode=dark` 等值不能只做 HTML 实体转义。
+- 提交 `8790e7a` 已修复 fallback HTML 截图 `src` 的 URL path-segment 编码，并通过独立复审；`#`、`?`、HTML/XSS 转义回归覆盖均保留。
 
-## 6. 新机器的第一项代码任务
+## 6. 新机器的第一项任务
 
-严格按 TDD 修复上述 Important：
-
-1. 对 `screenshotFallbackHtml`、`exportArtifact`、`exportDesignProject` 执行 GitNexus impact。
-2. 在 `tools/stitch/test/exporter.test.mjs` 添加包含 `#`、`?`、`/` 的 local ID 用例，先证明旧实现 RED。
-3. 在 fallback 图片路径中先使用 `encodeURIComponent(localId)`，再做 HTML 属性转义；可见文本仍只做 HTML 转义。
-4. 运行定向测试与 `cd tools/stitch && npm test`。
-5. 执行 `node --check`、`git diff --check`、GitNexus staged detect。
-6. 提交修复并交给新的独立审查代理复审，直到 Ready。
+S4 URL 编码修复已经完成。下一项任务是按第 7 节执行真实 Stitch 导出、完整校验与视觉复核；开始前必须通过安全环境提供轮换后的 `STITCH_API_KEY`，不得复用或在聊天、命令、日志中暴露旧密钥。
 
 ## 7. 修复后的真实 Stitch 流程
 
