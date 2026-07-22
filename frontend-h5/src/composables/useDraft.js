@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { logUiEvent } from './useStructuredLog'
 
-const VALID_RESOURCES = new Set(['menu', 'recipe'])
+const VALID_RESOURCES = new Set(['menu', 'recipe', 'note'])
 const VALID_ID = /^[A-Za-z0-9_-]+$/
 const VALID_RESOURCE_ID = /^[1-9]\d*$/
 
@@ -13,7 +13,7 @@ const validUserId = (userId) => (
 const errorCode = (error) => String(error?.name || 'STORAGE_ERROR')
 
 export const useDraft = ({ userId, resource, resourceId } = {}) => {
-  if (!VALID_RESOURCES.has(resource)) throw new Error('resource must be menu or recipe')
+  if (!VALID_RESOURCES.has(resource)) throw new Error('resource must be menu, recipe or note')
   if (resourceId !== undefined && resourceId !== null && !VALID_RESOURCE_ID.test(String(resourceId))) {
     throw new Error('resourceId is invalid')
   }

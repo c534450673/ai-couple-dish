@@ -1,509 +1,179 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { showToast, showLoadingToast, closeToast } from 'vant'
-import { feedApi } from '@/api'
+import { computed, onMounted, ref } from 'vue'
+import { showToast } from 'vant'
+import { useFeedStore } from '@/stores/feed'
+import { useReducedMotion } from '@/composables/useReducedMotion'
 
-const todayStatus = ref({ sentToday: false, receivedToday: false })
-const receivedFeeds = ref([])
-const showSendDialog = ref(false)
-const refreshing = ref(false)
-const isSkeleton = ref(true)
-
-const sendForm = ref({
-  feedType: 'meal',
-  content: ''
-})
-
-const sendImages = ref([])
+const store = useFeedStore()
+const prefersReducedMotion = useReducedMotion()
+const successVisible = ref(false)
+const unavailableMessage = ref('')
+const rejectReasons = ref({})
 const feedTypes = [
-  { value: 'meal', label: '正餐', icon: 'cart-o', color: '#894c5c' },
-  { value: 'dessert', label: '甜点', icon: 'cake-o', color: '#c98a00' },
-  { value: 'snack', label: '零食', icon: 'bag-o', color: '#5f7a4f' },
-  { value: 'drink', label: '饮品', icon: 'coupon-o', color: '#4a6fa5' }
+  { value: 'meal', label: '正餐', icon: 'shop-o' },
+  { value: 'dessert', label: '甜点', icon: 'smile-o' },
+  { value: 'snack', label: '零食', icon: 'bag-o' },
+  { value: 'drink', label: '饮品', icon: 'coupon-o' }
 ]
+const canSend = computed(() => Boolean(store.draft.content?.trim()) && Number(store.today?.remainingCount ?? 1) > 0 && !store.isMutationPending)
 
-const getFeedIcon = (type) => {
-  const map = { meal: 'cart-o', dessert: 'cake-o', snack: 'bag-o', drink: 'coupon-o' }
-  return map[type] || 'gift-o'
-}
-
-const getFeedColor = (type) => {
-  const map = { meal: '#894c5c', dessert: '#c98a00', snack: '#5f7a4f', drink: '#4a6fa5' }
-  return map[type] || '#894c5c'
-}
-
-const getStatusTagType = (status) => {
-  const map = { 0: 'warning', 1: 'success', 2: 'default' }
-  return map[status] || 'default'
-}
-
-const getStatusText = (status) => {
-  const map = { 0: '待领取', 1: '已领取', 2: '已拒绝' }
-  return map[status] || '待领取'
-}
-
-const loadData = async () => {
+const updateDraft = (field, value) => store.updateDraft({ [field]: value })
+const send = async () => {
+  if (!canSend.value) return
   try {
-    const [statusRes, receivedRes] = await Promise.all([
-      feedApi.getTodayFeedStatus(),
-      feedApi.getReceivedFeeds()
-    ])
-    todayStatus.value = statusRes.data || { sentToday: false, receivedToday: false }
-    receivedFeeds.value = receivedRes.data || []
+    const result = await store.sendDraft()
+    if (result?.status === 'success') {
+      successVisible.value = true
+      unavailableMessage.value = ''
+    } else if (result?.status === 'unavailable') {
+      unavailableMessage.value = result.reason === 'DAILY_LIMIT_REACHED' ? '今天的投喂次数已用完，输入已保留。' : '当前操作暂不可用，输入已保留。'
+    }
   } catch (error) {
-    showToast('加载失败')
-  } finally {
-    refreshing.value = false
-    isSkeleton.value = false
+    showToast('发送失败，输入已保留')
   }
 }
-
-const onRefresh = () => {
-  isSkeleton.value = true
-  refreshing.value = true
-  loadData()
-}
-
-const handleSend = async () => {
-  if (!sendForm.value.content) {
-    showToast('请输入投喂内容')
-    return
-  }
-
-  showLoadingToast({ message: '发送中...', forbidClick: true })
+const accept = async (item) => {
   try {
-    await feedApi.sendFeed({
-      ...sendForm.value,
-      imageUrls: sendImages.value.map(f => f.url).join(',')
-    })
-    showToast('发送成功')
-    showSendDialog.value = false
-    sendForm.value = { feedType: 'meal', content: '' }
-    sendImages.value = []
-    loadData()
+    await store.accept(item)
   } catch (error) {
-    showToast('发送失败')
-  } finally {
-    closeToast()
+    showToast('投喂状态已变化，已同步最新结果')
   }
 }
-
-const handleAccept = async (item) => {
+const reject = async (item) => {
   try {
-    await feedApi.acceptFeed(item.id)
-    showToast('已接受')
-    loadData()
+    await store.reject(item, rejectReasons.value[item.id] || '')
   } catch (error) {
-    showToast('操作失败')
+    showToast('投喂状态已变化，已同步最新结果')
   }
 }
-
-const handleReject = async (item) => {
-  try {
-    await feedApi.rejectFeed(item.id)
-    showToast('已拒绝')
-    loadData()
-  } catch (error) {
-    showToast('操作失败')
+const unsupported = async (action) => {
+  const actions = {
+    counter: store.requestCounter,
+    completion: store.requestCompletion,
+    withdraw: store.requestWithdraw
   }
+  const result = await actions[action].call(store)
+  if (result?.status === 'unavailable') unavailableMessage.value = '后端尚不支持此动作，你的输入和当前状态都没有改变。'
 }
+const statusText = item => ({ 0: '待领取', 1: '已接受', 2: '已拒绝', 3: '已过期' })[Number(item.status)] || '状态未知'
 
-onMounted(() => {
-  loadData()
-})
+onMounted(() => store.fetchAll().catch(() => showToast('投喂记录加载失败，请下拉重试')))
 </script>
 
 <template>
-  <div class="feed-page">
-    <header class="feed-topbar">
-      <h1 class="page-title">
-        投喂 TA
-      </h1>
+  <main class="feed-page">
+    <header class="feed-header">
+      <p class="eyebrow">TODAY'S SIGNAL</p>
+      <h1>投喂 TA</h1>
+      <p>用一份小小的期待，约定今天的味道。</p>
     </header>
 
-    <van-pull-refresh
-      v-model="refreshing"
-      class="feed-body"
-      @refresh="onRefresh"
-    >
-      <!-- 今日状态 -->
-      <div class="today-status">
-        <div
-          class="status-item"
-          :class="{ active: todayStatus.sentToday }"
-        >
-          <span class="ic"><van-icon
-            :name="todayStatus.sentToday ? 'checked' : 'add-o'"
-            size="24"
-          /></span>
-          <span class="tx">{{ todayStatus.sentToday ? '已投喂' : '投喂TA' }}</span>
+    <section class="composer" aria-labelledby="feed-compose-title">
+      <div class="composer-heading">
+        <div>
+          <span>今日剩余</span>
+          <strong>{{ store.today?.remainingCount ?? '—' }}</strong>
         </div>
-        <i class="status-divider" />
-        <div
-          class="status-item"
-          :class="{ active: todayStatus.receivedToday }"
-        >
-          <span class="ic"><van-icon
-            :name="todayStatus.receivedToday ? 'checked' : 'gift-o'"
-            size="24"
-          /></span>
-          <span class="tx">{{ todayStatus.receivedToday ? '已领取' : '待领取' }}</span>
-        </div>
+        <p v-if="store.today?.remainingCount === 0">次数已用完，草稿仍会保留。</p>
       </div>
-
-      <!-- 投喂按钮 -->
-      <div
-        v-if="!todayStatus.sentToday"
-        class="send-section"
-      >
+      <h2 id="feed-compose-title">选择投喂</h2>
+      <div class="feed-types" role="radiogroup" aria-label="投喂类型">
         <button
-          class="send-btn"
-          @click="showSendDialog = true"
+          v-for="type in feedTypes"
+          :key="type.value"
+          type="button"
+          :class="{ active: store.draft.feedType === type.value }"
+          :aria-pressed="store.draft.feedType === type.value"
+          :disabled="store.isMutationPending"
+          @click="updateDraft('feedType', type.value)"
         >
-          <van-icon name="plus" /> 投喂 TA
+          <van-icon :name="type.icon" /><span>{{ type.label }}</span>
         </button>
       </div>
+      <label for="feed-content">想投喂什么</label>
+      <input
+        id="feed-content"
+        :value="store.draft.content"
+        maxlength="120"
+        placeholder="例如：下班一起吃火锅"
+        :disabled="store.isMutationPending"
+        @input="updateDraft('content', $event.target.value)"
+      >
+      <label for="feed-message">留句话（可选）</label>
+      <textarea
+        id="feed-message"
+        :value="store.draft.message"
+        maxlength="300"
+        rows="3"
+        placeholder="只在这次投喂中发送"
+        :disabled="store.isMutationPending"
+        @input="updateDraft('message', $event.target.value)"
+      />
+      <p class="image-contract">投喂专属图片上传暂不可用；不会调用不存在的端点。</p>
+      <button class="send-button" data-test="feed-send" type="button" :disabled="!canSend" @click="send">
+        <van-icon name="guide-o" /> {{ store.isMutationPending ? '正在发送…' : '发送投喂' }}
+      </button>
+      <button class="text-action" type="button" :disabled="store.isMutationPending" @click="unsupported('counter')">
+        换一种投喂（暂不可用）
+      </button>
+    </section>
 
-      <!-- 收到的投喂 -->
-      <div class="received-section">
-        <div class="section-title">
-          收到的投喂
-        </div>
-
-        <div v-if="isSkeleton">
-          <div
-            v-for="n in 3"
-            :key="n"
-            class="feed-card skeleton"
-          >
-            <div class="head">
-              <div class="sk-avatar sk" />
-              <div class="info">
-                <div class="sk sk-line sk-sender" />
-                <div class="sk sk-line sk-time" />
-              </div>
-            </div>
-            <div class="sk sk-content" />
-          </div>
-        </div>
-
-        <div v-else>
-          <div
-            v-for="item in receivedFeeds"
-            :key="item.id"
-            class="feed-card"
-          >
-            <div class="head">
-              <span
-                class="type-ic"
-                :style="{ background: getFeedColor(item.feedType) + '22', color: getFeedColor(item.feedType) }"
-              >
-                <van-icon
-                  :name="getFeedIcon(item.feedType)"
-                  size="20"
-                />
-              </span>
-              <div class="info">
-                <div class="sender">
-                  {{ item.senderName }}
-                </div>
-                <div class="time">
-                  {{ item.createTime }}
-                </div>
-              </div>
-              <van-tag
-                :type="getStatusTagType(item.status)"
-                round
-              >
-                {{ getStatusText(item.status) }}
-              </van-tag>
-            </div>
-            <div class="content">
-              {{ item.content }}
-            </div>
-            <div
-              v-if="item.imageUrls"
-              class="images"
-            >
-              <img
-                v-for="(url, index) in (typeof item.imageUrls === 'string' ? item.imageUrls.split(',') : item.imageUrls)"
-                :key="index"
-                v-lazy="url"
-              >
-            </div>
-            <div
-              v-if="item.status === 0"
-              class="actions"
-            >
-              <van-button
-                size="small"
-                type="primary"
-                round
-                @click="handleAccept(item)"
-              >
-                接受
-              </van-button>
-              <van-button
-                size="small"
-                round
-                @click="handleReject(item)"
-              >
-                拒绝
-              </van-button>
-            </div>
-          </div>
-
-          <van-empty
-            v-if="receivedFeeds.length === 0"
-            description="暂无收到的投喂"
-          />
-        </div>
-      </div>
-    </van-pull-refresh>
-
-    <!-- 发送投喂弹窗 -->
-    <van-popup
-      v-model:show="showSendDialog"
-      position="bottom"
-      round
+    <p v-if="unavailableMessage" class="unavailable-notice" role="status">{{ unavailableMessage }}</p>
+    <div
+      v-if="successVisible"
+      class="success-feedback"
+      data-test="feed-success"
+      :data-motion="prefersReducedMotion ? 'static' : 'animated'"
+      role="status"
     >
-      <div class="send-dialog">
-        <div class="dialog-header">
-          <span>投喂 TA</span>
-          <van-icon
-            name="cross"
-            @click="showSendDialog = false"
-          />
+      <van-icon name="passed" />
+      <span>投喂已送达</span>
+    </div>
+
+    <section class="feed-list" aria-labelledby="received-title">
+      <div class="section-heading"><h2 id="received-title">TA 发来的投喂</h2><span>{{ store.received.length }}</span></div>
+      <p v-if="store.loadStatus === 'loading' && !store.received.length" class="list-state">正在接收信号…</p>
+      <p v-else-if="store.loadStatus === 'error' && !store.received.length" class="list-state">暂时无法读取投喂记录。</p>
+      <p v-else-if="!store.received.length" class="list-state">今天还没有收到投喂。</p>
+      <article v-for="item in store.received" :key="item.id" class="feed-card">
+        <div class="card-head">
+          <div><span>{{ item.senderName || 'TA' }}</span><small>{{ item.createTime }}</small></div>
+          <strong :class="`status-${item.status}`">{{ statusText(item) }}</strong>
         </div>
-        <div class="dialog-content">
-          <div class="feed-type-select">
-            <div
-              v-for="type in feedTypes"
-              :key="type.value"
-              class="type-item"
-              :class="{ active: sendForm.feedType === type.value }"
-              @click="sendForm.feedType = type.value"
-            >
-              <van-icon
-                :name="type.icon"
-                size="26"
-                :color="type.color"
-              />
-              <span>{{ type.label }}</span>
-            </div>
-          </div>
-          <van-field
-            v-model="sendForm.content"
-            type="textarea"
-            placeholder="说点什么..."
-            rows="3"
-            autosize
-          />
-          <van-uploader
-            v-model="sendImages"
-            :max-count="3"
-            multiple
-          />
+        <h3>{{ item.feedTypeName || feedTypes.find(type => type.value === item.feedType)?.label || '投喂' }}</h3>
+        <p>{{ item.content }}</p>
+        <p v-if="item.message" class="feed-message">{{ item.message }}</p>
+        <div v-if="Number(item.status) === 0" class="receive-actions">
+          <input v-model="rejectReasons[item.id]" maxlength="100" placeholder="拒绝原因（可选）" :disabled="store.isMutationPending">
+          <button type="button" :disabled="store.isMutationPending" @click="reject(item)">拒绝</button>
+          <button type="button" :disabled="store.isMutationPending" @click="accept(item)">接受</button>
         </div>
-        <div class="dialog-footer">
-          <van-button
-            type="primary"
-            block
-            round
-            @click="handleSend"
-          >
-            发送
-          </van-button>
-        </div>
-      </div>
-    </van-popup>
-  </div>
+        <button v-if="Number(item.status) === 1" class="text-action" type="button" @click="unsupported('completion')">完成确认（暂不可用）</button>
+      </article>
+    </section>
+
+    <section class="feed-list" aria-labelledby="sent-title">
+      <div class="section-heading"><h2 id="sent-title">我发出的投喂</h2><span>{{ store.sent.length }}</span></div>
+      <p v-if="!store.sent.length" class="list-state">还没有发出的投喂。</p>
+      <article v-for="item in store.sent" :key="item.id" class="feed-card compact">
+        <div><strong>{{ item.content }}</strong><small>{{ item.createTime }}</small></div>
+        <span>{{ statusText(item) }}</span>
+        <button v-if="Number(item.status) === 0" class="text-action" type="button" @click="unsupported('withdraw')">撤回（暂不可用）</button>
+      </article>
+    </section>
+  </main>
 </template>
 
 <style lang="scss" scoped>
-.feed-page {
-  min-height: 100vh;
-  background: $color-background;
-  padding-bottom: 96px;
-}
-
-.feed-topbar {
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  @include glass(0.7);
-
-  .page-title { font-size: $fs-title; font-weight: $fw-semibold; color: $color-on-surface; }
-}
-
-.feed-body {
-  padding: $space-4 $page-padding 0;
-}
-
-.today-status {
-  display: flex;
-  align-items: center;
-  @include card($radius-lg, $space-5);
-  margin-bottom: $space-4;
-
-  .status-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: $space-2;
-    color: $color-on-surface-variant;
-
-    .ic {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: $color-surface-low;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .tx { font-size: $fs-label; }
-
-    &.active {
-      color: $color-primary;
-      .ic { background: $color-primary-fixed; }
-    }
-  }
-
-  .status-divider { width: 1px; height: 48px; background: $color-surface-variant; }
-}
-
-.send-section {
-  margin-bottom: $space-5;
-
-  .send-btn {
-    width: 100%;
-    height: 48px;
-    @include btn-primary;
-    font-size: $fs-body;
-    box-shadow: $shadow-float;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-
-    &:active { opacity: 0.9; }
-  }
-}
-
-.received-section {
-  .section-title {
-    font-size: $fs-label;
-    font-weight: $fw-semibold;
-    color: $color-on-surface;
-    margin-bottom: $space-3;
-    padding: 0 $space-1;
-  }
-
-  .feed-card {
-    @include card($radius-lg, $space-4);
-    margin-bottom: $space-3;
-
-    .head {
-      display: flex;
-      align-items: center;
-      gap: $space-3;
-      margin-bottom: $space-3;
-
-      .type-ic {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-
-      .info {
-        flex: 1;
-        .sender { font-size: $fs-label; font-weight: $fw-medium; color: $color-on-surface; }
-        .time { font-size: $fs-caption; color: $color-on-surface-variant; }
-      }
-    }
-
-    .content { font-size: $fs-label; color: $color-on-surface; margin-bottom: $space-3; line-height: 1.5; }
-
-    .images {
-      display: flex;
-      gap: $space-2;
-      margin-bottom: $space-3;
-
-      img { width: 80px; height: 80px; border-radius: $radius-md; object-fit: cover; }
-    }
-
-    .actions { display: flex; gap: $space-3; }
-  }
-}
-
-.send-dialog {
-  padding: $space-5;
-
-  .dialog-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: $space-5;
-
-    span { font-size: $fs-title; font-weight: $fw-semibold; color: $color-on-surface; }
-    .van-icon { color: $color-on-surface-variant; }
-  }
-
-  .feed-type-select {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: $space-3;
-    margin-bottom: $space-4;
-
-    .type-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: $space-2;
-      padding: $space-3 0;
-      background: $color-surface-low;
-      border-radius: $radius-md;
-      transition: background $transition-base;
-
-      &.active { background: $color-primary-fixed; color: $color-primary; }
-
-      span { font-size: $fs-caption; color: $color-on-surface-variant; }
-    }
-  }
-
-  .dialog-footer { margin-top: $space-4; }
-}
-
-// 骨架屏
-.skeleton {
-  pointer-events: none;
-
-  .sk {
-    background: linear-gradient(90deg, $color-surface-high 25%, $color-surface-low 50%, $color-surface-high 75%);
-    background-size: 200% 100%;
-    animation: sk-loading 1.5s infinite;
-  }
-
-  .head { display: flex; align-items: center; gap: $space-3; }
-  .sk-avatar { width: 40px; height: 40px; border-radius: 50%; }
-  .info { flex: 1; }
-  .sk-line { border-radius: 4px; }
-  .sk-sender { width: 50%; height: 14px; margin-bottom: 6px; }
-  .sk-time { width: 30%; height: 12px; }
-  .sk-content { width: 100%; height: 56px; border-radius: $radius-md; margin-top: $space-3; }
-}
-
-@keyframes sk-loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+.feed-page { min-height: 100%; padding: $space-5 $page-padding $space-8; color: $cosmos-text; }.feed-header { padding: $space-2 0 $space-5; }.eyebrow { color: $cosmos-secondary; font-size: $fs-caption; }.feed-header h1 { margin-top: $space-1; font-size: $fs-display; }.feed-header > p:last-child { margin-top: $space-2; color: $cosmos-text-muted; }
+.composer { padding: $space-4; border: 1px solid $cosmos-border; border-radius: $radius-md; background: $cosmos-surface-elevated; }.composer-heading { display: flex; align-items: center; justify-content: space-between; gap: $space-3; color: $cosmos-text-muted; font-size: $fs-caption; }.composer-heading div { display: flex; align-items: baseline; gap: $space-2; }.composer-heading strong { color: $cosmos-gold; font-size: $fs-title; }.composer h2 { margin-top: $space-4; font-size: $fs-title; }
+.feed-types { display: grid; margin-top: $space-3; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: $space-2; }.feed-types button { display: flex; min-height: 64px; padding: $space-2; flex-direction: column; align-items: center; justify-content: center; gap: $space-1; border: 1px solid $cosmos-border; border-radius: $radius-sm; background: rgba(255,255,255,.03); color: $cosmos-text-muted; }.feed-types button.active { border-color: $cosmos-secondary; background: rgba(84,232,211,.1); color: $cosmos-secondary; }
+.composer label { display: block; margin: $space-4 0 $space-2; color: $cosmos-gold; font-size: $fs-label; }.composer input, .composer textarea, .receive-actions input { width: 100%; padding: $space-3; border: 1px solid $cosmos-border; border-radius: $radius-sm; outline: 0; background: rgba(255,255,255,.04); color: $cosmos-text; font: inherit; }.composer textarea { resize: vertical; }.image-contract { margin-top: $space-3; color: $cosmos-text-muted; font-size: $fs-caption; }
+.send-button { width: 100%; min-height: 52px; margin-top: $space-4; border: 0; border-radius: $radius-sm; background: $cosmos-primary; color: white; font-size: 16px; font-weight: $fw-semibold; }.send-button:disabled, button:disabled { cursor: not-allowed; opacity: .48; }.text-action { min-height: 40px; border: 0; background: transparent; color: $cosmos-text-muted; text-decoration: underline; }
+.unavailable-notice, .success-feedback { margin-top: $space-3; padding: $space-3; border-left: 3px solid $cosmos-gold; background: rgba(255,200,87,.08); color: $cosmos-gold; }.success-feedback { display: flex; align-items: center; gap: $space-2; border-left-color: $cosmos-secondary; color: $cosmos-secondary; }.success-feedback[data-motion='animated'] { animation: success-pulse 480ms ease-out; }
+.feed-list { margin-top: $space-6; }.section-heading { display: flex; align-items: center; justify-content: space-between; }.section-heading h2 { font-size: $fs-title; }.section-heading span { color: $cosmos-secondary; }.list-state { padding: $space-5 0; color: $cosmos-text-muted; text-align: center; }
+.feed-card { margin-top: $space-3; padding: $space-4; border: 1px solid $cosmos-border; border-radius: $radius-md; background: rgba(255,255,255,.04); }.card-head, .compact { display: flex; align-items: center; justify-content: space-between; gap: $space-3; }.card-head div, .compact div { display: flex; min-width: 0; flex-direction: column; gap: $space-1; }.card-head small, .compact small { color: $cosmos-text-muted; }.card-head > strong { flex: 0 0 auto; color: $cosmos-gold; font-size: $fs-caption; }.card-head .status-1 { color: $cosmos-secondary; }.card-head .status-2, .card-head .status-3 { color: $cosmos-text-muted; }.feed-card h3 { margin-top: $space-3; font-size: $fs-title; }.feed-card > p { margin-top: $space-2; overflow-wrap: anywhere; }.feed-message { padding: $space-3; background: rgba(255,255,255,.04); color: $cosmos-text-muted; }.receive-actions { display: grid; margin-top: $space-4; grid-template-columns: 1fr auto auto; gap: $space-2; }.receive-actions button { min-width: 60px; border: 1px solid $cosmos-border; border-radius: $radius-sm; background: transparent; color: $cosmos-text; }.receive-actions button:last-child { border-color: $cosmos-secondary; color: $cosmos-secondary; }
+@keyframes success-pulse { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .success-feedback[data-motion='animated'] { animation: none; } }
+@media (max-width: 360px) { .feed-types { grid-template-columns: repeat(2, minmax(0,1fr)); }.receive-actions { grid-template-columns: 1fr 1fr; }.receive-actions input { grid-column: 1 / -1; } }
 </style>

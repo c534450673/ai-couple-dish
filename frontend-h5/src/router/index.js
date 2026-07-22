@@ -6,6 +6,18 @@ import { logUiEvent } from '@/composables/useStructuredLog'
 
 const unavailableView = () => import('@/views/states/UnavailableView.vue')
 
+const validateMemoryNoteId = (to) => {
+  const valid = /^[1-9]\d*$/.test(String(to.params.id || ''))
+  logUiEvent('route_memory_note_validated', {
+    module: 'router',
+    operation: 'validate_note_id',
+    result: valid ? 'allowed' : 'invalid',
+    durationMs: 0,
+    ...(!valid ? { errorCode: 'INVALID_NOTE_ID' } : {})
+  })
+  return valid ? true : { path: '/memories', query: { type: 'note' } }
+}
+
 export const routes = [
   {
     path: '/',
@@ -44,7 +56,7 @@ export const routes = [
   {
     path: '/memories',
     name: 'Memories',
-    component: unavailableView,
+    component: () => import('@/views/memories/index.vue'),
     meta: { title: '回忆', requiresAuth: true, requiresCouple: true, shell: true, tab: '回忆' }
   },
   {
@@ -78,19 +90,19 @@ export const routes = [
   {
     path: '/anniversary',
     name: 'Anniversary',
-    component: () => import('@/views/anniversary/index.vue'),
+    redirect: to => ({ path: '/memories', query: { ...to.query, type: 'anniversary' }, hash: to.hash }),
     meta: { title: '纪念日', requiresAuth: true, requiresCouple: true, shell: true }
   },
   {
     path: '/note',
     name: 'Note',
-    component: () => import('@/views/note/index.vue'),
+    redirect: to => ({ path: '/memories', query: { ...to.query, type: 'note' }, hash: to.hash }),
     meta: { title: '美食笔记', requiresAuth: true, requiresCouple: true, shell: true }
   },
   {
     path: '/wish',
     name: 'Wish',
-    component: () => import('@/views/wish/index.vue'),
+    redirect: to => ({ path: '/memories', query: { ...to.query, type: 'wish' }, hash: to.hash }),
     meta: { title: '心愿单', requiresAuth: true, requiresCouple: true, shell: true }
   },
   {
@@ -126,13 +138,14 @@ export const routes = [
   {
     path: '/memories/notes/new',
     name: 'MemoryNoteNew',
-    component: unavailableView,
+    component: () => import('@/views/memories/note-editor.vue'),
     meta: { title: '新建回忆', requiresAuth: true, requiresCouple: true, shell: true }
   },
   {
     path: '/memories/notes/:id',
     name: 'MemoryNoteDetail',
-    component: unavailableView,
+    component: () => import('@/views/memories/note-detail.vue'),
+    beforeEnter: validateMemoryNoteId,
     meta: { title: '回忆详情', requiresAuth: true, requiresCouple: true, shell: true }
   },
   {

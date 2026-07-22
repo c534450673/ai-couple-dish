@@ -72,6 +72,28 @@ describe('Couple Cosmos 路由', () => {
     expect(routes.find((route) => route.name === 'Bind').meta.shell).toBe(false)
   })
 
+  it('Task 6 路由加载真实回忆与笔记页面，旧入口保留 query/hash 重定向', () => {
+    expect(routes.find(route => route.name === 'Memories').component.toString()).toContain('views/memories/index.vue')
+    expect(routes.find(route => route.name === 'MemoryNoteNew').component.toString()).toContain('views/memories/note-editor.vue')
+    expect(routes.find(route => route.name === 'MemoryNoteDetail').component.toString()).toContain('views/memories/note-detail.vue')
+
+    const legacy = routes.find(route => route.path === '/wish')
+    expect(legacy.redirect({ query: { source: 'home' }, hash: '#done' })).toEqual({
+      path: '/memories', query: { source: 'home', type: 'wish' }, hash: '#done'
+    })
+  })
+
+  it('笔记详情路由拒绝无效 ID，同时登录重定向仍保留完整目标', async () => {
+    const detailRoute = routes.find(route => route.name === 'MemoryNoteDetail')
+    expect(detailRoute.beforeEnter({ params: { id: '../bad' } })).toEqual({ path: '/memories', query: { type: 'note' } })
+
+    const router = createTestRouter(createStorage())
+    await router.push('/memories/notes/7?source=timeline#photos')
+    await router.isReady()
+    expect(router.currentRoute.value.name).toBe('Login')
+    expect(router.currentRoute.value.query.redirect).toBe('/memories/notes/7?source=timeline#photos')
+  })
+
   it('无 token 时优先跳转登录并完整保留 redirect', async () => {
     const router = createTestRouter(createStorage())
 

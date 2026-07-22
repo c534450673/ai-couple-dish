@@ -43,8 +43,19 @@ describe('useDraft', () => {
   })
 
   it('拒绝未知资源与无效编辑 ID', () => {
-    expect(() => useDraft({ userId: 1, resource: 'note' })).toThrow('resource')
+    expect(() => useDraft({ userId: 1, resource: 'unknown' })).toThrow('resource')
     expect(() => useDraft({ userId: 1, resource: 'menu', resourceId: '../all' })).toThrow('resourceId')
     expect(() => useDraft({ userId: 1, resource: 'menu', resourceId: 0 })).toThrow('resourceId')
+  })
+
+  it('以 note 的 new/edit 资源 ID 隔离笔记草稿', () => {
+    const newDraft = useDraft({ userId: 1, resource: 'note' })
+    const editDraft = useDraft({ userId: 1, resource: 'note', resourceId: 7 })
+
+    newDraft.save({ title: '新增草稿' })
+    editDraft.save({ title: '编辑草稿' })
+
+    expect(newDraft.restore()).toEqual({ title: '新增草稿' })
+    expect(editDraft.restore()).toEqual({ title: '编辑草稿' })
   })
 })
