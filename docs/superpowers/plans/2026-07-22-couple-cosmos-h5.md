@@ -20,7 +20,7 @@
 - 页面数据流固定为 View -> Feature Component/Composable -> Pinia Store -> API Module -> Axios；页面不得拼接 API URL 或自行读取 token。
 - 用户、情侣、主题、通知使用全局 Store；菜单、菜谱、投喂、回忆使用领域 Store；首页卡片必须支持部分成功和独立重试。
 - 关键操作日志为结构化对象，包含 `event`、`result`、`durationMs`、`module`、`operation` 和脱敏上下文；禁止密码、JWT、完整手机号、私密正文、图片内容、密钥和带敏感 query 的 URL。
-- 运行时内置图片必须本地化，并在 manifest 中记录来源、授权说明、SHA-256 和用途；不得从 Stitch HTML 直接依赖 Tailwind CDN、Google Fonts、Material Symbols 或 `lh3.googleusercontent.com`。
+- Stitch/AIDA 图片只作为构图参考，不得下载或热链到产品；运行时内置图片必须重新生成或取得可验证授权，并在 manifest 中记录来源、授权证据、SHA-256 和用途。不得依赖 Tailwind CDN、Google Fonts、Material Symbols 或 `lh3.googleusercontent.com`。
 - 必须覆盖 `375px`、`390px`、`430px` 移动视口、减弱动效、慢速网络、接口失败和未绑定状态。
 - 不在本计划中修改 Spring Boot 或实现 FastAPI；后端缺失合同使用明确的 unavailable 状态，不伪造业务成功。
 - 修改任何现有函数、类或方法前执行 GitNexus upstream impact；每个提交前执行 GitNexus `detect_changes(scope: staged)`。
@@ -188,6 +188,7 @@ git commit -m "test: 修复H5测试与请求合同基线"
 - Create: `frontend-h5/src/assets/styles/motion.scss`
 - Create: `frontend-h5/src/assets/cosmos-manifest.json`
 - Create: `frontend-h5/scripts/verify-cosmos-assets.mjs`
+- Create: `docs/legal/assets/cosmos-runtime-assets.md`
 - Modify: `frontend-h5/src/main.js`
 - Modify: `frontend-h5/package.json`
 - Test: `frontend-h5/src/tests/design/cosmos-tokens.spec.js`
@@ -240,19 +241,19 @@ $font-family-base: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
 ```json
 {
   "path": "src/assets/cosmos/menu-hero.webp",
-  "source": "stitch-export",
-  "sourceUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuCN-EN2WSbxizDhsrzUKnhswA8pORTeAxi8m21lqB-ey_PLcx-de5Zl9PpjbWu_T465tHz4iHb5OTHwBjKDjFTuyCMkMlRgqOEGwV4q782C4ooC67LZIMiXPWD0zQTf7AOpvSNE6eh7-Mm0qCDaECcAScHrRQEjtcF4hYfQjabdv-_qevpYU7uwoZb6ETdHb1jgNPzvaZY2c9qPyiK5Fxsh7C9k5BYwEV09bCiRzW3kzrm_c2CLBLvX7cx0imc-S9w_-85JAFqsfXis",
-  "license": "Google Stitch generated asset; commercial terms require release review",
+  "source": "project-generated",
+  "designReference": "docs/design/stitch/couple-cosmos/html/menu-list.html:170",
+  "licenseEvidence": "docs/legal/assets/cosmos-runtime-assets.md#food-hero",
   "sha256": "64-lowercase-hex",
   "usage": ["menu-list", "menu-detail"]
 }
 ```
 
-不具备可接受授权说明的图片不得进入运行时包。
+只生成/引入三个最小运行时位图：`food-hero.webp`、`partner-avatar.webp`、`place-restaurant.webp`；空态使用 CSS 与图标实现。若使用图像生成服务，记录模型、生成时间、prompt SHA-256 和账户输出权利依据；若使用图库，记录原始下载页、许可证版本、作者和下载日期。不具备可接受授权证据的图片不得进入运行时包。
 
 - [ ] **Step 5: 实现资源校验并验证**
 
-`verify-cosmos-assets.mjs` 使用 `JSON.parse`、`fs.readFile` 和 `crypto.createHash('sha256')` 校验路径在 `src/assets/cosmos/` 内、文件存在、hash 匹配、字段完整，并扫描源码禁止 `lh3.googleusercontent.com`、`cdn.tailwindcss.com` 和 Google Fonts。
+`verify-cosmos-assets.mjs` 使用 `JSON.parse`、`fs.readFile` 和 `crypto.createHash('sha256')` 校验路径在 `src/assets/cosmos/` 内、文件存在、hash 匹配、授权证据文件和锚点存在，并扫描源码禁止 `lh3.googleusercontent.com`、`cdn.tailwindcss.com`、`transparenttextures.com` 和 Google Fonts。
 
 Run:
 
@@ -266,7 +267,7 @@ npm run build
 - [ ] **Step 6: 提交设计基础**
 
 ```bash
-git add frontend-h5/src/assets frontend-h5/scripts frontend-h5/src/main.js frontend-h5/package.json frontend-h5/package-lock.json frontend-h5/src/tests/design
+git add frontend-h5/src/assets frontend-h5/scripts frontend-h5/src/main.js frontend-h5/package.json frontend-h5/package-lock.json frontend-h5/src/tests/design docs/legal/assets/cosmos-runtime-assets.md
 git commit -m "design: 建立Couple Cosmos H5视觉基础"
 ```
 
