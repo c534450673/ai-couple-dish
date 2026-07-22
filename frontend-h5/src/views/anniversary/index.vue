@@ -3,7 +3,6 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { showToast } from 'vant'
 import { anniversaryApi } from '@/api'
 import { useUserStore } from '@/stores/user'
-import AppTabbar from '@/components/AppTabbar.vue'
 
 const userStore = useUserStore()
 const anniversaryList = ref([])
@@ -221,8 +220,6 @@ onUnmounted(() => {
         </div>
       </div>
     </van-pull-refresh>
-
-    <app-tabbar />
 
     <!-- 添加弹窗 -->
     <van-popup

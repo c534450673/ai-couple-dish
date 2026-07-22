@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { showToast } from 'vant'
 import { menuApi } from '@/api'
-import AppTabbar from '@/components/AppTabbar.vue'
 
 const route = useRoute()
 const activeTab = ref(route.query.type || 'wantToGo')
@@ -300,7 +299,6 @@ onMounted(() => {
       />
     </button>
 
-    <app-tabbar />
   </div>
 </template>
 

@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue'
 import { showToast, showLoadingToast, closeToast } from 'vant'
 import { feedApi } from '@/api'
-import AppTabbar from '@/components/AppTabbar.vue'
 
 const todayStatus = ref({ sentToday: false, receivedToday: false })
 const receivedFeeds = ref([])
@@ -261,8 +260,6 @@ onMounted(() => {
         </div>
       </div>
     </van-pull-refresh>
-
-    <app-tabbar />
 
     <!-- 发送投喂弹窗 -->
     <van-popup

@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue'
 import { showToast, showLoadingToast, closeToast } from 'vant'
 import { noteApi } from '@/api'
-import AppTabbar from '@/components/AppTabbar.vue'
 
 const activeTab = ref('all')
 const noteList = ref([])
@@ -145,7 +144,6 @@ onMounted(() => {
       </van-empty>
     </div>
 
-    <app-tabbar />
   </div>
 </template>
 

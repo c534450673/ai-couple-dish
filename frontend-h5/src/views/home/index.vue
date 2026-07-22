@@ -2,7 +2,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { coupleApi, menuApi, anniversaryApi } from '@/api'
-import AppTabbar from '@/components/AppTabbar.vue'
 
 const userStore = useUserStore()
 
@@ -293,7 +292,6 @@ onUnmounted(() => {
       </section>
     </van-pull-refresh>
 
-    <app-tabbar />
   </div>
 </template>
 

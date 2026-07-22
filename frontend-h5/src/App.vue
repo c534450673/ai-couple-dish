@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { useUserStore } from './stores/user'
 import ErrorBoundary from './components/ErrorBoundary.vue'
 import AiAssistantFab from './components/AiAssistantFab.vue'
+import MainLayout from './layouts/MainLayout.vue'
 
 const userStore = useUserStore()
 
@@ -19,7 +20,13 @@ onMounted(() => {
         mode="out-in"
       >
         <error-boundary>
-          <component :is="Component" />
+          <MainLayout v-if="$route.meta.shell">
+            <component :is="Component" />
+          </MainLayout>
+          <component
+            :is="Component"
+            v-else
+          />
         </error-boundary>
       </transition>
     </router-view>
@@ -36,11 +43,18 @@ onMounted(() => {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity $cosmos-duration-slow $ease-standard;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: none;
+  }
 }
 </style>

@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import { showToast, showConfirmDialog } from 'vant'
 import { useUserStore } from '@/stores/user'
 import { userApi, uploadApi, coupleApi } from '@/api'
-import AppTabbar from '@/components/AppTabbar.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -306,7 +305,6 @@ onMounted(() => {
       </div>
     </van-dialog>
 
-    <app-tabbar />
   </div>
 </template>
 

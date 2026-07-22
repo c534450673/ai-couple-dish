@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue'
 import { showToast, showConfirmDialog } from 'vant'
 import { wishApi } from '@/api'
-import AppTabbar from '@/components/AppTabbar.vue'
 
 const activeTab = ref('all')
 const wishList = ref([])
@@ -307,7 +306,6 @@ onMounted(() => {
       </div>
     </van-popup>
 
-    <app-tabbar />
   </div>
 </template>
 

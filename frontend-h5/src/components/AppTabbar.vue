@@ -1,5 +1,5 @@
 <script setup>
-// 统一的底部导航（玻璃态），替换各页重复粘贴的 van-tabbar
+// Couple Cosmos 统一底部导航，由 AppShell 单实例挂载。
 </script>
 
 <template>
@@ -12,16 +12,16 @@
     <van-tabbar-item
       replace
       to="/home"
-      icon="home-o"
+      icon="cluster-o"
     >
-      首页
+      星球
     </van-tabbar-item>
     <van-tabbar-item
       replace
       to="/menu"
-      icon="shop-o"
+      icon="orders-o"
     >
-      餐厅
+      菜单
     </van-tabbar-item>
     <van-tabbar-item
       replace
@@ -32,17 +32,25 @@
     </van-tabbar-item>
     <van-tabbar-item
       replace
-      to="/settings"
-      icon="contact"
+      to="/memories"
+      icon="clock-o"
     >
-      我的
+      回忆
+    </van-tabbar-item>
+    <van-tabbar-item
+      replace
+      to="/settings"
+      icon="friends-o"
+    >
+      我们
     </van-tabbar-item>
   </van-tabbar>
 </template>
 
 <style lang="scss" scoped>
 .app-tabbar {
-  height: 64px;
+  height: calc(64px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
   border-radius: $radius-xl $radius-xl 0 0;
   box-shadow: $shadow-nav;
   @include glass(0.85);
