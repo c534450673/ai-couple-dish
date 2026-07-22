@@ -82,6 +82,7 @@ function canUseMetadataFallback(error, operation) {
   const message = (error?.message || String(error)).toLowerCase();
   return (
     operation === "get_html" &&
+    !message.includes("service is currently unavailable") &&
     message.includes("request contains an invalid argument")
   );
 }
