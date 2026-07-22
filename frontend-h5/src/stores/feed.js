@@ -96,6 +96,7 @@ export const useFeedStore = defineStore('feed', {
         })
         return { status: 'unavailable', reason: 'REQUEST_PENDING' }
       }
+      if (!this.draft.feedType?.trim()) return this.unavailable('send', 'FEED_TYPE_REQUIRED')
       if (Number(this.today?.remainingCount) === 0) return this.unavailable('send', 'DAILY_LIMIT_REACHED')
       const startedAt = Date.now()
       const requestId = ++this.mutationRequestId

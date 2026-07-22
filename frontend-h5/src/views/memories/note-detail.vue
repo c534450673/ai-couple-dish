@@ -66,7 +66,7 @@ onMounted(load)
       <p class="note-body">{{ note.content }}</p>
       <dl>
         <div><dt>位置</dt><dd>{{ note.location || '未记录' }}</dd></div>
-        <div><dt>关联纪念日</dt><dd>{{ note.anniversaryName || '未关联' }}</dd></div>
+        <div><dt>关联纪念日</dt><dd>{{ note.isAnniversaryLinked ? (note.anniversaryName || '已关联') : '未关联' }}</dd></div>
         <div><dt>关联菜谱</dt><dd>菜谱关联暂不可用</dd></div>
       </dl>
       <div v-if="note.isAuthor" class="author-actions">

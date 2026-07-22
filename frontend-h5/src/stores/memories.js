@@ -159,9 +159,12 @@ export const useMemoriesStore = defineStore('memories', {
         else this.applySourceError(type, result.reason, startedAt, requestIds[type])
       })
       this.rebuildTimeline()
-      logMemory('aggregate', this.timeline.length ? 'success' : 'empty', startedAt, {
+      const allSourcesFailed = SOURCE_TYPES.every(type => this.sourceStatus[type] === 'error')
+      const aggregateResult = allSourcesFailed ? 'error' : (this.timeline.length ? 'success' : 'empty')
+      logMemory('aggregate', aggregateResult, startedAt, {
         requestId: aggregateRequestId,
-        itemCount: this.timeline.length
+        itemCount: this.timeline.length,
+        ...(allSourcesFailed ? { errorCode: 'ALL_SOURCES_FAILED' } : {})
       })
       return results
     },
@@ -221,13 +224,26 @@ export const useMemoriesStore = defineStore('memories', {
       const startedAt = Date.now()
       const requestId = ++this.noteMutationRequestId
       const operation = id ? 'note.update' : 'note.create'
+      const notePayload = { ...payload }
+      delete notePayload.anniversaryName
+      const isAnniversaryLinked = Number(notePayload.isAnniversaryLinked) ? 1 : 0
+      const apiPayload = {
+        ...notePayload,
+        isAnniversaryLinked,
+        anniversaryId: isAnniversaryLinked ? (notePayload.anniversaryId ?? null) : null
+      }
       this.mutationStatus = 'loading'
       logMemory(operation, 'loading', startedAt, { requestId })
       try {
-        const response = id ? await noteApi.updateNote(id, payload) : await noteApi.addNote(payload)
+        const response = id ? await noteApi.updateNote(id, apiPayload) : await noteApi.addNote(apiPayload)
         this.mutationStatus = 'success'
         logMemory(operation, 'success', startedAt, { requestId, itemCount: 1 })
-        return id ? { id, ...payload } : { id: response?.data, ...payload }
+        const savedNote = {
+          id: id || response?.data,
+          ...apiPayload,
+          anniversaryName: isAnniversaryLinked ? (payload.anniversaryName ?? null) : null
+        }
+        return savedNote
       } catch (error) {
         this.mutationStatus = 'error'
         this.error = error

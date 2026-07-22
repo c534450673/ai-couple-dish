@@ -200,7 +200,7 @@ export const anniversaryApi = {
 export const feedApi = {
   // 获取今日投喂状态
   getTodayFeedStatus() {
-    return api.get('/feed/today')
+    return api.get('/feed/today', { cache: false })
   },
   // 发送投喂
   sendFeed(data) {
@@ -208,11 +208,11 @@ export const feedApi = {
   },
   // 获取收到的投喂
   getReceivedFeeds() {
-    return api.get('/feed/received')
+    return api.get('/feed/received', { cache: false })
   },
   // 获取发出的投喂
   getSentFeeds() {
-    return api.get('/feed/sent')
+    return api.get('/feed/sent', { cache: false })
   },
   // 接受投喂
   acceptFeed(id) {

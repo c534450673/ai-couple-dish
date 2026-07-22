@@ -9,6 +9,7 @@ vi.mock('@/api', () => ({
 vi.mock('@/composables/useStructuredLog', () => ({ logUiEvent: vi.fn() }))
 
 import { anniversaryApi, noteApi, wishApi } from '@/api'
+import { logUiEvent } from '@/composables/useStructuredLog'
 import { normalizeTimelineItem, useMemoriesStore } from '@/stores/memories'
 
 const deferred = () => {
@@ -113,5 +114,36 @@ describe('useMemoriesStore', () => {
     await store.fetchAll()
 
     expect(store.timeline.map(item => item.id)).toEqual(['note:1', 'note:2', 'note:3'])
+  })
+
+  it('三项真实来源全部失败时聚合日志为 error 而不是 empty', async () => {
+    anniversaryApi.getAnniversaryList.mockRejectedValue({ code: 500 })
+    wishApi.getWishList.mockRejectedValue({ code: 501 })
+    noteApi.getNoteList.mockRejectedValue({ code: 502 })
+    const store = useMemoriesStore()
+
+    await store.fetchAll()
+
+    const aggregateLog = logUiEvent.mock.calls.find(([event]) => event === 'memories.aggregate')
+    expect(aggregateLog?.[1]).toEqual(expect.objectContaining({
+      module: 'memories_store', operation: 'aggregate', result: 'error', itemCount: 0
+    }))
+  })
+
+  it('解除纪念日关联的笔记更新结果清空本地关联 ID 和名称', async () => {
+    noteApi.updateNote.mockResolvedValue({ data: null })
+    const store = useMemoriesStore()
+
+    const updated = await store.saveNote(7, {
+      title: '晚餐', content: '记录', isAnniversaryLinked: 0,
+      anniversaryId: 99, anniversaryName: '残留纪念日'
+    })
+
+    expect(noteApi.updateNote).toHaveBeenCalledWith(7, {
+      title: '晚餐', content: '记录', isAnniversaryLinked: 0, anniversaryId: null
+    })
+    expect(updated).toEqual(expect.objectContaining({
+      id: 7, isAnniversaryLinked: 0, anniversaryId: null, anniversaryName: null
+    }))
   })
 })

@@ -113,6 +113,20 @@ describe('useFeedStore', () => {
     expect(store.mutationStatus).toBe('error')
   })
 
+  it('缺少投喂类型时不发请求并保留草稿', async () => {
+    const store = useFeedStore()
+    store.today = { remainingCount: 1 }
+    store.updateDraft({ feedType: '  ', content: '一起吃饭', message: '等你' })
+
+    expect(await store.sendDraft()).toEqual(expect.objectContaining({
+      status: 'unavailable', reason: 'FEED_TYPE_REQUIRED'
+    }))
+    expect(feedApi.sendFeed).not.toHaveBeenCalled()
+    expect(store.draft).toEqual(expect.objectContaining({
+      feedType: '  ', content: '一起吃饭', message: '等你'
+    }))
+  })
+
   it('只允许待领取投喂被接受或拒绝，并对过期竞态刷新真实状态', async () => {
     const store = useFeedStore()
     expect(await store.accept({ id: 1, status: 1 })).toEqual({ status: 'unavailable', reason: 'FEED_NOT_PENDING' })
@@ -123,5 +137,22 @@ describe('useFeedStore', () => {
     expect(feedApi.getTodayFeedStatus).toHaveBeenCalledOnce()
     expect(feedApi.getReceivedFeeds).toHaveBeenCalledOnce()
     expect(feedApi.getSentFeeds).toHaveBeenCalledOnce()
+  })
+
+  it('send、accept、reject 成功后都重新读取三项 feed 资源', async () => {
+    feedApi.sendFeed.mockResolvedValue({ data: 9 })
+    feedApi.acceptFeed.mockResolvedValue({ data: null })
+    feedApi.rejectFeed.mockResolvedValue({ data: null })
+    const store = useFeedStore()
+    store.today = { remainingCount: 2 }
+    store.updateDraft({ feedType: 'meal', content: '' })
+
+    await store.sendDraft()
+    await store.accept({ id: 1, status: 0 })
+    await store.reject({ id: 2, status: 0 }, '')
+
+    expect(feedApi.getTodayFeedStatus).toHaveBeenCalledTimes(3)
+    expect(feedApi.getReceivedFeeds).toHaveBeenCalledTimes(3)
+    expect(feedApi.getSentFeeds).toHaveBeenCalledTimes(3)
   })
 })

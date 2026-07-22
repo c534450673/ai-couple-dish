@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { showToast } from 'vant'
 import { useFeedStore } from '@/stores/feed'
 import { useReducedMotion } from '@/composables/useReducedMotion'
@@ -9,17 +9,37 @@ const prefersReducedMotion = useReducedMotion()
 const successVisible = ref(false)
 const unavailableMessage = ref('')
 const rejectReasons = ref({})
+const nowMs = ref(Date.now())
+let expiryTimer = null
 const feedTypes = [
   { value: 'meal', label: '正餐', icon: 'shop-o' },
   { value: 'dessert', label: '甜点', icon: 'smile-o' },
   { value: 'snack', label: '零食', icon: 'bag-o' },
   { value: 'drink', label: '饮品', icon: 'coupon-o' }
 ]
-const canSend = computed(() => Boolean(store.draft.content?.trim()) && Number(store.today?.remainingCount ?? 1) > 0 && !store.isMutationPending)
+const canSend = computed(() => Boolean(store.draft.feedType?.trim()) && Number(store.today?.remainingCount ?? 1) > 0 && !store.isMutationPending)
+
+const expiryTimestamp = item => Date.parse(item.expireTime || '')
+const isLocallyExpired = (item) => {
+  if (Number(item.status) === 3) return true
+  const expiresAt = expiryTimestamp(item)
+  return Number(item.status) === 0 && Number.isFinite(expiresAt) && expiresAt <= nowMs.value
+}
+const isPending = item => Number(item.status) === 0 && !isLocallyExpired(item)
+const expiryText = (item) => {
+  if (isLocallyExpired(item)) return '已过期'
+  const remainingSeconds = Math.ceil((expiryTimestamp(item) - nowMs.value) / 1000)
+  if (!Number.isFinite(remainingSeconds)) return '有效期未知'
+  const minutes = Math.floor(remainingSeconds / 60)
+  const seconds = remainingSeconds % 60
+  return `剩余 ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+}
 
 const updateDraft = (field, value) => store.updateDraft({ [field]: value })
 const send = async () => {
   if (!canSend.value) return
+  successVisible.value = false
+  unavailableMessage.value = ''
   try {
     const result = await store.sendDraft()
     if (result?.status === 'success') {
@@ -47,6 +67,7 @@ const reject = async (item) => {
   }
 }
 const unsupported = async (action) => {
+  successVisible.value = false
   const actions = {
     counter: store.requestCounter,
     completion: store.requestCompletion,
@@ -55,9 +76,17 @@ const unsupported = async (action) => {
   const result = await actions[action].call(store)
   if (result?.status === 'unavailable') unavailableMessage.value = '后端尚不支持此动作，你的输入和当前状态都没有改变。'
 }
-const statusText = item => ({ 0: '待领取', 1: '已接受', 2: '已拒绝', 3: '已过期' })[Number(item.status)] || '状态未知'
+const statusText = item => isLocallyExpired(item)
+  ? '已过期'
+  : ({ 0: '待领取', 1: '已接受', 2: '已拒绝', 3: '已过期' })[Number(item.status)] || '状态未知'
 
-onMounted(() => store.fetchAll().catch(() => showToast('投喂记录加载失败，请下拉重试')))
+onMounted(() => {
+  expiryTimer = window.setInterval(() => { nowMs.value = Date.now() }, 1000)
+  store.fetchAll().catch(() => showToast('投喂记录加载失败，请下拉重试'))
+})
+onUnmounted(() => {
+  if (expiryTimer !== null) window.clearInterval(expiryTimer)
+})
 </script>
 
 <template>
@@ -113,7 +142,7 @@ onMounted(() => store.fetchAll().catch(() => showToast('投喂记录加载失败
       <button class="send-button" data-test="feed-send" type="button" :disabled="!canSend" @click="send">
         <van-icon name="guide-o" /> {{ store.isMutationPending ? '正在发送…' : '发送投喂' }}
       </button>
-      <button class="text-action" type="button" :disabled="store.isMutationPending" @click="unsupported('counter')">
+      <button class="text-action" data-test="feed-counter" type="button" :disabled="store.isMutationPending" @click="unsupported('counter')">
         换一种投喂（暂不可用）
       </button>
     </section>
@@ -137,13 +166,17 @@ onMounted(() => store.fetchAll().catch(() => showToast('投喂记录加载失败
       <p v-else-if="!store.received.length" class="list-state">今天还没有收到投喂。</p>
       <article v-for="item in store.received" :key="item.id" class="feed-card">
         <div class="card-head">
-          <div><span>{{ item.senderName || 'TA' }}</span><small>{{ item.createTime }}</small></div>
+          <div>
+            <span>{{ item.senderName || 'TA' }}</span>
+            <small>{{ item.createTime }}</small>
+            <small v-if="item.expireTime && Number(item.status) === 0" :data-test="`feed-countdown-${item.id}`">{{ expiryText(item) }}</small>
+          </div>
           <strong :class="`status-${item.status}`">{{ statusText(item) }}</strong>
         </div>
         <h3>{{ item.feedTypeName || feedTypes.find(type => type.value === item.feedType)?.label || '投喂' }}</h3>
         <p>{{ item.content }}</p>
         <p v-if="item.message" class="feed-message">{{ item.message }}</p>
-        <div v-if="Number(item.status) === 0" class="receive-actions">
+        <div v-if="isPending(item)" class="receive-actions">
           <input v-model="rejectReasons[item.id]" maxlength="100" placeholder="拒绝原因（可选）" :disabled="store.isMutationPending">
           <button type="button" :disabled="store.isMutationPending" @click="reject(item)">拒绝</button>
           <button type="button" :disabled="store.isMutationPending" @click="accept(item)">接受</button>

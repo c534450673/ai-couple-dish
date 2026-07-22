@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 
 const router = { push: vi.fn(), replace: vi.fn(), back: vi.fn() }
@@ -34,6 +34,11 @@ import NoteDetail from '@/views/memories/note-detail.vue'
 import FeedIndex from '@/views/feed/index.vue'
 
 const flush = () => new Promise(resolve => setTimeout(resolve, 0))
+const deferred = () => {
+  let resolve
+  const promise = new Promise(resolvePromise => { resolve = resolvePromise })
+  return { promise, resolve }
+}
 
 describe('回忆与笔记页面', () => {
   beforeEach(() => {
@@ -50,6 +55,10 @@ describe('回忆与笔记页面', () => {
       today: { remainingCount: 1 }, received: [], sent: [], loadStatus: 'success', mutationStatus: 'idle', isMutationPending: false
     })
     feedStore.fetchAll.mockResolvedValue([])
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('地图 chip 明确不可用，单源错误提供局部重试且不清空其他时间线', async () => {
@@ -102,6 +111,19 @@ describe('回忆与笔记页面', () => {
     expect(wrapper.findComponent(NoteEditor).exists()).toBe(true)
   })
 
+  it('详情以关联标记为准，已解除关联时不显示残留名称', async () => {
+    route.params = { id: '8' }
+    memoriesStore.fetchNoteDetail.mockResolvedValue({
+      id: 8, title: '晚餐', content: '记录', isAnniversaryLinked: false,
+      anniversaryId: 99, anniversaryName: '残留纪念日', isAuthor: false
+    })
+    const wrapper = mount(NoteDetail)
+    await flush()
+
+    expect(wrapper.text()).toContain('未关联')
+    expect(wrapper.text()).not.toContain('残留纪念日')
+  })
+
   it('无效笔记 ID 不发详情请求并返回回忆页', async () => {
     route.params = { id: '../bad' }
     const wrapper = mount(NoteDetail)
@@ -126,5 +148,82 @@ describe('回忆与笔记页面', () => {
     wrapper.unmount()
     const pendingWrapper = mount(FeedIndex)
     expect(pendingWrapper.find('[data-test="feed-send"]').attributes('disabled')).toBeDefined()
+  })
+
+  it('投喂只以必填 feedType 和剩余次数决定可发送，content 可为空', () => {
+    feedStore.draft = { feedType: 'meal', content: '', imageUrls: [], message: '' }
+    const validWrapper = mount(FeedIndex)
+    expect(validWrapper.find('[data-test="feed-send"]').attributes('disabled')).toBeUndefined()
+    validWrapper.unmount()
+
+    feedStore.draft = { feedType: '', content: '有正文', imageUrls: [], message: '' }
+    const invalidWrapper = mount(FeedIndex)
+    expect(invalidWrapper.find('[data-test="feed-send"]').attributes('disabled')).toBeDefined()
+  })
+
+  it('新发送开始、失败、次数用尽和 unavailable 动作都会清理旧成功反馈', async () => {
+    const pending = deferred()
+    feedStore.sendDraft
+      .mockResolvedValueOnce({ status: 'success', id: 9 })
+      .mockReturnValueOnce(pending.promise)
+      .mockRejectedValueOnce(new Error('network'))
+      .mockResolvedValueOnce({ status: 'unavailable', reason: 'DAILY_LIMIT_REACHED' })
+    feedStore.requestCounter.mockResolvedValue({ status: 'unavailable', reason: 'COUNTER_NOT_SUPPORTED' })
+    const wrapper = mount(FeedIndex)
+    await flush()
+
+    await wrapper.find('[data-test="feed-send"]').trigger('click')
+    await flush()
+    expect(wrapper.find('[data-test="feed-success"]').exists()).toBe(true)
+
+    await wrapper.find('[data-test="feed-send"]').trigger('click')
+    await Promise.resolve()
+    expect(wrapper.find('[data-test="feed-success"]').exists()).toBe(false)
+    pending.resolve({ status: 'success', id: 10 })
+    await flush()
+
+    await wrapper.find('[data-test="feed-send"]').trigger('click')
+    await flush()
+    expect(wrapper.find('[data-test="feed-success"]').exists()).toBe(false)
+
+    await wrapper.find('[data-test="feed-send"]').trigger('click')
+    await flush()
+    expect(wrapper.find('[data-test="feed-success"]').exists()).toBe(false)
+
+    await wrapper.find('[data-test="feed-counter"]').trigger('click')
+    await flush()
+    expect(wrapper.find('[data-test="feed-success"]').exists()).toBe(false)
+  })
+
+  it('待领取投喂按 expireTime 倒计时，到期显示已过期且卸载清除定时器', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-23T00:00:00.000Z'))
+    feedStore.received = [{
+      id: 7, status: 0, feedType: 'meal', content: '晚餐',
+      expireTime: '2026-07-23T00:00:02.000Z'
+    }]
+    const wrapper = mount(FeedIndex)
+    await Promise.resolve()
+
+    expect(wrapper.find('[data-test="feed-countdown-7"]').text()).toContain('00:02')
+    await vi.advanceTimersByTimeAsync(2000)
+    expect(wrapper.find('[data-test="feed-countdown-7"]').text()).toContain('已过期')
+
+    wrapper.unmount()
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('时间线只有 note 使用可点击按钮，纪念日和心愿为非交互内容', async () => {
+    memoriesStore.filteredTimeline = [
+      { id: 'anniversary:1', type: 'anniversary', title: '相识日', summary: '', media: [], occurredAt: '2026-08-01' },
+      { id: 'wish:2', type: 'wish', title: '看海', summary: '', media: [], occurredAt: '2026-07-02' },
+      { id: 'note:3', type: 'note', title: '晚餐', summary: '记录', media: [], occurredAt: '2026-07-01' }
+    ]
+    const wrapper = mount(MemoriesIndex)
+    await flush()
+
+    expect(wrapper.findAll('.timeline-card[type="button"]')).toHaveLength(1)
+    await wrapper.find('.timeline-card[type="button"]').trigger('click')
+    expect(router.push).toHaveBeenCalledWith('/memories/notes/3')
   })
 })

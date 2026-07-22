@@ -122,7 +122,7 @@ onMounted(() => store.fetchAll())
 
     <ol v-else class="timeline">
       <li v-for="item in timeline" :key="item.id" class="timeline-item">
-        <button class="timeline-card" type="button" @click="openItem(item)">
+        <button v-if="item.type === 'note'" class="timeline-card" type="button" @click="openItem(item)">
           <span class="timeline-dot" :class="`timeline-dot--${item.type}`" />
           <span class="timeline-copy">
             <span class="timeline-meta">{{ { anniversary: '纪念日', wish: '心愿', note: '笔记' }[item.type] }} · {{ item.occurredAt || '日期待补充' }}</span>
@@ -131,6 +131,15 @@ onMounted(() => store.fetchAll())
           </span>
           <img v-if="item.media[0]" :src="item.media[0]" alt="回忆图片" loading="lazy">
         </button>
+        <article v-else class="timeline-card">
+          <span class="timeline-dot" :class="`timeline-dot--${item.type}`" />
+          <span class="timeline-copy">
+            <span class="timeline-meta">{{ { anniversary: '纪念日', wish: '心愿' }[item.type] }} · {{ item.occurredAt || '日期待补充' }}</span>
+            <strong>{{ item.title }}</strong>
+            <span v-if="item.summary" class="timeline-summary">{{ item.summary }}</span>
+          </span>
+          <img v-if="item.media[0]" :src="item.media[0]" alt="回忆图片" loading="lazy">
+        </article>
       </li>
     </ol>
   </main>
