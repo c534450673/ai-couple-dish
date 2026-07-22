@@ -49,7 +49,7 @@
 
 <style lang="scss" scoped>
 .app-tabbar {
-  height: calc(64px + env(safe-area-inset-bottom));
+  height: 64px;
   padding-bottom: env(safe-area-inset-bottom);
   border-radius: $radius-xl $radius-xl 0 0;
   box-shadow: $shadow-nav;

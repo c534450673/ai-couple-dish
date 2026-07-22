@@ -38,7 +38,7 @@ import AppTabbar from '@/components/AppTabbar.vue'
 .cosmos-app-shell__content {
   min-height: 100vh;
   min-height: 100dvh;
-  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  padding-bottom: calc(64px + env(safe-area-inset-bottom));
 }
 
 .cosmos-app-shell__navigation {

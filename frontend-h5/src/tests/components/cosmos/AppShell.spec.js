@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { readFile } from 'node:fs/promises'
 import { mount } from '@vue/test-utils'
 import AppShell from '@/components/cosmos/AppShell.vue'
 import IconButton from '@/components/cosmos/IconButton.vue'
@@ -46,6 +47,18 @@ describe('AppShell', () => {
     expect(wrapper.find('[data-slot="content"]').text()).toBe('主体')
     expect(wrapper.find('[data-slot="navigation"]').text()).toBe('自定义导航')
     expect(wrapper.find('.app-tabbar').exists()).toBe(false)
+  })
+
+  it('底栏和内容区只计算一次底部安全区', async () => {
+    const [tabbar, shell] = await Promise.all([
+      readFile('src/components/AppTabbar.vue', 'utf8'),
+      readFile('src/components/cosmos/AppShell.vue', 'utf8')
+    ])
+
+    expect(tabbar).toContain('height: 64px')
+    expect(tabbar).not.toContain('height: calc(64px + env(safe-area-inset-bottom))')
+    expect(tabbar).toContain('padding-bottom: env(safe-area-inset-bottom)')
+    expect(shell).toContain('padding-bottom: calc(64px + env(safe-area-inset-bottom))')
   })
 })
 

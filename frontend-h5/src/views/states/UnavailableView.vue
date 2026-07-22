@@ -14,8 +14,8 @@ import AsyncState from '@/components/cosmos/AsyncState.vue'
 <style lang="scss" scoped>
 .unavailable-view {
   display: grid;
-  min-height: calc(100vh - 72px - env(safe-area-inset-bottom));
-  min-height: calc(100dvh - 72px - env(safe-area-inset-bottom));
+  min-height: calc(100vh - 64px - env(safe-area-inset-bottom));
+  min-height: calc(100dvh - 64px - env(safe-area-inset-bottom));
   place-items: center;
   padding: $page-padding;
 }

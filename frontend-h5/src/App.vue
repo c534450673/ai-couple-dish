@@ -14,12 +14,12 @@ onMounted(() => {
 
 <template>
   <div id="app">
-    <router-view v-slot="{ Component }">
+    <router-view v-slot="{ Component, route }">
       <transition
         name="fade"
         mode="out-in"
       >
-        <error-boundary>
+        <error-boundary :key="route.fullPath">
           <MainLayout v-if="$route.meta.shell">
             <component :is="Component" />
           </MainLayout>
