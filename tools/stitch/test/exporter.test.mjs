@@ -164,7 +164,7 @@ test("exportDesignProject writes multi-screen artifacts, manifest and detailed l
 
 test("exportDesignProject writes a traceable screenshot fallback when HTML is unavailable", async () => {
   const root = await mkdtemp(join(tmpdir(), "stitch-export-fallback-"));
-  const localId = 'login&"<script>';
+  const localId = "login#detail?mode=dark";
   const state = {
     projectId: "project-1",
     projectTitle: "AI Couple Dish - Couple Cosmos",
@@ -216,10 +216,9 @@ test("exportDesignProject writes a traceable screenshot fallback when HTML is un
   assert.match(fallback, /data-stitch-html-source="screenshot-fallback"/);
   assert.match(
     fallback,
-    /src="\.\.\/screenshots\/login&amp;&quot;&lt;script&gt;\.png"/
+    /src="\.\.\/screenshots\/login%23detail%3Fmode%3Ddark\.png"/
   );
   assert.match(fallback, /仅视觉参考/);
-  assert.doesNotMatch(fallback, /<script>/);
 
   const okEvents = lines
     .map(line => JSON.parse(line))
@@ -231,6 +230,53 @@ test("exportDesignProject writes a traceable screenshot fallback when HTML is un
       [`html/${localId}.html`, "screenshot-fallback"]
     ]
   );
+});
+
+test("exportDesignProject escapes malicious local ids in screenshot fallback HTML", async () => {
+  const root = await mkdtemp(join(tmpdir(), "stitch-export-fallback-escape-"));
+  const localId = "profile'<script>";
+  const state = {
+    projectId: "project-1",
+    projectTitle: "AI Couple Dish - Couple Cosmos",
+    screens: {
+      [localId]: { screenId: "screen-1", kind: "base" }
+    }
+  };
+  const sdk = {
+    project(projectId) {
+      assert.equal(projectId, "project-1");
+      return {
+        async getScreen(screenId) {
+          assert.equal(screenId, "screen-1");
+          return {
+            async getImage() {
+              return "https://assets.example/screen-1/image?token=secret";
+            },
+            async getHtml() {
+              return "";
+            }
+          };
+        }
+      };
+    }
+  };
+
+  const manifest = await exportDesignProject(
+    sdk,
+    state,
+    root,
+    makeFetch(),
+    () => {}
+  );
+
+  const fallback = await readFile(join(root, manifest.screens[0].html), "utf8");
+  assert.match(fallback, /<title>profile&#39;&lt;script&gt; - /);
+  assert.match(
+    fallback,
+    /src="\.\.\/screenshots\/profile&#39;%3Cscript%3E\.png"/
+  );
+  assert.match(fallback, /alt="profile&#39;&lt;script&gt; 仅视觉参考/);
+  assert.doesNotMatch(fallback, /<script>/);
 });
 
 test("exportDesignProject reads each screen from its owning project", async () => {

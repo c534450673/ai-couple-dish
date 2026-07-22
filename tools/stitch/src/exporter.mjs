@@ -23,6 +23,7 @@ function escapeHtml(value) {
 
 function screenshotFallbackHtml(localId) {
   const safeLocalId = escapeHtml(localId);
+  const safeScreenshotPathSegment = escapeHtml(encodeURIComponent(localId));
   const notice = escapeHtml(
     "仅视觉参考：Stitch 未提供可下载的 HTML，以下内容来自真实截图。"
   );
@@ -42,7 +43,7 @@ function screenshotFallbackHtml(localId) {
 <body>
   <main>
     <p class="notice">${notice}</p>
-    <img src="../screenshots/${safeLocalId}.png" alt="${safeLocalId} ${notice}">
+    <img src="../screenshots/${safeScreenshotPathSegment}.png" alt="${safeLocalId} ${notice}">
   </main>
 </body>
 </html>
