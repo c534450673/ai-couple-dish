@@ -9,6 +9,7 @@
     "test": "node --test test/*.test.mjs",
     "stitch:export": "node bin/export.mjs",
     "stitch:generate": "node bin/generate.mjs",
+    "stitch:regenerate": "node bin/regenerate.mjs",
     "stitch:health": "node bin/health.mjs",
     "stitch:verify": "node bin/verify.mjs"
   },
