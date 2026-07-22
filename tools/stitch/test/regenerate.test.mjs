@@ -147,7 +147,10 @@ test("runner treats unexpected console errors as failures and redacts URL querie
   const result = await captureRegenerate({
     overrides: {
       regenerate: async (_sdk, state) => {
-        console.error("unexpected", new Error("https://example.invalid/path?token=secret"));
+        console.error(
+          "unexpected",
+          new Error("https://example.invalid/path?token=secret /generate?trace=private")
+        );
         return state;
       }
     }
@@ -158,8 +161,74 @@ test("runner treats unexpected console errors as failures and redacts URL querie
   assert.equal(final.result, "error");
   assert.equal(final.errorName, "StitchConsoleError");
   assert.match(final.errorMessage, /https:\/\/example\.invalid\/path/);
+  assert.match(final.errorMessage, /\/generate/);
   assert.doesNotMatch(final.errorMessage, /token=secret/);
+  assert.doesNotMatch(final.errorMessage, /trace=private/);
   assert.equal(result.events.filter(event => event.event === "stitch.regenerate").length, 1);
+});
+
+test("runner redacts environment credentials and credential-shaped fields", async () => {
+  const originalApiKey = process.env.STITCH_API_KEY;
+  const originalAccessToken = process.env.STITCH_ACCESS_TOKEN;
+  process.env.STITCH_API_KEY = "environment-api-key-private";
+  process.env.STITCH_ACCESS_TOKEN = "environment-access-token-private";
+  try {
+    const result = await captureRegenerate({
+      overrides: {
+        readConfig: () => {
+          throw new Error(
+            "configuration failed: environment-api-key-private " +
+            "environment-access-token-private STITCH_API_KEY=named-key-private " +
+            "STITCH_ACCESS_TOKEN: named-token-private Authorization: Bearer bearer-private " +
+            "apiKey: camel-key-private token=token-private secret: secret-private"
+          );
+        }
+      }
+    });
+    const [final] = result.events.filter(event => event.event === "stitch.regenerate");
+
+    assert.equal(result.exitCode, 1);
+    assert.match(final.errorMessage, /configuration failed/);
+    for (const sensitiveValue of [
+      "environment-api-key-private",
+      "environment-access-token-private",
+      "named-key-private",
+      "named-token-private",
+      "bearer-private",
+      "camel-key-private",
+      "token-private",
+      "secret-private"
+    ]) {
+      assert.doesNotMatch(final.errorMessage, new RegExp(sensitiveValue));
+    }
+  } finally {
+    if (originalApiKey === undefined) delete process.env.STITCH_API_KEY;
+    else process.env.STITCH_API_KEY = originalApiKey;
+    if (originalAccessToken === undefined) delete process.env.STITCH_ACCESS_TOKEN;
+    else process.env.STITCH_ACCESS_TOKEN = originalAccessToken;
+  }
+});
+
+test("runner redacts complete quoted prompt values while preserving error context", async () => {
+  const result = await captureRegenerate({
+    overrides: {
+      regenerate: async () => {
+        throw new Error(
+          "regeneration failed before; prompt=\"Do not log this private design\"; " +
+          "payload={\"prompt\":\"JSON private design words\"}; " +
+          "metadata={'prompt':'single quoted private design'}; after failure context"
+        );
+      }
+    }
+  });
+  const [final] = result.events.filter(event => event.event === "stitch.regenerate");
+
+  assert.equal(result.exitCode, 1);
+  assert.match(final.errorMessage, /regeneration failed before/);
+  assert.match(final.errorMessage, /after failure context/);
+  assert.doesNotMatch(final.errorMessage, /Do not log this private design/);
+  assert.doesNotMatch(final.errorMessage, /JSON private design words/);
+  assert.doesNotMatch(final.errorMessage, /single quoted private design/);
 });
 
 test("runner anchors its default state path to the repository", async () => {
@@ -217,6 +286,15 @@ test("runner suppresses only the active close AbortError", async t => {
       expectedExit: 1,
       close: () => console.error("Stitch Transport Error:", makeAbortError("wrong count"), "extra"),
       expectedError: /wrong count/
+    },
+    {
+      name: "delayed timer error after close resolves",
+      expectedExit: 1,
+      close: () => setImmediate(() => setTimeout(
+        () => console.error("Delayed Transport Error:", new Error("delayed close error")),
+        0
+      )),
+      expectedError: /delayed close error/
     }
   ];
 

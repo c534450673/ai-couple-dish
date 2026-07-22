@@ -19,15 +19,36 @@ const STITCH_TRANSPORT_ERROR_PREFIX = "Stitch Transport Error:";
 
 function sanitizeErrorMessage(error, config) {
   let message = error?.message || String(error);
-  const secretValues = [config?.apiKey, process.env.STITCH_ACCESS_TOKEN]
+  const secretValues = [
+    config?.apiKey,
+    process.env.STITCH_API_KEY,
+    process.env.STITCH_ACCESS_TOKEN
+  ]
     .filter(Boolean)
-    .map(String);
+    .map(String)
+    .sort((left, right) => right.length - left.length);
   for (const secret of secretValues) {
     message = message.replaceAll(secret, "[REDACTED]");
   }
   return message
-    .replace(/(https?:\/\/[^\s?]+)\?[^\s]*/gi, "$1")
-    .replace(/\b(api[_-]?key|token|authorization|secret|prompt)\s*[=:]\s*[^\s,;&]+/gi, "$1=[REDACTED]");
+    .replace(/((?:https?:\/\/[^\s?]+|\/[^\s?]+))\?[^\s]*/gi, "$1")
+    .replace(
+      /\bauthorization\s*[:=]\s*bearer\s+(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[^\s,;&]+)/gi,
+      "Authorization: Bearer [REDACTED]"
+    )
+    .replace(
+      /((?:")?(?:stitch_api_key|stitch_access_token|api[_-]?key|token|authorization|secret|prompt)(?:")?\s*[:=]\s*)"(?:\\.|[^"\\])*"/gi,
+      '$1"[REDACTED]"'
+    )
+    .replace(
+      /((?:')?(?:stitch_api_key|stitch_access_token|api[_-]?key|token|authorization|secret|prompt)(?:')?\s*[:=]\s*)'(?:\\.|[^'\\])*'/gi,
+      "$1'[REDACTED]'"
+    )
+    .replace(
+      /\b(stitch_api_key|stitch_access_token|api[_-]?key|token|authorization|secret)\s*[:=]\s*[^\s,;&]+/gi,
+      "$1=[REDACTED]"
+    )
+    .replace(/\bprompt\s*[:=]\s*[^,;&]+/gi, "prompt=[REDACTED]");
 }
 
 export async function runStitchRegenerate(
@@ -95,6 +116,8 @@ export async function runStitchRegenerate(
       } catch (error) {
         failure ??= error;
       }
+      await new Promise(resolveImmediate => setImmediate(resolveImmediate));
+      await new Promise(resolveTimer => setTimeout(resolveTimer, 0));
       await new Promise(resolveImmediate => setImmediate(resolveImmediate));
       isClosing = false;
     }
