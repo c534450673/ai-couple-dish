@@ -47,9 +47,33 @@ const selectStatus = (value) => {
   return loadList()
 }
 
-const loadMore = () => {
-  if (!store.pagination.hasMore || store.listStatus === 'loading') return
-  return store.fetchList(listParams(store.pagination.page + 1), { append: true })
+const loadMore = async () => {
+  if (!store.pagination.hasMore || store.isLoadingMore) return
+  try {
+    await store.fetchList(listParams(store.pagination.page + 1), { append: true })
+  } catch (error) {
+    logUiEvent('menu.list.load_more', {
+      module: 'menu_list', operation: 'load_more', result: 'failed', durationMs: 0,
+      page: store.failedPage || store.pagination.page + 1,
+      errorCode: String(error?.code || error?.response?.status || 'LOAD_MORE_FAILED')
+    })
+  }
+}
+
+const retryLoadMore = async () => {
+  logUiEvent('menu.list.load_more_retry', {
+    module: 'menu_list', operation: 'retry_load_more', result: 'requested', durationMs: 0,
+    page: store.failedPage
+  })
+  try {
+    await store.retryList()
+  } catch (error) {
+    logUiEvent('menu.list.load_more_retry', {
+      module: 'menu_list', operation: 'retry_load_more', result: 'failed', durationMs: 0,
+      page: store.failedPage,
+      errorCode: String(error?.code || error?.response?.status || 'LOAD_MORE_RETRY_FAILED')
+    })
+  }
 }
 
 const retryOnce = () => {
@@ -167,13 +191,23 @@ onMounted(() => {
         </div>
       </article>
       <button
-        v-if="store.pagination.hasMore"
+        v-if="store.loadMoreError"
+        data-test="menu-load-more-retry"
         class="load-more"
         type="button"
-        :disabled="store.listStatus === 'loading'"
+        :disabled="store.isLoadingMore"
+        @click="retryLoadMore"
+      >
+        {{ store.isLoadingMore ? '重试中' : '加载失败，重试本页' }}
+      </button>
+      <button
+        v-else-if="store.pagination.hasMore"
+        class="load-more"
+        type="button"
+        :disabled="store.isLoadingMore"
         @click="loadMore"
       >
-        {{ store.listStatus === 'loading' ? '加载中' : '加载更多' }}
+        {{ store.isLoadingMore ? '加载中' : '加载更多' }}
       </button>
     </section>
   </main>

@@ -1,11 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 
 const router = { push: vi.fn(), replace: vi.fn(), back: vi.fn() }
 const route = { params: {}, query: {} }
 const menuStore = vi.hoisted(() => ({
   items: [], detail: null, stats: {}, pagination: { hasMore: false },
-  listStatus: 'empty', detailStatus: 'idle', mutationStatus: 'idle', error: null,
+  listStatus: 'empty', loadMoreError: null, failedPage: null, isLoadingMore: false,
+  detailStatus: 'idle', mutationStatus: 'idle', error: null,
   fetchList: vi.fn(), retryList: vi.fn(), fetchStats: vi.fn(), fetchDetail: vi.fn(),
   setLiked: vi.fn(), setFavorite: vi.fn(), remove: vi.fn(), create: vi.fn(), update: vi.fn()
 }))
@@ -40,8 +41,13 @@ describe('菜单页面', () => {
     route.query = {}
     Object.assign(menuStore, {
       items: [], detail: null, stats: {}, pagination: { hasMore: false },
-      listStatus: 'empty', detailStatus: 'idle', mutationStatus: 'idle', error: null
+      listStatus: 'empty', loadMoreError: null, failedPage: null, isLoadingMore: false,
+      detailStatus: 'idle', mutationStatus: 'idle', error: null
     })
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
   })
 
   it('列表不提供伪收藏筛选，并明确图片合同降级', async () => {
@@ -68,6 +74,19 @@ describe('菜单页面', () => {
     expect(emptyWrapper.find('[data-test="menu-empty-add"]').exists()).toBe(true)
   })
 
+  it('追加失败时保留已有卡片并提供失败页重试', async () => {
+    menuStore.items = [{ id: 1, restaurantName: '已有餐厅', status: 0 }]
+    menuStore.listStatus = 'success'
+    menuStore.loadMoreError = { code: 'NETWORK_ERROR' }
+    menuStore.failedPage = 2
+    const wrapper = mount(MenuIndex)
+
+    expect(wrapper.text()).toContain('已有餐厅')
+    await wrapper.find('[data-test="menu-load-more-retry"]').trigger('click')
+
+    expect(menuStore.retryList).toHaveBeenCalledOnce()
+  })
+
   it('详情始终使用本地占位，提供真实编辑路由和 pending 操作', async () => {
     route.params = { id: '7' }
     menuStore.detail = { id: 7, restaurantName: '星港餐厅', likeCount: 2, isFavorite: false }
@@ -81,7 +100,7 @@ describe('菜单页面', () => {
     expect(wrapper.find('[data-test="menu-like"]').attributes('disabled')).toBeUndefined()
   })
 
-  it('编辑器限制图片并在提交 pending 时禁用，成功清当前草稿', async () => {
+  it('编辑器图片只保留在本地预览/草稿，请求体完全移除 photoUrls', async () => {
     const draft = await import('@/composables/useDraft')
     const clear = vi.fn()
     draft.useDraft.mockReturnValueOnce({ draft: { value: null }, hasDraft: { value: false }, save: vi.fn(), restore: vi.fn(), clear })
@@ -92,8 +111,30 @@ describe('菜单页面', () => {
     await wrapper.find('form').trigger('submit')
     await flush()
 
-    expect(menuStore.create).toHaveBeenCalledWith(expect.objectContaining({ restaurantName: '星港餐厅', photoUrls: [] }))
+    const requestBody = menuStore.create.mock.calls[0][0]
+    expect(requestBody.restaurantName).toBe('星港餐厅')
+    expect(requestBody).not.toHaveProperty('photoUrls')
     expect(clear).toHaveBeenCalledOnce()
-    expect(wrapper.text()).toContain('图片仅保留在本地草稿与本次预览')
+    expect(wrapper.text()).toContain('不会随餐厅请求提交')
+  })
+
+  it('脏菜单表单真实阻止路由/浏览器离开，并允许确认后继续', async () => {
+    const { onBeforeRouteLeave } = await import('vue-router')
+    const wrapper = mount(MenuEditor)
+    await wrapper.find('[data-test="restaurant-name"]').setValue('未保存餐厅')
+    await flush()
+    const guard = onBeforeRouteLeave.mock.calls.at(-1)[0]
+    const next = vi.fn()
+    const confirm = vi.fn().mockReturnValueOnce(false).mockReturnValueOnce(true)
+    vi.stubGlobal('confirm', confirm)
+
+    guard({}, {}, next)
+    expect(next).toHaveBeenLastCalledWith(false)
+    guard({}, {}, next)
+    expect(next).toHaveBeenLastCalledWith()
+
+    const event = new Event('beforeunload', { cancelable: true })
+    globalThis.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(true)
   })
 })

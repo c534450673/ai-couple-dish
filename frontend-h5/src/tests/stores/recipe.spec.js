@@ -95,4 +95,32 @@ describe('useRecipeStore', () => {
     expect(recipeApi.updateRecipe).toHaveBeenCalledWith(3, { title: '新标题', ingredients: [], steps: [] })
     expect(store.items).toEqual([{ id: 3, title: '新标题', ingredients: [], steps: [] }, { id: 4, title: '其他' }])
   })
+
+  it('追加页失败保留已有菜谱，并以 append 精确重试失败页', async () => {
+    recipeApi.getMyRecipes
+      .mockResolvedValueOnce({
+        data: { records: [{ id: 1 }], total: 2, current: 1, size: 1, pages: 2 }
+      })
+      .mockRejectedValueOnce({ code: 'NETWORK_ERROR' })
+      .mockResolvedValueOnce({
+        data: { records: [{ id: 2 }], total: 2, current: 2, size: 1, pages: 2 }
+      })
+    const store = useRecipeStore()
+    await store.fetchList({ source: 'my', pageNum: 1, pageSize: 1 })
+
+    await expect(store.fetchList({ source: 'my', pageNum: 2, pageSize: 1 }, { append: true }))
+      .rejects.toEqual({ code: 'NETWORK_ERROR' })
+
+    expect(store.items).toEqual([{ id: 1 }])
+    expect(store.listStatus).toBe('success')
+    expect(store.loadMoreError).toEqual({ code: 'NETWORK_ERROR' })
+    expect(store.failedPage).toBe(2)
+
+    await store.retryList()
+
+    expect(recipeApi.getMyRecipes).toHaveBeenLastCalledWith({ pageNum: 2, pageSize: 1 })
+    expect(store.items).toEqual([{ id: 1 }, { id: 2 }])
+    expect(store.loadMoreError).toBeNull()
+    expect(store.failedPage).toBeNull()
+  })
 })

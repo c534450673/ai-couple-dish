@@ -23,6 +23,9 @@ export const useRecipeStore = defineStore('recipe', {
     pagination: initialPagination(),
     activeSource: 'my',
     listStatus: 'idle',
+    loadMoreError: null,
+    failedPage: null,
+    isLoadingMore: false,
     detailStatus: 'idle',
     mutationStatus: 'idle',
     mutationKey: '',
@@ -43,8 +46,17 @@ export const useRecipeStore = defineStore('recipe', {
       }
       this.activeSource = source
       this.lastListParams = { source, ...requestParams }
-      this.listStatus = 'loading'
-      this.error = null
+      if (append) {
+        this.isLoadingMore = true
+        this.loadMoreError = null
+        this.failedPage = null
+      } else {
+        this.listStatus = 'loading'
+        this.error = null
+        this.loadMoreError = null
+        this.failedPage = null
+        this.isLoadingMore = false
+      }
       logResult('list', 'started', startedAt, { source, page: requestParams.pageNum, append })
       try {
         const response = await recipeApi[SOURCE_API[source]](requestParams)
@@ -72,20 +84,38 @@ export const useRecipeStore = defineStore('recipe', {
           hasMore: pageNum < totalPages
         }
         this.listStatus = this.items.length ? 'success' : 'empty'
+        this.loadMoreError = null
+        this.failedPage = null
         logResult('list', this.listStatus, startedAt, {
           source, itemCount: this.items.length, page: pageNum, hasMore: this.pagination.hasMore
         })
         return response
       } catch (error) {
         if (requestId === this.listRequestId) {
-          this.listStatus = 'error'
-          this.error = error
+          if (append) {
+            this.loadMoreError = error
+            this.failedPage = requestParams.pageNum
+          } else {
+            this.listStatus = 'error'
+            this.error = error
+          }
         }
-        logResult('list', 'failed', startedAt, { source, errorCode: errorCode(error) })
+        logResult('list', 'failed', startedAt, {
+          source,
+          errorCode: errorCode(error),
+          page: requestParams.pageNum,
+          append
+        })
         throw error
+      } finally {
+        if (append && requestId === this.listRequestId) this.isLoadingMore = false
       }
     },
     retryList() {
+      if (this.failedPage !== null) {
+        const retryParams = { ...this.lastListParams, pageNum: this.failedPage }
+        return this.fetchList(retryParams, { append: true })
+      }
       return this.fetchList({ ...this.lastListParams, pageNum: 1 })
     },
     async fetchDetail(id) {

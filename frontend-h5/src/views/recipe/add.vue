@@ -21,7 +21,7 @@ const draftStore = useDraft({
 })
 
 const form = reactive({
-  title: '', coverUrl: '', description: '', difficulty: 1,
+  title: '', coverUrl: '', description: '', difficulty: 'easy',
   cookingTime: '', servings: '',
   ingredients: [{ name: '', amount: '' }],
   steps: [{ content: '', imageUrl: '' }]
@@ -32,20 +32,25 @@ const submitting = ref(false)
 const dirty = ref(false)
 const ready = ref(false)
 const restoreAvailable = ref(draftStore.hasDraft.value)
+const ingredientsTouched = ref(!isEdit.value)
+const stepsTouched = ref(!isEdit.value)
+const difficultyValues = new Set(['easy', 'medium', 'hard'])
 
 const normalizedList = (value, fallback) => Array.isArray(value)
   ? value.map(item => ({ ...fallback, ...item }))
-  : [{ ...fallback }]
+  : []
 
-const hydrate = (value = {}) => {
+const hydrate = (value = {}, { fromDraft = false } = {}) => {
   form.title = value.title || ''
   form.coverUrl = value.coverUrl || ''
   form.description = value.description || ''
-  form.difficulty = value.difficulty || 1
+  form.difficulty = difficultyValues.has(value.difficulty) ? value.difficulty : 'easy'
   form.cookingTime = value.cookingTime ?? ''
   form.servings = value.servings ?? ''
   form.ingredients = normalizedList(value.ingredients, { name: '', amount: '' })
   form.steps = normalizedList(value.steps, { content: '', imageUrl: '' })
+  ingredientsTouched.value = fromDraft ? value.ingredientsTouched !== false : !isEdit.value
+  stepsTouched.value = fromDraft ? value.stepsTouched !== false : !isEdit.value
   coverPreview.value = form.coverUrl
 }
 
@@ -57,13 +62,15 @@ const snapshot = () => ({
   cookingTime: form.cookingTime,
   servings: form.servings,
   ingredients: form.ingredients.map(item => ({ name: item.name, amount: item.amount })),
-  steps: form.steps.map(item => ({ content: item.content, imageUrl: item.imageUrl }))
+  steps: form.steps.map(item => ({ content: item.content, imageUrl: item.imageUrl })),
+  ingredientsTouched: ingredientsTouched.value,
+  stepsTouched: stepsTouched.value
 })
 
 const restoreDraft = () => {
   const value = draftStore.restore()
   if (!value) return
-  hydrate(value)
+  hydrate(value, { fromDraft: true })
   restoreAvailable.value = false
   dirty.value = true
   logUiEvent('recipe.editor.draft_restored', {
@@ -72,16 +79,34 @@ const restoreDraft = () => {
   })
 }
 
-const addIngredient = () => form.ingredients.push({ name: '', amount: '' })
-const removeIngredient = index => form.ingredients.splice(index, 1)
-const addStep = () => form.steps.push({ content: '', imageUrl: '' })
-const removeStep = index => form.steps.splice(index, 1)
+const markListTouched = (listType) => {
+  if (listType === 'ingredient') ingredientsTouched.value = true
+  else stepsTouched.value = true
+}
+
+const addIngredient = () => {
+  markListTouched('ingredient')
+  form.ingredients.push({ name: '', amount: '' })
+}
+const removeIngredient = (index) => {
+  markListTouched('ingredient')
+  form.ingredients.splice(index, 1)
+}
+const addStep = () => {
+  markListTouched('step')
+  form.steps.push({ content: '', imageUrl: '' })
+}
+const removeStep = (index) => {
+  markListTouched('step')
+  form.steps.splice(index, 1)
+}
 
 const moveItem = (items, index, direction, listType) => {
   const target = index + direction
   if (target < 0 || target >= items.length) return
   const [item] = items.splice(index, 1)
   items.splice(target, 0, item)
+  markListTouched(listType)
   logUiEvent('recipe.editor.list_reordered', {
     module: 'recipe_editor', operation: 'reorder', result: 'success', durationMs: 0,
     listType, direction: direction < 0 ? 'up' : 'down', itemCount: items.length
@@ -139,12 +164,20 @@ const payload = publish => ({
   title: form.title.trim(),
   coverUrl: form.coverUrl || null,
   description: form.description.trim() || null,
-  ingredients: form.ingredients.map(item => ({ name: item.name.trim(), amount: item.amount.trim() })),
-  steps: form.steps.map(item => ({ content: item.content.trim(), imageUrl: item.imageUrl || null })),
-  difficulty: Number(form.difficulty),
+  ingredients: ingredientsTouched.value
+    ? form.ingredients
+      .filter(item => item.name.trim() || item.amount.trim())
+      .map(item => ({ name: item.name.trim(), amount: item.amount.trim() }))
+    : null,
+  steps: stepsTouched.value
+    ? form.steps
+      .filter(item => item.content.trim() || item.imageUrl)
+      .map(item => ({ content: item.content.trim(), imageUrl: item.imageUrl || null }))
+    : null,
+  difficulty: form.difficulty,
   cookingTime: form.cookingTime === '' ? null : Number(form.cookingTime),
   servings: form.servings === '' ? null : Number(form.servings),
-  publish
+  ...(!isEdit.value ? { publish } : {})
 })
 
 const submit = async (publish) => {
@@ -164,7 +197,6 @@ const submit = async (publish) => {
     const result = isEdit.value
       ? await store.update(editId.value, payload(publish))
       : await store.create(payload(publish))
-    if (isEdit.value && publish && store.detail?.status === 0) await store.publish(editId.value)
     draftStore.clear()
     dirty.value = false
     const createdId = typeof result === 'object' ? result?.id : result
@@ -172,7 +204,7 @@ const submit = async (publish) => {
       module: 'recipe_editor', operation, result: 'success', durationMs: Date.now() - startedAt,
       ingredientCount: form.ingredients.length, stepCount: form.steps.length
     })
-    showToast(publish ? '菜谱已发布' : '草稿已保存')
+    showToast(isEdit.value ? '菜谱已更新' : (publish ? '菜谱已发布' : '草稿已保存'))
     router.replace(isEdit.value ? `/recipes/${editId.value}` : (createdId ? `/recipes/${createdId}` : '/recipes'))
   } catch (error) {
     logUiEvent('recipe.editor.submit', {
@@ -240,7 +272,7 @@ onBeforeUnmount(() => {
         <label>菜谱标题 <em>必填</em><input data-test="recipe-title" v-model="form.title" maxlength="100"></label>
         <label>菜谱简介<textarea v-model="form.description" rows="3" maxlength="1000" /></label>
         <div class="three-columns">
-          <label>难度<select v-model="form.difficulty"><option :value="1">简单</option><option :value="2">中等</option><option :value="3">困难</option></select></label>
+          <label>难度<select v-model="form.difficulty"><option value="easy">简单</option><option value="medium">中等</option><option value="hard">困难</option></select></label>
           <label>烹饪时间<input v-model="form.cookingTime" type="number" min="1" placeholder="分钟"></label>
           <label>份数<input v-model="form.servings" type="number" min="1" placeholder="人份"></label>
         </div>
@@ -260,8 +292,8 @@ onBeforeUnmount(() => {
           <article v-for="(ingredient, index) in form.ingredients" :key="index" class="sortable-row">
             <span class="drag-index">{{ index + 1 }}</span>
             <div class="row-fields">
-              <input :data-test="`ingredient-name-${index}`" v-model="ingredient.name" :aria-label="`食材 ${index + 1} 名称`" placeholder="食材名称">
-              <input v-model="ingredient.amount" :aria-label="`食材 ${index + 1} 用量`" placeholder="用量">
+              <input :data-test="`ingredient-name-${index}`" v-model="ingredient.name" :aria-label="`食材 ${index + 1} 名称`" placeholder="食材名称" @input="markListTouched('ingredient')">
+              <input v-model="ingredient.amount" :aria-label="`食材 ${index + 1} 用量`" placeholder="用量" @input="markListTouched('ingredient')">
             </div>
             <div class="row-actions">
               <button :data-test="`ingredient-move-up-${index}`" type="button" aria-label="上移食材" :disabled="index === 0" @click="moveItem(form.ingredients, index, -1, 'ingredient')"><van-icon name="arrow-up" /></button>
@@ -273,11 +305,11 @@ onBeforeUnmount(() => {
       </section>
 
       <section class="form-section">
-        <div class="section-heading"><div><h2>制作步骤</h2><p>顺序将原样提交给后端</p></div><button type="button" @click="addStep"><van-icon name="plus" /> 添加</button></div>
+        <div class="section-heading"><div><h2>制作步骤</h2><p>顺序将原样提交给后端</p></div><button data-test="add-step" type="button" @click="addStep"><van-icon name="plus" /> 添加</button></div>
         <div class="sortable-list">
           <article v-for="(step, index) in form.steps" :key="index" class="sortable-row step-row">
             <span class="drag-index">{{ index + 1 }}</span>
-            <textarea v-model="step.content" :aria-label="`步骤 ${index + 1} 内容`" rows="3" placeholder="描述这个步骤" />
+            <textarea :data-test="`step-content-${index}`" v-model="step.content" :aria-label="`步骤 ${index + 1} 内容`" rows="3" placeholder="描述这个步骤" @input="markListTouched('step')" />
             <div class="row-actions">
               <button type="button" aria-label="上移步骤" :disabled="index === 0" @click="moveItem(form.steps, index, -1, 'step')"><van-icon name="arrow-up" /></button>
               <button type="button" aria-label="下移步骤" :disabled="index === form.steps.length - 1" @click="moveItem(form.steps, index, 1, 'step')"><van-icon name="arrow-down" /></button>
@@ -287,9 +319,12 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <footer class="submit-actions">
-        <button data-test="recipe-save-draft" type="button" :disabled="submitting" @click="submit(false)">{{ submitting ? '保存中…' : '保存草稿' }}</button>
-        <button data-test="recipe-publish" type="button" :disabled="submitting" @click="submit(true)">{{ submitting ? '提交中…' : '发布菜谱' }}</button>
+      <footer class="submit-actions" :class="{ 'submit-actions--single': isEdit }">
+        <button v-if="isEdit" data-test="recipe-save-edit" type="button" :disabled="submitting" @click="submit(false)">{{ submitting ? '保存中…' : '保存修改' }}</button>
+        <template v-else>
+          <button data-test="recipe-save-draft" type="button" :disabled="submitting" @click="submit(false)">{{ submitting ? '保存中…' : '保存草稿' }}</button>
+          <button data-test="recipe-publish" type="button" :disabled="submitting" @click="submit(true)">{{ submitting ? '提交中…' : '发布菜谱' }}</button>
+        </template>
       </footer>
     </form>
   </main>
@@ -330,6 +365,7 @@ input:focus, select:focus, textarea:focus { border-color: $cosmos-secondary; }
 .row-actions button:disabled { opacity: .3; }
 .step-row textarea { min-height: 88px; }
 .submit-actions { position: fixed; z-index: 3; right: 0; bottom: 64px; left: 0; display: grid; grid-template-columns: 1fr 1fr; gap: $space-3; padding: $space-3 $page-padding; border-top: 1px solid $cosmos-border; background: rgba(13,17,42,.94); backdrop-filter: blur(18px); }
+.submit-actions--single { grid-template-columns: 1fr; }
 .submit-actions button { min-height: 50px; border: 1px solid $cosmos-primary; border-radius: 6px; background: transparent; color: $cosmos-primary; font-weight: $fw-semibold; }
 .submit-actions button:last-child { background: $cosmos-primary; color: #fff; }
 .submit-actions button:disabled { opacity: .5; }

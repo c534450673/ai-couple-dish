@@ -83,4 +83,32 @@ describe('useMenuStore', () => {
     expect(menuApi.getMenuList).toHaveBeenCalledTimes(2)
     expect(store.listStatus).toBe('empty')
   })
+
+  it('追加页失败保留已有列表，并以 append 精确重试失败页', async () => {
+    menuApi.getMenuList
+      .mockResolvedValueOnce({
+        data: { page: 1, pageSize: 2, total: 3, totalPages: 2, hasMore: true, list: [{ id: 1 }] }
+      })
+      .mockRejectedValueOnce({ code: 'NETWORK_ERROR' })
+      .mockResolvedValueOnce({
+        data: { page: 2, pageSize: 2, total: 3, totalPages: 2, hasMore: false, list: [{ id: 2 }] }
+      })
+    const store = useMenuStore()
+    await store.fetchList({ page: 1, pageSize: 2 })
+
+    await expect(store.fetchList({ page: 2, pageSize: 2 }, { append: true }))
+      .rejects.toEqual({ code: 'NETWORK_ERROR' })
+
+    expect(store.items).toEqual([{ id: 1 }])
+    expect(store.listStatus).toBe('success')
+    expect(store.loadMoreError).toEqual({ code: 'NETWORK_ERROR' })
+    expect(store.failedPage).toBe(2)
+
+    await store.retryList()
+
+    expect(menuApi.getMenuList).toHaveBeenLastCalledWith({ page: 2, pageSize: 2 })
+    expect(store.items).toEqual([{ id: 1 }, { id: 2 }])
+    expect(store.loadMoreError).toBeNull()
+    expect(store.failedPage).toBeNull()
+  })
 })

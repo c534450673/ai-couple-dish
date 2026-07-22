@@ -132,8 +132,7 @@ const payload = () => ({
   rating: form.rating === '' ? null : Number(form.rating),
   eaterIds: form.eaterIds,
   eatenDate: form.eatenDate || null,
-  status: Number(form.status),
-  photoUrls: photos.value.filter(photo => photo.status === 'done' && photo.url).map(photo => photo.url)
+  status: Number(form.status)
 })
 
 const submit = async () => {
@@ -243,7 +242,7 @@ onBeforeUnmount(() => {
 
       <section class="form-section">
         <div class="section-heading"><div><h2>图片预览</h2><p>最多 9 张，单张不超过 10MB</p></div><label class="upload-button"><van-icon name="photograph" /> 选择图片<input type="file" accept="image/*" multiple @change="selectPhotos"></label></div>
-        <p class="contract-warning">后端图片合同缺失：图片仅保留在本地草稿与本次预览，刷新后的列表和详情仍显示占位。</p>
+        <p class="contract-warning">后端图片合同缺失：图片仅保留在本地草稿与本次预览，不会随餐厅请求提交，刷新后的列表和详情仍显示占位。</p>
         <div v-if="photos.length" class="photo-grid">
           <figure v-for="(photo, index) in photos" :key="`${photo.name || 'draft'}-${index}`">
             <img v-if="photo.preview || photo.url" :src="photo.preview || photo.url" alt="待提交餐厅图片预览">

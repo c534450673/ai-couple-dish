@@ -1,11 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 
 const router = { push: vi.fn(), replace: vi.fn(), back: vi.fn() }
 const route = { params: {}, query: {} }
 const recipeStore = vi.hoisted(() => ({
   items: [], detail: null, pagination: { hasMore: false }, activeSource: 'my',
-  listStatus: 'empty', detailStatus: 'idle', mutationStatus: 'idle', error: null,
+  listStatus: 'empty', loadMoreError: null, failedPage: null, isLoadingMore: false,
+  detailStatus: 'idle', mutationStatus: 'idle', error: null,
   fetchList: vi.fn(), retryList: vi.fn(), fetchDetail: vi.fn(), create: vi.fn(), update: vi.fn(),
   remove: vi.fn(), publish: vi.fn(), setLiked: vi.fn(), setCollected: vi.fn()
 }))
@@ -38,12 +39,17 @@ describe('菜谱页面', () => {
     route.query = {}
     Object.assign(recipeStore, {
       items: [], detail: null, pagination: { hasMore: false }, activeSource: 'my',
-      listStatus: 'empty', detailStatus: 'idle', mutationStatus: 'idle', error: null
+      listStatus: 'empty', loadMoreError: null, failedPage: null, isLoadingMore: false,
+      detailStatus: 'idle', mutationStatus: 'idle', error: null
     })
     Object.assign(draftState, {
       draft: { value: null }, hasDraft: { value: false },
       save: vi.fn(), restore: vi.fn(), clear: vi.fn()
     })
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
   })
 
   it('清楚区分我的草稿、情侣已发布、全局推荐，搜索标明全局范围', async () => {
@@ -55,6 +61,19 @@ describe('菜谱页面', () => {
     expect(wrapper.text()).toContain('全局推荐')
     expect(wrapper.text()).toContain('搜索范围：全局已发布菜谱')
     expect(wrapper.text()).not.toContain('情侣推荐')
+  })
+
+  it('追加失败时保留已有菜谱并提供失败页重试', async () => {
+    recipeStore.items = [{ id: 1, title: '已有菜谱', status: 1 }]
+    recipeStore.listStatus = 'success'
+    recipeStore.loadMoreError = { code: 'NETWORK_ERROR' }
+    recipeStore.failedPage = 2
+    const wrapper = mount(RecipeIndex)
+
+    expect(wrapper.text()).toContain('已有菜谱')
+    await wrapper.find('[data-test="recipe-load-more-retry"]').trigger('click')
+
+    expect(recipeStore.retryList).toHaveBeenCalledOnce()
   })
 
   it('详情展示结构化食材与步骤，并为坏图提供固定比例占位', async () => {
@@ -97,6 +116,7 @@ describe('菜谱页面', () => {
     await wrapper.find('[data-test="recipe-save-draft"]').trigger('click')
     await wrapper.find('[data-test="recipe-save-draft"]').trigger('click')
     expect(recipeStore.create).toHaveBeenCalledOnce()
+    expect(recipeStore.create.mock.calls[0][0]).toMatchObject({ difficulty: 'easy', publish: false })
     expect(wrapper.find('[data-test="recipe-publish"]').attributes('disabled')).toBeDefined()
     resolveCreate({ id: 10 })
     await flush()
@@ -112,5 +132,84 @@ describe('菜谱页面', () => {
 
     expect(wrapper.find('[data-test="recipe-title"]').element.value).toBe('恢复的菜谱')
     expect(onBeforeRouteLeave).toHaveBeenCalledOnce()
+  })
+
+  it('编辑已发布菜谱只允许真实更新，合法字符串难度和 null 列表保持原语义', async () => {
+    route.params = { id: '7' }
+    recipeStore.detail = {
+      id: 7, title: '旧标题', status: 1, difficulty: 'hard', ingredients: null, steps: null
+    }
+    recipeStore.fetchDetail.mockResolvedValue()
+    recipeStore.update.mockResolvedValue({ id: 7 })
+    const wrapper = mount(RecipeEditor)
+    await flush()
+
+    expect(wrapper.find('[data-test="recipe-save-draft"]').exists()).toBe(false)
+    expect(wrapper.find('[data-test="recipe-publish"]').exists()).toBe(false)
+    expect(wrapper.find('[data-test="recipe-save-edit"]').text()).toContain('保存修改')
+    await wrapper.find('[data-test="recipe-title"]').setValue('只改标题')
+    await wrapper.find('[data-test="recipe-save-edit"]').trigger('click')
+    await flush()
+
+    expect(recipeStore.update).toHaveBeenCalledWith('7', expect.objectContaining({
+      title: '只改标题', difficulty: 'hard', ingredients: null, steps: null
+    }))
+    expect(recipeStore.update.mock.calls[0][1]).not.toHaveProperty('publish')
+    expect(recipeStore.publish).not.toHaveBeenCalled()
+  })
+
+  it('显式编辑结构列表时过滤全空项，显式删除全部才发送空数组', async () => {
+    route.params = { id: '8' }
+    recipeStore.detail = {
+      id: 8, title: '旧标题', status: 0, difficulty: 'medium', ingredients: null, steps: null
+    }
+    recipeStore.fetchDetail.mockResolvedValue()
+    recipeStore.update.mockResolvedValue({ id: 8 })
+    const wrapper = mount(RecipeEditor)
+    await flush()
+
+    await wrapper.find('[data-test="add-ingredient"]').trigger('click')
+    await wrapper.find('[data-test="add-ingredient"]').trigger('click')
+    await wrapper.find('[data-test="ingredient-name-1"]').setValue('盐')
+    await wrapper.find('[data-test="add-step"]').trigger('click')
+    await wrapper.find('[data-test="add-step"]').trigger('click')
+    await wrapper.find('[data-test="step-content-1"]').setValue('加盐')
+    await wrapper.find('[data-test="recipe-save-edit"]').trigger('click')
+    await flush()
+
+    expect(recipeStore.update.mock.calls[0][1]).toMatchObject({
+      difficulty: 'medium',
+      ingredients: [{ name: '盐', amount: '' }],
+      steps: [{ content: '加盐', imageUrl: null }]
+    })
+
+    recipeStore.update.mockClear()
+    await wrapper.find('[data-test="ingredient-remove-0"]').trigger('click')
+    await wrapper.find('[data-test="ingredient-remove-0"]').trigger('click')
+    await wrapper.find('[data-test="step-remove-0"]').trigger('click')
+    await wrapper.find('[data-test="step-remove-0"]').trigger('click')
+    await wrapper.find('[data-test="recipe-save-edit"]').trigger('click')
+    await flush()
+    expect(recipeStore.update.mock.calls[0][1]).toMatchObject({ ingredients: [], steps: [] })
+  })
+
+  it('脏菜谱表单真实阻止路由/浏览器离开，并允许确认后继续', async () => {
+    const { onBeforeRouteLeave } = await import('vue-router')
+    const wrapper = mount(RecipeEditor)
+    await wrapper.find('[data-test="recipe-title"]').setValue('未保存菜谱')
+    await flush()
+    const guard = onBeforeRouteLeave.mock.calls.at(-1)[0]
+    const next = vi.fn()
+    const confirm = vi.fn().mockReturnValueOnce(false).mockReturnValueOnce(true)
+    vi.stubGlobal('confirm', confirm)
+
+    guard({}, {}, next)
+    expect(next).toHaveBeenLastCalledWith(false)
+    guard({}, {}, next)
+    expect(next).toHaveBeenLastCalledWith()
+
+    const event = new Event('beforeunload', { cancelable: true })
+    globalThis.dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(true)
   })
 })
