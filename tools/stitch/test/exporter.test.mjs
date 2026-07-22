@@ -449,6 +449,50 @@ test("exportDesignProject retries transient getScreen invalid argument failures"
   assert.deepEqual(delays, [1000]);
 });
 
+test("exportDesignProject falls back after unreadable HTML metadata retries", async () => {
+  const root = await mkdtemp(join(tmpdir(), "stitch-export-html-retry-fallback-"));
+  const delays = [];
+  let htmlCalls = 0;
+  const sdk = {
+    project() {
+      return {
+        async getScreen() {
+          return {
+            async getImage() {
+              return "https://assets.example/screen-1/image";
+            },
+            async getHtml() {
+              htmlCalls += 1;
+              throw new Error("Request contains an invalid argument");
+            }
+          };
+        }
+      };
+    }
+  };
+  const state = {
+    projectId: "project-1",
+    projectTitle: "AI Couple Dish - Couple Cosmos",
+    screens: { login: { screenId: "screen-1", kind: "base" } }
+  };
+
+  const manifest = await exportDesignProject(
+    sdk,
+    state,
+    root,
+    makeFetch(),
+    () => {},
+    {
+      maxReadAttempts: 2,
+      sleep: async delayMs => delays.push(delayMs)
+    }
+  );
+
+  assert.equal(htmlCalls, 2);
+  assert.deepEqual(delays, [1000]);
+  assert.equal(manifest.screens[0].htmlSource, "screenshot-fallback");
+});
+
 test("exportDesignProject does not retry permanent screen read failures", async () => {
   const root = await mkdtemp(join(tmpdir(), "stitch-export-no-retry-"));
   let getCalls = 0;

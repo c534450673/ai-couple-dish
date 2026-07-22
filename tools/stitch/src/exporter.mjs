@@ -73,7 +73,15 @@ function isTransientReadError(error, operation) {
   const message = (error?.message || String(error)).toLowerCase();
   if (message.includes("service is currently unavailable")) return true;
   return (
-    operation === "get_screen" &&
+    ["get_screen", "get_image", "get_html"].includes(operation) &&
+    message.includes("request contains an invalid argument")
+  );
+}
+
+function canUseMetadataFallback(error, operation) {
+  const message = (error?.message || String(error)).toLowerCase();
+  return (
+    operation === "get_html" &&
     message.includes("request contains an invalid argument")
   );
 }
@@ -127,6 +135,8 @@ async function exportArtifact({
   outputRoot,
   fetchImpl,
   getUrl,
+  readOperation,
+  readOptions,
   fallbackContent,
   write
 }) {
@@ -140,7 +150,19 @@ async function exportArtifact({
   };
   logEvent("stitch.export.screen", { result: "started", ...context }, write);
   try {
-    const url = await getUrl();
+    let url;
+    try {
+      url = await readWithRetry(
+        getUrl,
+        { operation: readOperation, ...context },
+        readOptions
+      );
+    } catch (error) {
+      if (!canUseMetadataFallback(error, readOperation) || fallbackContent === undefined) {
+        throw error;
+      }
+      url = "";
+    }
     const usesFallback =
       fallbackContent !== undefined &&
       (typeof url !== "string" || !url.trim());
@@ -267,11 +289,7 @@ export async function exportDesignProject(
         );
         if (listedScreen) return listedScreen;
       }
-      return readWithRetry(
-        () => project.getScreen(screenId),
-        { operation: "get_screen", projectId, screenId },
-        { maxAttempts: maxReadAttempts, sleep, write }
-      );
+      return project.getScreen(screenId);
     }
     const screens = [];
     for (const [localId, reference] of Object.entries(state.screens)) {
@@ -293,6 +311,8 @@ export async function exportDesignProject(
           screen = await screenFor(projectId, reference.screenId);
           return screen.getImage();
         },
+        readOperation: "get_image",
+        readOptions: { maxAttempts: maxReadAttempts, sleep, write },
         write
       });
       const htmlResult = await exportArtifact({
@@ -303,6 +323,8 @@ export async function exportDesignProject(
         outputRoot: stagingRoot,
         fetchImpl,
         getUrl: () => screen.getHtml(),
+        readOperation: "get_html",
+        readOptions: { maxAttempts: maxReadAttempts, sleep, write },
         fallbackContent: screenshotFallbackHtml(localId),
         write
       });
