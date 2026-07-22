@@ -45,7 +45,7 @@ export const coupleApi = {
   },
   // 获取当前情侣码及其有效期状态
   getCodeInfo() {
-    return api.get('/couple/codeInfo')
+    return api.get('/couple/codeInfo', { cache: false })
   },
   // 重新生成情侣码，服务端会将恋爱开始日重置为当天
   refreshCode() {

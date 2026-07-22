@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 const transport = vi.hoisted(() => {
   const state = {
     requestHandler: null,
+    responseHandler: null,
     responseErrorHandler: null
   }
   const api = vi.fn()
@@ -13,7 +14,8 @@ const transport = vi.hoisted(() => {
       })
     },
     response: {
-      use: vi.fn((_, errorHandler) => {
+      use: vi.fn((handler, errorHandler) => {
+        state.responseHandler = handler
         state.responseErrorHandler = errorHandler
       })
     }
@@ -98,6 +100,19 @@ describe('API Request Module', () => {
       })
       expect(JSON.stringify(logSpy.mock.calls)).not.toContain('/private-path')
       logSpy.mockRestore()
+    })
+  })
+
+  describe('cache opt-out', () => {
+    it('cache:false 的 GET 不读取或写入内存缓存', () => {
+      const config = { headers: {}, method: 'get', url: '/couple/codeInfo', cache: false }
+      transport.state.requestHandler(config)
+      transport.state.responseHandler({ config, data: { code: 200, data: { coupleCode: 'A1B2C3D4' } } })
+
+      const repeatedConfig = { headers: {}, method: 'get', url: '/couple/codeInfo', cache: false }
+      transport.state.requestHandler(repeatedConfig)
+
+      expect(repeatedConfig.adapter).toBeUndefined()
     })
   })
 })

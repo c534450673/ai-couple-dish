@@ -63,7 +63,7 @@ const removePendingRequest = (config) => {
 
 // 获取缓存
 const getCache = (config) => {
-  if (config.method !== 'get') return null
+  if (config.method !== 'get' || config.cache === false) return null
   const cacheKey = generateRequestKey(config)
   const cached = memoryCache.get(cacheKey)
   if (cached && Date.now() - cached.timestamp < (config.cacheTime || DEFAULT_CACHE_TIME)) {
@@ -74,7 +74,7 @@ const getCache = (config) => {
 
 // 设置缓存
 const setCache = (config, data) => {
-  if (config.method !== 'get') return
+  if (config.method !== 'get' || config.cache === false) return
   const cacheKey = generateRequestKey(config)
   memoryCache.set(cacheKey, { data, timestamp: Date.now() })
 }

@@ -42,13 +42,9 @@ export const useUserStore = defineStore('user', {
 
     // 手机号登录
     async loginByPhone(phone, verifyCode) {
-      try {
-        const res = await userApi.loginByPhone({ phone, verifyCode })
-        this.setLoginInfo(res.data.token, res.data.userInfo)
-        return res
-      } catch (error) {
-        throw error
-      }
+      const res = await userApi.loginByPhone({ phone, verifyCode })
+      this.setLoginInfo(res.data.token, res.data.userInfo)
+      return res
     },
 
     // 发送验证码
@@ -123,14 +119,10 @@ export const useUserStore = defineStore('user', {
 
     // 更新用户信息
     async updateUserInfo(data) {
-      try {
-        const res = await userApi.updateUserInfo(data)
-        this.userInfo = { ...this.userInfo, ...res.data }
-        localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
-        return res
-      } catch (error) {
-        throw error
-      }
+      const res = await userApi.updateUserInfo(data)
+      this.userInfo = { ...this.userInfo, ...res.data }
+      localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+      return res
     }
   }
 })

@@ -13,6 +13,9 @@ const userStore = useUserStore()
 const prefersReducedMotion = useReducedMotion()
 const mode = ref('invite')
 const codeInfo = ref(null)
+const codeState = ref('loading')
+const codeError = ref('')
+const retryOperation = ref('load')
 const partnerCode = ref('')
 const loadingCode = ref(false)
 const binding = ref(false)
@@ -28,7 +31,7 @@ const canBind = computed(() => isValidInviteCode(normalizedPartnerCode.value) &&
 
 const maskedUserId = () => {
   const id = String(userStore.userInfo?.id || '')
-  return id ? `${id.slice(0, 2)}***` : 'anonymous'
+  return id.length >= 3 ? `${id.slice(0, 2)}***` : 'anonymous'
 }
 
 const safeRedirect = (candidate) => {
@@ -56,13 +59,24 @@ const updateCode = (payload) => {
     expired: Boolean(next.expired),
     expiringSoon: Boolean(next.expiringSoon)
   }
+  codeState.value = 'ready'
+  codeError.value = ''
   return true
+}
+
+const setCodeError = (message, operation) => {
+  codeInfo.value = null
+  codeState.value = 'error'
+  codeError.value = message
+  retryOperation.value = operation
 }
 
 const generateCode = async (operation = 'generate') => {
   if (loadingCode.value) return
   const startedAt = Date.now()
+  const hasExistingCode = Boolean(inviteCode.value)
   loadingCode.value = true
+  if (!hasExistingCode) codeState.value = 'loading'
   try {
     const response = operation === 'refresh' ? await coupleApi.refreshCode() : await coupleApi.generateCoupleCode()
     if (!updateCode(response.data)) throw new Error('情侣码生成失败，请稍后重试')
@@ -73,6 +87,7 @@ const generateCode = async (operation = 'generate') => {
   } catch (error) {
     const message = errorMessage(error)
     showToast(message)
+    if (!hasExistingCode) setCodeError('暂时无法生成邀请码，请重试', 'generate')
     logUiEvent('couple.code.generate', {
       module: 'couple', operation, result: 'failed', durationMs: Date.now() - startedAt,
       errorCode: error?.code || error?.response?.data?.code || 'UNKNOWN', userId: maskedUserId()
@@ -84,16 +99,24 @@ const generateCode = async (operation = 'generate') => {
 
 const loadCode = async () => {
   loadingCode.value = true
+  codeState.value = 'loading'
+  codeError.value = ''
   try {
     const response = await coupleApi.getCodeInfo()
     const current = response.data
     if (!current?.expired && current?.status !== 'expired' && updateCode(current)) return
+    codeInfo.value = null
+    codeState.value = 'empty'
   } catch (error) {
-    // 无可用邀请码时转为生成流程，日志仅记录实际生成结果。
+    setCodeError('暂时无法获取邀请码，请重试', 'load')
   } finally {
     loadingCode.value = false
   }
-  await generateCode()
+}
+
+const retryCode = async () => {
+  if (retryOperation.value === 'generate') return generateCode()
+  return loadCode()
 }
 
 const copyCode = async () => {
@@ -132,6 +155,9 @@ const handleBind = async () => {
     if (response.data) userStore.setCoupleInfo(response.data)
     else await userStore.getCoupleInfo()
     completed.value = true
+    if (!prefersReducedMotion.value) {
+      await new Promise(resolve => setTimeout(resolve, 500))
+    }
     logUiEvent('couple.bind', {
       module: 'couple', operation: 'bind', result: 'success', durationMs: Date.now() - startedAt, userId: maskedUserId()
     })
@@ -165,10 +191,19 @@ onMounted(loadCode)
     </div>
 
     <section v-if="mode === 'invite'" class="bind-card invite-card">
-      <div class="card-heading"><h2>邀请 TA</h2><button data-test="refresh-code" type="button" :disabled="loadingCode" @click="refreshCode">重新生成</button></div>
-      <div class="invite-value"><strong data-test="invite-code">{{ inviteCode || '生成中...' }}</strong><button data-test="copy-code" type="button" :disabled="!inviteCode" aria-label="复制情侣码" @click="copyCode">复制</button></div>
-      <p class="reset-note">重新生成会将恋爱开始日重置为当天。</p>
-      <div class="expiry"><div><span>验证码有效期</span><b>{{ Math.ceil(remainingSeconds / 86400) || 7 }} 天</b></div><div class="progress"><i :style="{ width: `${expiryProgress}%` }"></i></div></div>
+      <div class="card-heading"><h2>邀请 TA</h2><button data-test="refresh-code" type="button" :disabled="loadingCode || !inviteCode" @click="refreshCode">重新生成</button></div>
+      <div v-if="codeState === 'loading'" data-test="code-state-loading" class="code-state">正在获取邀请码...</div>
+      <template v-else-if="inviteCode">
+        <div class="invite-value"><strong data-test="invite-code">{{ inviteCode }}</strong><button data-test="copy-code" type="button" aria-label="复制情侣码" @click="copyCode">复制</button></div>
+        <p class="reset-note">重新生成会将恋爱开始日重置为当天。</p>
+        <div class="expiry"><div><span>验证码有效期</span><b>{{ Math.ceil(remainingSeconds / 86400) || 7 }} 天</b></div><div class="progress"><i :style="{ width: `${expiryProgress}%` }"></i></div></div>
+      </template>
+      <div v-else-if="codeState === 'empty'" data-test="code-state-empty" class="code-state">
+        <p>当前没有可用邀请码</p><button data-test="generate-code" type="button" @click="generateCode">生成情侣码</button>
+      </div>
+      <div v-else data-test="code-state-error" class="code-state code-state-error">
+        <p>{{ codeError }}</p><button data-test="retry-code" type="button" @click="retryCode">重试获取</button>
+      </div>
     </section>
 
     <section v-else class="bind-card enter-card">
@@ -190,6 +225,7 @@ onMounted(loadCode)
 .mode-switch { display: grid; grid-template-columns: 1fr 1fr; padding: 3px; margin-bottom: $space-5; background: rgba(255,255,255,.08); border-radius: 8px; button { min-height: 44px; border: 0; border-radius: 6px; background: transparent; color: $cosmos-text-muted; cursor: pointer; &.active { background: $cosmos-primary; color: #fff; } } }
 .bind-card { @include glass(.74); padding: $space-6; border-radius: 8px; box-shadow: $shadow-card; } .card-heading { display: flex; align-items: center; justify-content: space-between; h2 { font-size: $fs-title; } button { min-height: 44px; padding: 0 $space-2; border: 0; color: $cosmos-primary; background: transparent; font: inherit; cursor: pointer; &:disabled { opacity: .5; } } }
 .invite-value { display: flex; align-items: center; justify-content: space-between; gap: $space-2; padding: $space-4; margin: $space-5 0 $space-2; background: rgba(6, 11, 28, .55); border: 1px solid rgba(255,255,255,.1); border-radius: 6px; strong { font-size: 23px; letter-spacing: 3px; word-break: break-all; } button { min-width: 44px; min-height: 44px; border: 0; border-radius: 6px; padding: 0 $space-2; background: $cosmos-primary; color: #fff; cursor: pointer; &:disabled { opacity: .5; } } }
+.code-state { display: grid; gap: $space-3; min-height: 112px; place-content: center; padding: $space-4; color: $cosmos-text-muted; text-align: center; button { min-height: 44px; border: 1px solid $cosmos-primary; border-radius: 6px; padding: 0 $space-3; background: transparent; color: $cosmos-primary; font: inherit; cursor: pointer; } &.code-state-error { color: $color-error; button { border-color: $color-error; color: $color-error; } } }
 .reset-note, .join-hint { color: $cosmos-text-muted; font-size: $fs-caption; line-height: 20px; } .expiry { margin-top: $space-5; > div:first-child { display: flex; justify-content: space-between; color: $cosmos-text-muted; font-size: $fs-label; b { color: $cosmos-text; } } } .progress { height: 6px; margin-top: $space-2; overflow: hidden; border-radius: 6px; background: rgba(255,255,255,.1); i { display: block; height: 100%; border-radius: inherit; background: $cosmos-primary; transition: width $cosmos-duration-base; } }
 .enter-card h2 { margin-bottom: $space-5; color: $cosmos-secondary; font-size: $fs-title; } .code-input { width: 100%; min-height: 54px; padding: 0 $space-3; border: 1px solid $cosmos-border; border-radius: 6px; outline: none; background: rgba(6,11,28,.55); color: $cosmos-text; text-align: center; text-transform: uppercase; letter-spacing: 2px; &:focus { border-color: $cosmos-secondary; } } .bind-error { min-height: 20px; margin-top: $space-2; color: $color-error; font-size: $fs-caption; } .bind-submit { width: 100%; min-height: 48px; margin-top: $space-5; border: 0; border-radius: 6px; background: $cosmos-secondary; color: #062421; font-weight: $fw-semibold; cursor: pointer; &:disabled { opacity: .48; cursor: not-allowed; } } .join-hint { margin-top: $space-4; text-align: center; }
 .completion { margin-top: $space-5; padding: $space-3; border: 1px solid $cosmos-secondary; border-radius: 6px; color: $cosmos-secondary; text-align: center; animation: completion-in $cosmos-duration-slow $ease-standard both; } .reduced-motion .completion { animation: none; } @keyframes completion-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }

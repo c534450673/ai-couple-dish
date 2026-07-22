@@ -1,3 +1,29 @@
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+  show: {
+    type: Boolean,
+    default: false
+  },
+  type: {
+    type: String,
+    default: 'agreement' // agreement | privacy
+  }
+})
+
+const emit = defineEmits(['update:show'])
+
+const visible = computed({
+  get: () => props.show,
+  set: (val) => emit('update:show', val)
+})
+
+const currentTitle = computed(() => {
+  return props.type === 'agreement' ? '用户服务协议' : '隐私政策'
+})
+</script>
+
 <template>
   <van-dialog
     v-model:show="visible"
@@ -136,32 +162,6 @@
     </div>
   </van-dialog>
 </template>
-
-<script setup>
-import { ref, computed } from 'vue'
-
-const props = defineProps({
-  show: {
-    type: Boolean,
-    default: false
-  },
-  type: {
-    type: String,
-    default: 'agreement' // agreement | privacy
-  }
-})
-
-const emit = defineEmits(['update:show'])
-
-const visible = computed({
-  get: () => props.show,
-  set: (val) => emit('update:show', val)
-})
-
-const currentTitle = computed(() => {
-  return props.type === 'agreement' ? '用户服务协议' : '隐私政策'
-})
-</script>
 
 <style lang="scss" scoped>
 .agreement-dialog {
