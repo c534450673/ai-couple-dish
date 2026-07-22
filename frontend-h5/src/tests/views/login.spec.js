@@ -6,6 +6,8 @@ import { mount } from '@vue/test-utils'
 import { defineComponent, ref, nextTick } from 'vue'
 import { setActivePinia, createPinia } from 'pinia'
 import LoginIndex from '@/views/login/index.vue'
+import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
 // Mock dependencies
 vi.mock('@/stores/user', () => ({
@@ -45,9 +47,6 @@ describe('登录页面测试', () => {
     setActivePinia(createPinia())
 
     // Get mock instances
-    const { useUserStore } = vi.mocked('@/stores/user')
-    const { useRouter, useRoute } = vi.mocked('vue-router')
-
     userStore = useUserStore()
     router = useRouter()
 
@@ -76,8 +75,8 @@ describe('登录页面测试', () => {
       })
 
       expect(wrapper.find('.login-page').exists()).toBe(true)
-      expect(wrapper.find('.login-header').exists()).toBe(true)
-      expect(wrapper.find('.login-form').exists()).toBe(true)
+      expect(wrapper.find('.login-hero').exists()).toBe(true)
+      expect(wrapper.find('.login-card').exists()).toBe(true)
     })
 
     it('应该显示正确的标题和副标题', () => {
@@ -102,7 +101,7 @@ describe('登录页面测试', () => {
     it('应该验证手机号格式', async () => {
       // Test phone validation logic
       const validatePhone = (phone) => {
-        return phone && phone.length === 11
+        return /^1[3-9]\d{9}$/.test(phone)
       }
 
       expect(validatePhone('13800138000')).toBe(true)

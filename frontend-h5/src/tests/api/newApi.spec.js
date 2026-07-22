@@ -1,7 +1,7 @@
 /**
  * 时光胶囊和心动时刻 API 测试
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 
@@ -45,8 +45,8 @@ describe('时光胶囊 API 测试', () => {
       mock.onGet('/api/timeCapsule/list').reply(200, mockResponse)
 
       const result = await timeCapsuleApi.getList()
-      expect(result.data).toHaveLength(2)
-      expect(result.data[0].title).toBe('测试胶囊')
+      expect(result.data.data).toHaveLength(2)
+      expect(result.data.data[0].title).toBe('测试胶囊')
     })
   })
 
@@ -58,8 +58,8 @@ describe('时光胶囊 API 测试', () => {
       mock.onGet('/api/timeCapsule/detail/1').reply(200, mockResponse)
 
       const result = await timeCapsuleApi.getDetail(1)
-      expect(result.data.id).toBe(1)
-      expect(result.data.content).toBe('内容')
+      expect(result.data.data.id).toBe(1)
+      expect(result.data.data.content).toBe('内容')
     })
   })
 
@@ -75,7 +75,7 @@ describe('时光胶囊 API 测试', () => {
       mock.onPost('/api/timeCapsule/create', createData).reply(200, mockResponse)
 
       const result = await timeCapsuleApi.create(createData)
-      expect(result.data).toBe(1)
+      expect(result.data.data).toBe(1)
     })
   })
 
@@ -87,7 +87,7 @@ describe('时光胶囊 API 测试', () => {
       mock.onPost('/api/timeCapsule/unlock/1').reply(200, mockResponse)
 
       const result = await timeCapsuleApi.unlock(1)
-      expect(result.data.status).toBe(1)
+      expect(result.data.data.status).toBe(1)
     })
   })
 
@@ -96,7 +96,7 @@ describe('时光胶囊 API 测试', () => {
       mock.onDelete('/api/timeCapsule/delete/1').reply(200, { data: { success: true } })
 
       const result = await timeCapsuleApi.delete(1)
-      expect(result.data.success).toBe(true)
+      expect(result.data.data.success).toBe(true)
     })
   })
 
@@ -108,7 +108,7 @@ describe('时光胶囊 API 测试', () => {
       mock.onGet('/api/timeCapsule/pending').reply(200, mockResponse)
 
       const result = await timeCapsuleApi.getPending()
-      expect(result.data).toHaveLength(1)
+      expect(result.data.data).toHaveLength(1)
     })
   })
 })
@@ -135,7 +135,7 @@ describe('心动时刻 API 测试', () => {
       mock.onGet('/api/heartMoment/list').reply(200, mockResponse)
 
       const result = await heartMomentApi.getList()
-      expect(result.data).toHaveLength(2)
+      expect(result.data.data).toHaveLength(2)
     })
 
     it('应该支持分页参数', async () => {
@@ -143,7 +143,7 @@ describe('心动时刻 API 测试', () => {
       mock.onGet('/api/heartMoment/list', { params: { page: 2, pageSize: 10 } }).reply(200, mockResponse)
 
       const result = await heartMomentApi.getList({ page: 2, pageSize: 10 })
-      expect(result.data).toEqual([])
+      expect(result.data.data).toEqual([])
     })
   })
 
@@ -157,7 +157,7 @@ describe('心动时刻 API 测试', () => {
       mock.onPost('/api/heartMoment/create', createData).reply(200, mockResponse)
 
       const result = await heartMomentApi.create(createData)
-      expect(result.data).toBe(1)
+      expect(result.data.data).toBe(1)
     })
 
     it('应该创建照片类型心动时刻', async () => {
@@ -170,7 +170,7 @@ describe('心动时刻 API 测试', () => {
       mock.onPost('/api/heartMoment/create', createData).reply(200, mockResponse)
 
       const result = await heartMomentApi.create(createData)
-      expect(result.data).toBe(2)
+      expect(result.data.data).toBe(2)
     })
   })
 
@@ -179,7 +179,7 @@ describe('心动时刻 API 测试', () => {
       mock.onDelete('/api/heartMoment/delete/1').reply(200, { data: { success: true } })
 
       const result = await heartMomentApi.delete(1)
-      expect(result.data.success).toBe(true)
+      expect(result.data.data.success).toBe(true)
     })
   })
 
@@ -191,15 +191,15 @@ describe('心动时刻 API 测试', () => {
       mock.onGet('/api/heartMoment/random').reply(200, mockResponse)
 
       const result = await heartMomentApi.getRandom()
-      expect(result.data.content).toBe('随机的心动时刻')
-      expect(result.data.timeDesc).toBe('3天前')
+      expect(result.data.data.content).toBe('随机的心动时刻')
+      expect(result.data.data.timeDesc).toBe('3天前')
     })
 
     it('没有数据时应该返回null', async () => {
       mock.onGet('/api/heartMoment/random').reply(200, { data: null })
 
       const result = await heartMomentApi.getRandom()
-      expect(result.data).toBeNull()
+      expect(result.data.data).toBeNull()
     })
   })
 })

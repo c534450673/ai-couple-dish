@@ -84,8 +84,15 @@ const clearExpiredCache = () => {
   }
 }
 
-// 定时清理过期缓存
-setInterval(clearExpiredCache, DEFAULT_CACHE_TIME)
+// 定时清理过期缓存；测试环境由 afterEach 显式重置状态，避免遗留计时器。
+let cacheCleanupTimer = null
+if (import.meta.env.MODE !== 'test') {
+  cacheCleanupTimer = setInterval(clearExpiredCache, DEFAULT_CACHE_TIME)
+  console.info('[request.cache.scheduler.started]', {
+    cleanupIntervalMs: DEFAULT_CACHE_TIME,
+    environment: import.meta.env.MODE
+  })
+}
 
 // 请求拦截器
 api.interceptors.request.use(
@@ -196,6 +203,21 @@ api.interceptors.response.use(
 // 导出清除缓存的方法
 export const clearCache = () => {
   memoryCache.clear()
+}
+
+// 重置请求去重和缓存状态，供测试隔离及登出清理流程复用。
+export const resetRequestState = () => {
+  const state = {
+    cacheCleanupScheduled: cacheCleanupTimer !== null,
+    memoryCacheEntries: memoryCache.size,
+    pendingRequests: pendingRequestMap.size
+  }
+  pendingRequestMap.clear()
+  memoryCache.clear()
+
+  if (import.meta.env.MODE !== 'test') {
+    console.info('[request.state.reset]', state)
+  }
 }
 
 // 导出清除特定缓存的方法

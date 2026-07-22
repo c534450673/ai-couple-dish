@@ -1,8 +1,17 @@
 /**
  * 日期工具函数单元测试
  */
-import { describe, it, expect } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import dayjs from 'dayjs'
+
+beforeEach(() => {
+  vi.useFakeTimers()
+  vi.setSystemTime(new Date('2026-07-22T12:00:00+08:00'))
+})
+
+afterEach(() => {
+  vi.useRealTimers()
+})
 
 describe('日期工具函数测试', () => {
   describe('dayjs 基础功能', () => {
@@ -73,15 +82,15 @@ describe('日期工具函数测试', () => {
 
   describe('时间戳转换', () => {
     it('应该正确转换时间戳到日期', () => {
-      const timestamp = 1711209600000 // 2024-03-24 00:00:00
+      const timestamp = Date.parse('2024-03-24T00:00:00+08:00')
       const date = dayjs(timestamp)
       expect(date.format('YYYY-MM-DD')).toBe('2024-03-24')
     })
 
     it('应该正确转换日期到时间戳', () => {
-      const date = dayjs('2024-03-24')
+      const date = dayjs('2024-03-24T00:00:00+08:00')
       const timestamp = date.valueOf()
-      expect(timestamp).toBe(1711209600000)
+      expect(timestamp).toBe(Date.parse('2024-03-24T00:00:00+08:00'))
     })
 
     it('应该正确获取相对时间', () => {

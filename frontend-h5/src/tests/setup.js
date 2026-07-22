@@ -77,21 +77,6 @@ vi.stubGlobal('location', {
   hash: ''
 })
 
-// Mock document
-vi.stubGlobal('document', {
-  ...document,
-  querySelector: vi.fn(),
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-  createElement: vi.fn(() => ({
-    style: {},
-    classList: { add: vi.fn(), remove: vi.fn() },
-    appendChild: vi.fn(),
-    removeChild: vi.fn()
-  })),
-  getElementById: vi.fn()
-})
-
 // Mock Vant components
 vi.mock('vant', async () => {
   const actual = await vi.importActual('vant')

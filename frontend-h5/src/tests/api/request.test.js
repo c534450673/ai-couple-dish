@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mock axios
 vi.mock('axios', () => ({
@@ -19,6 +19,11 @@ vi.mock('axios', () => ({
 describe('API Request Module', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+  })
+
+  afterEach(async () => {
+    const { resetRequestState } = await import('@/api/request')
+    resetRequestState()
   })
 
   describe('BASE_URL Configuration', () => {
