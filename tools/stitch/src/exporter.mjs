@@ -68,6 +68,50 @@ function toErrorDetails(error) {
   };
 }
 
+function isTransientReadError(error, operation) {
+  if (error?.recoverable === true) return true;
+  const message = (error?.message || String(error)).toLowerCase();
+  if (message.includes("service is currently unavailable")) return true;
+  return (
+    operation === "get_screen" &&
+    message.includes("request contains an invalid argument")
+  );
+}
+
+async function readWithRetry(
+  operation,
+  context,
+  { maxAttempts, sleep, write }
+) {
+  const started = performance.now();
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (!isTransientReadError(error, context.operation) || attempt === maxAttempts) {
+        throw error;
+      }
+      const delayMs = 1000 * attempt;
+      const details = toErrorDetails(error);
+      logEvent(
+        "stitch.export.read",
+        {
+          result: "retry",
+          ...context,
+          attempt,
+          delayMs,
+          errorName: details.name,
+          errorMessage: details.message,
+          durationMs: Math.round(performance.now() - started)
+        },
+        write
+      );
+      await sleep(delayMs);
+    }
+  }
+  throw new Error("Unreachable Stitch export read retry state");
+}
+
 function redactStagingPath(error, stagingRoot) {
   if (error && typeof error.message === "string") {
     error.message = error.message.replaceAll(stagingRoot, "[STAGING]");
@@ -144,8 +188,15 @@ export async function exportDesignProject(
   state,
   outputRoot,
   fetchImpl = fetch,
-  write = line => process.stderr.write(line + String.fromCharCode(10))
+  write = line => process.stderr.write(line + String.fromCharCode(10)),
+  {
+    maxReadAttempts = 3,
+    sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds))
+  } = {}
 ) {
+  if (!Number.isInteger(maxReadAttempts) || maxReadAttempts < 1) {
+    throw new Error("maxReadAttempts must be a positive integer");
+  }
   await mkdir(outputRoot, { recursive: true });
   const stagingRoot = await mkdtemp(join(outputRoot, ".stitch-export-"));
 
@@ -153,11 +204,74 @@ export async function exportDesignProject(
     await mkdir(join(stagingRoot, "screenshots"));
     await mkdir(join(stagingRoot, "html"));
     const projectHandles = new Map();
+    const projectScreenIndexes = new Map();
     function projectFor(projectId) {
       if (!projectHandles.has(projectId)) {
         projectHandles.set(projectId, sdk.project(projectId));
       }
       return projectHandles.get(projectId);
+    }
+    async function screenFor(projectId, screenId) {
+      const project = projectFor(projectId);
+      if (typeof project.screens === "function") {
+        if (!projectScreenIndexes.has(projectId)) {
+          const started = performance.now();
+          logEvent(
+            "stitch.export.project-screens",
+            { result: "started", projectId },
+            write
+          );
+          projectScreenIndexes.set(
+            projectId,
+            readWithRetry(
+              () => project.screens(),
+              { operation: "list_screens", projectId },
+              { maxAttempts: maxReadAttempts, sleep, write }
+            ).then(
+              listedScreens => {
+                const index = new Map(
+                  listedScreens.map(screen => [screen.screenId, screen])
+                );
+                logEvent(
+                  "stitch.export.project-screens",
+                  {
+                    result: "ok",
+                    projectId,
+                    screenCount: index.size,
+                    durationMs: Math.round(performance.now() - started)
+                  },
+                  write
+                );
+                return index;
+              },
+              error => {
+                const details = toErrorDetails(error);
+                logEvent(
+                  "stitch.export.project-screens",
+                  {
+                    result: "error",
+                    projectId,
+                    errorName: details.name,
+                    errorMessage: details.message,
+                    durationMs: Math.round(performance.now() - started)
+                  },
+                  write
+                );
+                throw error;
+              }
+            )
+          );
+        }
+        const listedScreen = (await projectScreenIndexes.get(projectId)).get(
+          screenId
+        );
+        if (listedScreen) return listedScreen;
+      }
+      return readWithRetry(
+        () => project.getScreen(screenId),
+        { operation: "get_screen", projectId, screenId },
+        { maxAttempts: maxReadAttempts, sleep, write }
+      );
     }
     const screens = [];
     for (const [localId, reference] of Object.entries(state.screens)) {
@@ -176,7 +290,7 @@ export async function exportDesignProject(
         outputRoot: stagingRoot,
         fetchImpl,
         async getUrl() {
-          screen = await projectFor(projectId).getScreen(reference.screenId);
+          screen = await screenFor(projectId, reference.screenId);
           return screen.getImage();
         },
         write

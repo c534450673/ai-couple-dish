@@ -318,6 +318,165 @@ test("exportDesignProject reads each screen from its owning project", async () =
   assert.ok(memoryEvents.every(event => event.projectId === "project-2"));
 });
 
+test("exportDesignProject uses listed screen metadata before getScreen", async () => {
+  const root = await mkdtemp(join(tmpdir(), "stitch-export-listed-screens-"));
+  let listCalls = 0;
+  let getCalls = 0;
+  const sdk = {
+    project(projectId) {
+      assert.equal(projectId, "project-1");
+      return {
+        async screens() {
+          listCalls += 1;
+          return ["screen-1", "screen-2"].map(screenId => ({
+            screenId,
+            async getImage() {
+              return `https://assets.example/${screenId}/image?token=secret`;
+            },
+            async getHtml() {
+              return `https://assets.example/${screenId}/html?token=secret`;
+            }
+          }));
+        },
+        async getScreen() {
+          getCalls += 1;
+          throw new Error("get_screen rejects this valid listed screen");
+        }
+      };
+    }
+  };
+
+  const manifest = await exportDesignProject(
+    sdk,
+    makeState(),
+    root,
+    makeFetch(),
+    () => {}
+  );
+
+  assert.equal(manifest.screens.length, 2);
+  assert.equal(listCalls, 1);
+  assert.equal(getCalls, 0);
+});
+
+test("exportDesignProject retries transient project screen listing failures", async () => {
+  const root = await mkdtemp(join(tmpdir(), "stitch-export-list-retry-"));
+  const delays = [];
+  const lines = [];
+  let listCalls = 0;
+  const sdk = {
+    project() {
+      return {
+        async screens() {
+          listCalls += 1;
+          if (listCalls === 1) {
+            throw new Error("The service is currently unavailable");
+          }
+          return ["screen-1", "screen-2"].map(screenId => ({
+            screenId,
+            async getImage() {
+              return `https://assets.example/${screenId}/image`;
+            },
+            async getHtml() {
+              return `https://assets.example/${screenId}/html`;
+            }
+          }));
+        },
+        async getScreen() {
+          assert.fail("listed screens must avoid getScreen");
+        }
+      };
+    }
+  };
+
+  const manifest = await exportDesignProject(
+    sdk,
+    makeState(),
+    root,
+    makeFetch(),
+    line => lines.push(line),
+    { sleep: async delayMs => delays.push(delayMs) }
+  );
+
+  assert.equal(manifest.screens.length, 2);
+  assert.equal(listCalls, 2);
+  assert.deepEqual(delays, [1000]);
+  const retries = lines.map(line => JSON.parse(line)).filter(
+    event => event.event === "stitch.export.read" && event.result === "retry"
+  );
+  assert.deepEqual(
+    retries.map(event => [event.operation, event.projectId, event.attempt, event.delayMs]),
+    [["list_screens", "project-1", 1, 1000]]
+  );
+});
+
+test("exportDesignProject retries transient getScreen invalid argument failures", async () => {
+  const root = await mkdtemp(join(tmpdir(), "stitch-export-get-retry-"));
+  const delays = [];
+  let getCalls = 0;
+  const sdk = {
+    project() {
+      return {
+        async getScreen(screenId) {
+          getCalls += 1;
+          if (getCalls === 1) {
+            throw new Error("Request contains an invalid argument");
+          }
+          return {
+            async getImage() {
+              return `https://assets.example/${screenId}/image`;
+            },
+            async getHtml() {
+              return `https://assets.example/${screenId}/html`;
+            }
+          };
+        }
+      };
+    }
+  };
+
+  const manifest = await exportDesignProject(
+    sdk,
+    makeState(),
+    root,
+    makeFetch(),
+    () => {},
+    { sleep: async delayMs => delays.push(delayMs) }
+  );
+
+  assert.equal(manifest.screens.length, 2);
+  assert.equal(getCalls, 3);
+  assert.deepEqual(delays, [1000]);
+});
+
+test("exportDesignProject does not retry permanent screen read failures", async () => {
+  const root = await mkdtemp(join(tmpdir(), "stitch-export-no-retry-"));
+  let getCalls = 0;
+  const sdk = {
+    project() {
+      return {
+        async getScreen() {
+          getCalls += 1;
+          throw new Error("permission denied");
+        }
+      };
+    }
+  };
+
+  await assert.rejects(
+    exportDesignProject(
+      sdk,
+      makeState(),
+      root,
+      makeFetch(),
+      () => {},
+      { sleep: async () => assert.fail("permanent failures must not sleep") }
+    ),
+    /permission denied/
+  );
+  assert.equal(getCalls, 1);
+});
+
 test("exportDesignProject preserves the prior export on mid-download failure", async () => {
   const root = await mkdtemp(join(tmpdir(), "stitch-export-failure-"));
   const manifestPath = join(root, "manifest.json");
