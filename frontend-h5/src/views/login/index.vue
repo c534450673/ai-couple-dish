@@ -1,363 +1,140 @@
 <script setup>
 import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { showToast } from 'vant'
+import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { userApi } from '@/api'
+import { logUiEvent } from '@/composables/useStructuredLog'
 import AgreementDialog from '@/components/AgreementDialog.vue'
-import wechatIcon from '@/assets/images/wechat.svg'
-import appleIcon from '@/assets/images/apple.svg'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
-
-const phone = ref('')
-const verifyCode = ref('')
-const countdown = ref(0)
-const loading = ref(false)
+const mode = ref('login')
+const account = ref('')
+const password = ref('')
 const agreed = ref(false)
+const loading = ref(false)
+const errors = ref({})
+const unavailable = ref('')
 const showAgreementDialog = ref(false)
 const showPrivacyDialog = ref(false)
 
-let countdownTimer = null
-
-const sendVerifyCode = async () => {
-  if (!phone.value || phone.value.length !== 11) {
-    showToast('请输入正确的手机号')
-    return
-  }
-
-  try {
-    await userApi.sendVerifyCode(phone.value)
-    showToast('验证码已发送')
-    countdown.value = 60
-    startCountdown()
-  } catch (error) {
-    showToast(error.message || '发送失败')
-  }
+const safeRedirect = (candidate) => {
+  if (typeof candidate !== 'string' || !candidate.startsWith('/') || candidate.startsWith('//')) return '/home'
+  return router.resolve(candidate)?.matched?.length ? candidate : '/home'
 }
 
-const startCountdown = () => {
-  if (countdownTimer) {
-    clearInterval(countdownTimer)
+const validate = () => {
+  errors.value = {
+    ...(account.value.trim() ? {} : { account: '请输入账号' }),
+    ...(password.value ? {} : { password: '请输入密码' }),
+    ...(agreed.value ? {} : { agreement: '请先阅读并同意协议' })
   }
-  countdownTimer = setInterval(() => {
-    countdown.value--
-    if (countdown.value <= 0) {
-      clearInterval(countdownTimer)
-      countdownTimer = null
-    }
-  }, 1000)
+  return Object.keys(errors.value).length === 0
 }
 
-const handleLogin = async () => {
-  if (!agreed.value) {
-    showToast('请先同意用户协议')
-    return
-  }
+const submit = async () => {
+  if (loading.value || !validate()) return
 
-  if (!phone.value || phone.value.length !== 11) {
-    showToast('请输入正确的手机号')
-    return
-  }
-
-  if (!verifyCode.value || verifyCode.value.length !== 6) {
-    showToast('请输入6位验证码')
-    return
-  }
-
+  const startedAt = Date.now()
   loading.value = true
+  unavailable.value = ''
+  const operation = mode.value === 'login' ? 'login' : 'register'
   try {
-    await userStore.registerByPhone(phone.value, verifyCode.value)
-    const redirect = route.query.redirect || '/home'
-    router.push(redirect)
+    const result = await userStore[operation]({ account: account.value.trim(), password: password.value })
+    if (result.status === 'unavailable' && result.reason === 'PASSWORD_AUTH_NOT_SUPPORTED') {
+      unavailable.value = '密码登录/注册暂不可用，当前服务端未提供该认证能力'
+      logUiEvent(`auth.${operation}`, {
+        module: 'auth',
+        operation,
+        result: 'unavailable',
+        durationMs: Date.now() - startedAt,
+        errorCode: result.reason,
+        userId: 'anonymous'
+      })
+      return
+    }
+
+    if (result.status === 'authenticated') {
+      router.push(safeRedirect(route.query.redirect))
+      return
+    }
+
+    logUiEvent(`auth.${operation}`, {
+      module: 'auth', operation, result: 'unexpected_result', durationMs: Date.now() - startedAt, userId: 'anonymous'
+    })
   } catch (error) {
-    showToast(error.message || '操作失败')
+    unavailable.value = '暂时无法处理请求，请稍后再试'
+    logUiEvent(`auth.${operation}`, {
+      module: 'auth', operation, result: 'failed', durationMs: Date.now() - startedAt,
+      errorCode: error?.code || 'UNKNOWN', userId: 'anonymous'
+    })
   } finally {
     loading.value = false
   }
 }
 
-const wechatLogin = () => {
-  showToast('请在微信中打开')
-}
-
-const appleLogin = () => {
-  showToast('Apple登录开发中')
-}
-
-const showAgreement = () => {
-  showAgreementDialog.value = true
-}
-
-const showPrivacy = () => {
-  showPrivacyDialog.value = true
+const switchMode = (nextMode) => {
+  mode.value = nextMode
+  unavailable.value = ''
+  errors.value = {}
 }
 </script>
 
 <template>
-  <div class="login-page">
-    <!-- 顶部 Logo -->
-    <div class="login-hero">
-      <div class="logo">
-        <van-icon
-          name="like"
-          size="40"
-        />
-      </div>
-      <h1 class="title">
-        情侣私密菜单
-      </h1>
-      <p class="subtitle">
-        记录我们的美食之旅
-      </p>
-    </div>
+  <main class="login-page">
+    <section class="login-hero" aria-labelledby="login-title">
+      <div class="cosmos-mark" aria-hidden="true"><span></span><i></i></div>
+      <p class="eyebrow">Couple Cosmos</p>
+      <h1 id="login-title" class="title">登录我们的宇宙</h1>
+      <p class="subtitle">用已开通的账号连接只属于你们的星球</p>
+    </section>
 
-    <!-- 表单卡片 -->
-    <div class="login-card">
-      <van-field
-        v-model="phone"
-        class="field"
-        type="tel"
-        maxlength="11"
-        placeholder="请输入手机号"
-        :border="false"
-      >
-        <template #left-icon>
-          <van-icon name="phone-o" />
-        </template>
-      </van-field>
-
-      <div class="code-row">
-        <van-field
-          v-model="verifyCode"
-          class="field"
-          type="digit"
-          maxlength="6"
-          placeholder="请输入验证码"
-          :border="false"
-        >
-          <template #left-icon>
-            <van-icon name="shield-o" />
-          </template>
-        </van-field>
-        <button
-          class="code-btn"
-          :disabled="countdown > 0"
-          @click="sendVerifyCode"
-        >
-          {{ countdown > 0 ? `${countdown}s` : '发送验证码' }}
-        </button>
+    <section class="login-panel" aria-label="账号登录">
+      <div class="mode-switch" role="tablist" aria-label="认证方式">
+        <button :class="{ active: mode === 'login' }" type="button" role="tab" @click="switchMode('login')">登录</button>
+        <button :class="{ active: mode === 'register' }" type="button" role="tab" @click="switchMode('register')">注册</button>
       </div>
 
-      <button
-        class="submit-btn"
-        :class="{ loading }"
-        @click="handleLogin"
-      >
-        登录 / 注册
+      <label class="field-label" for="account">账号</label>
+      <input id="account" v-model.trim="account" data-test="account-input" class="auth-input" autocomplete="username" placeholder="输入账号" :aria-invalid="Boolean(errors.account)">
+      <p v-if="errors.account" data-test="account-error" class="field-error">{{ errors.account }}</p>
+
+      <label class="field-label" for="password">密码</label>
+      <input id="password" v-model="password" data-test="password-input" class="auth-input" type="password" autocomplete="current-password" placeholder="输入密码" :aria-invalid="Boolean(errors.password)">
+      <p v-if="errors.password" data-test="password-error" class="field-error">{{ errors.password }}</p>
+
+      <label class="agreement-row">
+        <input v-model="agreed" data-test="agreement-input" type="checkbox">
+        <span>我已阅读并同意 <button type="button" @click="showAgreementDialog = true">用户协议</button> 与 <button type="button" @click="showPrivacyDialog = true">隐私政策</button></span>
+      </label>
+      <p v-if="errors.agreement" class="field-error">{{ errors.agreement }}</p>
+
+      <button data-test="auth-submit" class="auth-submit" type="button" :disabled="loading" @click="submit">
+        {{ loading ? '处理中...' : (mode === 'login' ? '登录' : '注册') }}
       </button>
+      <p v-if="unavailable" data-test="auth-unavailable" class="unavailable" role="status">{{ unavailable }}</p>
+    </section>
 
-      <div class="agree">
-        <van-checkbox
-          v-model="agreed"
-          shape="round"
-          icon-size="14"
-        >
-          我已阅读并同意<a
-            href="#"
-            @click.prevent="showAgreement"
-          >《用户协议》</a>和<a
-            href="#"
-            @click.prevent="showPrivacy"
-          >《隐私政策》</a>
-        </van-checkbox>
-      </div>
-    </div>
-
-    <!-- 第三方登录 -->
-    <div class="third-party">
-      <div class="divider">
-        <span>其他登录方式</span>
-      </div>
-      <div class="icons">
-        <button
-          class="icon-btn"
-          @click="wechatLogin"
-        >
-          <img
-            :src="wechatIcon"
-            alt="微信"
-          >
-        </button>
-        <button
-          class="icon-btn"
-          @click="appleLogin"
-        >
-          <img
-            :src="appleIcon"
-            alt="Apple"
-          >
-        </button>
-      </div>
-    </div>
-
-    <AgreementDialog
-      v-model:show="showAgreementDialog"
-      type="agreement"
-    />
-    <AgreementDialog
-      v-model:show="showPrivacyDialog"
-      type="privacy"
-    />
-  </div>
+    <p class="login-footer">Couple Cosmos · 私人银河已加密</p>
+    <AgreementDialog v-model:show="showAgreementDialog" type="agreement" />
+    <AgreementDialog v-model:show="showPrivacyDialog" type="privacy" />
+  </main>
 </template>
 
 <style lang="scss" scoped>
-.login-page {
-  min-height: 100vh;
-  background: $gradient-romance;
-  padding: 72px $page-padding 48px;
-  display: flex;
-  flex-direction: column;
-}
-
-.login-hero {
-  text-align: center;
-  margin-bottom: 40px;
-
-  .logo {
-    width: 84px;
-    height: 84px;
-    margin: 0 auto 20px;
-    border-radius: $radius-xl;
-    background: $color-surface-lowest;
-    color: $color-primary;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: $shadow-card;
-  }
-
-  .title {
-    font-size: $fs-headline;
-    font-weight: $fw-bold;
-    color: $color-on-surface;
-    letter-spacing: 0;
-    margin-bottom: $space-2;
-  }
-
-  .subtitle {
-    font-size: $fs-label;
-    color: $color-on-surface-variant;
-  }
-}
-
-.login-card {
-  @include card($radius-xl, $space-6);
-
-  .field {
-    background: $color-surface-low;
-    border-radius: $radius-md;
-    margin-bottom: $space-3;
-    padding: 6px 12px;
-
-    :deep(.van-field__left-icon) { color: $color-primary; margin-right: 8px; }
-  }
-
-  .code-row {
-    display: flex;
-    align-items: center;
-    gap: $space-3;
-    margin-bottom: $space-5;
-
-    .field { flex: 1; margin-bottom: 0; }
-
-    .code-btn {
-      flex-shrink: 0;
-      height: 40px;
-      padding: 0 14px;
-      border: none;
-      border-radius: $radius-pill;
-      background: $color-primary-container;
-      color: $color-on-primary-container;
-      font-size: $fs-caption;
-      font-weight: $fw-semibold;
-      cursor: pointer;
-
-      &:disabled { opacity: 0.6; }
-    }
-  }
-
-  .submit-btn {
-    width: 100%;
-    height: 50px;
-    @include btn-primary;
-    font-size: $fs-body;
-    box-shadow: $shadow-float;
-    cursor: pointer;
-    transition: opacity $transition-base;
-
-    &:active { opacity: 0.9; }
-    &.loading { opacity: 0.7; pointer-events: none; }
-  }
-
-  .agree {
-    margin-top: $space-4;
-    display: flex;
-    justify-content: center;
-
-    :deep(.van-checkbox__label) {
-      font-size: $fs-caption;
-      color: $color-on-surface-variant;
-    }
-
-    a { color: $color-primary; }
-  }
-}
-
-.third-party {
-  margin-top: auto;
-  padding-top: 40px;
-
-  .divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: $space-4;
-    margin-bottom: $space-5;
-    color: $color-on-surface-variant;
-    font-size: $fs-caption;
-
-    &::before,
-    &::after {
-      content: '';
-      width: 48px;
-      height: 1px;
-      background: $color-outline-variant;
-    }
-  }
-
-  .icons {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-
-    .icon-btn {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      border: none;
-      background: $color-surface-lowest;
-      box-shadow: $shadow-card;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-
-      img { width: 26px; height: 26px; }
-    }
-  }
-}
+.login-page { min-height: 100vh; padding: 52px $page-padding 32px; display: flex; flex-direction: column; background: radial-gradient(circle at 50% 0, #292044 0, $cosmos-bg 48%); color: $cosmos-text; }
+.login-hero { text-align: center; margin: 24px 0 36px; }
+.cosmos-mark { position: relative; width: 88px; height: 88px; margin: 0 auto 20px; border: 1px solid rgba(255,255,255,.18); border-radius: 50%; .span, span, i { position: absolute; display: block; border-radius: 50%; } span { width: 28px; height: 28px; top: 18px; left: 18px; background: $cosmos-primary; box-shadow: 0 0 26px rgba(255,93,115,.55); } i { width: 23px; height: 23px; right: 17px; bottom: 19px; background: $cosmos-secondary; box-shadow: 0 0 24px rgba(84,232,211,.48); } }
+.eyebrow { color: $cosmos-primary; font-size: $fs-label; font-weight: $fw-semibold; margin-bottom: $space-2; }
+.title { font-size: 28px; line-height: 36px; margin: 0 0 $space-2; }
+.subtitle, .login-footer { color: $cosmos-text-muted; font-size: $fs-label; }
+.login-panel { @include glass(.74); padding: $space-6; border-radius: 8px; box-shadow: $shadow-card; }
+.mode-switch { display: grid; grid-template-columns: 1fr 1fr; margin-bottom: $space-6; padding: 3px; border-radius: 8px; background: rgba(255,255,255,.07); button { min-height: 44px; border: 0; border-radius: 6px; background: transparent; color: $cosmos-text-muted; font-size: $fs-body; cursor: pointer; &.active { background: $cosmos-primary; color: #fff; } } }
+.field-label { display: block; margin: $space-4 0 $space-2; font-size: $fs-label; color: $cosmos-text-muted; }
+.auth-input { width: 100%; min-height: 48px; padding: 0 $space-3; color: $cosmos-text; background: rgba(8, 13, 30, .58); border: 1px solid $cosmos-border; border-radius: 6px; outline: none; &:focus { border-color: $cosmos-secondary; } &[aria-invalid='true'] { border-color: $color-error; } }
+.field-error { min-height: 18px; margin-top: $space-1; color: $color-error; font-size: $fs-caption; }
+.agreement-row { display: flex; gap: $space-2; align-items: flex-start; margin-top: $space-5; color: $cosmos-text-muted; font-size: $fs-caption; line-height: 20px; input { margin-top: 3px; accent-color: $cosmos-primary; } button { border: 0; padding: 0; color: $cosmos-primary; background: transparent; font: inherit; } }
+.auth-submit { width: 100%; min-height: 48px; margin-top: $space-5; border: 0; border-radius: 6px; background: $cosmos-primary; color: #fff; font-size: $fs-body; font-weight: $fw-semibold; cursor: pointer; &:disabled { opacity: .58; cursor: not-allowed; } }
+.unavailable { margin-top: $space-3; color: $cosmos-gold; font-size: $fs-label; line-height: 20px; }
+.login-footer { margin-top: auto; padding-top: 28px; text-align: center; }
 </style>

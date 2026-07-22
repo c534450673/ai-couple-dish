@@ -43,6 +43,14 @@ export const coupleApi = {
   generateCoupleCode() {
     return api.post('/couple/generateCode')
   },
+  // 获取当前情侣码及其有效期状态
+  getCodeInfo() {
+    return api.get('/couple/codeInfo')
+  },
+  // 重新生成情侣码，服务端会将恋爱开始日重置为当天
+  refreshCode() {
+    return api.post('/couple/refreshCode')
+  },
   // 绑定情侣
   bindCouple(data) {
     return api.post('/couple/bind', data)

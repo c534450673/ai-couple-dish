@@ -19,6 +19,15 @@ export const useUserStore = defineStore('user', {
   },
 
   actions: {
+    // 当前服务端没有密码认证合同，必须在发起请求前明确拒绝。
+    async login() {
+      return { status: 'unavailable', reason: 'PASSWORD_AUTH_NOT_SUPPORTED' }
+    },
+
+    async register() {
+      return { status: 'unavailable', reason: 'PASSWORD_AUTH_NOT_SUPPORTED' }
+    },
+
     // 检查登录状态
     checkLoginStatus() {
       const token = localStorage.getItem('token')
@@ -70,6 +79,12 @@ export const useUserStore = defineStore('user', {
       localStorage.setItem('token', token)
       localStorage.setItem('userInfo', JSON.stringify(userInfo))
       this.getCoupleInfo()
+    },
+
+    // 绑定接口已返回情侣快照时，先持久化它再允许路由继续。
+    setCoupleInfo(coupleInfo) {
+      this.coupleInfo = coupleInfo
+      localStorage.setItem('coupleInfo', JSON.stringify(coupleInfo))
     },
 
     // 获取情侣信息
