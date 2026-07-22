@@ -30,8 +30,15 @@ function sanitizeErrorMessage(error, prompt = "") {
   const message = error?.message || String(error);
   return message
     .replaceAll(prompt, "[REDACTED_PROMPT]")
-    .replace(/(https?:\/\/[^\s?]+)\?[^\s]*/gi, "$1")
-    .replace(/\b(api[_-]?key|token|authorization|secret)=([^\s,&]+)/gi, "$1=[REDACTED]");
+    .replace(/((?:https?:\/\/[^\s?]+|\/[^\s?]+))\?[^\s]*/gi, "$1")
+    .replace(/\bauthorization\s*:\s*bearer\s+[^\s,;]+/gi, "Authorization: Bearer [REDACTED]")
+    .replace(/\b(api[_-]?key|token|secret)\s*([=:])\s*[^\s,&;]+/gi, "$1$2[REDACTED]");
+}
+
+function validateMaxAttempts(maxAttempts) {
+  if (!Number.isInteger(maxAttempts) || maxAttempts < 1) {
+    throw new Error("maxAttempts must be a positive integer");
+  }
 }
 
 function logLifecycle({
@@ -106,6 +113,7 @@ export async function regenerateScreens(
     write
   } = {}
 ) {
+  validateMaxAttempts(maxAttempts);
   let state = ensureProjectRegistry(initialState);
   const targets = validateRegenerationTargets(localIds, state);
   const projectId = targets.projectId;

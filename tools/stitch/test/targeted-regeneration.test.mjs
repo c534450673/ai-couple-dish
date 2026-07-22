@@ -105,6 +105,19 @@ test("validation rejects capacity before any SDK call", async () => {
   assert.equal(sdk.calls.length, 0);
 });
 
+for (const invalidMaxAttempts of [0, -1, Number.NaN, 1.5]) {
+  test(`validation rejects invalid maxAttempts ${String(invalidMaxAttempts)} before SDK calls`, async () => {
+    const sdk = makeSdk(async () => assert.fail("SDK must not be called"));
+    await assert.rejects(
+      regenerateScreens(sdk, makeState(), ["bind"], noDelay({
+        maxAttempts: invalidMaxAttempts
+      })),
+      /maxAttempts must be a positive integer/
+    );
+    assert.equal(sdk.calls.length, 0);
+  });
+}
+
 test("regeneration replaces only requested ids after checkpoint", async () => {
   const before = makeState();
   const checkpoints = [];
@@ -282,4 +295,27 @@ test("generation logs an error lifecycle event", async () => {
   ));
   assert.match(captured.error.message, /broken/);
   assert.ok(captured.events.some(event => event.result === "error" && event.stage === "generate"));
+});
+
+test("generation redacts colon-form secrets and relative URL queries from errors", async () => {
+  const captured = await captureEvents(options => regenerateScreens(
+    makeSdk(async prompt => {
+      throw new Error(
+        `connection refused for ${prompt}; Authorization: Bearer sk-live-123 token: raw-token apiKey: raw-key secret: raw-secret /generate?trace=private`
+      );
+    }),
+    makeState(),
+    ["bind"],
+    options
+  ));
+
+  assert.match(captured.error.message, /connection refused/);
+  const serialized = JSON.stringify(captured.events);
+  for (const sensitiveValue of [
+    "sk-live-123", "raw-token", "raw-key", "raw-secret", "trace=private",
+    getRegenerationPrompt("bind")
+  ]) {
+    assert.equal(serialized.includes(sensitiveValue), false);
+  }
+  assert.match(serialized, /connection refused/);
 });
