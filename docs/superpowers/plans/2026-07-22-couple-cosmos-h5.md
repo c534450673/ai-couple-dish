@@ -35,6 +35,9 @@
 - 菜单、菜谱和笔记草稿先保存在按用户 ID 隔离的 localStorage 命名空间；服务端草稿同步属于后端迁移计划。
 - 解绑页面只展示现有申请/确认能力和“数据归属规则待服务端合同确认”的不可提交状态；不得自行承诺删除或保留政策。
 - 首页实现任务开始前，`Selected home variant` 必须为 `home-emotion`、`home-food` 或 `home-memory`；值为 `none` 时该任务必须停止。
+- Task 3 为尚未进入实现任务的目标路由统一使用一个 Couple Cosmos `UnavailableView`，只显示明确的“功能建设中”状态；Task 4-8 创建真实页面后必须逐一替换，不得将占位页保留到 Task 10。
+- Task 3 的路由守卫只负责保留并编码 `redirect`；登录和绑定成功消费该参数属于 Task 4，避免在应用壳任务中修改认证页面。
+- Task 3 的情侣门禁读取启动时已 hydration 的 Pinia/localStorage 快照；不得在每次导航中请求情侣接口。服务端刷新继续由应用启动流程负责，Task 4 再覆盖绑定后的同步与重定向竞态。
 
 ## Baseline Evidence
 
@@ -286,6 +289,7 @@ git commit -m "design: 建立Couple Cosmos H5视觉基础"
 - Create: `frontend-h5/src/composables/useAsyncResource.js`
 - Create: `frontend-h5/src/composables/useReducedMotion.js`
 - Create: `frontend-h5/src/composables/useStructuredLog.js`
+- Create: `frontend-h5/src/views/states/UnavailableView.vue`
 - Modify: `frontend-h5/src/components/AppTabbar.vue`
 - Modify: `frontend-h5/src/App.vue`
 - Modify: `frontend-h5/src/router/index.js`
@@ -337,7 +341,9 @@ expect(tabs).toEqual([
 /states
 ```
 
-守卫先检查 token，再检查 `requiresCouple`；未绑定跳转 `/bind?redirect=<encoded fullPath>`，登录/绑定成功恢复原路由。
+对应业务页面尚未由后续任务创建时，路由先指向 `UnavailableView`；每个后续页面任务必须在同一提交中替换对应路由。Task 3 不修改登录或绑定页面，只验证 `redirect` 查询参数被正确保留。
+
+守卫先检查 token，再检查 `requiresCouple`；未绑定跳转 `/bind?redirect=<encoded fullPath>`。Task 4 的登录/绑定成功流程必须消费该参数并恢复原路由。
 
 - [ ] **Step 5: 验证**
 
