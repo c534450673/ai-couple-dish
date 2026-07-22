@@ -30,7 +30,6 @@ describe('Couple Cosmos 路由', () => {
       ['Menu', '/menu'],
       ['MenuAdd', '/menu/add'],
       ['MenuDetail', '/menu/:id'],
-      ['RecipeAdd', '/recipe/add'],
       ['Anniversary', '/anniversary'],
       ['Feed', '/feed'],
       ['Note', '/note'],
@@ -49,6 +48,12 @@ describe('Couple Cosmos 路由', () => {
       ['Legal', '/legal'],
       ['States', '/states']
     ]))
+    expect(routes.find((route) => route.path === '/recipe/add').redirect).toBe('/recipes/new')
+    expect(routes.find((route) => route.name === 'Recipes').component.toString()).toContain('views/recipe/index.vue')
+    expect(routes.find((route) => route.name === 'RecipeDetail').component.toString()).toContain('views/recipe/detail.vue')
+    expect(routes.find((route) => route.name === 'RecipeNew').component.toString()).toContain('views/recipe/add.vue')
+    expect(routes.find((route) => route.name === 'RecipeEdit').component.toString()).toContain('views/recipe/add.vue')
+    expect(routes.find((route) => route.name === 'MenuEdit').path).toBe('/menu/:id/edit')
   })
 
   it('五个主入口编码精确 tab meta，登录和绑定关闭 shell', () => {

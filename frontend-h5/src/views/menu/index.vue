@@ -1,495 +1,217 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { showToast } from 'vant'
-import { menuApi } from '@/api'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useMenuStore } from '@/stores/menu'
+import { logUiEvent } from '@/composables/useStructuredLog'
 
-const route = useRoute()
-const activeTab = ref(route.query.type || 'wantToGo')
-const menuList = ref([])
-const stats = ref({})
-const loading = ref(false)
-const refreshing = ref(false)
-const finished = ref(false)
-const error = ref(false)
-const isSkeleton = ref(true)
+const router = useRouter()
+const store = useMenuStore()
+const keyword = ref('')
+const status = ref('')
+const retryUsed = ref(false)
+const pageSize = 10
 
-const PAGE_SIZE = 10
-let currentPage = 1
+const statusOptions = [
+  { label: '全部', value: '' },
+  { label: '想去', value: 0 },
+  { label: '去过', value: 1 },
+  { label: '种草', value: 2 }
+]
 
-const getStatusText = (status) => {
-  const map = { 0: '想去', 1: '去过', 2: '种草' }
-  return map[status] || '想去'
+const statusText = (value) => ({ 0: '想去', 1: '去过', 2: '种草' }[value] || '未分类')
+
+const listParams = (page = 1) => ({
+  ...(status.value !== '' ? { status: status.value } : {}),
+  ...(keyword.value.trim() ? { keyword: keyword.value.trim() } : {}),
+  sortBy: 'time',
+  sortOrder: 'desc',
+  page,
+  pageSize
+})
+
+const loadList = async () => {
+  retryUsed.value = false
+  await store.fetchList(listParams())
 }
 
-const getParams = () => {
-  if (activeTab.value === 'favorite') {
-    return { isFavorite: 1, page: currentPage, pageSize: PAGE_SIZE }
-  }
-  const statusMap = { wantToGo: 0, beenTo: 1, recommended: 2 }
-  return { status: statusMap[activeTab.value] ?? 0, page: currentPage, pageSize: PAGE_SIZE }
+const handleSearch = () => {
+  logUiEvent('menu.search.submitted', {
+    module: 'menu_list', operation: 'search', result: 'submitted', durationMs: 0,
+    hasKeyword: Boolean(keyword.value.trim())
+  })
+  return loadList()
 }
 
-const loadMenuList = async (isRefresh = false) => {
-  if (loading.value && !isRefresh && !refreshing.value) return
-
-  try {
-    const params = getParams()
-    const res = await menuApi.getMenuList(params)
-    const list = res.data?.list || []
-    const total = res.data?.total || 0
-
-    if (isRefresh || refreshing.value) {
-      menuList.value = list
-      currentPage = 1
-    } else {
-      menuList.value.push(...list)
-    }
-
-    finished.value = menuList.value.length >= total
-    error.value = false
-  } catch (err) {
-    error.value = true
-    if (!isRefresh && !refreshing.value) {
-      showToast('加载失败')
-    }
-  } finally {
-    loading.value = false
-    refreshing.value = false
-    isSkeleton.value = false
-  }
+const selectStatus = (value) => {
+  status.value = value
+  return loadList()
 }
 
-const loadStats = async () => {
-  try {
-    const res = await menuApi.getMenuStats()
-    stats.value = res.data || {}
-  } catch (err) {
-    console.error('加载统计失败', err)
-  }
+const loadMore = () => {
+  if (!store.pagination.hasMore || store.listStatus === 'loading') return
+  return store.fetchList(listParams(store.pagination.page + 1), { append: true })
 }
 
-const onLoad = () => {
-  currentPage++
-  loadMenuList()
-}
-
-const onRefresh = () => {
-  finished.value = false
-  refreshing.value = true
-  isSkeleton.value = true
-  currentPage = 1
-  loadMenuList(true)
-}
-
-const onTabChange = () => {
-  menuList.value = []
-  finished.value = false
-  error.value = false
-  isSkeleton.value = true
-  currentPage = 1
-  loading.value = false
-  loadMenuList()
-}
-
-const handleLike = async (item) => {
-  try {
-    await menuApi.likeMenu(item.id)
-    showToast('点赞成功')
-  } catch (err) {
-    showToast('操作失败')
-  }
-}
-
-const handleFavorite = async (item) => {
-  try {
-    await menuApi.favoriteMenu(item.id)
-    showToast(item.isFavorite ? '取消收藏' : '收藏成功')
-    onRefresh()
-  } catch (err) {
-    showToast('操作失败')
-  }
+const retryOnce = () => {
+  if (retryUsed.value) return
+  retryUsed.value = true
+  logUiEvent('menu.list.retry', {
+    module: 'menu_list', operation: 'retry', result: 'requested', durationMs: 0,
+    attempt: 1
+  })
+  return store.retryList()
 }
 
 onMounted(() => {
-  loadMenuList()
-  loadStats()
+  Promise.allSettled([loadList(), store.fetchStats()])
 })
 </script>
 
 <template>
-  <div class="menu-page">
-    <!-- 顶部标题 -->
-    <header class="menu-topbar">
-      <h1 class="page-title">
-        私密菜单
-      </h1>
+  <main class="menu-library">
+    <header class="page-heading">
+      <div>
+        <p class="eyebrow">COUPLE COSMOS</p>
+        <h1>我们的美食库</h1>
+      </div>
+      <button
+        class="icon-action"
+        type="button"
+        aria-label="添加餐厅"
+        @click="router.push('/menu/add')"
+      >
+        <van-icon name="plus" />
+      </button>
     </header>
 
-    <!-- 标签筛选 -->
-    <van-tabs
-      v-model:active="activeTab"
-      sticky
-      offset-top="52"
-      class="menu-tabs"
-      @change="onTabChange"
-    >
-      <van-tab
-        title="想去"
-        name="wantToGo"
-      />
-      <van-tab
-        title="去过"
-        name="beenTo"
-      />
-      <van-tab
-        title="种草"
-        name="recommended"
-      />
-      <van-tab
-        title="收藏"
-        name="favorite"
-      />
-    </van-tabs>
+    <form class="search-row" @submit.prevent="handleSearch">
+      <van-icon name="search" aria-hidden="true" />
+      <input v-model="keyword" type="search" placeholder="按餐厅名搜索" aria-label="按餐厅名搜索">
+      <button type="submit">搜索</button>
+    </form>
 
-    <div class="menu-body">
-      <!-- 统计卡片 -->
-      <div class="stats-card">
-        <div class="stat-item">
-          <span class="label">想去</span>
-          <span class="value">{{ stats.wantToGoCount || 0 }}</span>
-        </div>
-        <i class="stat-divider" />
-        <div class="stat-item">
-          <span class="label">去过</span>
-          <span class="value">{{ stats.beenToCount || 0 }}</span>
-        </div>
-        <i class="stat-divider" />
-        <div class="stat-item">
-          <span class="label">收藏</span>
-          <span class="value">{{ stats.recommendedCount || 0 }}</span>
-        </div>
-      </div>
-
-      <!-- 下拉刷新 + 无限滚动列表 -->
-      <van-pull-refresh
-        v-model:loading="refreshing"
-        @refresh="onRefresh"
+    <nav class="segments" aria-label="菜单状态">
+      <button
+        v-for="option in statusOptions"
+        :key="String(option.value)"
+        type="button"
+        :class="{ active: status === option.value }"
+        @click="selectStatus(option.value)"
       >
-        <van-list
-          v-model:loading="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          :error="error"
-          error-text="加载失败，点击重新加载"
-          @load="onLoad"
+        {{ option.label }}
+      </button>
+    </nav>
+
+    <p class="contract-note">
+      <van-icon name="info-o" /> 收藏筛选暂不可用；后端图片合同缺失，列表统一显示本地占位。
+    </p>
+
+    <section class="stats-band" aria-label="菜单统计">
+      <div><span>全部</span><strong>{{ store.stats.totalCount || 0 }}</strong></div>
+      <div><span>想去</span><strong>{{ store.stats.wantToGoCount || 0 }}</strong></div>
+      <div><span>去过</span><strong>{{ store.stats.visitedCount || 0 }}</strong></div>
+      <div><span>种草</span><strong>{{ store.stats.seededCount || 0 }}</strong></div>
+    </section>
+
+    <section v-if="store.listStatus === 'loading' && !store.items.length" class="state-panel" role="status">
+      <span class="spinner" aria-hidden="true" />
+      <p>正在同步美食记录</p>
+    </section>
+
+    <section v-else-if="store.listStatus === 'error'" class="state-panel" role="alert">
+      <h2>{{ store.error?.code === 2006 ? '需要先绑定情侣关系' : '美食库加载失败' }}</h2>
+      <p>请检查网络后重试，本页只允许一次显式重试。</p>
+      <button data-test="menu-retry" type="button" :disabled="retryUsed" @click="retryOnce">
+        {{ retryUsed ? '已重试' : '重新加载' }}
+      </button>
+    </section>
+
+    <section v-else-if="store.listStatus === 'empty'" class="state-panel">
+      <h2>还没有餐厅记录</h2>
+      <p>把下一次约会想去的地方放进这里。</p>
+      <button data-test="menu-empty-add" type="button" @click="router.push('/menu/add')">添加餐厅</button>
+    </section>
+
+    <section v-else class="menu-grid" aria-live="polite">
+      <article
+        v-for="item in store.items"
+        :key="item.id"
+        class="menu-card"
+        tabindex="0"
+        @click="router.push(`/menu/${item.id}`)"
+        @keydown.enter="router.push(`/menu/${item.id}`)"
+      >
+        <div
+          :data-test="`menu-placeholder-${item.id}`"
+          class="menu-placeholder cosmos-media cosmos-media--place"
+          data-contract="backend-image-missing"
+          role="img"
+          :aria-label="`${item.restaurantName} 本地餐厅占位图`"
         >
-          <!-- 骨架屏 -->
-          <template v-if="isSkeleton && menuList.length === 0">
-            <div
-              v-for="n in 3"
-              :key="n"
-              class="menu-card skeleton"
-            >
-              <div class="cover sk-block" />
-              <div class="body">
-                <div class="sk-line sk-title" />
-                <div class="sk-line sk-sub" />
-              </div>
+          <span>本地占位</span>
+        </div>
+        <div class="menu-card__body">
+          <div class="card-title-row">
+            <div>
+              <span class="status-chip">{{ statusText(item.status) }}</span>
+              <h2>{{ item.restaurantName }}</h2>
             </div>
-          </template>
-
-          <!-- 菜单列表 -->
-          <div
-            v-for="item in menuList"
-            :key="item.id"
-            class="menu-card"
-            @click="$router.push(`/menu/${item.id}`)"
-          >
-            <div class="cover">
-              <img
-                v-if="item.photoUrl"
-                v-lazy="item.photoUrl"
-                :alt="item.restaurantName"
-              >
-              <van-icon
-                v-else
-                name="shop-o"
-                size="40"
-                color="#d6c1c5"
-              />
-              <span class="status-pill">{{ getStatusText(item.status) }}</span>
-            </div>
-            <div class="body">
-              <div class="title-row">
-                <h3 class="name">
-                  {{ item.restaurantName }}
-                </h3>
-                <span
-                  v-if="item.rating"
-                  class="rating"
-                >
-                  <van-icon
-                    name="star"
-                    size="13"
-                  />{{ item.rating }}
-                </span>
-              </div>
-              <div
-                v-if="item.dishName"
-                class="dish"
-              >
-                <van-icon
-                  name="fire-o"
-                  size="13"
-                /> 推荐：{{ item.dishName }}
-              </div>
-              <div class="footer">
-                <div class="meta">
-                  <span v-if="item.price"><van-icon
-                    name="coupon-o"
-                    size="13"
-                  /> {{ item.price }}</span>
-                  <span v-if="item.location"><van-icon
-                    name="location-o"
-                    size="13"
-                  /> {{ item.location }}</span>
-                </div>
-                <div class="actions">
-                  <van-icon
-                    name="like-o"
-                    size="18"
-                    @click.stop="handleLike(item)"
-                  />
-                  <van-icon
-                    name="star-o"
-                    size="18"
-                    @click.stop="handleFavorite(item)"
-                  />
-                </div>
-              </div>
-            </div>
+            <strong v-if="item.rating" class="rating"><van-icon name="star" /> {{ item.rating }}</strong>
           </div>
-
-          <van-empty
-            v-if="menuList.length === 0 && !loading"
-            description="暂无餐厅记录"
-          >
-            <van-button
-              type="primary"
-              round
-              size="small"
-              @click="$router.push('/menu/add')"
-            >
-              添加餐厅
-            </van-button>
-          </van-empty>
-        </van-list>
-      </van-pull-refresh>
-    </div>
-
-    <!-- 添加按钮 -->
-    <button
-      class="fab"
-      @click="$router.push('/menu/add')"
-    >
-      <van-icon
-        name="plus"
-        size="26"
-      />
-    </button>
-
-  </div>
+          <p v-if="item.dishName" class="dish-name">{{ item.dishName }}</p>
+          <div class="card-meta">
+            <span v-if="item.dishCategory">{{ item.dishCategory }}</span>
+            <span v-if="item.price">¥{{ item.price }}</span>
+            <span>{{ item.likeCount || 0 }} 赞</span>
+          </div>
+        </div>
+      </article>
+      <button
+        v-if="store.pagination.hasMore"
+        class="load-more"
+        type="button"
+        :disabled="store.listStatus === 'loading'"
+        @click="loadMore"
+      >
+        {{ store.listStatus === 'loading' ? '加载中' : '加载更多' }}
+      </button>
+    </section>
+  </main>
 </template>
 
 <style lang="scss" scoped>
-.menu-page {
-  min-height: 100vh;
-  background: $color-background;
-  padding-bottom: 96px;
-}
-
-.menu-topbar {
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  @include glass(0.7);
-
-  .page-title {
-    font-size: $fs-title;
-    font-weight: $fw-semibold;
-    color: $color-on-surface;
-  }
-}
-
-.menu-tabs {
-  :deep(.van-tabs__wrap) {
-    background: $color-background;
-  }
-}
-
-.menu-body {
-  padding: $space-4 $page-padding 0;
-}
-
-.stats-card {
-  display: flex;
-  align-items: center;
-  @include card($radius-lg, $space-4);
-  margin-bottom: $space-5;
-
-  .stat-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: $space-1;
-
-    .value { font-size: $fs-headline; font-weight: $fw-bold; color: $color-primary; line-height: 1; }
-    .label { font-size: $fs-caption; color: $color-on-surface-variant; }
-  }
-
-  .stat-divider { width: 1px; height: 28px; background: $color-surface-variant; }
-}
-
-.menu-card {
-  background: $color-surface-lowest;
-  border-radius: $radius-lg;
-  box-shadow: $shadow-card;
-  overflow: hidden;
-  margin-bottom: $space-4;
-  transition: transform $transition-base;
-
-  &:active { transform: scale(0.98); }
-
-  .cover {
-    position: relative;
-    height: 168px;
-    background: $color-surface-low;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    img { width: 100%; height: 100%; object-fit: cover; }
-
-    .status-pill {
-      position: absolute;
-      top: $space-3;
-      right: $space-3;
-      padding: 3px 12px;
-      font-size: $fs-caption;
-      color: $color-primary;
-      @include glass(0.82);
-      border-radius: $radius-pill;
-    }
-  }
-
-  .body { padding: $space-4; }
-
-  .title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: $space-2;
-
-    .name {
-      font-size: $fs-title;
-      font-weight: $fw-semibold;
-      color: $color-on-surface;
-      @include ellipsis;
-    }
-
-    .rating {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      font-size: $fs-label;
-      font-weight: $fw-semibold;
-      color: $color-secondary;
-      margin-left: $space-2;
-    }
-  }
-
-  .dish {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: $fs-label;
-    color: $color-on-surface-variant;
-    margin-bottom: $space-3;
-    @include ellipsis;
-    .van-icon { color: $color-primary; }
-  }
-
-  .footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    .meta {
-      display: flex;
-      gap: $space-4;
-
-      span {
-        display: flex;
-        align-items: center;
-        gap: 3px;
-        font-size: $fs-caption;
-        color: $color-on-surface-variant;
-      }
-    }
-
-    .actions {
-      display: flex;
-      gap: $space-4;
-      color: $color-primary;
-    }
-  }
-}
-
-// 骨架屏
-.skeleton {
-  pointer-events: none;
-
-  .sk-block,
-  .sk-line {
-    background: linear-gradient(90deg, $color-surface-high 25%, $color-surface-low 50%, $color-surface-high 75%);
-    background-size: 200% 100%;
-    animation: sk-loading 1.5s infinite;
-  }
-
-  .sk-block { height: 168px; }
-  .body { padding: $space-4; }
-  .sk-line { height: 14px; border-radius: 4px; }
-  .sk-title { width: 55%; margin-bottom: $space-2; }
-  .sk-sub { width: 75%; height: 12px; }
-}
-
-@keyframes sk-loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.fab {
-  position: fixed;
-  right: $page-padding;
-  bottom: 84px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: none;
-  background: $color-primary;
-  color: $color-on-primary;
-  box-shadow: $shadow-float;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 30;
-  transition: transform $transition-base;
-
-  &:active { transform: scale(0.92); }
-}
+.menu-library { min-height: 100vh; padding: $space-6 $page-padding 112px; color: $cosmos-text; background: $cosmos-bg; }
+.page-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: $space-5; }
+.eyebrow { margin-bottom: $space-1; color: $cosmos-secondary; font-size: $fs-caption; font-weight: $fw-semibold; }
+h1 { font-size: 28px; line-height: 36px; }
+.icon-action { width: 44px; min-width: 44px; min-height: 44px; border: 1px solid $cosmos-border; border-radius: 50%; background: $cosmos-surface-raised; color: $cosmos-primary; font-size: 20px; }
+.search-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: $space-2; align-items: center; padding: $space-2 $space-3; border: 1px solid $cosmos-border; border-radius: 8px; background: $cosmos-surface-raised; }
+.search-row input { min-width: 0; min-height: 40px; border: 0; outline: 0; background: transparent; color: $cosmos-text; font-size: $fs-body; }
+.search-row button, .state-panel button { min-height: 40px; padding: 0 $space-4; border: 0; border-radius: 6px; background: $cosmos-primary; color: #fff; }
+.segments { display: flex; gap: $space-2; margin: $space-4 0; overflow-x: auto; }
+.segments button { min-height: 40px; padding: 0 $space-4; white-space: nowrap; border: 1px solid $cosmos-border; border-radius: 999px; background: transparent; color: $cosmos-text-muted; }
+.segments button.active { border-color: $cosmos-primary; background: $cosmos-primary; color: #fff; }
+.contract-note { display: flex; gap: $space-2; align-items: flex-start; padding: $space-3; border-left: 3px solid $cosmos-gold; color: $cosmos-text-muted; background: rgba(255, 200, 87, .08); font-size: $fs-caption; line-height: 20px; }
+.stats-band { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: $space-5 0; overflow: hidden; border: 1px solid $cosmos-border; border-radius: 8px; background: $cosmos-border; }
+.stats-band div { display: grid; gap: 2px; padding: $space-3 $space-1; text-align: center; background: $cosmos-surface; }
+.stats-band span { color: $cosmos-text-muted; font-size: $fs-caption; }
+.stats-band strong { font-size: $fs-title; }
+.state-panel { display: grid; min-height: 280px; gap: $space-3; place-content: center; justify-items: center; padding: $space-6; text-align: center; }
+.state-panel h2 { font-size: $fs-title; }
+.state-panel p { max-width: 300px; color: $cosmos-text-muted; }
+.state-panel button:disabled { opacity: .5; }
+.spinner { width: 30px; height: 30px; border: 3px solid $cosmos-border; border-top-color: $cosmos-secondary; border-radius: 50%; animation: cosmos-orbit $cosmos-duration-slow linear infinite; }
+.menu-grid { display: grid; gap: $space-4; }
+.menu-card { overflow: hidden; border: 1px solid $cosmos-border; border-radius: 8px; background: $cosmos-surface; cursor: pointer; }
+.menu-placeholder { position: relative; aspect-ratio: 16 / 9; }
+.menu-placeholder span { position: absolute; right: $space-3; bottom: $space-3; padding: 3px $space-2; border-radius: 4px; background: rgba(8, 12, 37, .78); color: $cosmos-text-muted; font-size: $fs-caption; }
+.menu-card__body { padding: $space-4; }
+.card-title-row { display: flex; gap: $space-3; align-items: flex-start; justify-content: space-between; }
+.card-title-row h2 { margin-top: $space-2; font-size: $fs-title; }
+.status-chip { color: $cosmos-secondary; font-size: $fs-caption; }
+.rating { color: $cosmos-gold; white-space: nowrap; font-size: $fs-label; }
+.dish-name { margin-top: $space-3; color: $cosmos-text; }
+.card-meta { display: flex; gap: $space-3; margin-top: $space-3; color: $cosmos-text-muted; font-size: $fs-caption; }
+.load-more { width: 100%; min-height: 44px; border: 1px solid $cosmos-border; border-radius: 6px; background: $cosmos-surface-raised; color: $cosmos-text; }
+@media (min-width: 720px) { .menu-library { max-width: 980px; margin: 0 auto; } .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .load-more { grid-column: 1 / -1; } }
 </style>

@@ -75,8 +75,17 @@ export const coupleApi = {
 
 export const menuApi = {
   // 获取菜单列表
-  getMenuList(params) {
-    return api.get('/menu/list', { params })
+  getMenuList(params = {}) {
+    const supportedKeys = [
+      'status', 'keyword', 'dishCategory', 'minPrice', 'maxPrice', 'minRating',
+      'sortBy', 'sortOrder', 'page', 'pageSize'
+    ]
+    const supportedParams = Object.fromEntries(
+      supportedKeys
+        .filter(key => params[key] !== undefined && params[key] !== null && params[key] !== '')
+        .map(key => [key, params[key]])
+    )
+    return api.get('/menu/list', { params: supportedParams })
   },
   // 获取菜单详情
   getMenuDetail(id) {
@@ -98,13 +107,66 @@ export const menuApi = {
   likeMenu(id) {
     return api.post(`/menu/like/${id}`)
   },
+  // 取消点赞菜单
+  unlikeMenu(id) {
+    return api.delete(`/menu/unlike/${id}`)
+  },
   // 收藏菜单
   favoriteMenu(id) {
     return api.post(`/menu/favorite/${id}`)
   },
+  // 取消收藏菜单
+  unfavoriteMenu(id) {
+    return api.delete(`/menu/unfavorite/${id}`)
+  },
   // 获取菜单统计
   getMenuStats() {
     return api.get('/menu/stats')
+  }
+}
+
+export const recipeApi = {
+  createRecipe(data) {
+    return api.post('/recipe/create', data)
+  },
+  updateRecipe(id, data) {
+    return api.put(`/recipe/update/${id}`, data)
+  },
+  deleteRecipe(id) {
+    return api.delete(`/recipe/delete/${id}`)
+  },
+  publishRecipe(id) {
+    return api.post(`/recipe/publish/${id}`)
+  },
+  getRecipeDetail(id) {
+    return api.get(`/recipe/detail/${id}`)
+  },
+  getMyRecipes(params) {
+    return api.get('/recipe/my', { params })
+  },
+  getCoupleRecipes(params) {
+    return api.get('/recipe/couple', { params })
+  },
+  getRecommendedRecipes(params) {
+    return api.get('/recipe/recommended', { params })
+  },
+  searchRecipes(params) {
+    return api.get('/recipe/search', { params })
+  },
+  getCollectedRecipes(params) {
+    return api.get('/recipe/collected', { params })
+  },
+  likeRecipe(id) {
+    return api.post(`/recipe/like/${id}`)
+  },
+  unlikeRecipe(id) {
+    return api.delete(`/recipe/like/${id}`)
+  },
+  collectRecipe(id) {
+    return api.post(`/recipe/collect/${id}`)
+  },
+  uncollectRecipe(id) {
+    return api.delete(`/recipe/collect/${id}`)
   }
 }
 

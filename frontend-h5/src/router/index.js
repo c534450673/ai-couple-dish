@@ -60,6 +60,12 @@ export const routes = [
     meta: { title: '添加菜单', requiresAuth: true, requiresCouple: true, shell: true }
   },
   {
+    path: '/menu/:id/edit',
+    name: 'MenuEdit',
+    component: () => import('@/views/menu/add.vue'),
+    meta: { title: '编辑菜单', requiresAuth: true, requiresCouple: true, shell: true }
+  },
+  {
     path: '/menu/:id',
     name: 'MenuDetail',
     component: () => import('@/views/menu/detail.vue'),
@@ -67,9 +73,7 @@ export const routes = [
   },
   {
     path: '/recipe/add',
-    name: 'RecipeAdd',
-    component: () => import('@/views/recipe/add.vue'),
-    meta: { title: '创建菜谱', requiresAuth: true, requiresCouple: true, shell: true }
+    redirect: '/recipes/new'
   },
   {
     path: '/anniversary',
@@ -98,25 +102,25 @@ export const routes = [
   {
     path: '/recipes',
     name: 'Recipes',
-    component: unavailableView,
+    component: () => import('@/views/recipe/index.vue'),
     meta: { title: '菜谱', requiresAuth: true, requiresCouple: true, shell: true }
   },
   {
     path: '/recipes/new',
     name: 'RecipeNew',
-    component: unavailableView,
+    component: () => import('@/views/recipe/add.vue'),
     meta: { title: '新建菜谱', requiresAuth: true, requiresCouple: true, shell: true }
   },
   {
     path: '/recipes/:id/edit',
     name: 'RecipeEdit',
-    component: unavailableView,
+    component: () => import('@/views/recipe/add.vue'),
     meta: { title: '编辑菜谱', requiresAuth: true, requiresCouple: true, shell: true }
   },
   {
     path: '/recipes/:id',
     name: 'RecipeDetail',
-    component: unavailableView,
+    component: () => import('@/views/recipe/detail.vue'),
     meta: { title: '菜谱详情', requiresAuth: true, requiresCouple: true, shell: true }
   },
   {
