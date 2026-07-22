@@ -1,0 +1,26 @@
+[
+  {
+    "path": "src/assets/cosmos/food-hero.webp",
+    "source": "wikimedia-commons-cc0-1.0",
+    "designReference": "docs/design/stitch/couple-cosmos/html/menu-list.html:170",
+    "licenseEvidence": "docs/legal/assets/cosmos-runtime-assets.md#food-hero",
+    "sha256": "7ab23f5a4cc01787a939eeccdaabcedf2e09b7c66f975cecad250bccabc55cab",
+    "usage": ["menu-list", "menu-detail"]
+  },
+  {
+    "path": "src/assets/cosmos/partner-avatar.webp",
+    "source": "wikimedia-commons-cc0-1.0",
+    "designReference": "docs/design/stitch/couple-cosmos/html/home-emotion.html:192",
+    "licenseEvidence": "docs/legal/assets/cosmos-runtime-assets.md#partner-avatar",
+    "sha256": "29f11a65dd2b7d30ad33e63c86ee4230a61c65c422484f04c6a33c25b236ae6a",
+    "usage": ["home-emotion", "menu-detail"]
+  },
+  {
+    "path": "src/assets/cosmos/place-restaurant.webp",
+    "source": "wikimedia-commons-cc0-1.0",
+    "designReference": "docs/design/stitch/couple-cosmos/html/menu-list.html:196",
+    "licenseEvidence": "docs/legal/assets/cosmos-runtime-assets.md#place-restaurant",
+    "sha256": "9a7069baa9a1f32062c5e307aea4fa060eb9374aab01b509ddd26a3047498073",
+    "usage": ["menu-list", "map"]
+  }
+]

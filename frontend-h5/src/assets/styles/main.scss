@@ -1,5 +1,5 @@
 // =============================================================
-// 全局样式 — 基于 Stitch "Intimate Culinary Romance" 设计系统
+// 全局样式 — Couple Cosmos 深色设计系统
 // 设计令牌（变量/mixin）已由 vite additionalData 自动注入（tokens.scss）
 // =============================================================
 
@@ -29,6 +29,20 @@ button { font-family: inherit; }
 
 // ---------- Vant 主题覆盖 ----------
 :root {
+  --cosmos-bg: #{$cosmos-bg};
+  --cosmos-surface: #{$cosmos-surface};
+  --cosmos-surface-raised: #{$cosmos-surface-raised};
+  --cosmos-surface-elevated: #{$cosmos-surface-elevated};
+  --cosmos-primary: #{$cosmos-primary};
+  --cosmos-secondary: #{$cosmos-secondary};
+  --cosmos-gold: #{$cosmos-gold};
+  --cosmos-card-radius: #{$cosmos-card-radius};
+  --cosmos-sheet-radius: #{$cosmos-sheet-radius};
+  --cosmos-min-touch-target: #{$cosmos-min-touch-target};
+  --cosmos-duration-fast: #{$cosmos-duration-fast};
+  --cosmos-duration-base: #{$cosmos-duration-base};
+  --cosmos-duration-slow: #{$cosmos-duration-slow};
+
   // 基础色
   --van-primary-color: #{$color-primary};
   --van-danger-color: #{$color-error};
@@ -45,7 +59,7 @@ button { font-family: inherit; }
   --van-radius-md: #{$radius-md};
   --van-radius-lg: #{$radius-lg};
 
-  // 按钮（pill + 玫瑰主色）
+  // 按钮（pill + Cosmos 主色）
   --van-button-border-radius: #{$radius-pill};
   --van-button-primary-background: #{$color-primary};
   --van-button-primary-border-color: #{$color-primary};
@@ -66,8 +80,8 @@ button { font-family: inherit; }
   --van-tab-active-text-color: #{$color-primary};
   --van-tab-text-color: #{$color-on-surface-variant};
 
-  // TabBar（玻璃态）
-  --van-tabbar-background: rgba(255, 248, 245, 0.85);
+  // TabBar（深色玻璃态）
+  --van-tabbar-background: rgba(20, 27, 51, 0.85);
   --van-tabbar-item-active-color: #{$color-primary};
   --van-tabbar-item-text-color: #{$color-on-surface-variant};
   --van-tabbar-item-active-background: transparent;
@@ -224,7 +238,7 @@ button { font-family: inherit; }
 .mb-12 { margin-bottom: 12px; }
 .mb-16 { margin-bottom: 16px; }
 
-.text-pink { color: $color-primary; }  // 旧别名 → 新主色
+.text-pink { color: $color-primary; }  // 兼容旧页面别名
 .text-primary { color: $color-primary; }
 .text-muted { color: $color-on-surface-variant; }
 .text-gray { color: $color-on-surface-variant; }

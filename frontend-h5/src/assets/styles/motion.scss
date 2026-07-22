@@ -1,0 +1,33 @@
+@keyframes cosmos-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cosmos-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cosmos-breathe {
+  0%, 100% { opacity: 0.72; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+@keyframes cosmos-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.cosmos-motion-fade { animation: cosmos-fade $cosmos-duration-fast $ease-standard both; }
+.cosmos-motion-rise { animation: cosmos-rise $cosmos-duration-base $ease-standard both; }
+.cosmos-motion-breathe { animation: cosmos-breathe $cosmos-duration-slow $ease-standard infinite; }
+.cosmos-motion-orbit { animation: cosmos-orbit $cosmos-duration-slow linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
