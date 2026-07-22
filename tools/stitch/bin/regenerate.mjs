@@ -33,8 +33,8 @@ function sanitizeErrorMessage(error, config) {
   return message
     .replace(/((?:https?:\/\/[^\s?]+|\/[^\s?]+))\?[^\s]*/gi, "$1")
     .replace(
-      /\bauthorization\s*[:=]\s*bearer\s+(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[^\s,;&]+)/gi,
-      "Authorization: Bearer [REDACTED]"
+      /\bauthorization(\s*[:=]\s*)(?:[a-z][a-z0-9._~-]*\s+)?(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[^\s,;&]+)/gi,
+      "Authorization$1[REDACTED]"
     )
     .replace(
       /((?:")?(?:stitch_api_key|stitch_access_token|api[_-]?key|token|authorization|secret|prompt)(?:")?\s*[:=]\s*)"(?:\\.|[^"\\])*"/gi,

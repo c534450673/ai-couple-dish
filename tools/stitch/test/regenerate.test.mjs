@@ -180,7 +180,9 @@ test("runner redacts environment credentials and credential-shaped fields", asyn
             "configuration failed: environment-api-key-private " +
             "environment-access-token-private STITCH_API_KEY=named-key-private " +
             "STITCH_ACCESS_TOKEN: named-token-private Authorization: Bearer bearer-private " +
-            "apiKey: camel-key-private token=token-private secret: secret-private"
+            "apiKey: camel-key-private token=token-private secret: secret-private " +
+            "Authorization: Basic dXNlcjpwYXNz; context remains; " +
+            "Authorization=opaque-authorization-private"
           );
         }
       }
@@ -189,6 +191,7 @@ test("runner redacts environment credentials and credential-shaped fields", asyn
 
     assert.equal(result.exitCode, 1);
     assert.match(final.errorMessage, /configuration failed/);
+    assert.match(final.errorMessage, /context remains/);
     for (const sensitiveValue of [
       "environment-api-key-private",
       "environment-access-token-private",
@@ -197,7 +200,9 @@ test("runner redacts environment credentials and credential-shaped fields", asyn
       "bearer-private",
       "camel-key-private",
       "token-private",
-      "secret-private"
+      "secret-private",
+      "dXNlcjpwYXNz",
+      "opaque-authorization-private"
     ]) {
       assert.doesNotMatch(final.errorMessage, new RegExp(sensitiveValue));
     }
