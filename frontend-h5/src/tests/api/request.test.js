@@ -1,29 +1,59 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-// Mock axios
-vi.mock('axios', () => ({
-  default: {
-    create: vi.fn(() => ({
-      interceptors: {
-        request: { use: vi.fn() },
-        response: { use: vi.fn() }
-      },
-      get: vi.fn(),
-      post: vi.fn(),
-      put: vi.fn(),
-      delete: vi.fn()
-    }))
+const transport = vi.hoisted(() => {
+  const state = {
+    requestHandler: null,
+    responseErrorHandler: null
   }
-}))
+  const api = vi.fn()
+  api.interceptors = {
+    request: {
+      use: vi.fn((handler) => {
+        state.requestHandler = handler
+      })
+    },
+    response: {
+      use: vi.fn((_, errorHandler) => {
+        state.responseErrorHandler = errorHandler
+      })
+    }
+  }
+  api.get = vi.fn()
+  api.post = vi.fn()
+  api.put = vi.fn()
+  api.delete = vi.fn()
+
+  class CancelToken {
+    constructor(executor) {
+      executor(vi.fn())
+    }
+  }
+
+  return {
+    api,
+    axios: {
+      CancelToken,
+      create: vi.fn(() => api),
+      isCancel: vi.fn(() => false)
+    },
+    state
+  }
+})
+
+vi.mock('axios', () => ({ default: transport.axios }))
+
+import { resetRequestState } from '@/api/request'
 
 describe('API Request Module', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useFakeTimers()
+    resetRequestState()
   })
 
-  afterEach(async () => {
-    const { resetRequestState } = await import('@/api/request')
+  afterEach(() => {
     resetRequestState()
+    vi.useRealTimers()
   })
 
   describe('BASE_URL Configuration', () => {
@@ -32,6 +62,42 @@ describe('API Request Module', () => {
       // For now, we verify the module structure
       const apiModule = await import('@/api/request')
       expect(apiModule).toBeDefined()
+    })
+  })
+
+  describe('retry state reset', () => {
+    it('should cancel pending retry and prevent the old request from running', async () => {
+      const config = { headers: {}, method: 'get', url: '/test' }
+      transport.state.requestHandler(config)
+      const error = { config, response: { status: 503 } }
+
+      const retryResult = transport.state.responseErrorHandler(error).catch((caughtError) => caughtError)
+      expect(config.__retryCount).toBe(1)
+
+      resetRequestState()
+      await vi.advanceTimersByTimeAsync(1000)
+
+      await expect(retryResult).resolves.toBe(error)
+      expect(transport.api).not.toHaveBeenCalled()
+      expect(config.__retryCount).toBeUndefined()
+    })
+
+    it('should log retry metadata without the request path', async () => {
+      const logSpy = vi.spyOn(console, 'info').mockImplementation(() => {})
+      const config = { headers: {}, method: 'get', url: '/private-path' }
+      transport.state.requestHandler(config)
+
+      const retryPromise = transport.state.responseErrorHandler({ config, response: { status: 503 } })
+      await vi.advanceTimersByTimeAsync(1000)
+      await retryPromise
+
+      expect(logSpy).toHaveBeenCalledWith('[request.retry.scheduled]', {
+        attempt: 1,
+        delayMs: 1000,
+        reason: 'retryable_http_status'
+      })
+      expect(JSON.stringify(logSpy.mock.calls)).not.toContain('/private-path')
+      logSpy.mockRestore()
     })
   })
 })

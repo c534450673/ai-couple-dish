@@ -3,6 +3,7 @@
  */
 import { defineStore } from 'pinia'
 import { userApi, coupleApi } from '@/api'
+import { resetRequestState } from '@/api/request'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -86,6 +87,11 @@ export const useUserStore = defineStore('user', {
 
     // 登出
     async logout() {
+      resetRequestState()
+      console.info('[user.logout.started]', {
+        hasCoupleInfo: Boolean(this.coupleInfo),
+        hasSession: Boolean(this.token)
+      })
       try {
         await userApi.logout()
       } catch (error) {

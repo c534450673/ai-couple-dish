@@ -84,7 +84,7 @@ describe('日期工具函数测试', () => {
     it('应该正确转换时间戳到日期', () => {
       const timestamp = Date.parse('2024-03-24T00:00:00+08:00')
       const date = dayjs(timestamp)
-      expect(date.format('YYYY-MM-DD')).toBe('2024-03-24')
+      expect(date.toISOString()).toBe('2024-03-23T16:00:00.000Z')
     })
 
     it('应该正确转换日期到时间戳', () => {

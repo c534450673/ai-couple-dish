@@ -14,7 +14,12 @@ vi.mock('@/api', () => ({
   }
 }))
 
+vi.mock('@/api/request', () => ({
+  resetRequestState: vi.fn()
+}))
+
 import { userApi } from '@/api'
+import { resetRequestState } from '@/api/request'
 
 describe('用户 Store 补充测试', () => {
   beforeEach(() => {
@@ -41,6 +46,7 @@ describe('用户 Store 补充测试', () => {
     await userStore.logout()
 
     expect(userApi.logout).toHaveBeenCalledOnce()
+    expect(resetRequestState).toHaveBeenCalledOnce()
     expect(userStore.token).toBe('')
     expect(userStore.userInfo).toBeNull()
     expect(userStore.coupleInfo).toBeNull()

@@ -26,6 +26,11 @@ const api = axios.create({
 // 请求去重 Map
 const pendingRequestMap = new Map()
 
+// 重试状态；重置后使用新代际，旧请求不得再次发起网络调用。
+let requestStateVersion = 0
+const retryTimerCancels = new Map()
+const retryConfigs = new Set()
+
 // 简单内存缓存 (用于 GET 请求)
 const memoryCache = new Map()
 const DEFAULT_CACHE_TIME = 5 * 60 * 1000 // 5分钟缓存
@@ -84,6 +89,25 @@ const clearExpiredCache = () => {
   }
 }
 
+const clearRetryConfig = (config) => {
+  if (!config) return
+  retryConfigs.delete(config)
+  delete config.__retryCount
+  delete config.__requestStateVersion
+}
+
+const waitForRetry = (delay) => new Promise((resolve) => {
+  const timerId = setTimeout(() => {
+    retryTimerCancels.delete(timerId)
+    resolve(true)
+  }, delay)
+  retryTimerCancels.set(timerId, () => {
+    clearTimeout(timerId)
+    retryTimerCancels.delete(timerId)
+    resolve(false)
+  })
+})
+
 // 定时清理过期缓存；测试环境由 afterEach 显式重置状态，避免遗留计时器。
 let cacheCleanupTimer = null
 if (import.meta.env.MODE !== 'test') {
@@ -97,6 +121,8 @@ if (import.meta.env.MODE !== 'test') {
 // 请求拦截器
 api.interceptors.request.use(
   (config) => {
+    config.__requestStateVersion = requestStateVersion
+
     // 检查缓存
     const cachedData = getCache(config)
     if (cachedData) {
@@ -124,6 +150,7 @@ api.interceptors.response.use(
   (response) => {
     // 移除已完成请求
     removePendingRequest(response.config)
+    clearRetryConfig(response.config)
 
     // 如果是缓存的响应，直接返回
     if (response.cached) {
@@ -158,6 +185,10 @@ api.interceptors.response.use(
     }
 
     const config = error.config
+    if (!config || config.__requestStateVersion !== requestStateVersion) {
+      if (config) clearRetryConfig(config)
+      return Promise.reject(error)
+    }
     const retryConfig = {
       ...DEFAULT_RETRY_CONFIG,
       ...config.retryConfig
@@ -167,6 +198,7 @@ api.interceptors.response.use(
     if (config && !config.__retryCount) {
       config.__retryCount = 0
     }
+    retryConfigs.add(config)
 
     if (
       config &&
@@ -179,11 +211,21 @@ api.interceptors.response.use(
 
       // 延迟重试
       const delay = retryConfig.retryDelay * config.__retryCount
-      await new Promise(resolve => setTimeout(resolve, delay))
+      const shouldRetry = await waitForRetry(delay)
+      if (!shouldRetry || config.__requestStateVersion !== requestStateVersion) {
+        clearRetryConfig(config)
+        return Promise.reject(error)
+      }
 
-      console.log(`请求重试 ${config.__retryCount}/${retryConfig.retries}: ${config.url}`)
+      console.info('[request.retry.scheduled]', {
+        attempt: config.__retryCount,
+        delayMs: delay,
+        reason: error.response ? 'retryable_http_status' : 'network_error'
+      })
       return api(config)
     }
+
+    clearRetryConfig(config)
 
     if (error.response) {
       if (error.response.status === 401) {
@@ -210,8 +252,19 @@ export const resetRequestState = () => {
   const state = {
     cacheCleanupScheduled: cacheCleanupTimer !== null,
     memoryCacheEntries: memoryCache.size,
-    pendingRequests: pendingRequestMap.size
+    pendingRequests: pendingRequestMap.size,
+    pendingRetries: retryTimerCancels.size
   }
+  for (const cancelPendingRequest of pendingRequestMap.values()) {
+    cancelPendingRequest('请求取消：请求状态已重置')
+  }
+  for (const cancelRetryTimer of retryTimerCancels.values()) {
+    cancelRetryTimer()
+  }
+  for (const config of retryConfigs) {
+    clearRetryConfig(config)
+  }
+  requestStateVersion++
   pendingRequestMap.clear()
   memoryCache.clear()
 
