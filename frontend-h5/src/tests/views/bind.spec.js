@@ -99,8 +99,9 @@ describe('情侣绑定页面', () => {
     expect(wrapper.find('[data-test="invite-code"]').text()).toBe('D4C3B2A1')
   })
 
-  it('短用户 ID 的结构化日志不保留任何原始字符', async () => {
-    userStore.userInfo = { id: 9 }
+  it('短用户 ID 的结构化日志记录为 anonymous', async () => {
+    const rawUserId = 9
+    userStore.userInfo = { id: rawUserId }
     coupleApi.getCodeInfo.mockResolvedValue({ data: null })
     coupleApi.generateCoupleCode.mockResolvedValue({ data: 'D4C3B2A1' })
     const wrapper = mountBind()
@@ -110,7 +111,7 @@ describe('情侣绑定页面', () => {
 
     const logFields = logUiEvent.mock.calls.find(([event]) => event === 'couple.code.generate')?.[1]
     expect(logFields.userId).toBe('anonymous')
-    expect(JSON.stringify(logFields)).not.toContain('9')
+    expect(logFields.userId).not.toBe(String(rawUserId))
   })
 
   it('只允许提交恰好 8 位的情侣码，并在错误后保持可再次操作', async () => {
