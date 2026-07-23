@@ -6,9 +6,10 @@ const mapApi = vi.hoisted(() => ({
   getMapRestaurants: vi.fn(),
   getNearbyRestaurants: vi.fn()
 }))
+const structuredLog = vi.hoisted(() => ({ logUiEvent: vi.fn() }))
 
 vi.mock('@/api', () => ({ mapApi }))
-vi.mock('@/composables/useStructuredLog', () => ({ logUiEvent: vi.fn() }))
+vi.mock('@/composables/useStructuredLog', () => structuredLog)
 
 import { useMapStore } from '@/stores/map'
 import MapView from '@/views/map/index.vue'
@@ -264,6 +265,65 @@ describe('地图真实降级', () => {
     expect(timedOut.get('[data-test="map-mode-list"]').attributes('aria-pressed')).toBe('true')
     expect(timeoutRuntime.event.removeListener).toHaveBeenCalledTimes(3)
     timedOut.unmount()
+  })
+
+  it('地图结构化日志仅包含允许字段且不泄露运行时敏感值', async () => {
+    const sentinels = {
+      key: 'MAP_KEY_SENTINEL_PRIVATE',
+      latitude: 81.23456789,
+      longitude: -171.98765432,
+      address: 'ADDRESS_SENTINEL_PRIVATE',
+      navigation: 'NAVIGATION_URL_SENTINEL_PRIVATE',
+      asyncError: 'ASYNC_ERROR_DETAIL_SENTINEL_PRIVATE'
+    }
+    vi.stubEnv('VITE_MAP_KEY', sentinels.key)
+    vi.stubGlobal('navigator', {
+      geolocation: {
+        getCurrentPosition: vi.fn(success => success({
+          coords: {
+            latitude: sentinels.latitude,
+            longitude: sentinels.longitude,
+            accuracy: 7
+          }
+        }))
+      }
+    })
+    const runtime = qqMapRuntime()
+    window.QQMap = runtime
+    mapApi.getMapRestaurants.mockResolvedValueOnce({
+      data: [{
+        id: 26,
+        restaurantName: sentinels.navigation,
+        address: sentinels.address,
+        latitude: sentinels.latitude,
+        longitude: sentinels.longitude
+      }]
+    })
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const wrapper = mount(MapView, { global: { plugins: [pinia] } })
+    await flush()
+
+    await wrapper.get('[data-test="map-item-26"]').trigger('click')
+    await flush()
+    expect(decodeURIComponent(wrapper.get('.detail-actions a').attributes('href')))
+      .toContain(sentinels.navigation)
+
+    runtime.emit('error', new Error(sentinels.asyncError))
+    await flush()
+
+    const allowedFields = [
+      'mode', 'sdkStage', 'permission', 'itemCount', 'durationMs', 'errorCode'
+    ].sort()
+    expect(structuredLog.logUiEvent).toHaveBeenCalled()
+    structuredLog.logUiEvent.mock.calls.forEach(([, fields]) => {
+      expect(Object.keys(fields).sort()).toEqual(allowedFields)
+    })
+    const serializedLogs = JSON.stringify(structuredLog.logUiEvent.mock.calls)
+    Object.values(sentinels).forEach((sentinel) => {
+      expect(serializedLogs).not.toContain(String(sentinel))
+    })
+    wrapper.unmount()
   })
 
   it('地图就绪前卸载会移除监听器并取消 render timeout', async () => {
