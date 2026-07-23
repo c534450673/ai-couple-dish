@@ -193,15 +193,18 @@ describe('用户 Store', () => {
 
   describe('updateUserInfo', () => {
     it('应该成功更新用户信息', async () => {
-      userStore.userInfo = { id: 1, nickName: '旧昵称' }
-      const updateData = { nickName: '新昵称' }
-      const response = { data: { id: 1, nickName: '新昵称' } }
+      userStore.userInfo = { id: 1, nickName: '旧昵称', avatarUrl: '/old.webp' }
+      const updateData = { nickName: '新昵称', avatarUrl: '/new.webp' }
+      const response = { data: null }
       userApi.updateUserInfo.mockResolvedValue(response)
 
       const result = await userStore.updateUserInfo(updateData)
 
       expect(result).toEqual(response)
       expect(userStore.userInfo.nickName).toBe('新昵称')
+      expect(userStore.userInfo.avatarUrl).toBe('/new.webp')
+      expect(userStore.userInfo.id).toBe(1)
+      expect(localStorage.getItem('userInfo')).toBe(JSON.stringify(userStore.userInfo))
     })
 
     it('更新失败时应该抛出错误', async () => {

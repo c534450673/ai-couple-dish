@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import { Lazyload } from 'vant'
 import router from './router'
 import App from './App.vue'
+import { useThemeStore } from './stores/theme'
 import 'vant/lib/index.css'
 import './assets/styles/main.scss'
 import './assets/styles/motion.scss'
@@ -19,6 +20,7 @@ const app = createApp(App)
 const pinia = createPinia()
 
 app.use(pinia)
+useThemeStore(pinia).initializeTheme()
 app.use(router)
 app.use(Lazyload)
 

@@ -18,6 +18,12 @@ const redactValue = (value, seen) => {
 
 export const redactSensitiveFields = (fields) => redactValue(fields, new WeakSet())
 
+export const normalizeUiErrorCode = (error, fallback = 'UNKNOWN_ERROR') => {
+  const candidate = error?.code ?? error?.response?.data?.code ?? error?.response?.status
+  const normalized = String(candidate ?? '').trim()
+  return /^[A-Za-z0-9_.-]{1,64}$/.test(normalized) ? normalized : fallback
+}
+
 export const logUiEvent = (event, fields = {}) => {
   console.info({
     event,

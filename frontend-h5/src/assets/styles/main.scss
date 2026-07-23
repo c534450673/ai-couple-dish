@@ -103,6 +103,50 @@ button { font-family: inherit; }
   --van-loading-spinner-color: #{$color-primary};
 }
 
+:root[data-theme='system-contrast'] {
+  --cosmos-bg: #000000;
+  --cosmos-surface: #101010;
+  --cosmos-surface-raised: #1c1c1c;
+  --cosmos-surface-elevated: #282828;
+  --cosmos-primary: #ff7082;
+  --cosmos-secondary: #72ffeb;
+  --cosmos-gold: #ffda73;
+  --van-background: #000000;
+  --van-background-2: #101010;
+  --van-text-color: #ffffff;
+  --van-text-color-2: #e8e8e8;
+  --van-border-color: rgba(255, 255, 255, 0.5);
+}
+
+:root[data-theme='system-contrast'] body,
+:root[data-theme='system-contrast'] #app {
+  background: #000000;
+  color: #ffffff;
+}
+
+:root[data-theme='system-contrast'] :is(
+  .cosmos-app-shell,
+  .settings-page,
+  .notification-page,
+  .legal-page,
+  .states-page
+) {
+  background: #000000;
+  color: #ffffff;
+}
+
+:root[data-theme='system-contrast'] :is(
+  .profile-panel,
+  .settings-section,
+  .edit-sheet,
+  .notification-card,
+  .legal-section,
+  .state-grid > article
+) {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: #101010;
+}
+
 #app {
   width: 100%;
   min-height: 100vh;

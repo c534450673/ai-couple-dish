@@ -4,6 +4,7 @@
 import { defineStore } from 'pinia'
 import { userApi, coupleApi } from '@/api'
 import { resetRequestState } from '@/api/request'
+import { logUiEvent, normalizeUiErrorCode } from '@/composables/useStructuredLog'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -96,17 +97,64 @@ export const useUserStore = defineStore('user', {
       }
     },
 
+    async fetchUserInfo() {
+      const startedAt = Date.now()
+      logUiEvent('settings.profile.load', {
+        module: 'settings',
+        operation: 'profile_load',
+        result: 'started',
+        durationMs: 0,
+        errorCode: 'NONE'
+      })
+      try {
+        const res = await userApi.getUserInfo()
+        this.userInfo = res.data
+        localStorage.setItem('userInfo', JSON.stringify(res.data))
+        logUiEvent('settings.profile.load', {
+          module: 'settings',
+          operation: 'profile_load',
+          result: 'success',
+          durationMs: Date.now() - startedAt,
+          errorCode: 'NONE'
+        })
+        return res
+      } catch (error) {
+        logUiEvent('settings.profile.load', {
+          module: 'settings',
+          operation: 'profile_load',
+          result: normalizeUiErrorCode(error) === '401' ? 'unauthorized' : 'error',
+          durationMs: Date.now() - startedAt,
+          errorCode: normalizeUiErrorCode(error)
+        })
+        throw error
+      }
+    },
+
     // 登出
     async logout() {
+      const startedAt = Date.now()
       resetRequestState()
-      console.info('[user.logout.started]', {
-        hasCoupleInfo: Boolean(this.coupleInfo),
-        hasSession: Boolean(this.token)
+      logUiEvent('settings.logout', {
+        module: 'settings',
+        operation: 'local_session_logout',
+        result: 'started',
+        durationMs: 0,
+        errorCode: 'NONE',
+        cleanupItemCount: 3
       })
+      let remoteErrorCode = 'NONE'
       try {
         await userApi.logout()
       } catch (error) {
-        // 忽略退出接口错误，继续清除本地状态
+        remoteErrorCode = normalizeUiErrorCode(error, 'REMOTE_LOGOUT_FAILED')
+        logUiEvent('settings.logout', {
+          module: 'settings',
+          operation: 'remote_logout_request',
+          result: 'error',
+          durationMs: Date.now() - startedAt,
+          errorCode: remoteErrorCode,
+          cleanupItemCount: 0
+        })
       }
       this.token = ''
       this.userInfo = null
@@ -115,14 +163,55 @@ export const useUserStore = defineStore('user', {
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
       localStorage.removeItem('coupleInfo')
+      logUiEvent('settings.logout', {
+        module: 'settings',
+        operation: 'local_session_logout',
+        result: 'success',
+        durationMs: Date.now() - startedAt,
+        errorCode: remoteErrorCode,
+        cleanupItemCount: 3
+      })
     },
 
     // 更新用户信息
     async updateUserInfo(data) {
-      const res = await userApi.updateUserInfo(data)
-      this.userInfo = { ...this.userInfo, ...res.data }
-      localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
-      return res
+      const startedAt = Date.now()
+      const payload = {
+        nickName: data.nickName,
+        avatarUrl: data.avatarUrl
+      }
+      logUiEvent('settings.profile.update', {
+        module: 'settings',
+        operation: 'profile_update',
+        result: 'started',
+        durationMs: 0,
+        errorCode: 'NONE',
+        changedFields: ['nickName', 'avatarUrl']
+      })
+      try {
+        const res = await userApi.updateUserInfo(payload)
+        this.userInfo = { ...this.userInfo, ...payload }
+        localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+        logUiEvent('settings.profile.update', {
+          module: 'settings',
+          operation: 'profile_update',
+          result: 'success',
+          durationMs: Date.now() - startedAt,
+          errorCode: 'NONE',
+          changedFields: ['nickName', 'avatarUrl']
+        })
+        return res
+      } catch (error) {
+        logUiEvent('settings.profile.update', {
+          module: 'settings',
+          operation: 'profile_update',
+          result: 'error',
+          durationMs: Date.now() - startedAt,
+          errorCode: normalizeUiErrorCode(error),
+          changedFields: ['nickName', 'avatarUrl']
+        })
+        throw error
+      }
     }
   }
 })

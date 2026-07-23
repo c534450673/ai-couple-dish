@@ -4,7 +4,7 @@ vi.unmock('vue-router')
 vi.unmock('@/router')
 
 const { createMemoryHistory } = await import('vue-router')
-const { createCosmosRouter, routes } = await import('@/router')
+const { createCosmosRouter, createRouteTable, routes } = await import('@/router')
 
 const createStorage = (values = {}) => ({
   getItem: vi.fn((key) => values[key] ?? null)
@@ -72,6 +72,25 @@ describe('Couple Cosmos 路由', () => {
     expect(routes.find((route) => route.name === 'Bind').meta.shell).toBe(false)
   })
 
+  it('Task 8 路由加载真实页面并保持鉴权与情侣门禁边界', () => {
+    const notifications = routes.find(route => route.name === 'Notifications')
+    const legal = routes.find(route => route.name === 'Legal')
+    const states = routes.find(route => route.name === 'States')
+    const ai = routes.find(route => route.name === 'Ai')
+
+    expect(notifications.component.toString()).toContain('views/notification/index.vue')
+    expect(notifications.meta).toMatchObject({ requiresAuth: true, requiresCouple: false })
+    expect(legal.component.toString()).toContain('views/legal/index.vue')
+    expect(legal.meta).toMatchObject({ requiresAuth: false, requiresCouple: false })
+    expect(states.component.toString()).toContain('views/states/index.vue')
+    expect(ai.meta.requiresCouple).toBe(false)
+  })
+
+  it('生产路由表不注册 states，非生产路由表保留视觉回归入口', () => {
+    expect(createRouteTable({ production: true }).some(route => route.path === '/states')).toBe(false)
+    expect(createRouteTable({ production: false }).some(route => route.path === '/states')).toBe(true)
+  })
+
   it('Task 6 路由加载真实回忆与笔记页面，旧入口保留 query/hash 重定向', () => {
     expect(routes.find(route => route.name === 'Memories').component.toString()).toContain('views/memories/index.vue')
     expect(routes.find(route => route.name === 'MemoryNoteNew').component.toString()).toContain('views/memories/note-editor.vue')
@@ -121,6 +140,19 @@ describe('Couple Cosmos 路由', () => {
     await router.isReady()
 
     expect(router.currentRoute.value.name).toBe('Ai')
+  })
+
+  it('通知仅要求登录而法律页允许访客直接访问', async () => {
+    const notificationRouter = createTestRouter(createStorage({ token: 'session-token' }))
+    await notificationRouter.push('/notifications')
+    await notificationRouter.isReady()
+    expect(notificationRouter.currentRoute.value.name).toBe('Notifications')
+
+    const legalRouter = createTestRouter(createStorage())
+    await legalRouter.push('/legal#privacy')
+    await legalRouter.isReady()
+    expect(legalRouter.currentRoute.value.name).toBe('Legal')
+    expect(legalRouter.currentRoute.value.hash).toBe('#privacy')
   })
 
   it('情侣门禁只读取 hydration 快照且绑定后允许访问', async () => {

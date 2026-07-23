@@ -22,7 +22,7 @@ export const userApi = {
   },
   // 更新用户信息
   updateUserInfo(data) {
-    return api.put('/user/update', null, { params: data })
+    return api.put('/user/update', data, { retryConfig: { retries: 0 } })
   },
   // 登出
   logout() {
@@ -293,11 +293,11 @@ export const notificationApi = {
   },
   // 标记已读
   markAsRead(id) {
-    return api.put(`/notification/read/${id}`)
+    return api.put(`/notification/read/${id}`, null, { retryConfig: { retries: 0 } })
   },
   // 全部已读
   markAllAsRead() {
-    return api.put('/notification/readAll')
+    return api.put('/notification/readAll', null, { retryConfig: { retries: 0 } })
   }
 }
 

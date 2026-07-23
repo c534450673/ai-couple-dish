@@ -1,438 +1,554 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { showToast, showConfirmDialog } from 'vant'
+import { showConfirmDialog, showToast } from 'vant'
+import { coupleApi, uploadApi } from '@/api'
 import { useUserStore } from '@/stores/user'
-import { userApi, uploadApi, coupleApi } from '@/api'
+import { useThemeStore } from '@/stores/theme'
+import { logUiEvent, normalizeUiErrorCode } from '@/composables/useStructuredLog'
+
+const NOTIFICATION_PREFERENCE_KEY = 'couple-cosmos:notification-display'
+const LEGAL_LINKS = [
+  { label: '隐私政策', to: '/legal#privacy' },
+  { label: '服务协议', to: '/legal#terms' },
+  { label: '第三方服务', to: '/legal#third-party' },
+  { label: '数据导出', to: '/legal#export' },
+  { label: '账号删除', to: '/legal#deletion' },
+  { label: '情侣数据', to: '/legal#couple-data' }
+]
+const MEMBER_LABELS = { 0: '免费', 1: '黄金', 2: '铂金' }
 
 const router = useRouter()
 const userStore = useUserStore()
+const themeStore = useThemeStore()
 
-const defaultAvatar = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
-const notifyEnabled = ref(true)
-const isLoading = ref(true)
-const showEditDialog = ref(false)
-const showPhoneDialog = ref(false)
-const showDateDialog = ref(false)
-const showTasteDialog = ref(false)
-const showDietDialog = ref(false)
-const countdown = ref(0)
-
+const profileStatus = ref('loading')
+const profileInfo = ref(null)
+const profileError = ref('')
+const editOpen = ref(false)
 const editForm = ref({ nickName: '', avatarUrl: '' })
-const phoneForm = ref({ phone: '', verifyCode: '' })
+const isSaving = ref(false)
+const isUploading = ref(false)
+const isLoggingOut = ref(false)
+const isUnbinding = ref(false)
+const unboundVisible = ref(false)
+const memberUnavailable = ref(false)
+const notificationDisplayEnabled = ref(
+  globalThis.localStorage?.getItem(NOTIFICATION_PREFERENCE_KEY) !== 'disabled'
+)
 
-let countdownTimer = null
-
-const userInfo = computed(() => userStore.userInfo)
 const coupleInfo = computed(() => userStore.coupleInfo)
+const memberLabel = computed(() => MEMBER_LABELS[profileInfo.value?.memberLevel] || '未知')
+const canSaveProfile = computed(() => Boolean(editForm.value.nickName.trim()) && !isSaving.value && !isUploading.value)
 
-const handleLogout = async () => {
-  try {
-    await showConfirmDialog({ title: '确认退出', message: '确定要退出登录吗？' })
-    userStore.logout()
-    router.replace('/login')
-  } catch (error) {
-    // 用户取消
-  }
-}
-
-const handleSaveEdit = async () => {
-  try {
-    await userApi.updateUserInfo(editForm.value)
-    await userStore.updateUserInfo(editForm.value)
-    showToast('保存成功')
-  } catch (error) {
-    showToast('保存失败')
-  }
-}
-
-const onAvatarRead = async (file) => {
-  try {
-    const res = await uploadApi.uploadImage(file.file)
-    editForm.value.avatarUrl = res.data.url
-  } catch (error) {
-    showToast('上传失败')
-  }
-}
-
-const sendVerifyCode = async () => {
-  if (!phoneForm.value.phone || phoneForm.value.phone.length !== 11) {
-    showToast('请输入正确的手机号')
+const loadProfile = async () => {
+  profileStatus.value = 'loading'
+  profileError.value = ''
+  if (!userStore.token && !globalThis.localStorage?.getItem('token')) {
+    profileStatus.value = 'unauthorized'
+    await router.replace('/login')
     return
   }
 
   try {
-    await userApi.sendVerifyCode(phoneForm.value.phone)
-    showToast('验证码已发送')
-    countdown.value = 60
-    countdownTimer = setInterval(() => {
-      countdown.value--
-      if (countdown.value <= 0) clearInterval(countdownTimer)
-    }, 1000)
+    const res = await userStore.fetchUserInfo()
+    profileInfo.value = res.data
+    profileStatus.value = 'success'
   } catch (error) {
-    showToast('发送失败')
+    if (normalizeUiErrorCode(error) === '401') {
+      profileStatus.value = 'unauthorized'
+      await router.replace('/login')
+      return
+    }
+    profileStatus.value = 'error'
+    profileError.value = '暂时无法读取资料，请稍后重试'
   }
 }
 
-const handleSavePhone = async () => {
-  showToast('手机号修改开发中')
+const openProfileEditor = () => {
+  editForm.value = {
+    nickName: profileInfo.value?.nickName || '',
+    avatarUrl: profileInfo.value?.avatarUrl || ''
+  }
+  profileError.value = ''
+  editOpen.value = true
 }
 
-const handleChangeAvatar = () => {
-  showEditDialog.value = true
-}
-
-const handleUnbind = async () => {
+const saveProfile = async () => {
+  if (!canSaveProfile.value) return
+  isSaving.value = true
+  profileError.value = ''
+  const payload = {
+    nickName: editForm.value.nickName.trim(),
+    avatarUrl: editForm.value.avatarUrl
+  }
   try {
-    await showConfirmDialog({ title: '确认解除', message: '确定要解除情侣绑定吗？' })
-    await coupleApi.applyUnbind({ coupleId: coupleInfo.value.id })
-    showToast('已申请解绑，等待对方确认')
-    await userStore.getCoupleInfo()
+    await userStore.updateUserInfo(payload)
+    profileInfo.value = { ...profileInfo.value, ...payload }
+    editOpen.value = false
+    showToast('资料已保存')
   } catch (error) {
-    if (error !== 'cancel') showToast('操作失败')
+    profileError.value = '保存失败，编辑内容已保留'
+    showToast('保存失败，请重试')
+  } finally {
+    isSaving.value = false
   }
+}
+
+const uploadAvatar = async (event) => {
+  const file = event.target?.files?.[0]
+  if (!file || isUploading.value) return
+  const startedAt = Date.now()
+  isUploading.value = true
+  logUiEvent('settings.avatar.upload', {
+    module: 'settings', operation: 'avatar_upload', result: 'started', durationMs: 0,
+    errorCode: 'NONE', itemCount: 1
+  })
+  try {
+    const res = await uploadApi.uploadImage(file)
+    editForm.value.avatarUrl = res.data.url
+    logUiEvent('settings.avatar.upload', {
+      module: 'settings', operation: 'avatar_upload', result: 'success',
+      durationMs: Date.now() - startedAt, errorCode: 'NONE', itemCount: 1
+    })
+    showToast('头像已上传，请保存资料')
+  } catch (error) {
+    logUiEvent('settings.avatar.upload', {
+      module: 'settings', operation: 'avatar_upload', result: 'error',
+      durationMs: Date.now() - startedAt, errorCode: normalizeUiErrorCode(error), itemCount: 1
+    })
+    showToast('头像上传失败')
+  } finally {
+    isUploading.value = false
+    event.target.value = ''
+  }
+}
+
+const changeTheme = (theme) => {
+  themeStore.setTheme(theme)
+}
+
+const changeNotificationPreference = (event) => {
+  const startedAt = Date.now()
+  notificationDisplayEnabled.value = event.target.checked
+  const value = event.target.checked ? 'enabled' : 'disabled'
+  globalThis.localStorage?.setItem(NOTIFICATION_PREFERENCE_KEY, value)
+  logUiEvent('settings.notification.preference', {
+    module: 'settings', operation: 'local_notification_display', result: 'success',
+    durationMs: Date.now() - startedAt, errorCode: 'NONE', enabled: event.target.checked
+  })
+}
+
+const showMemberUnavailable = () => {
+  memberUnavailable.value = true
+  logUiEvent('settings.member.view', {
+    module: 'settings', operation: 'membership_entry', result: 'unavailable',
+    durationMs: 0, errorCode: 'MEMBERSHIP_API_UNAVAILABLE'
+  })
+}
+
+const applyUnbind = async () => {
+  const startedAt = Date.now()
+  unboundVisible.value = false
+  if (!coupleInfo.value) {
+    unboundVisible.value = true
+    logUiEvent('settings.couple.unbind.apply', {
+      module: 'settings', operation: 'unbind_apply', result: 'unbound',
+      durationMs: 0, errorCode: 'COUPLE_NOT_BOUND'
+    })
+    return
+  }
+
+  logUiEvent('settings.couple.unbind.apply', {
+    module: 'settings', operation: 'unbind_apply', result: 'started',
+    durationMs: 0, errorCode: 'NONE'
+  })
+  try {
+    await showConfirmDialog({
+      title: '发起解绑申请',
+      message: '申请不会立即解绑。对方确认后关系解除，现有可恢复数据保留 30 天。'
+    })
+  } catch (error) {
+    logUiEvent('settings.couple.unbind.apply', {
+      module: 'settings', operation: 'unbind_apply', result: 'cancelled',
+      durationMs: Date.now() - startedAt, errorCode: 'USER_CANCELLED'
+    })
+    return
+  }
+
+  if (isUnbinding.value) return
+  isUnbinding.value = true
+  try {
+    await coupleApi.applyUnbind({})
+    await userStore.getCoupleInfo()
+    logUiEvent('settings.couple.unbind.apply', {
+      module: 'settings', operation: 'unbind_apply', result: 'success',
+      durationMs: Date.now() - startedAt, errorCode: 'NONE'
+    })
+    showToast('已发起申请，等待对方处理')
+  } catch (error) {
+    logUiEvent('settings.couple.unbind.apply', {
+      module: 'settings', operation: 'unbind_apply', result: 'error',
+      durationMs: Date.now() - startedAt, errorCode: normalizeUiErrorCode(error)
+    })
+    showToast('暂时无法发起解绑申请')
+  } finally {
+    isUnbinding.value = false
+  }
+}
+
+const logout = async () => {
+  const startedAt = Date.now()
+  logUiEvent('settings.logout', {
+    module: 'settings', operation: 'logout_confirmation', result: 'started',
+    durationMs: 0, errorCode: 'NONE', cleanupItemCount: 0
+  })
+  try {
+    await showConfirmDialog({
+      title: '退出当前设备',
+      message: '将清除当前设备上的登录会话；服务端 JWT 不保证立即吊销。'
+    })
+  } catch (error) {
+    logUiEvent('settings.logout', {
+      module: 'settings', operation: 'logout_confirmation', result: 'cancelled',
+      durationMs: Date.now() - startedAt, errorCode: 'USER_CANCELLED', cleanupItemCount: 0
+    })
+    return
+  }
+
+  if (isLoggingOut.value) return
+  isLoggingOut.value = true
+  await userStore.logout()
+  await router.replace('/login')
 }
 
 onMounted(() => {
-  editForm.value = {
-    nickName: userInfo.value?.nickName || '',
-    avatarUrl: userInfo.value?.avatarUrl || ''
-  }
-  setTimeout(() => {
-    isLoading.value = false
-  }, 300)
+  themeStore.initializeTheme()
+  loadProfile()
 })
 </script>
 
 <template>
   <div class="settings-page">
-    <header class="settings-topbar">
-      <h1 class="page-title">
-        我的
-      </h1>
+    <header class="settings-header">
+      <div>
+        <p>Couple Cosmos</p>
+        <h1>我们</h1>
+      </div>
+      <RouterLink
+        class="notification-link"
+        to="/notifications"
+        aria-label="打开通知中心"
+      >
+        <van-icon name="bell" />
+      </RouterLink>
     </header>
 
-    <div class="settings-body">
-      <!-- 用户信息 -->
-      <div class="user-card">
-        <i class="deco" />
-        <div
-          v-if="isLoading"
-          class="user-info skeleton"
-        >
-          <div class="sk sk-avatar" />
-          <div class="detail">
-            <div class="sk sk-line sk-name" />
-            <div class="sk sk-line sk-code" />
-          </div>
-        </div>
-        <div
-          v-else
-          class="user-info"
-          @click="showEditDialog = true"
-        >
-          <img
-            :src="userInfo?.avatarUrl || defaultAvatar"
-            class="avatar"
-          >
-          <div class="detail">
-            <div class="name">
-              {{ userInfo?.nickName || '未设置昵称' }}
-            </div>
-            <div class="code">
-              <van-icon
-                name="friends-o"
-                size="13"
-              />
-              {{ coupleInfo?.coupleNickname || coupleInfo?.partnerName ? (coupleInfo?.coupleNickname || '已绑定 TA') : ('情侣码: ' + (coupleInfo?.coupleCode || '未绑定')) }}
-            </div>
-          </div>
-          <van-icon
-            name="arrow"
-            color="#d6c1c5"
-          />
-        </div>
-      </div>
-
-      <!-- 设置列表 -->
-      <van-cell-group inset>
-        <van-cell
-          title="修改昵称"
-          is-link
-          @click="showEditDialog = true"
+    <main class="settings-content">
+      <section
+        v-if="profileStatus === 'loading'"
+        class="state-panel"
+        data-test="settings-loading"
+        role="status"
+      >
+        <span
+          class="spinner"
+          aria-hidden="true"
         />
-        <van-cell
-          title="修改头像"
-          is-link
-          @click="handleChangeAvatar"
-        />
-        <van-cell
-          title="修改手机号"
-          is-link
-          @click="showPhoneDialog = true"
-        />
-        <van-cell
-          title="口味偏好"
-          is-link
-          @click="showTasteDialog = true"
-        />
-        <van-cell
-          title="忌口设置"
-          is-link
-          @click="showDietDialog = true"
-        />
-      </van-cell-group>
-
-      <div class="group-title">
-        情侣设置
-      </div>
-      <van-cell-group inset>
-        <van-cell
-          title="TA的信息"
-          is-link
-          :value="coupleInfo?.partnerName || '未绑定'"
-        />
-        <van-cell
-          title="恋爱日期"
-          is-link
-          :value="coupleInfo?.startDate || '未设置'"
-          @click="showDateDialog = true"
-        />
-        <van-cell
-          title="解除绑定"
-          is-link
-          @click="handleUnbind"
-        />
-      </van-cell-group>
-
-      <div class="group-title">
-        其他设置
-      </div>
-      <van-cell-group inset>
-        <van-cell title="消息通知">
-          <template #right-icon>
-            <van-switch
-              v-model="notifyEnabled"
-              size="20"
-            />
-          </template>
-        </van-cell>
-        <van-cell
-          title="隐私政策"
-          is-link
-          url="/privacy"
-        />
-        <van-cell
-          title="用户协议"
-          is-link
-          url="/agreement"
-        />
-        <van-cell
-          title="关于我们"
-          is-link
-          url="/about"
-        />
-      </van-cell-group>
-
-      <div class="logout-section">
+        <p>正在同步账号资料</p>
+      </section>
+      <section
+        v-else-if="profileStatus === 'unauthorized'"
+        class="state-panel"
+        data-test="settings-unauthorized"
+        role="alert"
+      >
+        <h2>需要重新登录</h2>
+        <p>登录状态不可用，正在返回登录页。</p>
+      </section>
+      <section
+        v-else-if="profileStatus === 'error'"
+        class="state-panel"
+        role="alert"
+      >
+        <h2>资料读取失败</h2>
+        <p>{{ profileError }}</p>
         <button
-          class="logout-btn"
-          @click="handleLogout"
+          type="button"
+          @click="loadProfile"
         >
-          退出登录
+          重新加载
         </button>
-      </div>
-    </div>
+      </section>
 
-    <van-dialog
-      v-model:show="showEditDialog"
-      title="修改信息"
-      show-cancel-button
-      @confirm="handleSaveEdit"
-    >
-      <van-field
-        v-model="editForm.nickName"
-        label="昵称"
-        placeholder="请输入昵称"
-      />
-      <div class="avatar-upload">
-        <van-uploader
-          :after-read="onAvatarRead"
-          :max-count="1"
-        >
-          <img
-            v-if="editForm.avatarUrl"
-            :src="editForm.avatarUrl"
-            class="avatar-preview"
+      <template v-else>
+        <section class="profile-panel">
+          <div class="avatar-frame">
+            <img
+              v-if="profileInfo?.avatarUrl"
+              :src="profileInfo.avatarUrl"
+              alt="当前头像"
+            >
+            <van-icon
+              v-else
+              name="user-o"
+              aria-label="未设置头像"
+            />
+          </div>
+          <div class="profile-copy">
+            <p>个人资料</p>
+            <h2>{{ profileInfo?.nickName || '未设置昵称' }}</h2>
+          </div>
+          <button
+            data-test="profile-edit"
+            type="button"
+            aria-label="编辑个人资料"
+            @click="openProfileEditor"
           >
-          <van-icon
-            v-else
-            name="photograph"
-            size="32"
-            color="#999"
-          />
-        </van-uploader>
-      </div>
-    </van-dialog>
+            <van-icon name="edit" />
+          </button>
+        </section>
 
-    <van-dialog
-      v-model:show="showPhoneDialog"
-      title="修改手机号"
-      show-cancel-button
-      @confirm="handleSavePhone"
-    >
-      <van-field
-        v-model="phoneForm.phone"
-        type="tel"
-        label="手机号"
-        placeholder="请输入手机号"
-      />
-      <div class="verify-code">
-        <van-field
-          v-model="phoneForm.verifyCode"
-          type="digit"
-          label="验证码"
-          placeholder="请输入验证码"
-        />
-        <van-button
-          size="small"
-          type="primary"
-          :disabled="countdown > 0"
-          @click="sendVerifyCode"
+        <section
+          v-if="editOpen"
+          class="edit-sheet"
+          aria-label="编辑个人资料"
         >
-          {{ countdown > 0 ? `${countdown}s` : '获取验证码' }}
-        </van-button>
-      </div>
-    </van-dialog>
+          <label for="settings-nickname">昵称</label>
+          <input
+            id="settings-nickname"
+            v-model="editForm.nickName"
+            data-test="nickname-input"
+            maxlength="30"
+          >
+          <label
+            class="avatar-upload"
+            for="settings-avatar"
+          >
+            <span>{{ isUploading ? '上传中' : '选择新头像' }}</span>
+            <input
+              id="settings-avatar"
+              data-test="avatar-input"
+              type="file"
+              accept="image/*"
+              :disabled="isUploading || isSaving"
+              @change="uploadAvatar"
+            >
+          </label>
+          <p
+            v-if="profileError"
+            class="error-copy"
+            data-test="profile-error"
+          >
+            {{ profileError }}
+          </p>
+          <div class="sheet-actions">
+            <button
+              type="button"
+              :disabled="isSaving"
+              @click="editOpen = false"
+            >
+              取消
+            </button>
+            <button
+              data-test="profile-save"
+              type="button"
+              :disabled="!canSaveProfile"
+              @click="saveProfile"
+            >
+              {{ isSaving ? '保存中' : '保存资料' }}
+            </button>
+          </div>
+        </section>
 
+        <section class="settings-section">
+          <div class="section-heading">
+            <div>
+              <p>设备偏好</p>
+              <h2>显示与通知</h2>
+            </div>
+          </div>
+          <div class="setting-row setting-row--stacked">
+            <div>
+              <strong>主题</strong>
+              <span>Cosmos 深色或系统高对比</span>
+            </div>
+            <div
+              class="segments"
+              aria-label="主题选择"
+            >
+              <button
+                type="button"
+                :class="{ active: themeStore.theme === 'cosmos' }"
+                @click="changeTheme('cosmos')"
+              >
+                Cosmos
+              </button>
+              <button
+                type="button"
+                :class="{ active: themeStore.theme === 'system-contrast' }"
+                @click="changeTheme('system-contrast')"
+              >
+                高对比
+              </button>
+            </div>
+          </div>
+          <label class="setting-row">
+            <span>
+              <strong>通知列表显示</strong>
+              <small>仅影响本机显示，不改变服务端投递</small>
+            </span>
+            <input
+              :checked="notificationDisplayEnabled"
+              data-test="notification-preference"
+              type="checkbox"
+              role="switch"
+              @change="changeNotificationPreference"
+            >
+          </label>
+        </section>
+
+        <section class="settings-section">
+          <div class="section-heading">
+            <div>
+              <p>会员</p>
+              <h2>当前等级</h2>
+            </div>
+            <strong data-test="member-level">{{ memberLabel }}</strong>
+          </div>
+          <p class="contract-copy">
+            当前服务暂未提供会员权益、升级、订阅或支付接口。
+          </p>
+          <button
+            class="secondary-action"
+            data-test="member-action"
+            type="button"
+            @click="showMemberUnavailable"
+          >
+            查看会员入口
+          </button>
+          <p
+            v-if="memberUnavailable"
+            class="unavailable-copy"
+            data-test="member-unavailable"
+          >
+            会员与订阅服务暂不可用
+          </p>
+        </section>
+
+        <section class="settings-section">
+          <div class="section-heading">
+            <div>
+              <p>法律与数据权利</p>
+              <h2>透明边界</h2>
+            </div>
+          </div>
+          <nav
+            class="legal-links"
+            aria-label="法律与数据权利"
+          >
+            <RouterLink
+              v-for="link in LEGAL_LINKS"
+              :key="link.to"
+              :to="link.to"
+              data-test="legal-link"
+            >
+              <span>{{ link.label }}</span><van-icon name="arrow" />
+            </RouterLink>
+          </nav>
+        </section>
+
+        <section class="settings-section danger-section">
+          <div class="section-heading">
+            <div>
+              <p>情侣关系</p>
+              <h2>{{ coupleInfo ? '已绑定' : '未绑定' }}</h2>
+            </div>
+          </div>
+          <p class="contract-copy">
+            发起申请不会立即解绑。双方确认后关系解除，现有可恢复数据保留 30 天。
+          </p>
+          <button
+            class="danger-action"
+            data-test="unbind-action"
+            type="button"
+            :disabled="isUnbinding"
+            @click="applyUnbind"
+          >
+            {{ isUnbinding ? '提交中' : '发起解绑申请' }}
+          </button>
+          <p
+            v-if="unboundVisible"
+            class="unavailable-copy"
+            data-test="unbind-unbound"
+          >
+            当前没有已绑定的情侣关系，未发送请求。
+          </p>
+        </section>
+
+        <section class="logout-section">
+          <p>仅退出当前设备上的本地会话，不代表所有设备退出或服务端令牌已即时吊销。</p>
+          <button
+            data-test="logout-action"
+            type="button"
+            :disabled="isLoggingOut"
+            @click="logout"
+          >
+            {{ isLoggingOut ? '正在退出' : '退出当前设备' }}
+          </button>
+        </section>
+      </template>
+    </main>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.settings-page {
-  min-height: 100vh;
-  background: $color-background;
-  padding-bottom: 96px;
-}
-
-.settings-topbar {
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  @include glass(0.7);
-
-  .page-title { font-size: $fs-title; font-weight: $fw-semibold; color: $color-on-surface; }
-}
-
-.settings-body {
-  padding: $space-4 0 0;
-}
-
-.user-card {
-  position: relative;
-  overflow: hidden;
-  margin: 0 $page-padding $space-5;
-  @include card($radius-xl, $space-5);
-
-  .deco {
-    position: absolute;
-    top: -30px;
-    right: -30px;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: $gradient-peach;
-    opacity: 0.25;
-  }
-
-  .user-info {
-    position: relative;
-    display: flex;
-    align-items: center;
-
-    .avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: $space-4;
-      border: 2px solid $color-surface-lowest;
-      box-shadow: $shadow-card;
-    }
-
-    .detail {
-      flex: 1;
-      .name { font-size: $fs-title; font-weight: $fw-semibold; color: $color-on-surface; }
-      .code {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        font-size: $fs-caption;
-        color: $color-on-surface-variant;
-        margin-top: $space-1;
-      }
-    }
-  }
-}
-
-.group-title {
-  font-size: $fs-caption;
-  color: $color-on-surface-variant;
-  padding: $space-4 $page-padding $space-2;
-}
-
-.logout-section {
-  padding: $space-8 $page-padding;
-
-  .logout-btn {
-    width: 100%;
-    height: 48px;
-    border: 1px solid $color-outline-variant;
-    border-radius: $radius-pill;
-    background: $color-surface-lowest;
-    color: $color-error;
-    font-size: $fs-body;
-    font-weight: $fw-medium;
-    cursor: pointer;
-
-    &:active { background: $color-error-container; }
-  }
-}
-
-.avatar-upload {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-
-  .avatar-preview { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
-}
-
-.verify-code {
-  display: flex;
-  align-items: center;
-  padding: 0 $space-4 $space-2;
-  gap: $space-2;
-
-  :deep(.van-field) { flex: 1; }
-}
-
-// 骨架屏
-.skeleton {
-  .sk {
-    background: linear-gradient(90deg, $color-surface-high 25%, $color-surface-low 50%, $color-surface-high 75%);
-    background-size: 200% 100%;
-    animation: sk-loading 1.5s infinite;
-  }
-  .sk-avatar { width: 60px; height: 60px; border-radius: 50%; margin-right: $space-4; }
-  .detail { flex: 1; }
-  .sk-line { border-radius: 4px; }
-  .sk-name { width: 100px; height: 16px; margin-bottom: 8px; }
-  .sk-code { width: 140px; height: 12px; }
-}
-
-@keyframes sk-loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+.settings-page { min-height: 100vh; padding-bottom: $space-8; color: $cosmos-text; background: $cosmos-bg; }
+.settings-header { display: flex; min-height: 72px; padding: $space-4 $page-padding; align-items: center; justify-content: space-between; border-bottom: 1px solid $cosmos-border; background: rgba(11,16,32,.92); }
+.settings-header p, .section-heading p { color: $cosmos-secondary; font-size: $fs-caption; font-weight: $fw-semibold; }
+.settings-header h1 { margin-top: 2px; font-size: $fs-headline; }
+.notification-link, .profile-panel > button { display: grid; width: 44px; height: 44px; place-items: center; border: 1px solid $cosmos-border; border-radius: 50%; background: $cosmos-surface-raised; color: $cosmos-primary; }
+.settings-content { display: grid; gap: $space-4; max-width: 720px; margin: 0 auto; padding: $space-5 $page-padding 96px; }
+.profile-panel, .settings-section, .edit-sheet { padding: $space-5; border: 1px solid $cosmos-border; border-radius: 8px; background: $cosmos-surface; }
+.profile-panel { display: grid; grid-template-columns: 64px minmax(0,1fr) 44px; gap: $space-4; align-items: center; }
+.avatar-frame { display: grid; width: 64px; height: 64px; overflow: hidden; place-items: center; border: 2px solid $cosmos-secondary; border-radius: 50%; background: $cosmos-surface-raised; color: $cosmos-secondary; font-size: 28px; }
+.avatar-frame img { width: 100%; height: 100%; object-fit: cover; }
+.profile-copy { min-width: 0; }
+.profile-copy p { color: $cosmos-text-muted; font-size: $fs-caption; }
+.profile-copy h2 { overflow: hidden; margin-top: $space-1; text-overflow: ellipsis; white-space: nowrap; font-size: $fs-title; }
+.profile-panel > button { padding: 0; cursor: pointer; }
+.edit-sheet { display: grid; gap: $space-3; }
+.edit-sheet label { color: $cosmos-text-muted; font-size: $fs-label; }
+.edit-sheet input:not([type='file']) { min-height: 44px; padding: 0 $space-3; border: 1px solid $cosmos-border; border-radius: 6px; outline: 0; background: $cosmos-surface-raised; color: $cosmos-text; font-size: $fs-body; }
+.avatar-upload { display: flex; min-height: 44px; padding: 0 $space-3; align-items: center; border: 1px dashed $cosmos-secondary; border-radius: 6px; color: $cosmos-secondary !important; cursor: pointer; }
+.avatar-upload input { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+.sheet-actions { display: grid; grid-template-columns: 1fr 1fr; gap: $space-3; }
+.sheet-actions button, .secondary-action, .danger-action, .logout-section button, .state-panel button { min-height: 44px; padding: 0 $space-4; border: 1px solid $cosmos-border; border-radius: 6px; background: $cosmos-surface-raised; color: $cosmos-text; font-weight: $fw-semibold; }
+.sheet-actions button:last-child { border-color: $cosmos-primary; background: $cosmos-primary; color: #fff; }
+button:disabled { cursor: not-allowed; opacity: .5; }
+.section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: $space-4; }
+.section-heading h2 { margin-top: 2px; font-size: $fs-title; }
+.section-heading > strong { color: $cosmos-gold; }
+.setting-row { display: flex; min-height: 64px; margin-top: $space-4; align-items: center; justify-content: space-between; gap: $space-4; border-top: 1px solid $cosmos-border; }
+.setting-row--stacked { flex-wrap: wrap; padding-top: $space-4; }
+.setting-row strong, .setting-row small, .setting-row span { display: block; }
+.setting-row small, .setting-row div > span { margin-top: 2px; color: $cosmos-text-muted; font-size: $fs-caption; }
+.setting-row input[type='checkbox'] { width: 42px; height: 24px; accent-color: $cosmos-primary; }
+.segments { display: grid; grid-template-columns: 1fr 1fr; gap: $space-1; }
+.segments button { min-height: 40px; padding: 0 $space-3; border: 1px solid $cosmos-border; border-radius: 6px; background: transparent; color: $cosmos-text-muted; }
+.segments button.active { border-color: $cosmos-secondary; background: rgba(84,232,211,.12); color: $cosmos-secondary; }
+.contract-copy, .logout-section p { margin-top: $space-3; color: $cosmos-text-muted; font-size: $fs-caption; line-height: 20px; }
+.secondary-action, .danger-action { width: 100%; margin-top: $space-4; }
+.danger-section { border-color: rgba(255,130,145,.45); }
+.danger-action { border-color: $color-error; background: transparent; color: $color-error; }
+.legal-links { display: grid; margin-top: $space-3; }
+.legal-links a { display: flex; min-height: 48px; align-items: center; justify-content: space-between; border-top: 1px solid $cosmos-border; color: $cosmos-text; }
+.logout-section { padding: $space-2 0; text-align: center; }
+.logout-section button { margin-top: $space-3; border-color: transparent; background: transparent; color: $cosmos-text-muted; }
+.state-panel { display: grid; min-height: 280px; padding: $space-8; place-items: center; align-content: center; gap: $space-3; text-align: center; }
+.state-panel p, .error-copy, .unavailable-copy { color: $cosmos-text-muted; font-size: $fs-label; }
+.error-copy { color: $color-error; }
+.unavailable-copy { margin-top: $space-3; color: $cosmos-gold; }
+.spinner { width: 32px; height: 32px; border: 3px solid $cosmos-border; border-top-color: $cosmos-secondary; border-radius: 50%; animation: cosmos-orbit $cosmos-duration-slow linear infinite; }
+@media (max-width: 360px) { .setting-row--stacked { display: grid; } .segments { width: 100%; } }
 </style>

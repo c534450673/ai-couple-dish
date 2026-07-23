@@ -4,8 +4,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { logUiEvent } from '@/composables/useStructuredLog'
 
-const unavailableView = () => import('@/views/states/UnavailableView.vue')
-
 const validateMemoryNoteId = (to) => {
   const valid = /^[1-9]\d*$/.test(String(to.params.id || ''))
   logUiEvent('route_memory_note_validated', {
@@ -18,7 +16,7 @@ const validateMemoryNoteId = (to) => {
   return valid ? true : { path: '/memories', query: { type: 'note' } }
 }
 
-export const routes = [
+const baseRoutes = [
   {
     path: '/',
     redirect: '/home'
@@ -157,22 +155,31 @@ export const routes = [
   {
     path: '/notifications',
     name: 'Notifications',
-    component: unavailableView,
+    component: () => import('@/views/notification/index.vue'),
     meta: { title: '通知', requiresAuth: true, requiresCouple: false, shell: true }
   },
   {
     path: '/legal',
     name: 'Legal',
-    component: unavailableView,
+    component: () => import('@/views/legal/index.vue'),
     meta: { title: '协议与隐私', requiresAuth: false, requiresCouple: false, shell: false }
-  },
-  {
-    path: '/states',
-    name: 'States',
-    component: unavailableView,
-    meta: { title: '状态', requiresAuth: true, requiresCouple: false, shell: true }
   }
 ]
+
+const statesRoute = {
+  path: '/states',
+  name: 'States',
+  component: () => import('@/views/states/index.vue'),
+  meta: { title: '状态', requiresAuth: true, requiresCouple: false, shell: true }
+}
+
+const runtimeProduction = import.meta.env.PROD
+
+export const createRouteTable = ({ production = runtimeProduction } = {}) => (
+  runtimeProduction || production ? [...baseRoutes] : [...baseRoutes, statesRoute]
+)
+
+export const routes = createRouteTable()
 
 const hasCoupleSnapshot = (storage) => {
   const rawCoupleInfo = storage?.getItem('coupleInfo')

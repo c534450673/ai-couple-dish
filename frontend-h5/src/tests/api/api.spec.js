@@ -29,7 +29,7 @@ const cases = [
   ['userApi.loginByPhone', 'post', () => userApi.loginByPhone({ phone }), ['/user/phoneLogin', { phone }], { token: 'test-token' }],
   ['userApi.sendVerifyCode', 'post', () => userApi.sendVerifyCode(phone), ['/user/sendCode', null, { params: { phone } }], { sent: true }],
   ['userApi.getUserInfo', 'get', () => userApi.getUserInfo(), ['/user/info'], { id: 1 }],
-  ['userApi.updateUserInfo', 'put', () => userApi.updateUserInfo({ nickName: '新昵称' }), ['/user/update', null, { params: { nickName: '新昵称' } }], { updated: true }],
+  ['userApi.updateUserInfo', 'put', () => userApi.updateUserInfo({ nickName: '新昵称' }), ['/user/update', { nickName: '新昵称' }, { retryConfig: { retries: 0 } }], null],
   ['coupleApi.getCoupleInfo', 'get', () => coupleApi.getCoupleInfo(), ['/couple/info'], { id: 1 }],
   ['coupleApi.getCoupleHome', 'get', () => coupleApi.getCoupleHome(), ['/couple/home'], { myInfo: {} }],
   ['coupleApi.generateCoupleCode', 'post', () => coupleApi.generateCoupleCode(), ['/couple/generateCode'], 'ABC123'],
@@ -75,8 +75,8 @@ const cases = [
   ['wishApi.deleteWish', 'delete', () => wishApi.deleteWish(1), ['/wish/delete/1'], { deleted: true }],
   ['notificationApi.getNotificationList', 'get', () => notificationApi.getNotificationList({ page: 1 }), ['/notification/list', { params: { page: 1 } }], []],
   ['notificationApi.getUnreadCount', 'get', () => notificationApi.getUnreadCount(), ['/notification/unreadCount'], { count: 1 }],
-  ['notificationApi.markAsRead', 'put', () => notificationApi.markAsRead(1), ['/notification/read/1'], { read: true }],
-  ['notificationApi.markAllAsRead', 'put', () => notificationApi.markAllAsRead(), ['/notification/readAll'], { read: true }],
+  ['notificationApi.markAsRead', 'put', () => notificationApi.markAsRead(1), ['/notification/read/1', null, { retryConfig: { retries: 0 } }], { read: true }],
+  ['notificationApi.markAllAsRead', 'put', () => notificationApi.markAllAsRead(), ['/notification/readAll', null, { retryConfig: { retries: 0 } }], { read: true }],
   ['uploadApi.uploadImage', 'post', () => uploadApi.uploadImage(new File(['test'], 'test.jpg', { type: 'image/jpeg' })), ['/upload/image', expect.any(FormData), { headers: { 'Content-Type': 'multipart/form-data' } }], { url: 'https://example.com/image.jpg' }]
 ]
 
