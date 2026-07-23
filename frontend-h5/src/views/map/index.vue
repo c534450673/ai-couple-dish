@@ -1,25 +1,28 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { showToast } from 'vant'
 import { useMapStore } from '@/stores/map'
-import { mapApi } from '@/api'
+import { logUiEvent } from '@/composables/useStructuredLog'
 
+const SDK_TIMEOUT_MS = 8000
 const router = useRouter()
 const mapStore = useMapStore()
-
-// Refs
-const mapContainer = ref(null)
-const map = ref(null)
-const markers = ref([])
-const searchKeyword = ref('')
-const isLocating = ref(false)
-const isPanelExpanded = ref(false)
-const showDetail = ref(false)
+const mapElement = ref(null)
+const sheetHandle = ref(null)
 const selectedRestaurant = ref(null)
-const selectedId = ref(null)
+const showDetail = ref(false)
+const mapReady = ref(false)
+const fallbackMessage = ref('')
+const mapInstance = ref(null)
+const mapMarkers = ref([])
+let sdkScript = null
+let sdkTimer = null
+let detailTrigger = null
 
-// Status tabs
+const restaurants = computed(() => mapStore.nearbyRestaurants)
+const mode = computed(() => mapStore.viewMode)
+const listStatus = computed(() => mapStore.listStatus)
+const mapUnavailable = computed(() => !mapReady.value)
 const statusTabs = [
   { label: '全部', value: null },
   { label: '想去', value: 0 },
@@ -27,753 +30,429 @@ const statusTabs = [
   { label: '种草', value: 2 }
 ]
 
-// Computed
-const isLoading = computed(() => mapStore.isLoading)
-const statusFilter = computed(() => mapStore.statusFilter)
-const nearbyRestaurants = computed(() => mapStore.nearbyRestaurants)
-const currentLocation = computed(() => mapStore.currentLocation)
+const formatDistance = (distance) => mapStore.formatDistance(distance)
 
-// Methods
-const formatDistance = (distance) => {
-  if (!distance) return ''
-  if (distance < 1000) {
-    return `${Math.round(distance)}m`
-  }
-  return `${(distance / 1000).toFixed(1)}km`
+const logMapRuntime = (event, startedAt, errorCode = null) => {
+  logUiEvent(event, {
+    mode: mode.value,
+    sdkStage: mapStore.sdkStage,
+    permission: mapStore.permissionStage,
+    itemCount: restaurants.value.length,
+    durationMs: Math.round(performance.now() - startedAt),
+    errorCode
+  })
 }
 
-const handleLocation = async () => {
-  isLocating.value = true
-  try {
-    await mapStore.getCurrentPosition()
-    showToast('定位成功')
-    await loadNearbyRestaurants()
-    updateMapCenter()
-  } catch (error) {
-    showToast(error.message || '定位失败')
-  } finally {
-    isLocating.value = false
-  }
+const setFallback = (message, stage, errorCode, startedAt) => {
+  fallbackMessage.value = message
+  mapReady.value = false
+  mapStore.setSdkStage(stage, errorCode)
+  mapStore.setViewMode('list')
+  logMapRuntime('map.runtime.fallback', startedAt, errorCode)
 }
 
-const handleZoomIn = () => {
-  if (map.value) {
-    const zoom = map.value.getZoom() + 1
-    map.value.setZoom(zoom)
-    mapStore.setZoomLevel(zoom)
-  }
-}
-
-const handleZoomOut = () => {
-  if (map.value) {
-    const zoom = map.value.getZoom() - 1
-    map.value.setZoom(zoom)
-    mapStore.setZoomLevel(zoom)
-  }
-}
-
-const handleStatusFilter = (status) => {
-  mapStore.setStatusFilter(status)
-  loadNearbyRestaurants()
-}
-
-const handleSearch = () => {
-  loadNearbyRestaurants()
-}
-
-const handleRestaurantClick = (restaurant) => {
-  selectedId.value = restaurant.id
-  selectedRestaurant.value = restaurant
-  showDetail.value = true
-
-  // Pan to marker
-  if (map.value && restaurant.latitude && restaurant.longitude) {
-    map.value.panTo(new window.QQMap.latLng(restaurant.latitude, restaurant.longitude))
-  }
-}
-
-const handleNavigate = (restaurant) => {
-  if (!restaurant.latitude || !restaurant.longitude) {
-    showToast('暂无位置信息')
+const loadSdk = (key) => new Promise((resolve, reject) => {
+  if (window.QQMap) {
+    resolve(window.QQMap)
     return
   }
 
-  // 使用高德地图导航
-  const url = `https://uri.amap.com/navigation?to=${restaurant.longitude},${restaurant.latitude},${restaurant.restaurantName}&mode=car&callnative=1`
-  window.location.href = url
-}
-
-const handleViewDetail = (restaurant) => {
-  showDetail.value = false
-  router.push(`/menu/${restaurant.id}`)
-}
-
-const loadNearbyRestaurants = async () => {
-  if (!currentLocation.value) {
-    // 使用默认中心点加载数据
-    await mapStore.loadMapRestaurants()
-  } else {
-    await mapStore.loadNearbyRestaurants()
+  mapStore.setSdkStage('loading')
+  sdkScript = document.createElement('script')
+  sdkScript.dataset.cosmosMapSdk = 'true'
+  sdkScript.src = `https://map.qq.com/api/gljs?v=1.exp&key=${encodeURIComponent(key)}`
+  sdkScript.async = true
+  sdkScript.onload = () => {
+    clearTimeout(sdkTimer)
+    if (window.QQMap) resolve(window.QQMap)
+    else reject(Object.assign(new Error('地图 SDK 未提供 QQMap'), { code: 'QQMAP_MISSING' }))
   }
-  updateMarkers()
+  sdkScript.onerror = () => {
+    clearTimeout(sdkTimer)
+    reject(Object.assign(new Error('地图 SDK 加载失败'), { code: 'SDK_LOAD_ERROR' }))
+  }
+  sdkTimer = setTimeout(() => {
+    reject(Object.assign(new Error('地图 SDK 加载超时'), { code: 'SDK_TIMEOUT' }))
+  }, SDK_TIMEOUT_MS)
+  document.head.appendChild(sdkScript)
+})
+
+const clearMapMarkers = () => {
+  mapMarkers.value.forEach(marker => marker.setMap?.(null))
+  mapMarkers.value = []
 }
 
-const updateMapCenter = () => {
-  if (map.value && currentLocation.value) {
-    map.value.setCenter(new window.QQMap.latLng(
-      currentLocation.value.latitude,
-      currentLocation.value.longitude
-    ))
-  }
-}
+const renderMarkers = () => {
+  clearMapMarkers()
+  if (!mapReady.value || !mapInstance.value || !window.QQMap) return
 
-const updateMarkers = () => {
-  // Clear existing markers
-  if (markers.value) {
-    markers.value.forEach(marker => marker.setMap(null))
-  }
-  markers.value = []
-
-  // Add new markers
-  nearbyRestaurants.value.forEach(restaurant => {
-    if (!restaurant.latitude || !restaurant.longitude) return
+  restaurants.value.forEach((restaurant) => {
+    if (restaurant.latitude === null || restaurant.latitude === undefined
+      || restaurant.longitude === null || restaurant.longitude === undefined) return
 
     const marker = new window.QQMap.Marker({
       position: new window.QQMap.latLng(restaurant.latitude, restaurant.longitude),
-      map: map.value,
+      map: mapInstance.value,
       title: restaurant.restaurantName
     })
-
-    // Custom marker icon based on status
-    const iconColor = restaurant.status === 0 ? '#894c5c' : restaurant.status === 1 ? '#5f7a4f' : '#c98a00'
-    marker.setIcon(new window.QQMap.MarkerImage(
-      `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="36" viewBox="0 0 24 36"><path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24c0-6.6-5.4-12-12-12z" fill="${iconColor}"/><circle cx="12" cy="12" r="5" fill="white"/></svg>`)}`,
-      new window.QQMap.Size(24, 36),
-      new window.QQMap.Point(0, 0),
-      new window.QQMap.Point(12, 36)
-    ))
-
-    // Click event
-    window.QQMap.event.addListener(marker, 'click', () => {
-      handleRestaurantClick(restaurant)
-    })
-
-    markers.value.push(marker)
+    window.QQMap.event?.addListener(marker, 'click', () => openDetail(restaurant))
+    mapMarkers.value.push(marker)
   })
 }
 
-const initMap = () => {
-  if (!window.QQMap) {
-    console.error('QQMap SDK 未加载')
+const initializeMap = async () => {
+  const startedAt = performance.now()
+  const key = String(import.meta.env.VITE_MAP_KEY || '').trim()
+  if (!key || key === 'YOUR_MAP_KEY') {
+    setFallback('地图密钥未配置，已切换地点列表', 'missing-key', 'MAP_KEY_MISSING', startedAt)
     return
   }
 
-  const center = currentLocation.value
-    ? new window.QQMap.latLng(currentLocation.value.latitude, currentLocation.value.longitude)
-    : new window.QQMap.latLng(mapStore.center.latitude, mapStore.center.longitude)
+  try {
+    const [, location] = await Promise.all([loadSdk(key), mapStore.getCurrentPosition()])
+    if (!window.QQMap) {
+      setFallback('地图组件不可用，已切换地点列表', 'missing-global', 'QQMAP_MISSING', startedAt)
+      return
+    }
 
-  map.value = new window.QQMap.Map('#map', {
-    center: center,
-    zoom: mapStore.zoomLevel,
-    mapStyleId: 'style1'
-  })
+    try {
+      mapInstance.value = new window.QQMap.Map(mapElement.value, {
+        center: new window.QQMap.latLng(location.latitude, location.longitude),
+        zoom: mapStore.zoomLevel,
+        mapStyleId: 'style1'
+      })
+    } catch {
+      setFallback('地图初始化失败，已切换地点列表', 'construct-failed', 'MAP_CONSTRUCT_FAILED', startedAt)
+      return
+    }
 
-  // Map click event
-  window.QQMap.event.addListener(map.value, 'click', (e) => {
-    selectedId.value = null
-    showDetail.value = false
-  })
-
-  // Load initial data
-  loadNearbyRestaurants()
+    mapStore.setSdkStage('ready')
+    mapReady.value = true
+    mapStore.setViewMode('map')
+    await mapStore.loadNearbyRestaurants()
+    renderMarkers()
+    logMapRuntime('map.runtime.ready', startedAt)
+  } catch (error) {
+    const code = error?.code || mapStore.errorCode || 'MAP_RUNTIME_FAILED'
+    const message = code.startsWith('LOCATION_')
+      ? `${error.message}，已切换地点列表`
+      : `${error?.message || '地图不可用'}，已切换地点列表`
+    setFallback(message, code.startsWith('LOCATION_') ? 'location-failed' : 'sdk-failed', code, startedAt)
+  }
 }
 
-// Watch for status filter changes
-watch(statusFilter, () => {
-  loadNearbyRestaurants()
+const selectMode = (nextMode) => {
+  if (nextMode === 'map' && mapUnavailable.value) return
+  mapStore.setViewMode(nextMode)
+  logMapRuntime('map.mode.changed', performance.now())
+}
+
+const handleStatusFilter = async (status) => {
+  mapStore.setStatusFilter(status)
+  if (mapStore.currentLocation) await mapStore.loadNearbyRestaurants()
+  renderMarkers()
+}
+
+const retryList = async () => {
+  await mapStore.loadMapRestaurants()
+  renderMarkers()
+}
+
+const openDetail = async (restaurant, event) => {
+  detailTrigger = event?.currentTarget || document.activeElement
+  selectedRestaurant.value = restaurant
+  showDetail.value = true
+  await nextTick()
+  sheetHandle.value?.focus()
+}
+
+const closeDetail = async () => {
+  showDetail.value = false
+  selectedRestaurant.value = null
+  await nextTick()
+  detailTrigger?.focus?.()
+  detailTrigger = null
+}
+
+const onKeydown = (event) => {
+  if (event.key === 'Escape' && showDetail.value) closeDetail()
+}
+
+const viewDetail = () => {
+  const id = selectedRestaurant.value?.id
+  closeDetail()
+  if (id) router.push(`/menu/${id}`)
+}
+
+const navigationUrl = computed(() => {
+  const restaurant = selectedRestaurant.value
+  if (!restaurant || restaurant.latitude === null || restaurant.latitude === undefined
+    || restaurant.longitude === null || restaurant.longitude === undefined) return ''
+  const destination = `${restaurant.longitude},${restaurant.latitude},${restaurant.restaurantName || ''}`
+  return `https://uri.amap.com/navigation?to=${encodeURIComponent(destination)}&mode=car&callnative=1`
 })
 
-onMounted(() => {
-  // Load QQMap SDK dynamically
-  const script = document.createElement('script')
-  script.src = `https://map.qq.com/api/gljs?v=1.exp&key=${import.meta.env.VITE_MAP_KEY || 'YOUR_MAP_KEY'}`
-  script.onload = () => {
-    // Wait for SDK to be ready
-    setTimeout(initMap, 500)
-  }
-  document.head.appendChild(script)
-
-  // Auto locate on mount
-  handleLocation()
+onMounted(async () => {
+  document.addEventListener('keydown', onKeydown)
+  await mapStore.loadMapRestaurants()
+  await initializeMap()
 })
 
 onUnmounted(() => {
-  if (markers.value) {
-    markers.value.forEach(marker => marker.setMap(null))
-  }
-  mapStore.reset()
+  document.removeEventListener('keydown', onKeydown)
+  clearTimeout(sdkTimer)
+  sdkScript?.remove()
+  clearMapMarkers()
 })
 </script>
 
 <template>
-  <div class="map-page">
-    <!-- 地图容器 -->
-    <div
-      ref="mapContainer"
-      class="map-container"
-    >
+  <main class="map-page">
+    <header class="map-header">
+      <div>
+        <p>OUR PLACES</p>
+        <h1>味觉星图</h1>
+      </div>
       <div
-        id="map"
-        class="map-view"
-      />
-    </div>
-
-    <!-- 顶部搜索栏 -->
-    <div class="map-header">
-      <div class="search-bar">
-        <van-icon
-          name="search"
-          class="search-icon"
-        />
-        <input
-          v-model="searchKeyword"
-          type="text"
-          placeholder="搜索餐厅"
-          class="search-input"
-          @keyup.enter="handleSearch"
+        class="mode-switch"
+        aria-label="地图展示模式"
+      >
+        <button
+          type="button"
+          data-test="map-mode-map"
+          :aria-pressed="mode === 'map'"
+          :disabled="mapUnavailable"
+          @click="selectMode('map')"
         >
-        <van-icon
-          v-if="searchKeyword"
-          name="clear"
-          class="clear-icon"
-          @click="searchKeyword = ''"
-        />
+          <van-icon name="location-o" />
+          地图
+        </button>
+        <button
+          type="button"
+          data-test="map-mode-list"
+          :aria-pressed="mode === 'list'"
+          @click="selectMode('list')"
+        >
+          <van-icon name="bars" />
+          列表
+        </button>
       </div>
-    </div>
+    </header>
 
-    <!-- 定位按钮 -->
-    <div
-      class="location-btn"
-      @click="handleLocation"
+    <p
+      v-if="fallbackMessage"
+      class="fallback-banner"
+      role="status"
     >
-      <van-icon
-        :name="isLocating ? 'loading' : 'location-o'"
-        :class="{ locating: isLocating }"
-      />
-    </div>
+      {{ fallbackMessage }}
+    </p>
 
-    <!-- 缩放控制 -->
-    <div class="zoom-controls">
-      <div
-        class="zoom-btn"
-        @click="handleZoomIn"
-      >
-        <van-icon name="plus" />
-      </div>
-      <div
-        class="zoom-btn"
-        @click="handleZoomOut"
-      >
-        <van-icon name="minus" />
-      </div>
-    </div>
+    <section
+      class="capability-note"
+      aria-label="地图能力说明"
+    >
+      <span>关键字搜索暂不可用</span>
+      <span>路线、足迹与地图选点暂不可用</span>
+    </section>
 
-    <!-- 状态筛选 -->
-    <div class="filter-tabs">
-      <div
+    <nav
+      class="status-tabs"
+      aria-label="到访状态筛选"
+    >
+      <button
         v-for="tab in statusTabs"
-        :key="tab.value"
-        class="filter-tab"
-        :class="{ active: statusFilter === tab.value }"
+        :key="String(tab.value)"
+        type="button"
+        :class="{ active: mapStore.statusFilter === tab.value }"
+        :aria-pressed="mapStore.statusFilter === tab.value"
         @click="handleStatusFilter(tab.value)"
       >
         {{ tab.label }}
-      </div>
-    </div>
+      </button>
+    </nav>
 
-    <!-- 餐厅列表面板 -->
-    <div
-      class="restaurant-panel"
-      :class="{ expanded: isPanelExpanded }"
+    <section
+      v-show="mode === 'map'"
+      class="map-stage"
+      aria-label="餐厅地图"
     >
       <div
-        class="panel-handle"
-        @click="isPanelExpanded = !isPanelExpanded"
-      >
-        <div class="handle-bar" />
-      </div>
-
-      <div class="panel-header">
-        <span class="panel-title">附近的餐厅</span>
-        <span
-          v-if="nearbyRestaurants.length"
-          class="restaurant-count"
-        >{{ nearbyRestaurants.length }} 家</span>
-      </div>
-
-      <div
-        v-if="!isLoading && nearbyRestaurants.length"
-        class="restaurant-list"
-      >
-        <div
-          v-for="restaurant in nearbyRestaurants"
-          :key="restaurant.id"
-          class="restaurant-item"
-          :class="{ selected: selectedId === restaurant.id }"
-          @click="handleRestaurantClick(restaurant)"
-        >
-          <div class="restaurant-cover">
-            <img
-              v-if="restaurant.coverImage"
-              :src="restaurant.coverImage"
-              :alt="restaurant.restaurantName"
-            >
-            <van-icon
-              v-else
-              name="shop-o"
-              size="24"
-              color="#d6c1c5"
-            />
-          </div>
-          <div class="restaurant-info">
-            <div class="restaurant-name">
-              {{ restaurant.restaurantName }}
-            </div>
-            <div class="restaurant-meta">
-              <van-tag
-                type="primary"
-                size="small"
-                round
-              >
-                {{ restaurant.statusName }}
-              </van-tag>
-              <span
-                v-if="restaurant.distance"
-                class="distance"
-              >{{ formatDistance(restaurant.distance) }}</span>
-            </div>
-            <div
-              v-if="restaurant.dishName"
-              class="restaurant-dish"
-            >
-              {{ restaurant.dishName }}
-            </div>
-          </div>
-          <van-icon
-            name="arrow"
-            class="arrow-icon"
-          />
-        </div>
-      </div>
-
-      <div
-        v-else-if="!isLoading"
-        class="empty-state"
-      >
-        <van-empty description="附近暂无餐厅" />
-      </div>
-
-      <van-loading
-        v-if="isLoading"
-        class="loading-state"
+        ref="mapElement"
+        class="map-canvas"
       />
-    </div>
+    </section>
 
-    <!-- 餐厅详情弹窗 -->
-    <van-popup
-      v-model:show="showDetail"
-      position="bottom"
-      round
-      :style="{ height: '40%' }"
+    <section
+      v-show="mode === 'list'"
+      class="place-list"
+      aria-live="polite"
     >
       <div
-        v-if="selectedRestaurant"
-        class="detail-popup"
+        v-if="mapStore.error"
+        class="list-error"
+        data-test="map-error"
+        role="alert"
       >
-        <div class="detail-header">
-          <img
-            v-if="selectedRestaurant.coverImage"
-            :src="selectedRestaurant.coverImage"
-            class="detail-cover"
-          >
-          <div class="detail-info">
-            <div class="detail-name">
-              {{ selectedRestaurant.restaurantName }}
-            </div>
-            <div
-              v-if="selectedRestaurant.location"
-              class="detail-location"
+        <p>{{ mapStore.error }}</p>
+        <button
+          type="button"
+          data-test="map-retry"
+          @click="retryList"
+        >
+          重新加载
+        </button>
+      </div>
+
+      <div
+        v-if="listStatus === 'loading'"
+        class="list-state"
+      >
+        <van-loading />
+        <p>正在加载地点</p>
+      </div>
+
+      <div
+        v-else-if="restaurants.length"
+        class="place-items"
+      >
+        <button
+          v-for="restaurant in restaurants"
+          :key="restaurant.id"
+          type="button"
+          class="place-item"
+          :data-test="`map-item-${restaurant.id}`"
+          @click="openDetail(restaurant, $event)"
+        >
+          <span
+            class="place-cover cosmos-media cosmos-media--place"
+            aria-hidden="true"
+          />
+          <span class="place-copy">
+            <strong>{{ restaurant.restaurantName || '未命名餐厅' }}</strong>
+            <span>{{ restaurant.dishName || restaurant.statusName || '共同收藏地点' }}</span>
+            <small v-if="restaurant.distance !== null && restaurant.distance !== undefined">
+              {{ formatDistance(restaurant.distance) }}
+            </small>
+          </span>
+          <van-icon name="arrow" />
+        </button>
+      </div>
+
+      <div
+        v-else-if="listStatus !== 'error'"
+        class="list-state"
+        data-test="map-empty"
+      >
+        <van-icon
+          name="shop-o"
+          size="36"
+        />
+        <h2>还没有带坐标的餐厅</h2>
+        <p>地图接口只返回已有坐标的情侣菜单地点。</p>
+      </div>
+    </section>
+
+    <div
+      v-if="showDetail"
+      class="sheet-backdrop"
+      @click.self="closeDetail"
+    >
+      <section
+        v-if="selectedRestaurant"
+        class="detail-sheet"
+        data-test="map-detail-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="map-detail-title"
+      >
+        <button
+          ref="sheetHandle"
+          type="button"
+          class="sheet-handle"
+          data-test="map-sheet-handle"
+          aria-label="关闭地点详情"
+          @click="closeDetail"
+        >
+          <span />
+        </button>
+        <div
+          class="detail-hero cosmos-media cosmos-media--place"
+          aria-hidden="true"
+        />
+        <div class="detail-content">
+          <p>{{ selectedRestaurant.statusName || '共同地点' }}</p>
+          <h2 id="map-detail-title">
+            {{ selectedRestaurant.restaurantName }}
+          </h2>
+          <span v-if="selectedRestaurant.location">{{ selectedRestaurant.location }}</span>
+          <div class="detail-actions">
+            <a
+              v-if="navigationUrl"
+              :href="navigationUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >外部导航</a>
+            <button
+              v-else
+              type="button"
+              disabled
             >
-              <van-icon
-                name="location-o"
-                size="14"
-              />
-              {{ selectedRestaurant.location }}
-            </div>
-            <div class="detail-tags">
-              <van-tag type="primary">
-                {{ selectedRestaurant.statusName }}
-              </van-tag>
-              <van-tag
-                v-if="selectedRestaurant.rating"
-                type="warning"
-              >
-                {{ '★'.repeat(selectedRestaurant.rating) }}
-              </van-tag>
-              <span
-                v-if="selectedRestaurant.price"
-                class="detail-price"
-              >
-                ¥{{ selectedRestaurant.price }}
-              </span>
-            </div>
+              导航不可用
+            </button>
+            <button
+              type="button"
+              @click="viewDetail"
+            >
+              查看详情
+            </button>
           </div>
         </div>
-        <div class="detail-actions">
-          <van-button
-            type="primary"
-            size="small"
-            round
-            @click="handleNavigate(selectedRestaurant)"
-          >
-            导航
-          </van-button>
-          <van-button
-            size="small"
-            round
-            @click="handleViewDetail(selectedRestaurant)"
-          >
-            查看详情
-          </van-button>
-        </div>
-      </div>
-    </van-popup>
-  </div>
+      </section>
+    </div>
+  </main>
 </template>
 
 <style lang="scss" scoped>
-.map-page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: $color-background;
-  position: relative;
-}
-
-.map-container {
-  flex: 1;
-  position: relative;
-
-  .map-view {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.map-header {
-  position: absolute;
-  top: 16px;
-  left: $page-padding;
-  right: $page-padding;
-  z-index: 100;
-
-  .search-bar {
-    display: flex;
-    align-items: center;
-    @include glass(0.9);
-    border-radius: $radius-pill;
-    padding: 10px 16px;
-    box-shadow: $shadow-card;
-
-    .search-icon {
-      color: $color-primary;
-      margin-right: 8px;
-    }
-
-    .search-input {
-      flex: 1;
-      border: none;
-      outline: none;
-      background: transparent;
-      font-size: $fs-label;
-      color: $color-on-surface;
-
-      &::placeholder {
-        color: $color-on-surface-variant;
-      }
-    }
-
-    .clear-icon {
-      color: $color-on-surface-variant;
-      cursor: pointer;
-    }
-  }
-}
-
-.location-btn {
-  position: absolute;
-  right: $page-padding;
-  bottom: 280px;
-  z-index: 100;
-  width: 44px;
-  height: 44px;
-  @include glass(0.9);
-  color: $color-primary;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: $shadow-card;
-  cursor: pointer;
-
-  .locating {
-    animation: rotate 1s linear infinite;
-  }
-
-  @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-}
-
-.zoom-controls {
-  position: absolute;
-  right: $page-padding;
-  bottom: 200px;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  .zoom-btn {
-    width: 44px;
-    height: 44px;
-    @include glass(0.9);
-    color: $color-on-surface;
-    border-radius: $radius-md;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: $shadow-card;
-    cursor: pointer;
-  }
-}
-
-.filter-tabs {
-  position: absolute;
-  top: 74px;
-  left: $page-padding;
-  right: $page-padding;
-  z-index: 100;
-  display: flex;
-  gap: 8px;
-
-  .filter-tab {
-    padding: 6px 14px;
-    @include glass(0.9);
-    border-radius: $radius-pill;
-    font-size: $fs-caption;
-    color: $color-on-surface-variant;
-    cursor: pointer;
-    transition: all $transition-base;
-    box-shadow: $shadow-sm;
-
-    &.active {
-      background: $color-primary;
-      color: $color-on-primary;
-    }
-  }
-}
-
-.restaurant-panel {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 100;
-  background: $color-surface-lowest;
-  border-radius: $radius-xl $radius-xl 0 0;
-  max-height: 280px;
-  transition: max-height 0.3s $ease-standard;
-  overflow: hidden;
-  box-shadow: $shadow-nav;
-
-  &.expanded {
-    max-height: 60vh;
-  }
-
-  .panel-handle {
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    cursor: pointer;
-
-    .handle-bar {
-      width: 40px;
-      height: 4px;
-      background: $color-outline-variant;
-      border-radius: 2px;
-    }
-  }
-
-  .panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 $page-padding 12px;
-    border-bottom: 1px solid $color-surface-high;
-
-    .panel-title {
-      font-size: $fs-title;
-      font-weight: $fw-semibold;
-      color: $color-on-surface;
-    }
-
-    .restaurant-count {
-      font-size: $fs-caption;
-      color: $color-on-surface-variant;
-    }
-  }
-
-  .restaurant-list {
-    max-height: 200px;
-    overflow-y: auto;
-
-    &.expanded {
-      max-height: calc(60vh - 60px);
-    }
-  }
-
-  .restaurant-item {
-    display: flex;
-    align-items: center;
-    padding: 12px $page-padding;
-    cursor: pointer;
-    transition: background $transition-base;
-
-    &:active {
-      background: $color-surface-low;
-    }
-
-    &.selected {
-      background: $color-primary-fixed;
-    }
-
-    .restaurant-cover {
-      width: 48px;
-      height: 48px;
-      background: $color-surface-low;
-      border-radius: $radius-md;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      overflow: hidden;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    }
-
-    .restaurant-info {
-      flex: 1;
-
-      .restaurant-name {
-        font-size: $fs-label;
-        font-weight: $fw-medium;
-        color: $color-on-surface;
-        margin-bottom: 4px;
-      }
-
-      .restaurant-meta {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 4px;
-
-        .distance {
-          font-size: $fs-caption;
-          color: $color-primary;
-        }
-      }
-
-      .restaurant-dish {
-        font-size: $fs-caption;
-        color: $color-on-surface-variant;
-      }
-    }
-
-    .arrow-icon {
-      color: $color-outline-variant;
-    }
-  }
-
-  .empty-state,
-  .loading-state {
-    padding: 40px 0;
-    display: flex;
-    justify-content: center;
-  }
-}
-
-.detail-popup {
-  padding: $space-5;
-
-  .detail-header {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-
-    .detail-cover {
-      width: 80px;
-      height: 80px;
-      border-radius: $radius-md;
-      object-fit: cover;
-    }
-
-    .detail-info {
-      flex: 1;
-
-      .detail-name {
-        font-size: $fs-title;
-        font-weight: $fw-semibold;
-        color: $color-on-surface;
-        margin-bottom: 4px;
-      }
-
-      .detail-location {
-        font-size: $fs-caption;
-        color: $color-on-surface-variant;
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .detail-tags {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-
-        .detail-price {
-          font-size: $fs-label;
-          color: $color-primary;
-          font-weight: $fw-semibold;
-        }
-      }
-    }
-  }
-
-  .detail-actions {
-    display: flex;
-    gap: 12px;
-
-    .van-button {
-      flex: 1;
-    }
-  }
-}
+.map-page { min-height: calc(100vh - 64px); padding: $space-5 $page-padding 100px; color: $cosmos-text; background: $cosmos-bg; }
+.map-header { display: flex; gap: $space-4; align-items: center; justify-content: space-between; }
+.map-header p { color: $cosmos-secondary; font-size: $fs-caption; font-weight: $fw-semibold; }
+.map-header h1 { font-size: $fs-headline; letter-spacing: 0; }
+.mode-switch { display: flex; padding: 3px; border: 1px solid $cosmos-border; border-radius: 8px; background: $cosmos-surface; }
+.mode-switch button { display: flex; min-height: 40px; gap: $space-1; align-items: center; padding: 0 $space-3; border: 0; border-radius: 6px; background: transparent; color: $cosmos-text-muted; }
+.mode-switch button[aria-pressed='true'] { background: $cosmos-primary; color: #fff; }
+.mode-switch button:disabled { opacity: .42; }
+.fallback-banner, .capability-note { margin-top: $space-4; border: 1px solid $cosmos-border; border-radius: 8px; color: $cosmos-text-muted; font-size: $fs-caption; }
+.fallback-banner { padding: $space-3; border-color: rgba(255,200,87,.55); background: rgba(255,200,87,.08); color: $cosmos-gold; }
+.capability-note { display: flex; flex-wrap: wrap; gap: $space-2 $space-4; padding: $space-3; background: $cosmos-surface; }
+.status-tabs { display: flex; gap: $space-2; margin: $space-4 0; overflow-x: auto; }
+.status-tabs button { min-height: 40px; padding: 0 $space-4; border: 1px solid $cosmos-border; border-radius: 999px; background: transparent; color: $cosmos-text-muted; white-space: nowrap; }
+.status-tabs button.active { border-color: $cosmos-secondary; color: $cosmos-secondary; }
+.map-stage { overflow: hidden; min-height: 520px; border: 1px solid $cosmos-border; border-radius: 8px; background: $cosmos-surface; }
+.map-canvas { width: 100%; height: 520px; }
+.place-list { min-height: 420px; }
+.place-items { display: grid; gap: $space-3; }
+.place-item { display: grid; grid-template-columns: 82px minmax(0, 1fr) 24px; min-height: 96px; gap: $space-3; align-items: center; width: 100%; padding: $space-2; border: 1px solid $cosmos-border; border-radius: 8px; background: $cosmos-surface; color: $cosmos-text; text-align: left; }
+.place-cover { width: 82px; height: 80px; border-radius: 6px; }
+.place-copy { display: grid; min-width: 0; gap: $space-1; }
+.place-copy strong, .place-copy span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.place-copy span, .place-copy small { color: $cosmos-text-muted; }
+.place-copy small { color: $cosmos-gold; }
+.list-state, .list-error { display: grid; min-height: 300px; place-items: center; align-content: center; gap: $space-3; color: $cosmos-text-muted; text-align: center; }
+.list-state h2 { color: $cosmos-text; font-size: $fs-title; }
+.list-error button { min-height: 44px; padding: 0 $space-5; border: 1px solid $cosmos-primary; border-radius: 6px; background: transparent; color: $cosmos-primary; }
+.sheet-backdrop { position: fixed; z-index: 1200; inset: 0; display: flex; align-items: flex-end; justify-content: center; background: rgba(5,8,20,.72); }
+.detail-sheet { overflow: hidden; width: min(100%, 560px); padding: 0 $page-padding calc($space-6 + env(safe-area-inset-bottom)); border: 1px solid $cosmos-glass-border; border-radius: 28px 28px 0 0; background: $cosmos-surface-raised; box-shadow: $shadow-float; }
+.sheet-handle { display: grid; width: 100%; min-height: 44px; place-items: center; border: 0; background: transparent; }
+.sheet-handle span { width: 48px; height: 4px; border-radius: 4px; background: $cosmos-text-muted; }
+.sheet-handle:focus-visible { outline: 2px solid $cosmos-secondary; outline-offset: -4px; }
+.detail-hero { height: 150px; border-radius: 8px; }
+.detail-content { padding-top: $space-4; }
+.detail-content > p { color: $cosmos-secondary; font-size: $fs-caption; }
+.detail-content h2 { margin-top: $space-1; font-size: $fs-title; }
+.detail-content > span { display: block; margin-top: $space-2; color: $cosmos-text-muted; }
+.detail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: $space-3; margin-top: $space-5; }
+.detail-actions a, .detail-actions button { display: grid; min-height: 46px; place-items: center; border: 1px solid $cosmos-primary; border-radius: 6px; background: transparent; color: $cosmos-primary; }
+.detail-actions button:last-child { background: $cosmos-primary; color: #fff; }
+.detail-actions button:disabled { opacity: .45; }
+@media (min-width: 760px) { .place-items { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>

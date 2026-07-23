@@ -8,7 +8,7 @@ const chatVisible = ref(false)
 
 const showFab = computed(() => {
   const token = localStorage.getItem('token')
-  return !!token && route.path !== '/login'
+  return !!token && route.path !== '/login' && route.path !== '/ai'
 })
 
 const openChat = () => {
