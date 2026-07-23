@@ -11,9 +11,10 @@ const resourceStores = vi.hoisted(() => ({
   menu: { fetchList: vi.fn() },
   recipe: { fetchList: vi.fn() }
 }))
+const structuredLog = vi.hoisted(() => ({ logUiEvent: vi.fn() }))
 
 vi.mock('@/api/ai', () => aiApi)
-vi.mock('@/composables/useStructuredLog', () => ({ logUiEvent: vi.fn() }))
+vi.mock('@/composables/useStructuredLog', () => structuredLog)
 vi.mock('@/stores/menu', () => ({ useMenuStore: () => resourceStores.menu }))
 vi.mock('@/stores/recipe', () => ({ useRecipeStore: () => resourceStores.recipe }))
 
@@ -143,6 +144,9 @@ describe('AI 完整页与共享会话合同', () => {
     store.stopStreaming()
     await request
     expect(store.state).toBe('interrupted')
+    expect(store.canRetry).toBe(false)
+    expect(await store.retryLastMessage()).toBe(false)
+    expect(await store.rejectPending()).toBe(true)
     expect(store.canRetry).toBe(true)
 
     await store.retryLastMessage()
@@ -180,11 +184,81 @@ describe('AI 完整页与共享会话合同', () => {
     expect(await store.confirmPending()).toBe(false)
     expect(store.confirmationOutcomeUnknown).toBe(true)
     expect(store.canConfirm).toBe(false)
+    expect(store.canReject).toBe(false)
+    expect(store.canRetry).toBe(false)
     expect(resourceStores.recipe.fetchList).toHaveBeenCalledWith({
       source: 'couple', pageNum: 1, pageSize: 10
     })
     expect(await store.confirmPending()).toBe(false)
+    expect(await store.rejectPending()).toBe(false)
     expect(aiApi.confirmAction).toHaveBeenCalledOnce()
+    expect(aiApi.rejectAction).not.toHaveBeenCalled()
+  })
+
+  it('pendingAction 存在时 canRetry 为 false，面板不展示无效重试按钮', async () => {
+    const panel = await readFile('src/components/AiChatPanel.vue', 'utf8')
+    const store = useAiChatStore()
+    store.lastPrompt = '创建菜谱'
+    store.state = 'interrupted'
+    store.pendingAction = { actionType: 'create_recipe', payload: { title: '星云汤' } }
+
+    expect(store.canRetry).toBe(false)
+    expect(panel).toMatch(/v-if="aiStore\.canRetry"[\s\S]*data-test="ai-retry"/)
+  })
+
+  it('create_recipe 对象数组预览可读、稳定且长度受控', () => {
+    const action = {
+      actionType: 'create_recipe',
+      payload: {
+        ingredients: [
+          { amount: '500ml', name: '水' },
+          { name: '盐', amount: '适量' }
+        ],
+        steps: [{ imageUrl: null, content: '加热后缓慢搅拌'.repeat(40) }]
+      }
+    }
+
+    const first = buildActionPreview(action)
+    const second = buildActionPreview(JSON.parse(JSON.stringify(action)))
+    const ingredients = first.fields.find(field => field.field === 'ingredients').after
+    const steps = first.fields.find(field => field.field === 'steps').after
+
+    expect(first).toEqual(second)
+    expect(ingredients).toContain('name: 水')
+    expect(ingredients).toContain('amount: 500ml')
+    expect(ingredients).not.toContain('[object Object]')
+    expect(steps).not.toContain('[object Object]')
+    expect(steps.length).toBeLessThanOrEqual(180)
+  })
+
+  it('结构化日志仅包含允许字段，不记录 prompt、回复正文、pending payload 或原始 session', async () => {
+    aiApi.streamChat.mockImplementation(async (payload, handlers) => {
+      handlers.onToken('private-reply-content')
+      handlers.onPending({
+        actionType: 'add_menu',
+        payload: { restaurantName: 'private-restaurant' }
+      })
+      handlers.onSession('private-session-id')
+      handlers.onDone()
+    })
+    const store = useAiChatStore()
+    await store.sendMessage('private-user-prompt')
+    await Promise.resolve()
+
+    const serializedLogs = JSON.stringify(structuredLog.logUiEvent.mock.calls)
+    expect(serializedLogs).not.toContain('private-user-prompt')
+    expect(serializedLogs).not.toContain('private-reply-content')
+    expect(serializedLogs).not.toContain('private-restaurant')
+    expect(serializedLogs).not.toContain('private-session-id')
+    structuredLog.logUiEvent.mock.calls.forEach(([, fields]) => {
+      expect(Object.keys(fields).sort()).toEqual(expect.arrayContaining([
+        'actionType', 'cancelReason', 'durationMs', 'firstTokenMs', 'requestId', 'stage'
+      ]))
+      expect(Object.keys(fields).every(key => [
+        'actionType', 'cancelReason', 'conversationHash', 'durationMs',
+        'firstTokenMs', 'requestId', 'stage'
+      ].includes(key))).toBe(true)
+    })
   })
 
   it('拒绝调用真实接口并仅清除 pending，不执行 confirm', async () => {

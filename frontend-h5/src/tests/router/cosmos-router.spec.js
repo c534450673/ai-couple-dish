@@ -114,6 +114,15 @@ describe('Couple Cosmos 路由', () => {
     expect(router.currentRoute.value.query.redirect).toBe('/recipes/42/edit?from=detail')
   })
 
+  it('有 token 但未绑定时允许访问 AI 助手', async () => {
+    const router = createTestRouter(createStorage({ token: 'session-token' }))
+
+    await router.push('/ai')
+    await router.isReady()
+
+    expect(router.currentRoute.value.name).toBe('Ai')
+  })
+
   it('情侣门禁只读取 hydration 快照且绑定后允许访问', async () => {
     const storage = createStorage({
       token: 'session-token',

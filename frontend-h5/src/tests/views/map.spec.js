@@ -23,12 +23,34 @@ const successfulLocation = () => ({
   }
 })
 
-const qqMapRuntime = (mapFactory = () => ({ setCenter: vi.fn() })) => ({
-  latLng: vi.fn((latitude, longitude) => ({ latitude, longitude })),
-  Map: vi.fn(mapFactory),
-  Marker: vi.fn(() => ({ setMap: vi.fn() })),
-  event: { addListener: vi.fn() }
-})
+const qqMapRuntime = (mapFactory = () => ({ setCenter: vi.fn() }), readyEvent = null) => {
+  const listeners = new Map()
+  const runtime = {
+    latLng: vi.fn((latitude, longitude) => ({ latitude, longitude })),
+    Map: vi.fn(() => {
+      const map = mapFactory()
+      if (readyEvent) queueMicrotask(() => runtime.emit(readyEvent))
+      return map
+    }),
+    Marker: vi.fn(() => ({ setMap: vi.fn() })),
+    event: {
+      addListener: vi.fn((target, eventName, handler) => {
+        const entry = { eventName, handler, removed: false }
+        listeners.set(eventName, [...(listeners.get(eventName) || []), entry])
+        return entry
+      }),
+      removeListener: vi.fn((entry) => {
+        if (entry) entry.removed = true
+      })
+    },
+    emit(eventName, payload) {
+      listeners.get(eventName)?.forEach((entry) => {
+        if (!entry.removed) entry.handler(payload)
+      })
+    }
+  }
+  return runtime
+}
 
 describe('地图真实降级', () => {
   beforeEach(() => {
@@ -176,6 +198,125 @@ describe('地图真实降级', () => {
     wrapper.unmount()
   })
 
+  it.each(['tilesloaded', 'idle'])('等待 QQMap %s 首次就绪后才切换地图', async (readyEvent) => {
+    vi.stubEnv('VITE_MAP_KEY', 'valid-map-key')
+    vi.stubGlobal('navigator', successfulLocation())
+    const runtime = qqMapRuntime()
+    window.QQMap = runtime
+    mapApi.getMapRestaurants.mockResolvedValueOnce({
+      data: [{ id: 21, restaurantName: '初始地点', latitude: 1, longitude: 2 }]
+    })
+    mapApi.getNearbyRestaurants.mockResolvedValueOnce({
+      data: [{ id: 22, restaurantName: '附近地点', latitude: 31.2, longitude: 121.5 }]
+    })
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const wrapper = mount(MapView, { global: { plugins: [pinia] } })
+    await flush()
+
+    expect(wrapper.get('[data-test="map-mode-list"]').attributes('aria-pressed')).toBe('true')
+    expect(wrapper.get('.map-stage').classes()).toContain('map-stage--pending')
+    expect(wrapper.get('.map-stage').attributes('style') || '').not.toContain('display: none')
+    expect(mapApi.getNearbyRestaurants).not.toHaveBeenCalled()
+
+    runtime.emit(readyEvent)
+    await flush()
+
+    expect(wrapper.get('[data-test="map-mode-map"]').attributes('aria-pressed')).toBe('true')
+    expect(wrapper.get('.map-stage').classes()).not.toContain('map-stage--pending')
+    expect(mapApi.getNearbyRestaurants).toHaveBeenCalledOnce()
+    expect(runtime.event.removeListener).toHaveBeenCalled()
+    wrapper.unmount()
+  })
+
+  it('QQMap 异步 error 与 render timeout 均降级并清理监听器', async () => {
+    vi.stubEnv('VITE_MAP_KEY', 'valid-map-key')
+    vi.stubGlobal('navigator', successfulLocation())
+    const runtime = qqMapRuntime()
+    window.QQMap = runtime
+    mapApi.getMapRestaurants.mockResolvedValue({
+      data: [{ id: 23, restaurantName: '保留地点', latitude: 1, longitude: 2 }]
+    })
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const failed = mount(MapView, { global: { plugins: [pinia] } })
+    await flush()
+
+    runtime.emit('error', new Error('private map error'))
+    await flush()
+    expect(failed.text()).toContain('地图渲染失败')
+    expect(failed.get('[data-test="map-mode-list"]').attributes('aria-pressed')).toBe('true')
+    expect(runtime.event.removeListener).toHaveBeenCalledTimes(3)
+    failed.unmount()
+
+    vi.useFakeTimers()
+    const timeoutRuntime = qqMapRuntime()
+    window.QQMap = timeoutRuntime
+    const timeoutPinia = createPinia()
+    setActivePinia(timeoutPinia)
+    const timedOut = mount(MapView, { global: { plugins: [timeoutPinia] } })
+    await Promise.resolve()
+    await Promise.resolve()
+    await Promise.resolve()
+    await vi.advanceTimersByTimeAsync(8000)
+
+    expect(timedOut.text()).toContain('地图渲染超时')
+    expect(timedOut.get('[data-test="map-mode-list"]').attributes('aria-pressed')).toBe('true')
+    expect(timeoutRuntime.event.removeListener).toHaveBeenCalledTimes(3)
+    timedOut.unmount()
+  })
+
+  it('地图就绪前卸载会移除监听器并取消 render timeout', async () => {
+    vi.useFakeTimers()
+    vi.stubEnv('VITE_MAP_KEY', 'valid-map-key')
+    vi.stubGlobal('navigator', successfulLocation())
+    const runtime = qqMapRuntime()
+    window.QQMap = runtime
+    mapApi.getMapRestaurants.mockResolvedValueOnce({
+      data: [{ id: 25, restaurantName: '待渲染地点', latitude: 1, longitude: 2 }]
+    })
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const wrapper = mount(MapView, { global: { plugins: [pinia] } })
+    await Promise.resolve()
+    await Promise.resolve()
+    await Promise.resolve()
+    await vi.advanceTimersByTimeAsync(0)
+
+    expect(runtime.event.addListener).toHaveBeenCalledTimes(3)
+    wrapper.unmount()
+    expect(runtime.event.removeListener).toHaveBeenCalledTimes(3)
+    await vi.advanceTimersByTimeAsync(8000)
+    expect(runtime.event.removeListener).toHaveBeenCalledTimes(3)
+  })
+
+  it.each([
+    ['地图列表接口失败', 'map-error'],
+    ['附近接口失败', 'nearby-error'],
+    ['附近真实零点位', 'nearby-empty']
+  ])('%s 时即使 SDK 已就绪也保持列表', async (name, scenario) => {
+    vi.stubEnv('VITE_MAP_KEY', 'valid-map-key')
+    vi.stubGlobal('navigator', successfulLocation())
+    const runtime = qqMapRuntime(undefined, 'tilesloaded')
+    window.QQMap = runtime
+    const point = { id: 24, restaurantName: '可用地点', latitude: 31.2, longitude: 121.5 }
+    if (scenario === 'map-error') mapApi.getMapRestaurants.mockRejectedValueOnce(new Error('private list error'))
+    else mapApi.getMapRestaurants.mockResolvedValueOnce({ data: [point] })
+    if (scenario === 'nearby-error') mapApi.getNearbyRestaurants.mockRejectedValueOnce(new Error('private nearby error'))
+    else mapApi.getNearbyRestaurants.mockResolvedValueOnce({ data: scenario === 'nearby-empty' ? [] : [point] })
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const wrapper = mount(MapView, { global: { plugins: [pinia] } })
+    await flush()
+    await flush()
+
+    expect(wrapper.get('[data-test="map-mode-list"]').attributes('aria-pressed')).toBe('true')
+    expect(wrapper.get('[data-test="map-mode-map"]').attributes('disabled')).toBeDefined()
+    if (scenario === 'nearby-empty') expect(wrapper.get('[data-test="map-empty"]').exists()).toBe(true)
+    else expect(wrapper.get('[data-test="map-error"]').exists()).toBe(true)
+    wrapper.unmount()
+  })
+
   it.each([
     ['定位权限被拒绝', 1, '定位权限被拒绝'],
     ['定位请求超时', 3, '定位请求超时']
@@ -210,7 +351,13 @@ describe('地图真实降级', () => {
   it('地图成功后仍可随时切换回列表', async () => {
     vi.stubEnv('VITE_MAP_KEY', 'valid-map-key')
     vi.stubGlobal('navigator', successfulLocation())
-    window.QQMap = qqMapRuntime()
+    window.QQMap = qqMapRuntime(undefined, 'tilesloaded')
+    mapApi.getMapRestaurants.mockResolvedValueOnce({
+      data: [{ id: 30, restaurantName: '初始地点', latitude: 1, longitude: 2 }]
+    })
+    mapApi.getNearbyRestaurants.mockResolvedValueOnce({
+      data: [{ id: 31, restaurantName: '附近地点', latitude: 31.2, longitude: 121.5 }]
+    })
     const pinia = createPinia()
     setActivePinia(pinia)
     const wrapper = mount(MapView, { global: { plugins: [pinia] } })

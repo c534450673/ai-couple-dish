@@ -5,6 +5,7 @@ import { useMapStore } from '@/stores/map'
 import { logUiEvent } from '@/composables/useStructuredLog'
 
 const SDK_TIMEOUT_MS = 8000
+const MAP_RENDER_TIMEOUT_MS = 8000
 const router = useRouter()
 const mapStore = useMapStore()
 const mapElement = ref(null)
@@ -17,12 +18,16 @@ const mapInstance = ref(null)
 const mapMarkers = ref([])
 let sdkScript = null
 let sdkTimer = null
+let mapRenderTimer = null
+let mapReadyListeners = []
 let detailTrigger = null
 
 const restaurants = computed(() => mapStore.nearbyRestaurants)
 const mode = computed(() => mapStore.viewMode)
 const listStatus = computed(() => mapStore.listStatus)
-const mapUnavailable = computed(() => !mapReady.value)
+const mapUnavailable = computed(() => !mapReady.value
+  || !restaurants.value.length
+  || Boolean(mapStore.error))
 const statusTabs = [
   { label: '全部', value: null },
   { label: '想去', value: 0 },
@@ -43,13 +48,53 @@ const logMapRuntime = (event, startedAt, errorCode = null) => {
   })
 }
 
+const clearMapReadiness = () => {
+  clearTimeout(mapRenderTimer)
+  mapRenderTimer = null
+  mapReadyListeners.forEach((listener) => {
+    window.QQMap?.event?.removeListener?.(listener)
+  })
+  mapReadyListeners = []
+}
+
 const setFallback = (message, stage, errorCode, startedAt) => {
+  clearMapReadiness()
   fallbackMessage.value = message
   mapReady.value = false
   mapStore.setSdkStage(stage, errorCode)
   mapStore.setViewMode('list')
   logMapRuntime('map.runtime.fallback', startedAt, errorCode)
 }
+
+const waitForMapReady = (sdk, map) => new Promise((resolve, reject) => {
+  const addListener = sdk?.event?.addListener
+  if (typeof addListener !== 'function') {
+    reject(Object.assign(new Error('地图就绪事件不可用'), { code: 'MAP_EVENT_UNAVAILABLE' }))
+    return
+  }
+
+  const settle = (callback, value) => {
+    clearMapReadiness()
+    callback(value)
+  }
+  const onReady = () => settle(resolve, true)
+  const onError = () => settle(
+    reject,
+    Object.assign(new Error('地图渲染失败'), { code: 'MAP_RENDER_ERROR' })
+  )
+
+  mapReadyListeners = [
+    addListener(map, 'tilesloaded', onReady),
+    addListener(map, 'idle', onReady),
+    addListener(map, 'error', onError)
+  ].filter(Boolean)
+  mapRenderTimer = setTimeout(() => {
+    settle(
+      reject,
+      Object.assign(new Error('地图渲染超时'), { code: 'MAP_RENDER_TIMEOUT' })
+    )
+  }, MAP_RENDER_TIMEOUT_MS)
+})
 
 const loadSdk = (key) => new Promise((resolve, reject) => {
   if (window.QQMap) {
@@ -100,7 +145,7 @@ const renderMarkers = () => {
   })
 }
 
-const initializeMap = async () => {
+const initializeMap = async (initialListLoaded) => {
   const startedAt = performance.now()
   const key = String(import.meta.env.VITE_MAP_KEY || '').trim()
   if (!key || key === 'YOUR_MAP_KEY') {
@@ -126,11 +171,26 @@ const initializeMap = async () => {
       return
     }
 
-    mapStore.setSdkStage('ready')
+    mapStore.setSdkStage('rendering')
+    await waitForMapReady(window.QQMap, mapInstance.value)
     mapReady.value = true
-    mapStore.setViewMode('map')
-    await mapStore.loadNearbyRestaurants()
+    mapStore.setSdkStage('ready')
+
+    if (!initialListLoaded) {
+      mapStore.setViewMode('list')
+      logMapRuntime('map.runtime.data-unavailable', startedAt, mapStore.errorCode)
+      return
+    }
+
+    const nearbyLoaded = await mapStore.loadNearbyRestaurants()
+    if (!nearbyLoaded || !restaurants.value.length) {
+      mapStore.setViewMode('list')
+      logMapRuntime('map.runtime.data-unavailable', startedAt, mapStore.errorCode)
+      return
+    }
+
     renderMarkers()
+    mapStore.setViewMode('map')
     logMapRuntime('map.runtime.ready', startedAt)
   } catch (error) {
     const code = error?.code || mapStore.errorCode || 'MAP_RUNTIME_FAILED'
@@ -149,7 +209,14 @@ const selectMode = (nextMode) => {
 
 const handleStatusFilter = async (status) => {
   mapStore.setStatusFilter(status)
-  if (mapStore.currentLocation) await mapStore.loadNearbyRestaurants()
+  const loaded = mapStore.currentLocation
+    ? await mapStore.loadNearbyRestaurants()
+    : false
+  if (!loaded || !restaurants.value.length) {
+    mapStore.setViewMode('list')
+    clearMapMarkers()
+    return
+  }
   renderMarkers()
 }
 
@@ -194,13 +261,14 @@ const navigationUrl = computed(() => {
 
 onMounted(async () => {
   document.addEventListener('keydown', onKeydown)
-  await mapStore.loadMapRestaurants()
-  await initializeMap()
+  const initialListLoaded = await mapStore.loadMapRestaurants()
+  await initializeMap(initialListLoaded)
 })
 
 onUnmounted(() => {
   document.removeEventListener('keydown', onKeydown)
   clearTimeout(sdkTimer)
+  clearMapReadiness()
   sdkScript?.remove()
   clearMapMarkers()
 })
@@ -272,8 +340,9 @@ onUnmounted(() => {
     </nav>
 
     <section
-      v-show="mode === 'map'"
       class="map-stage"
+      :class="{ 'map-stage--pending': mode !== 'map' }"
+      :aria-hidden="mode !== 'map'"
       aria-label="餐厅地图"
     >
       <div
@@ -413,7 +482,7 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.map-page { min-height: calc(100vh - 64px); padding: $space-5 $page-padding 100px; color: $cosmos-text; background: $cosmos-bg; }
+.map-page { position: relative; min-height: calc(100vh - 64px); padding: $space-5 $page-padding 100px; color: $cosmos-text; background: $cosmos-bg; }
 .map-header { display: flex; gap: $space-4; align-items: center; justify-content: space-between; }
 .map-header p { color: $cosmos-secondary; font-size: $fs-caption; font-weight: $fw-semibold; }
 .map-header h1 { font-size: $fs-headline; letter-spacing: 0; }
@@ -428,6 +497,7 @@ onUnmounted(() => {
 .status-tabs button { min-height: 40px; padding: 0 $space-4; border: 1px solid $cosmos-border; border-radius: 999px; background: transparent; color: $cosmos-text-muted; white-space: nowrap; }
 .status-tabs button.active { border-color: $cosmos-secondary; color: $cosmos-secondary; }
 .map-stage { overflow: hidden; min-height: 520px; border: 1px solid $cosmos-border; border-radius: 8px; background: $cosmos-surface; }
+.map-stage--pending { position: absolute; left: -10000px; visibility: hidden; width: calc(100% - (2 * $page-padding)); pointer-events: none; }
 .map-canvas { width: 100%; height: 520px; }
 .place-list { min-height: 420px; }
 .place-items { display: grid; gap: $space-3; }

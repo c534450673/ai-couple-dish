@@ -15,6 +15,8 @@ export const AI_CHAT_STATES = Object.freeze([
 ])
 
 const WRITE_ACTIONS = new Set(['add_menu', 'create_recipe'])
+const PREVIEW_MAX_ITEMS = 8
+const PREVIEW_MAX_LENGTH = 180
 const FIELD_LABELS = {
   restaurantName: '餐厅名称',
   dishName: '菜品名称',
@@ -56,6 +58,31 @@ const logAiStage = async (event, fields, sessionId) => {
   })
 }
 
+const truncatePreview = (value) => value.length <= PREVIEW_MAX_LENGTH
+  ? value
+  : `${value.slice(0, PREVIEW_MAX_LENGTH - 1)}…`
+
+const formatPreviewValue = (value, depth = 0) => {
+  if (value === null || value === undefined || value === '') return '空值'
+  if (Array.isArray(value)) {
+    const items = value
+      .slice(0, PREVIEW_MAX_ITEMS)
+      .map(item => formatPreviewValue(item, depth + 1))
+    const suffix = value.length > PREVIEW_MAX_ITEMS ? `；另有 ${value.length - PREVIEW_MAX_ITEMS} 项` : ''
+    return truncatePreview(`${items.join('；')}${suffix}`)
+  }
+  if (typeof value === 'object') {
+    if (depth >= 3) return '嵌套内容'
+    const fields = Object.keys(value)
+      .sort((left, right) => left.localeCompare(right))
+      .slice(0, PREVIEW_MAX_ITEMS)
+      .map(key => `${key}: ${formatPreviewValue(value[key], depth + 1)}`)
+    const suffix = Object.keys(value).length > PREVIEW_MAX_ITEMS ? '；…' : ''
+    return truncatePreview(`{${fields.join('；')}${suffix}}`)
+  }
+  return truncatePreview(String(value))
+}
+
 export const buildActionPreview = (action) => {
   if (!action) return null
   const payload = action.payload && typeof action.payload === 'object' ? action.payload : {}
@@ -77,7 +104,7 @@ export const buildActionPreview = (action) => {
       field,
       label: FIELD_LABELS[field] || field,
       before: '未创建',
-      after: Array.isArray(value) ? value.join('、') : String(value ?? '空值')
+      after: formatPreviewValue(value)
     }))
   }
 }
@@ -115,9 +142,11 @@ export const useAiChatStore = defineStore('ai-chat', {
     ),
     canReject: state => Boolean(state.pendingAction)
       && !state.confirmationInFlight
+      && !state.confirmationOutcomeUnknown
       && !state.activeController,
     canRetry: state => ['interrupted', 'error'].includes(state.state)
       && Boolean(state.lastPrompt)
+      && !state.pendingAction
       && !state.confirmationInFlight
       && !state.confirmationOutcomeUnknown
   },

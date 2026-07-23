@@ -152,7 +152,7 @@ export const routes = [
     path: '/ai',
     name: 'Ai',
     component: () => import('@/views/ai/index.vue'),
-    meta: { title: 'AI 助手', requiresAuth: true, requiresCouple: true, shell: true }
+    meta: { title: 'AI 助手', requiresAuth: true, requiresCouple: false, shell: true }
   },
   {
     path: '/notifications',

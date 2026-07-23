@@ -151,9 +151,9 @@ watch(() => [aiStore.messages.length, aiStore.messages.at(-1)?.content], scrollB
       >
         <p>回复已中断，当前片段仅保存在本机，服务端不支持续传。</p>
         <button
+          v-if="aiStore.canRetry"
           type="button"
           data-test="ai-retry"
-          :disabled="!aiStore.canRetry"
           @click="aiStore.retryLastMessage"
         >
           重新发送
@@ -166,9 +166,9 @@ watch(() => [aiStore.messages.length, aiStore.messages.at(-1)?.content], scrollB
       >
         <p>AI 请求失败，输入和已有消息已保留。</p>
         <button
+          v-if="aiStore.canRetry"
           type="button"
           data-test="ai-retry"
-          :disabled="!aiStore.canRetry"
           @click="aiStore.retryLastMessage"
         >
           重试
