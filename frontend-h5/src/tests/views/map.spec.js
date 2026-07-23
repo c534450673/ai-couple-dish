@@ -294,7 +294,7 @@ describe('地图真实降级', () => {
       data: [{
         id: 26,
         restaurantName: sentinels.navigation,
-        address: sentinels.address,
+        location: sentinels.address,
         latitude: sentinels.latitude,
         longitude: sentinels.longitude
       }]
@@ -306,6 +306,7 @@ describe('地图真实降级', () => {
 
     await wrapper.get('[data-test="map-item-26"]').trigger('click')
     await flush()
+    expect(wrapper.get('.detail-content').text()).toContain(sentinels.address)
     expect(decodeURIComponent(wrapper.get('.detail-actions a').attributes('href')))
       .toContain(sentinels.navigation)
 
