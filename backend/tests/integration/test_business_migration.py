@@ -393,6 +393,112 @@ async def test_feed_and_wish_routes_keep_limits_permissions_and_logs_redacted(
 
 
 @pytest.mark.integration
+async def test_upload_routes_validate_content_and_file_ownership(
+    mysql_business_engine: AsyncEngine, redis_url: str, tmp_path: Path
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    upload_settings = Settings(
+        _env_file=None,
+        DB_PASSWORD="db-secret",  # noqa: S106
+        JWT_SECRET=SECRET,
+        FILE_UPLOAD_PATH=str(tmp_path),
+        FILE_BASE_URL="/api/uploads",
+    )
+    app = create_app(upload_settings)
+    app.state.redis = redis
+
+    async def session_override():
+        async with session_factory() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    private_filename = "private-upload-name.png"
+    png_content = b"\x89PNG\r\n\x1a\npayload"
+    try:
+        with capture_logs() as logs:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                login = await client.post(
+                    "/api/user/login", json={"code": "upload-openid-one", "nickName": "上传者"}
+                )
+                second = await client.post(
+                    "/api/user/login", json={"code": "upload-openid-two", "nickName": "其他用户"}
+                )
+                auth = {"Authorization": f"Bearer {login.json()['data']['token']}"}
+                second_auth = {"Authorization": f"Bearer {second.json()['data']['token']}"}
+                single = await client.post(
+                    "/api/upload/image",
+                    headers=auth,
+                    files={"file": (private_filename, png_content, "image/png")},
+                )
+                assert single.json()["code"] == 200
+                single_data = single.json()["data"]
+                assert "fileKey" not in single_data
+                assert single_data["originalFilename"] == private_filename
+                assert single_data["type"] == "png"
+                assert single_data["size"] == len(png_content)
+                file_key = single_data["url"].removeprefix("/api/uploads/")
+                downloaded = await client.get(single_data["url"])
+                assert downloaded.status_code == 200
+                assert downloaded.content == png_content
+
+                invalid_extension = await client.post(
+                    "/api/upload/image",
+                    headers=auth,
+                    files={"file": ("unsafe.txt", b"hello", "text/plain")},
+                )
+                assert invalid_extension.json()["code"] == 9001
+                invalid_magic = await client.post(
+                    "/api/upload/image",
+                    headers=auth,
+                    files={"file": ("fake.png", b"not-an-image", "image/png")},
+                )
+                assert invalid_magic.json()["code"] == 9001
+                multiple = await client.post(
+                    "/api/upload/images",
+                    headers=auth,
+                    files=[
+                        ("files", ("one.png", png_content, "image/png")),
+                        ("files", ("bad.txt", b"bad", "text/plain")),
+                    ],
+                )
+                assert multiple.json()["code"] == 200
+                assert multiple.json()["data"]["count"] == 1
+                assert multiple.json()["data"]["files"][0]["fileKey"]
+
+                traversal = await client.delete(
+                    "/api/upload/file",
+                    headers=auth,
+                    params={"fileKey": "../outside.txt"},
+                )
+                assert traversal.json()["code"] == 3002
+                cross_user = await client.delete(
+                    "/api/upload/file",
+                    headers=second_auth,
+                    params={"fileKey": file_key},
+                )
+                assert cross_user.json()["code"] == 3002
+                deleted = await client.delete(
+                    "/api/upload/file", headers=auth, params={"fileKey": file_key}
+                )
+                assert deleted.json()["code"] == 200
+                assert (await client.get(single_data["url"])).status_code == 404
+                missing = await client.delete(
+                    "/api/upload/file", headers=auth, params={"fileKey": file_key}
+                )
+                assert missing.json()["code"] == 500
+
+        assert private_filename not in str(logs)
+        assert "requestId" in str(logs)
+        assert "durationMs" in str(logs)
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
 async def test_phone_verification_log_does_not_contain_phone_or_code(
     mysql_business_engine: AsyncEngine, redis_url: str
 ) -> None:

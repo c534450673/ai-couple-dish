@@ -6,6 +6,7 @@ from typing import Any
 import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.api.anniversary import router as anniversary_router
 from app.api.couple import router as couple_router
@@ -16,6 +17,7 @@ from app.api.menu import router as menu_router
 from app.api.note import router as note_router
 from app.api.notification import router as notification_router
 from app.api.recipe import router as recipe_router
+from app.api.upload import router as upload_router
 from app.api.user import router as user_router
 from app.api.wish import router as wish_router
 from app.core.config import Settings, get_settings
@@ -163,6 +165,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.add_middleware(RequestContextMiddleware)
     install_exception_handlers(app)
+    app.mount(
+        f"{active_settings.api_prefix}/uploads",
+        StaticFiles(directory=active_settings.file_upload_path, check_dir=False),
+        name="uploads",
+    )
     app.include_router(health_router, prefix=active_settings.api_prefix)
     app.include_router(user_router, prefix=active_settings.api_prefix)
     app.include_router(couple_router, prefix=active_settings.api_prefix)
@@ -172,6 +179,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(menu_router, prefix=active_settings.api_prefix)
     app.include_router(note_router, prefix=active_settings.api_prefix)
     app.include_router(recipe_router, prefix=active_settings.api_prefix)
+    app.include_router(upload_router, prefix=active_settings.api_prefix)
     app.include_router(wish_router, prefix=active_settings.api_prefix)
     app.add_api_route(
         f"{active_settings.api_prefix}/actuator/health",

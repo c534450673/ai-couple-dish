@@ -40,6 +40,7 @@ class Settings(BaseSettings):
         alias="CORS_ORIGINS",
     )
     file_upload_path: str = Field("/tmp/uploads", alias="FILE_UPLOAD_PATH")  # noqa: S108
+    file_base_url: str = Field("http://localhost:8080/api/uploads", alias="FILE_BASE_URL")
 
     @field_validator("jwt_secret", mode="before")
     @classmethod

@@ -97,6 +97,9 @@ EXPECTED_ROUTES = {
     ("DELETE", "/api/wish/delete/{id}"),
     ("POST", "/api/wish/fulfill/{id}"),
     ("POST", "/api/wish/unfulfill/{id}"),
+    ("POST", "/api/upload/image"),
+    ("POST", "/api/upload/images"),
+    ("DELETE", "/api/upload/file"),
 }
 
 
@@ -127,6 +130,7 @@ def test_business_route_inventory_is_registered() -> None:
         ("GET", "/api/feed/received"),
         ("GET", "/api/wish/list"),
         ("GET", "/api/wish/detail/1"),
+        ("DELETE", "/api/upload/file"),
     ],
 )
 async def test_business_routes_require_authentication(method: str, path: str) -> None:
