@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import CoupleOrbit from '@/components/home/CoupleOrbit.vue'
 import HomeBento from '@/components/home/HomeBento.vue'
+import MoodPulse from '@/components/home/MoodPulse.vue'
 import { useReducedMotion } from '@/composables/useReducedMotion'
 import { logUiEvent } from '@/composables/useStructuredLog'
 import foodHero from '@/assets/cosmos/food-hero.webp'
@@ -18,6 +19,7 @@ let activeContextId = 0
 
 const resources = computed(() => homeStore.resources)
 const currentAvatar = computed(() => userStore.userInfo?.avatarUrl || '')
+const currentUserId = computed(() => userStore.userInfo?.id || '')
 const feedText = computed(() => {
   const candidates = [
     resources.value.feed.data?.content,
@@ -64,6 +66,12 @@ const retryResource = async (resource) => {
   redirectForAccessFlow(contextId)
 }
 
+const shareMood = async (moodType) => {
+  const contextId = activeContextId
+  await homeStore.shareMood(moodType)
+  redirectForAccessFlow(contextId)
+}
+
 onMounted(async () => {
   mounted = true
   const contextId = ++activeContextId
@@ -93,6 +101,15 @@ onUnmounted(() => {
         :timer="resources.timer"
         :reduced-motion="prefersReducedMotion"
         @retry="retryResource"
+      />
+      <MoodPulse
+        :resource="resources.mood"
+        :current-user-id="currentUserId"
+        :submitting="homeStore.moodSubmitting"
+        :submit-error-code="homeStore.moodSubmitErrorCode"
+        :reduced-motion="prefersReducedMotion"
+        @retry="retryResource('mood')"
+        @send="shareMood"
       />
     </header>
 

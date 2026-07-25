@@ -9,9 +9,12 @@ const mocks = vi.hoisted(() => ({
     resources: {},
     loadAll: vi.fn(),
     retryResource: vi.fn(),
+    shareMood: vi.fn(),
+    moodSubmitting: false,
+    moodSubmitErrorCode: null,
     invalidatePending: vi.fn()
   },
-  userStore: { userInfo: { avatarUrl: '/me.webp' } },
+  userStore: { userInfo: { id: 7, avatarUrl: '/me.webp' } },
   logUiEvent: vi.fn()
 }))
 
@@ -34,6 +37,10 @@ const resource = (status, data = null, extra = {}) => ({
 const successResources = () => ({
   couple: resource('success', { partner: { nickName: '星河', avatarUrl: '/partner.webp' } }),
   timer: resource('success', { loveDays: 1314 }),
+  mood: resource('success', [
+    { id: 12, moodType: 'happy', moodTypeName: '开心', moodIcon: '😊', sender: { id: 7 } },
+    { id: 11, moodType: 'love', moodTypeName: '爱你', moodIcon: '❤️', sender: { id: 8 } }
+  ]),
   recipe: resource('success', { item: { title: '星空汤' }, total: 12, current: 1, size: 1, pages: 12 }),
   footprint: resource('unavailable'),
   anniversary: resource('success', { name: '相识日', daysUntil: 23, anniversaryDate: '2026-08-15', typeName: '纪念日' }),
@@ -56,7 +63,10 @@ describe('home-emotion 首页', () => {
     mocks.store.resources = reactive(successResources())
     mocks.store.loadAll.mockResolvedValue([])
     mocks.store.retryResource.mockResolvedValue(undefined)
-    mocks.userStore.userInfo = { avatarUrl: '/me.webp' }
+    mocks.store.shareMood.mockResolvedValue({ status: 'success' })
+    mocks.store.moodSubmitting = false
+    mocks.store.moodSubmitErrorCode = null
+    mocks.userStore.userInfo = { id: 7, avatarUrl: '/me.webp' }
   })
 
   it('只呈现选定的信息层级和精确真实路由', () => {
@@ -93,10 +103,11 @@ describe('home-emotion 首页', () => {
     expect(mocks.store.retryResource).toHaveBeenCalledWith('recipe')
   })
 
-  it('六个可请求资源均提供自身 retry，不借机重载其他资源', async () => {
+  it('七个可请求资源均提供自身 retry，不借机重载其他资源', async () => {
     const retryTargets = [
       ['couple', 'retry-couple'],
       ['timer', 'retry-timer'],
+      ['mood', 'retry-mood'],
       ['recipe', 'retry-recipe'],
       ['anniversary', 'retry-anniversary'],
       ['wish', 'retry-wish'],
@@ -113,6 +124,20 @@ describe('home-emotion 首页', () => {
     }
 
     expect(mocks.store.retryResource).toHaveBeenCalledTimes(retryTargets.length)
+  })
+
+  it('接入真实今日心情，发送后只委托 store 刷新心情资源', async () => {
+    const wrapper = mountHome()
+
+    expect(wrapper.find('[data-test="mood-pulse"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('开心')
+    expect(wrapper.text()).toContain('爱你')
+
+    await wrapper.find('[data-test="mood-choice-tired"]').trigger('click')
+
+    expect(mocks.store.shareMood).toHaveBeenCalledOnce()
+    expect(mocks.store.shareMood).toHaveBeenCalledWith('tired')
+    expect(mocks.store.retryResource).not.toHaveBeenCalled()
   })
 
   it('footprint 固定不可用且不伪造到访内容', () => {

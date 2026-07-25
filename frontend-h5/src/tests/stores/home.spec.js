@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   anniversaryApi: { getNextAnniversary: vi.fn() },
   wishApi: { getWishList: vi.fn() },
   feedApi: { getReceivedFeeds: vi.fn(), getSentFeeds: vi.fn() },
+  moodApi: { getTodayMoods: vi.fn(), sendMood: vi.fn() },
   logUiEvent: vi.fn()
 }))
 
@@ -15,7 +16,8 @@ vi.mock('@/api', () => ({
   recipeApi: mocks.recipeApi,
   anniversaryApi: mocks.anniversaryApi,
   wishApi: mocks.wishApi,
-  feedApi: mocks.feedApi
+  feedApi: mocks.feedApi,
+  moodApi: mocks.moodApi
 }))
 vi.mock('@/composables/useStructuredLog', () => ({
   logUiEvent: mocks.logUiEvent,
@@ -47,6 +49,7 @@ const primeSuccess = () => {
   ]))
   mocks.feedApi.getReceivedFeeds.mockResolvedValue(ok([{ id: 3, content: '较旧', createTime: '2026-07-10T10:00:00' }]))
   mocks.feedApi.getSentFeeds.mockResolvedValue(ok([{ id: 4, content: '最新', createTime: '2026-07-22T10:00:00' }]))
+  mocks.moodApi.getTodayMoods.mockResolvedValue(ok([{ id: 5, moodType: 'happy' }]))
 }
 
 describe('useHomeStore', () => {
@@ -56,7 +59,7 @@ describe('useHomeStore', () => {
     primeSuccess()
   })
 
-  it('独立归一七项资源并只按真实接口形状取值', async () => {
+  it('独立归一八项资源并只按真实接口形状取值', async () => {
     const store = useHomeStore()
     await store.loadAll()
 
@@ -67,9 +70,11 @@ describe('useHomeStore', () => {
     })
     expect(store.resources.wish.data.title).toBe('新心愿')
     expect(store.resources.feed.data.content).toBe('最新')
+    expect(store.resources.mood.data).toEqual([{ id: 5, moodType: 'happy' }])
     expect(store.resources.footprint.status).toBe('unavailable')
     expect(mocks.recipeApi.getCoupleRecipes).toHaveBeenCalledWith({ pageNum: 1, pageSize: 1 })
     expect(mocks.wishApi.getWishList).toHaveBeenCalledWith()
+    expect(mocks.moodApi.getTodayMoods).toHaveBeenCalledWith()
   })
 
   it('优先复用全局 store 的真实情侣快照，避免重复请求被去重器取消', async () => {
@@ -94,11 +99,12 @@ describe('useHomeStore', () => {
     mocks.wishApi.getWishList.mockResolvedValue(ok([]))
     mocks.feedApi.getReceivedFeeds.mockResolvedValue(ok([]))
     mocks.feedApi.getSentFeeds.mockResolvedValue(ok([]))
+    mocks.moodApi.getTodayMoods.mockResolvedValue(ok([]))
     const store = useHomeStore()
 
     await store.loadAll()
 
-    for (const key of ['couple', 'timer', 'recipe', 'anniversary', 'wish', 'feed']) {
+    for (const key of ['couple', 'timer', 'recipe', 'anniversary', 'wish', 'feed', 'mood']) {
       expect(store.resources[key].status).toBe('empty')
       expect(store.resources[key].data).toBeNull()
     }
@@ -117,6 +123,7 @@ describe('useHomeStore', () => {
     expect(store.resources.anniversary).toMatchObject({ status: 'error', errorCode: '2006', flow: 'bind' })
     expect(store.resources.recipe.status).toBe('success')
     expect(store.resources.wish.status).toBe('success')
+    expect(store.resources.mood.status).toBe('success')
   })
 
   it('Feed 用 allSettled 保留成功侧、按 createTime 降序并标记局部降级', async () => {
@@ -231,6 +238,61 @@ describe('useHomeStore', () => {
     expect(mocks.wishApi.getWishList).not.toHaveBeenCalled()
     expect(store.resources.anniversary.retryCount).toBe(1)
     expect(store.resources.recipe.data.total).toBe(12)
+  })
+
+  it('mood 业务错误映射到绑定流程且重试只刷新 mood', async () => {
+    mocks.moodApi.getTodayMoods.mockResolvedValueOnce({ code: 2006, message: '未绑定情侣关系' })
+    const store = useHomeStore()
+
+    await store.loadResource('mood')
+
+    expect(store.resources.mood).toMatchObject({ status: 'error', errorCode: '2006', flow: 'bind' })
+    mocks.moodApi.getTodayMoods.mockResolvedValueOnce(ok([{ id: 6, moodType: 'love' }]))
+    await store.retryResource('mood')
+
+    expect(store.resources.mood).toMatchObject({
+      status: 'success', data: [{ id: 6, moodType: 'love' }], retryCount: 1
+    })
+    expect(mocks.coupleApi.getCoupleInfo).not.toHaveBeenCalled()
+  })
+
+  it('shareMood 成功后仅刷新 mood 资源且日志不含业务数据', async () => {
+    const store = useHomeStore()
+    await store.loadAll()
+    vi.clearAllMocks()
+    mocks.moodApi.sendMood.mockResolvedValue(ok(7))
+    mocks.moodApi.getTodayMoods.mockResolvedValue(ok([{ id: 7, moodType: 'happy' }]))
+
+    const submitted = await store.shareMood('happy')
+
+    expect(submitted).toBe(true)
+    expect(store.moodSubmitting).toBe(false)
+    expect(store.moodSubmitErrorCode).toBeNull()
+    expect(store.resources.mood.data).toEqual([{ id: 7, moodType: 'happy' }])
+    expect(mocks.moodApi.sendMood).toHaveBeenCalledWith({ moodType: 'happy' })
+    expect(mocks.moodApi.getTodayMoods).toHaveBeenCalledOnce()
+    expect(mocks.coupleApi.getCoupleInfo).not.toHaveBeenCalled()
+    expect(JSON.stringify(mocks.logUiEvent.mock.calls)).not.toMatch(/happy|description|星河|token/i)
+  })
+
+  it('shareMood 拒绝重复提交并将 401/2006 映射到既有流程', async () => {
+    const pending = deferred()
+    mocks.moodApi.sendMood.mockReturnValueOnce(pending.promise)
+    const store = useHomeStore()
+
+    const first = store.shareMood('happy')
+    const duplicate = await store.shareMood('happy')
+    expect(duplicate).toBe(false)
+    expect(mocks.moodApi.sendMood).toHaveBeenCalledOnce()
+    pending.resolve({ code: 401, message: 'expired' })
+    await first
+
+    expect(store.moodSubmitErrorCode).toBe('401')
+    expect(store.resources.mood.flow).toBe('login')
+    mocks.moodApi.sendMood.mockResolvedValueOnce({ code: 2006, message: '未绑定情侣关系' })
+    await store.shareMood('love')
+    expect(store.moodSubmitErrorCode).toBe('2006')
+    expect(store.resources.mood.flow).toBe('bind')
   })
 
   it('旧 requestId 的迟到响应不会覆盖新状态并产生脱敏诊断日志', async () => {

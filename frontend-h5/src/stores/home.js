@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { anniversaryApi, coupleApi, feedApi, recipeApi, wishApi } from '@/api'
+import { anniversaryApi, coupleApi, feedApi, moodApi, recipeApi, wishApi } from '@/api'
 import { logUiEvent, normalizeUiErrorCode } from '@/composables/useStructuredLog'
 import { useUserStore } from '@/stores/user'
 
-const REQUESTABLE_RESOURCES = ['couple', 'timer', 'anniversary', 'wish', 'feed', 'recipe']
+const REQUESTABLE_RESOURCES = ['couple', 'timer', 'anniversary', 'wish', 'feed', 'recipe', 'mood']
 const ALL_RESOURCES = [...REQUESTABLE_RESOURCES, 'footprint']
 const FOOTPRINT_ERROR_CODE = 'FOOTPRINT_NOT_SUPPORTED'
 
@@ -28,6 +28,14 @@ const resourceLog = (resource, state, requestId, startedAt, fields = {}) => {
     resource,
     state,
     requestId,
+    durationMs: Math.max(0, Date.now() - startedAt),
+    ...fields
+  })
+}
+
+const moodSubmitLog = (state, startedAt, fields = {}) => {
+  logUiEvent('home.mood_submit', {
+    state,
     durationMs: Math.max(0, Date.now() - startedAt),
     ...fields
   })
@@ -100,6 +108,11 @@ const resourceRequests = {
       }
       : null
     return { data, itemCount: records.length }
+  },
+  mood: async () => {
+    const data = unwrapResponse(await moodApi.getTodayMoods())
+    const items = Array.isArray(data) ? data : []
+    return { data: items.length ? items : null, itemCount: items.length }
   }
 }
 
@@ -135,7 +148,9 @@ resourceRequests.feed = loadFeed
 
 export const useHomeStore = defineStore('home', {
   state: () => ({
-    resources: createResources()
+    resources: createResources(),
+    moodSubmitting: false,
+    moodSubmitErrorCode: null
   }),
   actions: {
     async loadResource(resource) {
@@ -226,6 +241,36 @@ export const useHomeStore = defineStore('home', {
         retry: current.retryCount
       })
       return this.loadResource(resource)
+    },
+    async shareMood(moodType) {
+      if (this.moodSubmitting) {
+        moodSubmitLog('duplicate_rejected', Date.now(), { errorCode: 'SUBMISSION_IN_PROGRESS' })
+        return false
+      }
+
+      const startedAt = Date.now()
+      this.moodSubmitting = true
+      this.moodSubmitErrorCode = null
+      this.resources.mood.flow = null
+      moodSubmitLog('submitting', startedAt)
+
+      try {
+        unwrapResponse(await moodApi.sendMood({ moodType }))
+        await this.loadResource('mood')
+        moodSubmitLog('success', startedAt, { errorCode: 'NONE' })
+        return true
+      } catch (error) {
+        const errorCode = normalizeUiErrorCode(error)
+        this.moodSubmitErrorCode = errorCode
+        this.resources.mood.flow = flowForError(error)
+        moodSubmitLog('error', startedAt, {
+          errorCode,
+          flow: this.resources.mood.flow
+        })
+        return false
+      } finally {
+        this.moodSubmitting = false
+      }
     },
     invalidatePending() {
       REQUESTABLE_RESOURCES.forEach((resource) => {

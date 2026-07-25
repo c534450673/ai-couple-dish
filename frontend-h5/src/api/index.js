@@ -224,6 +224,17 @@ export const feedApi = {
   }
 }
 
+export const moodApi = {
+  // 获取今日心情
+  getTodayMoods() {
+    return api.get('/mood/today', { cache: false })
+  },
+  // 分享心情
+  sendMood(data) {
+    return api.post('/mood/send', data)
+  }
+}
+
 export const noteApi = {
   // 获取笔记列表
   getNoteList(params) {
