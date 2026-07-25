@@ -63,14 +63,21 @@ def _database_url(engine: AsyncEngine) -> str:
     return engine.url.render_as_string(hide_password=False)
 
 
-async def _run_verifier(engine: AsyncEngine, *arguments: str) -> tuple[int, str]:
+async def _run_verifier(
+    engine: AsyncEngine,
+    *arguments: str,
+    isolated: str | None = None,
+) -> tuple[int, str]:
     backend = Path(__file__).parents[2]
+    environment = {"SCHEMA_DATABASE_URL": _database_url(engine)}
+    if isolated is not None:
+        environment["SCHEMA_DATABASE_ISOLATED"] = isolated
     process = await asyncio.create_subprocess_exec(
         sys.executable,
         str(backend / "scripts" / "verify_mysql_schema.py"),
         *arguments,
         cwd=backend,
-        env={"SCHEMA_DATABASE_URL": _database_url(engine)},
+        env=environment,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
@@ -89,12 +96,34 @@ async def _table_names(engine: AsyncEngine) -> set[str]:
 
 @pytest.mark.integration
 async def test_schema_verifier_stamps_matching_database(mysql_engine: AsyncEngine) -> None:
-    return_code, output = await _run_verifier(mysql_engine, "--stamp")
+    return_code, output = await _run_verifier(mysql_engine, "--stamp", isolated="true")
 
     assert return_code == 0, output
     async with mysql_engine.connect() as connection:
         revision = await connection.scalar(text("SELECT version_num FROM alembic_version"))
     assert revision == "0001_existing_mysql_baseline"
+
+
+@pytest.mark.integration
+async def test_schema_verifier_rejects_stamp_without_isolation_confirmation(
+    mysql_engine: AsyncEngine,
+) -> None:
+    return_code, output = await _run_verifier(mysql_engine, "--stamp")
+
+    assert return_code == 1, output
+    assert "SCHEMA_DATABASE_ISOLATED=true is required for stamp" in output
+    assert "alembic_version" not in await _table_names(mysql_engine)
+
+
+@pytest.mark.integration
+async def test_schema_verifier_rejects_stamp_with_false_isolation_confirmation(
+    mysql_engine: AsyncEngine,
+) -> None:
+    return_code, output = await _run_verifier(mysql_engine, "--stamp", isolated="false")
+
+    assert return_code == 1, output
+    assert "SCHEMA_DATABASE_ISOLATED=true is required for stamp" in output
+    assert "alembic_version" not in await _table_names(mysql_engine)
 
 
 @pytest.mark.integration
@@ -125,6 +154,7 @@ async def test_custom_snapshot_cannot_authorize_stamp_on_drifted_database(
         "--snapshot",
         str(replacement_snapshot),
         "--stamp",
+        isolated="true",
     )
 
     assert return_code == 1, output
@@ -138,7 +168,7 @@ async def test_drifted_database_is_not_stamped(mysql_engine: AsyncEngine) -> Non
             "CREATE TABLE zz_schema_drift_probe (id BIGINT PRIMARY KEY)"
         )
 
-    return_code, output = await _run_verifier(mysql_engine, "--stamp")
+    return_code, output = await _run_verifier(mysql_engine, "--stamp", isolated="true")
 
     assert return_code == 1, output
     assert "alembic_version" not in await _table_names(mysql_engine)

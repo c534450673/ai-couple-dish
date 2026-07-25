@@ -11,6 +11,10 @@ on:
       - "backend/pyproject.toml"
       - "backend/uv.lock"
       - "backend/Dockerfile.fastapi"
+      - "deploy/dev/docker/**"
+      - "docs/runbooks/**"
+      - "README.md"
+      - "docs/ENVIRONMENT.md"
       - ".github/workflows/fastapi.yml"
   push:
     branches: [main]
@@ -23,6 +27,10 @@ on:
       - "backend/pyproject.toml"
       - "backend/uv.lock"
       - "backend/Dockerfile.fastapi"
+      - "deploy/dev/docker/**"
+      - "docs/runbooks/**"
+      - "README.md"
+      - "docs/ENVIRONMENT.md"
       - ".github/workflows/fastapi.yml"
 
 jobs:
@@ -50,10 +58,12 @@ jobs:
         run: uv run mypy app
         working-directory: backend
       - name: Unit and API tests
-        run: uv run pytest -m "not integration and not contract" --cov=app --cov-report=term-missing
+        run: >-
+          uv run pytest --ignore=tests/contract --ignore=tests/security
+          -m "not integration" --cov=app --cov-report=term-missing
         working-directory: backend
       - name: Contract tests
-        run: uv run pytest -m contract -q
+        run: uv run pytest tests/contract -q
         working-directory: backend
       - name: Security tests
         run: uv run pytest tests/security -q

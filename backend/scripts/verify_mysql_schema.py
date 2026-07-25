@@ -200,6 +200,11 @@ def _stamp(database_url: str) -> None:
 
 
 async def _main_async(expected: dict[str, Any], *, stamp: bool) -> str | None:
+    if stamp and os.environ.get("SCHEMA_DATABASE_ISOLATED") != "true":
+        LOGGER.error(
+            "event=mysql_schema_stamp_rejected reason=isolated_database_confirmation_required"
+        )
+        raise SchemaVerificationError("SCHEMA_DATABASE_ISOLATED=true is required for stamp")
     database_url = os.environ.get("SCHEMA_DATABASE_URL")
     if not database_url:
         raise SchemaVerificationError("SCHEMA_DATABASE_URL is required")

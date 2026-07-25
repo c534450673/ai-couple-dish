@@ -48,10 +48,12 @@ Task11 的项目名和端口示例必须保持唯一，避免干扰共享服务�
 cd deploy/dev/docker
 PROJECT_NAME='fastapi-foundation-qa' NGINX_PORT='<inject-at-runtime>' \
   JWT_SECRET='<inject-at-runtime>' \
-  docker compose -f docker-compose.yml -f docker-compose.fastapi.yml config --quiet
+  docker compose -p fastapi-foundation-qa \
+    -f docker-compose.yml -f docker-compose.fastapi.yml config --quiet
 PROJECT_NAME='fastapi-foundation-qa' NGINX_PORT='<inject-at-runtime>' \
   JWT_SECRET='<inject-at-runtime>' \
-  docker compose -f docker-compose.yml -f docker-compose.fastapi.yml up -d --build
+  docker compose -p fastapi-foundation-qa \
+    -f docker-compose.yml -f docker-compose.fastapi.yml up -d --build
 ```
 
 合并配置中 FastAPI 只 `expose` 8000，不发布浏览器端口。Nginx 的三个 exact location
@@ -88,7 +90,8 @@ uv run pytest tests/contract/test_export_spring_contract.py -q
    ```
 
 2. 设置 `SCHEMA_DATABASE_URL=<inject-at-runtime>` 和 `SCHEMA_DATABASE_ISOLATED=true`，
-   执行 `bash backend/scripts/verify_fastapi_foundation.sh` 或仅运行 verifier 做只读校验。
+   在当前 `backend/` 工作目录执行 `bash scripts/verify_fastapi_foundation.sh`，或仅运行
+   verifier 做只读校验。
 3. `--stamp` 只允许 canonical snapshot、匹配的 canonical hash，以及已登记的隔离数据库。
    stamp 前必须有 owner 审批、备份记录和回滚计划；生产库、未知 DSN、临时副本均拒绝。
    人工 stamp 前先确认隔离门禁，再运行：
@@ -132,24 +135,53 @@ SPRING_BASE_URL='<inject-at-runtime>' FASTAPI_BASE_URL='<inject-at-runtime>' \
 
 ## Nginx 单文件回滚
 
-切流只替换 Nginx conf 挂载文件，保留 Spring 容器和共享数据。回滚时恢复上一份已审计的
-`api.conf`，先做语法检查，再 reload；不要编辑 compose 中的业务 writer：
+切流只替换 Nginx 实际 bind mount 源文件
+`nginx/conf.d/api-fastapi-foundation.conf`，保留 Spring 容器和共享数据。先备份当前文件，
+用 `sed` 仅替换三个 FastAPI `proxy_pass`，写入同目录临时文件并原子替换：
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.fastapi.yml exec nginx nginx -t
-docker compose -f docker-compose.yml -f docker-compose.fastapi.yml exec nginx nginx -s reload
+cd deploy/dev/docker
+source_file='nginx/conf.d/api-fastapi-foundation.conf'
+backup_file='nginx/conf.d/api-fastapi-foundation.conf.fastapi.bak'
+temporary_file='nginx/conf.d/.api-fastapi-foundation.conf.spring.tmp'
+cp -- "$source_file" "$backup_file"
+sed 's#proxy_pass http://fastapi_backend;#proxy_pass http://spring_backend;#g' \
+  "$source_file" > "$temporary_file"
+test "$(grep -c 'proxy_pass http://fastapi_backend;' "$temporary_file")" -eq 0
+test "$(grep -c 'proxy_pass http://spring_backend;' "$temporary_file")" -eq 4
+mv -- "$temporary_file" "$source_file"
+PROJECT_NAME='fastapi-foundation-qa' JWT_SECRET='<inject-at-runtime>' \
+  docker compose -p fastapi-foundation-qa \
+    -f docker-compose.yml -f docker-compose.fastapi.yml exec nginx nginx -t
+PROJECT_NAME='fastapi-foundation-qa' JWT_SECRET='<inject-at-runtime>' \
+  docker compose -p fastapi-foundation-qa \
+    -f docker-compose.yml -f docker-compose.fastapi.yml exec nginx nginx -s reload
 ```
 
-发生错误时把 `api-fastapi-foundation.conf` 替换为已签名的 Spring-only 单文件，执行同样的
-`nginx -t` 和 reload。切流前后保留 request ID、状态和耗时等脱敏证据。
+需要恢复 FastAPI health 切流时，把备份经同目录临时文件原子恢复，再执行语法检查和 reload：
+
+```bash
+cp -- "$backup_file" "$temporary_file"
+mv -- "$temporary_file" "$source_file"
+PROJECT_NAME='fastapi-foundation-qa' JWT_SECRET='<inject-at-runtime>' \
+  docker compose -p fastapi-foundation-qa \
+    -f docker-compose.yml -f docker-compose.fastapi.yml exec nginx nginx -t
+PROJECT_NAME='fastapi-foundation-qa' JWT_SECRET='<inject-at-runtime>' \
+  docker compose -p fastapi-foundation-qa \
+    -f docker-compose.yml -f docker-compose.fastapi.yml exec nginx nginx -s reload
+```
+
+任一步失败都保留备份，不 reload 未通过 `nginx -t` 的配置。切流前后只保留 request ID、
+状态和耗时等脱敏证据。
 
 ## 清理与上传风险
 
 只停止本次项目的服务和临时容器，不删除共享 volume：
 
 ```bash
-docker compose -p fastapi-foundation-qa -f docker-compose.yml \
-  -f docker-compose.fastapi.yml down --remove-orphans
+PROJECT_NAME='fastapi-foundation-qa' JWT_SECRET='<inject-at-runtime>' \
+  docker compose -p fastapi-foundation-qa -f docker-compose.yml \
+    -f docker-compose.fastapi.yml down --remove-orphans
 docker rm -f '<inject-at-runtime>'
 ```
 
