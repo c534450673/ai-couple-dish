@@ -479,6 +479,23 @@ class MoodRecord(Base):
     )
 
 
+class SweetBomb(Base):
+    __tablename__ = "t_sweet_bomb"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    bomb_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    sent_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    is_read: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    is_answered: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    answer_content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    answer_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
 class TimeCapsule(Base):
     """情侣时光胶囊；媒体地址以 JSON 数组存储以兼容 Spring 表结构。"""
 
