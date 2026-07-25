@@ -74,6 +74,52 @@ class Notification(Base):
     )
 
 
+class Feed(Base):
+    __tablename__ = "t_feed"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    sender_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    receiver_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    feed_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    image_urls: Mapped[str | None] = mapped_column(Text, nullable=True)
+    message: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    status: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    expire_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    reject_reason: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    receive_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class Wish(Base):
+    __tablename__ = "t_wish"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    creator_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    wish_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    title: Mapped[str] = mapped_column(String(256), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    image_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)
+    priority: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("2"))
+    status: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    viewer_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    view_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    in_progress_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    target_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    achieved_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
 class FoodNote(Base):
     __tablename__ = "t_food_note"
 

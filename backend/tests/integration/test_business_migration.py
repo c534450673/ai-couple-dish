@@ -2,7 +2,7 @@ import asyncio
 import os
 import re
 from collections.abc import AsyncIterator
-from datetime import date
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -20,12 +20,15 @@ from app.core.config import Settings
 from app.db.models import (
     Anniversary,
     CoupleMenu,
+    Feed,
     FoodNote,
     NoteLike,
+    Notification,
     Recipe,
     RecipeCollect,
     RecipeLike,
     User,
+    Wish,
 )
 from app.db.session import get_session
 from app.main import create_app
@@ -37,6 +40,7 @@ from app.schemas.business import (
     WechatLoginRequest,
 )
 from app.services import couple as couple_service
+from app.services import feed as feed_service
 from app.services import notification as notification_service
 from app.services import user as user_service
 
@@ -140,6 +144,250 @@ async def test_user_couple_notification_flow_uses_real_mysql_and_redis(
             claims = decode_access_token(first["token"], SECRET)
             await user_service.logout(request, session, first_id, claims)
             assert await redis.raw.exists(f"logout:blacklist:{claims.jti}") == 1
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_feed_and_wish_routes_keep_limits_permissions_and_logs_redacted(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    app = create_app(settings())
+    app.state.redis = redis
+
+    async def session_override():
+        async with session_factory() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    feed_content = "integration-private-feed-content"
+    feed_message = "integration-private-feed-message"
+    feed_image = "https://private.invalid/feed.jpg"
+    reject_reason = "integration-private-reject-reason"
+    wish_title = "integration-private-wish-title"
+    wish_description = "integration-private-wish-description"
+    wish_image = "https://private.invalid/wish.jpg"
+    try:
+        with capture_logs() as logs:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                first = await client.post(
+                    "/api/user/login", json={"code": "feed-openid-one", "nickName": "甲"}
+                )
+                second = await client.post(
+                    "/api/user/login", json={"code": "feed-openid-two", "nickName": "乙"}
+                )
+                third = await client.post(
+                    "/api/user/login", json={"code": "feed-openid-three", "nickName": "丙"}
+                )
+                fourth = await client.post(
+                    "/api/user/login", json={"code": "feed-openid-four", "nickName": "丁"}
+                )
+                first_auth = {"Authorization": f"Bearer {first.json()['data']['token']}"}
+                second_auth = {"Authorization": f"Bearer {second.json()['data']['token']}"}
+                third_auth = {"Authorization": f"Bearer {third.json()['data']['token']}"}
+                fourth_auth = {"Authorization": f"Bearer {fourth.json()['data']['token']}"}
+
+                unbound_send = await client.post(
+                    "/api/feed/send", headers=first_auth, json={"feedType": "meal"}
+                )
+                assert unbound_send.json()["code"] == 2006
+                unbound_today = await client.get("/api/feed/today", headers=first_auth)
+                assert unbound_today.json()["data"]["remainingCount"] == 3
+                assert (await client.get("/api/wish/list", headers=first_auth)).json()["data"] == []
+
+                first_code = await client.post("/api/couple/generateCode", headers=first_auth)
+                first_bind = await client.post(
+                    "/api/couple/bind",
+                    headers=second_auth,
+                    json={"coupleCode": first_code.json()["data"]},
+                )
+                assert first_bind.json()["code"] == 200
+                third_code = await client.post("/api/couple/generateCode", headers=third_auth)
+                third_bind = await client.post(
+                    "/api/couple/bind",
+                    headers=fourth_auth,
+                    json={"coupleCode": third_code.json()["data"]},
+                )
+                assert third_bind.json()["code"] == 200
+
+                concurrent_sends = await asyncio.gather(
+                    *[
+                        client.post(
+                            "/api/feed/send",
+                            headers=third_auth,
+                            json={"feedType": "meal"},
+                        )
+                        for _ in range(4)
+                    ]
+                )
+                concurrent_codes = [response.json()["code"] for response in concurrent_sends]
+                assert concurrent_codes.count(200) == 1
+                assert all(code in {200, 9005, 9006} for code in concurrent_codes)
+                third_retry = await client.post(
+                    "/api/feed/send", headers=third_auth, json={"feedType": "meal"}
+                )
+                assert third_retry.json()["code"] == 9006
+
+                meal = await client.post(
+                    "/api/feed/send",
+                    headers=first_auth,
+                    json={
+                        "feedType": "meal",
+                        "content": feed_content,
+                        "imageUrls": [feed_image],
+                        "message": feed_message,
+                    },
+                )
+                assert meal.json()["code"] == 200
+                meal_id = int(meal.json()["data"])
+                duplicate_type = await client.post(
+                    "/api/feed/send", headers=first_auth, json={"feedType": "meal"}
+                )
+                assert duplicate_type.json()["code"] == 9006
+
+                sender_today = await client.get("/api/feed/today", headers=first_auth)
+                assert sender_today.json()["data"]["sentToday"] is True
+                assert sender_today.json()["data"]["sentCount"] == 1
+                assert sender_today.json()["data"]["remainingCount"] == 2
+                assert sender_today.json()["data"]["sentTypes"] == ["meal"]
+                assert "meal" not in sender_today.json()["data"]["availableTypes"]
+                receiver_today = await client.get("/api/feed/today", headers=second_auth)
+                assert receiver_today.json()["data"]["receivedToday"] is True
+                assert receiver_today.json()["data"]["pendingFeed"]["id"] == meal_id
+                received = await client.get("/api/feed/received", headers=second_auth)
+                assert received.json()["data"][0]["senderName"] == "甲"
+                assert received.json()["data"][0]["receiverName"] == "乙"
+                assert received.json()["data"][0]["feedTypeName"] == "正餐"
+                assert received.json()["data"][0]["imageUrls"] == [feed_image]
+
+                forbidden_accept = await client.post(
+                    f"/api/feed/accept/{meal_id}", headers=first_auth
+                )
+                assert forbidden_accept.json()["code"] == 6004
+                accepted = await client.post(f"/api/feed/accept/{meal_id}", headers=second_auth)
+                assert accepted.json()["code"] == 200
+                repeated_accept = await client.post(
+                    f"/api/feed/accept/{meal_id}", headers=second_auth
+                )
+                assert repeated_accept.json()["code"] == 6003
+
+                dessert = await client.post(
+                    "/api/feed/send", headers=first_auth, json={"feedType": "dessert"}
+                )
+                dessert_id = int(dessert.json()["data"])
+                rejected = await client.post(
+                    f"/api/feed/reject/{dessert_id}",
+                    headers=second_auth,
+                    params={"reason": reject_reason},
+                )
+                assert rejected.json()["code"] == 200
+                snack = await client.post(
+                    "/api/feed/send", headers=first_auth, json={"feedType": "snack"}
+                )
+                snack_id = int(snack.json()["data"])
+                total_limit = await client.post(
+                    "/api/feed/send", headers=first_auth, json={"feedType": "drink"}
+                )
+                assert total_limit.json()["code"] == 9007
+
+                async with session_factory() as session:
+                    snack_item = await session.get(Feed, snack_id)
+                    assert snack_item is not None
+                    snack_item.expire_time = datetime.now() - timedelta(seconds=1)
+                    await session.commit()
+                async with session_factory() as session:
+                    assert await feed_service.expire_due(session, "integration-scheduler") == 1
+                expired_accept = await client.post(
+                    f"/api/feed/accept/{snack_id}", headers=second_auth
+                )
+                assert expired_accept.json()["code"] == 6003
+
+                outside_wish = await client.post(
+                    "/api/wish/add",
+                    headers=third_auth,
+                    json={"wishType": "dish", "title": "outside"},
+                )
+                outside_wish_id = int(outside_wish.json()["data"])
+                cross_detail = await client.get(
+                    f"/api/wish/detail/{outside_wish_id}", headers=first_auth
+                )
+                assert cross_detail.json()["code"] == 8502
+
+                wish = await client.post(
+                    "/api/wish/add",
+                    headers=first_auth,
+                    json={
+                        "wishType": "restaurant",
+                        "title": wish_title,
+                        "description": wish_description,
+                        "imageUrl": wish_image,
+                        "priority": 3,
+                    },
+                )
+                assert wish.json()["code"] == 200
+                wish_id = int(wish.json()["data"])
+                wish_list = await client.get("/api/wish/list", headers=second_auth)
+                wish_data = wish_list.json()["data"][0]
+                assert wish_data["id"] == wish_id
+                assert wish_data["creatorName"] == "甲"
+                assert wish_data["wishTypeName"] == "餐厅"
+                assert wish_data["priorityName"] == "高"
+                assert wish_data["statusName"] == "待实现"
+                assert wish_data["viewed"] is False
+                updated = await client.put(
+                    f"/api/wish/update/{wish_id}",
+                    headers=second_auth,
+                    json={"title": "updated", "priority": 1},
+                )
+                assert updated.json()["code"] == 200
+                fulfilled = await client.post(f"/api/wish/fulfill/{wish_id}", headers=second_auth)
+                assert fulfilled.json()["code"] == 200
+                wish_detail = await client.get(f"/api/wish/detail/{wish_id}", headers=first_auth)
+                assert wish_detail.json()["data"]["status"] == 2
+                assert wish_detail.json()["data"]["achievedDate"] == date.today().isoformat()
+                unfulfilled = await client.post(
+                    f"/api/wish/unfulfill/{wish_id}", headers=first_auth
+                )
+                assert unfulfilled.json()["code"] == 200
+                repeated_unfulfill = await client.post(
+                    f"/api/wish/unfulfill/{wish_id}", headers=first_auth
+                )
+                assert repeated_unfulfill.json()["code"] == 9001
+                deleted = await client.delete(f"/api/wish/delete/{wish_id}", headers=second_auth)
+                assert deleted.json()["code"] == 200
+                assert (await client.get("/api/wish/list", headers=first_auth)).json()["data"] == []
+                deleted_detail = await client.get(f"/api/wish/detail/{wish_id}", headers=first_auth)
+                assert deleted_detail.json()["code"] == 8501
+
+        serialized_logs = str(logs)
+        for secret in (
+            feed_content,
+            feed_message,
+            feed_image,
+            reject_reason,
+            wish_title,
+            wish_description,
+            wish_image,
+        ):
+            assert secret not in serialized_logs
+        assert "requestId" in serialized_logs
+        assert "durationMs" in serialized_logs
+        assert "errorCode" in serialized_logs
+
+        async with session_factory() as session:
+            assert await session.scalar(select(func.count(Feed.id))) == 4
+            assert await session.scalar(select(func.count(Wish.id))) == 2
+            assert (
+                await session.scalar(
+                    select(func.count(Notification.id)).where(Notification.related_type == "feed")
+                )
+                == 7
+            )
     finally:
         await redis.close()
 

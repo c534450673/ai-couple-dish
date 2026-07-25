@@ -168,3 +168,31 @@ class ReminderConfigRequest(BaseModel):
     app_remind_enabled: int | None = Field(default=None, alias="appRemindEnabled", ge=0, le=1)
 
     model_config = ConfigDict(populate_by_name=True)
+
+
+class SendFeedRequest(BaseModel):
+    feed_type: str = Field(alias="feedType", min_length=1, max_length=32)
+    content: str | None = Field(default=None, max_length=50_000)
+    image_urls: list[str] | None = Field(default=None, alias="imageUrls", max_length=20)
+    message: str | None = Field(default=None, max_length=256)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class WishCreateRequest(BaseModel):
+    wish_type: str = Field(alias="wishType", min_length=1, max_length=32)
+    title: str = Field(min_length=1, max_length=256)
+    description: str | None = Field(default=None, max_length=50_000)
+    image_url: str | None = Field(default=None, alias="imageUrl", max_length=1024)
+    priority: int | None = Field(default=None, ge=1, le=3)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class WishUpdateRequest(BaseModel):
+    title: str | None = Field(default=None, min_length=1, max_length=256)
+    description: str | None = Field(default=None, max_length=50_000)
+    image_url: str | None = Field(default=None, alias="imageUrl", max_length=1024)
+    priority: int | None = Field(default=None, ge=1, le=3)
+
+    model_config = ConfigDict(populate_by_name=True)

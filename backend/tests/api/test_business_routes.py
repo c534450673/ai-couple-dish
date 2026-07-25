@@ -84,6 +84,19 @@ EXPECTED_ROUTES = {
     ("POST", "/api/note/like/{id}"),
     ("DELETE", "/api/note/unlike/{id}"),
     ("POST", "/api/note/comment/{id}"),
+    ("GET", "/api/feed/today"),
+    ("POST", "/api/feed/send"),
+    ("GET", "/api/feed/received"),
+    ("GET", "/api/feed/sent"),
+    ("POST", "/api/feed/accept/{id}"),
+    ("POST", "/api/feed/reject/{id}"),
+    ("GET", "/api/wish/list"),
+    ("GET", "/api/wish/detail/{id}"),
+    ("POST", "/api/wish/add"),
+    ("PUT", "/api/wish/update/{id}"),
+    ("DELETE", "/api/wish/delete/{id}"),
+    ("POST", "/api/wish/fulfill/{id}"),
+    ("POST", "/api/wish/unfulfill/{id}"),
 }
 
 
@@ -110,6 +123,10 @@ def test_business_route_inventory_is_registered() -> None:
         ("GET", "/api/anniversary/next"),
         ("GET", "/api/note/list"),
         ("GET", "/api/note/detail/1"),
+        ("GET", "/api/feed/today"),
+        ("GET", "/api/feed/received"),
+        ("GET", "/api/wish/list"),
+        ("GET", "/api/wish/detail/1"),
     ],
 )
 async def test_business_routes_require_authentication(method: str, path: str) -> None:
