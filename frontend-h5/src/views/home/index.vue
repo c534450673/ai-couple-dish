@@ -1,554 +1,541 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
+import CoupleOrbit from '@/components/home/CoupleOrbit.vue'
+import HomeBento from '@/components/home/HomeBento.vue'
+import { useReducedMotion } from '@/composables/useReducedMotion'
+import { logUiEvent } from '@/composables/useStructuredLog'
+import foodHero from '@/assets/cosmos/food-hero.webp'
+import { useHomeStore } from '@/stores/home'
 import { useUserStore } from '@/stores/user'
-import { coupleApi, menuApi, anniversaryApi } from '@/api'
 
+const router = useRouter()
+const homeStore = useHomeStore()
 const userStore = useUserStore()
+const prefersReducedMotion = useReducedMotion()
 
-const defaultAvatar = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
-const partnerAvatar = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
-const recentMenus = ref([])
-const stats = ref({})
-const upcomingAnniversary = ref(null)
-const loveDays = ref({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-const refreshing = ref(false)
-const isSkeleton = ref(true)
-
-const userInfo = computed(() => userStore.userInfo)
-const coupleInfo = computed(() => userStore.coupleInfo)
-
-const anniversaryProgress = computed(() => {
-  const d = upcomingAnniversary.value?.days
-  if (d == null) return 0
-  return Math.max(6, Math.min(100, Math.round(((365 - d) / 365) * 100)))
+const resources = computed(() => homeStore.resources)
+const currentAvatar = computed(() => userStore.userInfo?.avatarUrl || '')
+const feedText = computed(() => resources.value.feed.data?.content || resources.value.feed.data?.message || '')
+const feedImage = computed(() => {
+  const images = resources.value.feed.data?.imageUrls
+  return Array.isArray(images) ? images[0] || '' : ''
 })
 
-let timer = null
+const routeLabel = target => typeof target === 'string'
+  ? target
+  : `${target.path}${target.query ? `?${new URLSearchParams(target.query)}` : ''}`
 
-const loadHomeData = async (isRefresh = false) => {
-  if (!isRefresh) {
-    refreshing.value = false
-  }
-
-  try {
-    const [homeRes, menuRes, statsRes, anniversaryRes, timerRes] = await Promise.all([
-      coupleApi.getCoupleHome(),
-      menuApi.getMenuList({ page: 1, pageSize: 3 }),
-      menuApi.getMenuStats(),
-      anniversaryApi.getNextAnniversary(),
-      coupleApi.getLoveTimer()
-    ])
-
-    recentMenus.value = menuRes.data?.list || []
-    stats.value = statsRes.data || {}
-    upcomingAnniversary.value = anniversaryRes.data
-    loveDays.value = timerRes.data || { days: 0, hours: 0, minutes: 0, seconds: 0 }
-  } catch (error) {
-    console.error('加载失败', error)
-  } finally {
-    refreshing.value = false
-    isSkeleton.value = false
-  }
+const logNavigation = (target) => {
+  logUiEvent('home.navigation', {
+    targetRoute: routeLabel(target),
+    reducedMotion: prefersReducedMotion.value
+  })
 }
 
-const onRefresh = () => {
-  isSkeleton.value = true
-  loadHomeData(true)
+const redirectForAccessFlow = () => {
+  const states = Object.values(resources.value)
+  const targetRoute = states.some(resource => resource.flow === 'login')
+    ? '/login'
+    : (states.some(resource => resource.flow === 'bind') ? '/bind' : null)
+  if (!targetRoute) return
+  logUiEvent('home.access_redirect', {
+    state: 'redirect',
+    targetRoute,
+    reducedMotion: prefersReducedMotion.value
+  })
+  router.replace(targetRoute)
 }
 
-const startTimer = () => {
-  timer = setInterval(() => {
-    const startDate = coupleInfo.value?.startDate
-    if (startDate) {
-      const now = new Date()
-      const start = new Date(startDate)
-      const diff = now - start
-
-      loveDays.value = {
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((diff % (1000 * 60)) / 1000)
-      }
-    }
-  }, 1000)
+const retryResource = async (resource) => {
+  await homeStore.retryResource(resource)
+  redirectForAccessFlow()
 }
 
-const getStatusText = (status) => {
-  const map = { 0: '想去', 1: '去过', 2: '种草' }
-  return map[status] || '想去'
-}
-
-onMounted(() => {
-  loadHomeData()
-  startTimer()
+onMounted(async () => {
+  // 等待应用层用户快照请求先完成，避免 request 去重器取消首页关系摘要。
+  await nextTick()
+  await homeStore.loadAll()
+  redirectForAccessFlow()
 })
 
 onUnmounted(() => {
-  if (timer) clearInterval(timer)
+  homeStore.invalidatePending()
 })
 </script>
 
 <template>
-  <div class="home-page">
-    <!-- 固定玻璃顶栏：双头像 + 恋爱天数 -->
-    <header class="home-topbar">
-      <img
-        class="avatar"
-        :src="userInfo?.avatarUrl || defaultAvatar"
-        alt="me"
-        @click="$router.push('/settings')"
-      >
-      <div class="love-days">
-        恋爱 <span class="num">{{ loveDays.days }}</span> 天
-      </div>
-      <img
-        class="avatar"
-        :src="coupleInfo?.partner?.avatarUrl || partnerAvatar"
-        alt="ta"
-      >
+  <div
+    class="home-emotion"
+    :data-motion="prefersReducedMotion ? 'static' : 'animated'"
+  >
+    <header class="home-emotion__relationship">
+      <CoupleOrbit
+        :current-avatar="currentAvatar"
+        :couple="resources.couple"
+        :timer="resources.timer"
+        :reduced-motion="prefersReducedMotion"
+        @retry="retryResource"
+      />
     </header>
 
-    <van-pull-refresh
-      v-model="refreshing"
-      class="home-body"
-      @refresh="onRefresh"
-    >
-      <!-- 快捷功能 -->
-      <section class="quick-actions">
-        <button
-          class="qa-item"
-          @click="$router.push('/menu/add')"
-        >
-          <span class="qa-icon qa-add"><van-icon
-            name="plus"
-            size="20"
-          /></span>
-          <span class="qa-text">添加餐厅</span>
-        </button>
-        <button
-          class="qa-item"
-          @click="$router.push('/feed')"
-        >
-          <span class="qa-icon qa-feed"><van-icon
-            name="gift-o"
-            size="20"
-          /></span>
-          <span class="qa-text">投喂</span>
-        </button>
-        <button
-          class="qa-item"
-          @click="$router.push('/anniversary')"
-        >
-          <span class="qa-icon qa-anniv"><van-icon
-            name="calendar-o"
-            size="20"
-          /></span>
-          <span class="qa-text">纪念日</span>
-        </button>
-        <button
-          class="qa-item"
-          @click="$router.push('/wish')"
-        >
-          <span class="qa-icon qa-wish"><van-icon
-            name="like-o"
-            size="20"
-          /></span>
-          <span class="qa-text">心愿单</span>
-        </button>
-      </section>
-
-      <!-- 统计卡片 -->
-      <section class="stats-card">
-        <div
-          class="stat"
-          @click="$router.push('/menu?type=wantToGo')"
-        >
-          <span class="stat-label">想去</span>
-          <span class="stat-value">{{ stats.wantToGoCount || 0 }}</span>
-        </div>
-        <i class="stat-divider" />
-        <div
-          class="stat"
-          @click="$router.push('/menu?type=beenTo')"
-        >
-          <span class="stat-label">去过</span>
-          <span class="stat-value">{{ stats.beenToCount || 0 }}</span>
-        </div>
-        <i class="stat-divider" />
-        <div
-          class="stat"
-          @click="$router.push('/menu?type=recommended')"
-        >
-          <span class="stat-label">种草</span>
-          <span class="stat-value">{{ stats.recommendedCount || 0 }}</span>
-        </div>
-        <i class="stat-divider" />
-        <div
-          class="stat"
-          @click="$router.push('/map')"
-        >
-          <span class="stat-label">地图</span>
-          <span class="stat-value"><van-icon
-            name="location-o"
-            size="20"
-          /></span>
-        </div>
-      </section>
-
-      <!-- 即将到来的纪念日 -->
-      <section
-        v-if="upcomingAnniversary"
-        class="anniversary-card"
-        @click="$router.push('/anniversary')"
+    <main class="home-emotion__content">
+      <router-link
+        class="home-hero"
+        to="/ai"
+        data-test="home-hero"
+        aria-label="打开 AI 决定今晚吃什么"
+        @click="logNavigation('/ai')"
       >
-        <i class="deco" />
-        <div class="anniv-row">
-          <div class="anniv-left">
-            <div class="anniv-label">
-              即将到来的纪念日
-            </div>
-            <div class="anniv-name">
-              {{ upcomingAnniversary.name }}
-            </div>
-          </div>
-          <div class="anniv-right">
-            <span class="anniv-days">{{ upcomingAnniversary.days }}</span>
-            <span class="anniv-unit">天</span>
-          </div>
-        </div>
-        <div class="anniv-progress">
-          <div
-            class="bar"
-            :style="{ width: anniversaryProgress + '%' }"
-          />
-        </div>
+        <img
+          data-test="hero-image"
+          class="home-hero__image"
+          :src="foodHero"
+          alt="一桌适合两人分享的料理"
+          width="1280"
+          height="871"
+          fetchpriority="high"
+        >
+        <span
+          class="home-hero__shade"
+          aria-hidden="true"
+        />
+        <span class="home-hero__content">
+          <span class="home-hero__eyebrow">TONIGHT WE EAT</span>
+          <strong class="home-hero__title">今晚吃什么？</strong>
+          <span class="home-hero__cta">
+            <van-icon
+              name="shop-o"
+              aria-hidden="true"
+            />
+            <span>问 AI</span>
+          </span>
+        </span>
+      </router-link>
+
+      <section
+        class="home-bento-grid"
+        aria-label="我们的共同空间"
+      >
+        <HomeBento
+          resource-key="recipe"
+          title="双方已发布菜谱"
+          to="/recipes"
+          icon="orders-o"
+          accent="gold"
+          link-test="recipe-link"
+          :resource="resources.recipe"
+          @retry="retryResource"
+          @navigate="logNavigation"
+        >
+          <span class="bento-value">{{ resources.recipe.data.total }} 道</span>
+          <small
+            v-if="resources.recipe.data.item?.title"
+            class="bento-detail"
+          >
+            {{ resources.recipe.data.item.title }}
+          </small>
+        </HomeBento>
+
+        <HomeBento
+          resource-key="footprint"
+          title="餐厅地图"
+          to="/map"
+          icon="location-o"
+          accent="violet"
+          link-test="footprint-link"
+          unavailable-text="不提供到访记录，可打开地图"
+          :resource="resources.footprint"
+          @navigate="logNavigation"
+        />
+
+        <HomeBento
+          resource-key="anniversary"
+          title="下一个纪念日"
+          :to="{ path: '/memories', query: { type: 'anniversary' } }"
+          icon="calendar-o"
+          accent="coral"
+          link-test="anniversary-link"
+          :resource="resources.anniversary"
+          @retry="retryResource"
+          @navigate="logNavigation"
+        >
+          <span class="bento-value">{{ resources.anniversary.data.name }}</span>
+          <small class="bento-detail">
+            {{ resources.anniversary.data.daysUntil === 0 ? '就是今天' : `还有 ${resources.anniversary.data.daysUntil} 天` }}
+          </small>
+        </HomeBento>
+
+        <HomeBento
+          resource-key="wish"
+          title="最新心愿"
+          :to="{ path: '/memories', query: { type: 'wish' } }"
+          icon="like-o"
+          accent="mint"
+          link-test="wish-link"
+          :resource="resources.wish"
+          @retry="retryResource"
+          @navigate="logNavigation"
+        >
+          <span class="bento-value">{{ resources.wish.data.title }}</span>
+          <small
+            v-if="resources.wish.data.statusName"
+            class="bento-detail"
+          >
+            {{ resources.wish.data.statusName }}
+          </small>
+        </HomeBento>
       </section>
 
-      <!-- 最近记录 -->
-      <section class="recent">
-        <div class="section-head">
-          <span class="title">最近记录</span>
-          <span
-            class="more"
-            @click="$router.push('/menu')"
-          >查看全部</span>
+      <section
+        class="recent-feed"
+        aria-labelledby="recent-feed-title"
+      >
+        <div class="recent-feed__heading">
+          <div>
+            <p class="recent-feed__eyebrow">
+              SHARED MOMENT
+            </p>
+            <h2 id="recent-feed-title">
+              最近动态
+            </h2>
+          </div>
+          <router-link
+            class="recent-feed__all"
+            to="/feed"
+            data-test="feed-link"
+            aria-label="查看全部动态"
+            @click="logNavigation('/feed')"
+          >
+            <van-icon
+              name="arrow"
+              aria-hidden="true"
+            />
+          </router-link>
         </div>
 
-        <!-- 骨架屏 -->
-        <div v-if="isSkeleton">
-          <div
-            v-for="n in 2"
-            :key="n"
-            class="recent-card skeleton"
+        <router-link
+          v-if="resources.feed.status === 'success'"
+          class="recent-feed__entry"
+          to="/feed"
+          @click="logNavigation('/feed')"
+        >
+          <img
+            v-if="feedImage"
+            class="recent-feed__image"
+            data-test="feed-image"
+            :src="feedImage"
+            alt="最近动态配图"
+            width="112"
+            height="88"
+            loading="lazy"
           >
-            <div class="cover sk-block" />
-            <div class="meta">
-              <div class="sk-line sk-title" />
-              <div class="sk-line sk-sub" />
-            </div>
-          </div>
-        </div>
-
-        <div v-else>
-          <div
-            v-for="item in recentMenus"
-            :key="item.id"
-            class="recent-card"
-            @click="$router.push(`/menu/${item.id}`)"
-          >
-            <div class="cover">
-              <img
-                v-if="item.coverImage"
-                v-lazy="item.coverImage"
-                :alt="item.restaurantName"
-              >
-              <van-icon
-                v-else
-                name="shop-o"
-                size="32"
-                color="#d6c1c5"
-              />
-              <span class="status-pill">{{ getStatusText(item.status) }}</span>
-            </div>
-            <div class="meta">
-              <div class="name">
-                {{ item.restaurantName }}
-              </div>
-              <div class="sub">
-                <van-icon
-                  name="location-o"
-                  size="13"
-                />
-                {{ item.location || '暂无位置' }}
-              </div>
-            </div>
-          </div>
-          <van-empty
-            v-if="recentMenus.length === 0"
-            description="还没有餐厅记录，去添加第一家吧"
+          <span class="recent-feed__body">
+            <span class="recent-feed__text">{{ feedText || '动态内容未填写' }}</span>
+            <small
+              v-if="resources.feed.degradedSides.length"
+              data-test="feed-degraded"
+            >
+              部分动态暂未加载
+            </small>
+          </span>
+          <van-icon
+            name="arrow"
+            aria-hidden="true"
           />
+        </router-link>
+
+        <div
+          v-else
+          class="recent-feed__state"
+          data-test="feed-state"
+          aria-live="polite"
+        >
+          <span v-if="resources.feed.status === 'loading'">动态加载中</span>
+          <span v-else-if="resources.feed.status === 'empty'">暂无动态</span>
+          <span v-else>动态暂时无法加载</span>
+          <button
+            v-if="resources.feed.status === 'error'"
+            type="button"
+            data-test="retry-feed"
+            @click="retryResource('feed')"
+          >
+            重试
+          </button>
         </div>
       </section>
-    </van-pull-refresh>
-
+    </main>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.home-page {
+.home-emotion {
+  width: 100%;
   min-height: 100vh;
-  background: $color-background;
+  min-height: 100dvh;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(42, 42, 74, 0.88) 0, rgba(19, 19, 27, 0.96) 34%, #09090d 72%),
+    #09090d;
+  color: #e5e1e4;
 }
 
-// 固定玻璃顶栏
-.home-topbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  height: 60px;
+.home-emotion__relationship,
+.home-emotion__content {
+  width: min(100%, 540px);
+  margin: 0 auto;
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.home-emotion__relationship {
+  padding-top: max(12px, env(safe-area-inset-top));
+  padding-bottom: 12px;
+}
+
+.home-emotion__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: calc(94px + env(safe-area-inset-bottom));
+}
+
+.home-hero {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.42;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  background: #201f21;
+  color: #fff;
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.28);
+  text-decoration: none;
+  transform: translateZ(0);
+}
+
+.home-hero:focus-visible,
+.recent-feed a:focus-visible,
+.recent-feed button:focus-visible {
+  outline: 3px solid #54e8d3;
+  outline-offset: 3px;
+}
+
+.home-hero__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 56%;
+  transition: transform 500ms ease;
+}
+
+.home-hero:active .home-hero__image {
+  transform: scale(1.02);
+}
+
+.home-hero__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5, 5, 9, 0.08) 25%, rgba(5, 5, 9, 0.9) 100%);
+}
+
+.home-hero__content {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 6px 12px;
+}
+
+.home-hero__eyebrow {
+  grid-column: 1 / -1;
+  color: #ffc857;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.home-hero__title {
+  min-width: 0;
+  font-size: 30px;
+  line-height: 1.12;
+}
+
+.home-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 76px;
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: 14px;
+  background: #ff5d73;
+  box-shadow: 0 0 24px rgba(255, 93, 115, 0.36);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.home-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.bento-value,
+.bento-detail {
+  display: block;
+}
+
+.bento-detail {
+  overflow: hidden;
+  margin-top: 4px;
+  color: #aaa8b1;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-feed {
+  padding-top: 8px;
+}
+
+.recent-feed__heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 $page-padding;
-  @include glass(0.7);
-  box-shadow: $shadow-card;
-
-  .avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.6);
-  }
-
-  .love-days {
-    font-size: $fs-title;
-    font-weight: $fw-semibold;
-    color: $color-primary;
-    letter-spacing: 0;
-
-    .num { font-size: 22px; }
-  }
+  margin-bottom: 12px;
 }
 
-.home-body {
-  padding: 76px $page-padding 96px;
-  min-height: 100vh;
+.recent-feed__eyebrow {
+  margin: 0 0 4px;
+  color: #54e8d3;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
 }
 
-// 快捷功能
-.quick-actions {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: $space-3;
-  margin-bottom: $space-8;
-
-  .qa-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: $space-2;
-    padding: $space-3 0;
-    background: $color-surface-lowest;
-    border: none;
-    border-radius: $radius-lg;
-    box-shadow: $shadow-card;
-    cursor: pointer;
-    transition: transform $transition-base;
-
-    &:active { transform: scale(0.95); }
-
-    .qa-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .qa-add { background: $color-primary-container; color: $color-on-primary-container; }
-    .qa-feed { background: $color-secondary-container; color: $color-on-secondary-container; }
-    .qa-anniv { background: $color-surface-variant; color: $color-on-surface-variant; }
-    .qa-wish { background: $color-primary-fixed; color: $color-primary; }
-
-    .qa-text {
-      font-size: $fs-caption;
-      color: $color-on-surface;
-    }
-  }
+.recent-feed h2 {
+  margin: 0;
+  color: #f8f5f7;
+  font-size: 20px;
+  line-height: 1.3;
 }
 
-// 统计卡片
-.stats-card {
+.recent-feed__all {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: #c7c5ce;
+  text-decoration: none;
+}
+
+.recent-feed__entry,
+.recent-feed__state {
   display: flex;
   align-items: center;
-  @include card($radius-lg, $space-4);
-  margin-bottom: $space-8;
-
-  .stat {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: $space-1;
-    cursor: pointer;
-
-    .stat-label { font-size: $fs-caption; color: $color-on-surface-variant; }
-    .stat-value {
-      font-size: $fs-headline;
-      font-weight: $fw-bold;
-      color: $color-primary;
-      line-height: 1;
-    }
-  }
-
-  .stat-divider {
-    width: 1px;
-    height: 28px;
-    background: $color-surface-variant;
-  }
+  gap: 14px;
+  min-height: 112px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8f5f7;
+  text-decoration: none;
 }
 
-// 纪念日卡片
-.anniversary-card {
-  position: relative;
+.recent-feed__image {
+  flex: 0 0 auto;
+  width: 112px;
+  height: 88px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.recent-feed__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.recent-feed__text {
+  display: -webkit-box;
   overflow: hidden;
-  @include card($radius-xl, $space-6);
-  margin-bottom: $space-8;
-  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
 
-  .deco {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 120px;
-    height: 120px;
-    background: $color-primary-container;
-    opacity: 0.18;
-    border-bottom-left-radius: 100%;
-  }
+.recent-feed__body small {
+  color: #ffc857;
+  font-size: 10px;
+}
 
-  .anniv-row {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: $space-4;
-  }
+.recent-feed__state {
+  justify-content: space-between;
+  color: #aaa8b1;
+  font-size: 13px;
+}
 
-  .anniv-label { font-size: $fs-caption; color: $color-on-surface-variant; margin-bottom: $space-1; }
-  .anniv-name { font-size: $fs-headline; font-weight: $fw-semibold; color: $color-on-surface; }
-  .anniv-right { line-height: 1; }
-  .anniv-days { font-size: $fs-display; font-weight: $fw-bold; color: $color-primary; }
-  .anniv-unit { font-size: $fs-caption; color: $color-on-surface-variant; margin-left: 2px; }
+.recent-feed__state button {
+  min-width: 56px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 93, 115, 0.15);
+  color: #ff9da4;
+  font-weight: 700;
+}
 
-  .anniv-progress {
-    position: relative;
-    height: 8px;
-    border-radius: $radius-pill;
-    background: $color-surface-variant;
-    overflow: hidden;
+[data-motion='animated'] .home-hero,
+[data-motion='animated'] .home-bento-grid,
+[data-motion='animated'] .recent-feed {
+  animation: home-enter 420ms ease both;
+}
 
-    .bar {
-      height: 100%;
-      border-radius: $radius-pill;
-      background: $gradient-primary;
-      transition: width 600ms $ease-standard;
-    }
+[data-motion='animated'] .home-bento-grid { animation-delay: 70ms; }
+[data-motion='animated'] .recent-feed { animation-delay: 120ms; }
+
+@keyframes home-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-emotion *,
+  .home-emotion *::before,
+  .home-emotion *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-// 最近记录
-.recent {
-  .section-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: $space-4;
-    padding: 0 $space-1;
-
-    .title { font-size: $fs-label; font-weight: $fw-semibold; color: $color-on-surface; }
-    .more { font-size: $fs-caption; color: $color-primary; }
+@media (max-width: 380px) {
+  .home-emotion__relationship,
+  .home-emotion__content {
+    padding-right: 16px;
+    padding-left: 16px;
   }
 
-  .recent-card {
-    background: $color-surface-lowest;
-    border-radius: $radius-lg;
-    box-shadow: $shadow-card;
-    overflow: hidden;
-    margin-bottom: $space-4;
-    transition: transform $transition-base;
-
-    &:active { transform: scale(0.98); }
-
-    .cover {
-      position: relative;
-      height: 160px;
-      background: $color-surface-low;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      img { width: 100%; height: 100%; object-fit: cover; }
-
-      .status-pill {
-        position: absolute;
-        top: $space-3;
-        right: $space-3;
-        padding: 2px 10px;
-        font-size: $fs-caption;
-        color: $color-primary;
-        @include glass(0.8);
-        border-radius: $radius-pill;
-      }
-    }
-
-    .meta {
-      padding: $space-4;
-
-      .name {
-        font-size: $fs-label;
-        font-weight: $fw-semibold;
-        color: $color-on-surface;
-        margin-bottom: $space-1;
-        @include ellipsis;
-      }
-
-      .sub {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        font-size: $fs-caption;
-        color: $color-on-surface-variant;
-      }
-    }
-  }
-}
-
-// 骨架屏
-.skeleton {
-  pointer-events: none;
-
-  .sk-block,
-  .sk-line {
-    background: linear-gradient(90deg, $color-surface-high 25%, $color-surface-low 50%, $color-surface-high 75%);
-    background-size: 200% 100%;
-    animation: sk-loading 1.5s infinite;
-  }
-
-  .sk-block { height: 160px; }
-  .meta { padding: $space-4; }
-  .sk-line { height: 14px; border-radius: 4px; }
-  .sk-title { width: 60%; margin-bottom: $space-2; }
-  .sk-sub { width: 40%; height: 12px; }
-}
-
-@keyframes sk-loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  .home-hero__title { font-size: 27px; }
+  .home-hero__cta { min-width: 70px; }
 }
 </style>

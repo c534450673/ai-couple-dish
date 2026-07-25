@@ -9,6 +9,6 @@
 
 ## Selection
 
-Selected home variant: none
+Selected home variant: home-emotion
 
 任何文件更新后都必须运行 tools/stitch 的 stitch:verify。
