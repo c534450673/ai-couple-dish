@@ -1,0 +1,42 @@
+[
+  {
+    "pattern": "logout:blacklist:<jti>",
+    "ttl": "token remaining lifetime",
+    "sensitive": true
+  },
+  {
+    "pattern": "user:verify:code:<phone>",
+    "ttl": "configured verification TTL",
+    "sensitive": true
+  },
+  {
+    "pattern": "user:verify:expire:<phone>",
+    "ttl": "60 seconds",
+    "sensitive": true
+  },
+  {
+    "pattern": "couple:code:<8-char-code>",
+    "ttl": "7 days",
+    "sensitive": true
+  },
+  {
+    "pattern": "couple:code:user:<userId>",
+    "ttl": "7 days",
+    "sensitive": true
+  },
+  {
+    "pattern": "ai:session:msg:<userId>:<sessionId>",
+    "ttl": "7 days",
+    "sensitive": true
+  },
+  {
+    "pattern": "ai:session:pending:<userId>:<sessionId>",
+    "ttl": "30 minutes",
+    "sensitive": true
+  },
+  {
+    "pattern": "rate_limit:<scope>:<identityHmac>",
+    "ttl": "policy window",
+    "sensitive": false
+  }
+]

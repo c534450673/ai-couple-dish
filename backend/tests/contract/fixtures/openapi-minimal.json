@@ -1,0 +1,43 @@
+{
+  "swagger": "2.0",
+  "host": "dev.internal.example:8080",
+  "basePath": "/api",
+  "schemes": ["http"],
+  "servers": [{"url": "http://dev.internal.example:8080/api"}],
+  "paths": {
+    "/zeta/items": {
+      "post": {
+        "tags": ["测试模块"],
+        "operationId": "createItemUsingPOST",
+        "parameters": [
+          {"name": "X-Forwarded-Host", "in": "header", "type": "string"},
+          {"name": "payload", "in": "body", "schema": {"$ref": "#/definitions/Payload"}}
+        ]
+      }
+    },
+    "/alpha/items/{id}": {
+      "parameters": [
+        {"name": "id", "in": "path", "required": true, "type": "integer"}
+      ],
+      "get": {
+        "tags": ["测试模块"],
+        "operationId": "getItemUsingGET",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "type": "integer"}
+        ]
+      }
+    },
+    "/error": {
+      "get": {
+        "tags": ["basic-error-controller"],
+        "operationId": "errorUsingGET"
+      }
+    }
+  },
+  "definitions": {
+    "Payload": {
+      "type": "object",
+      "properties": {"name": {"type": "string"}}
+    }
+  }
+}

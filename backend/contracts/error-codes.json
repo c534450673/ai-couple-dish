@@ -1,0 +1,378 @@
+[
+  {
+    "code": 400,
+    "httpStatus": 400,
+    "message": "参数错误",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 401,
+    "httpStatus": 401,
+    "message": "token 无效或未授权",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 429,
+    "httpStatus": 429,
+    "message": "请求过于频繁",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 1001,
+    "httpStatus": 200,
+    "message": "用户不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 1002,
+    "httpStatus": 200,
+    "message": "用户已存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 1003,
+    "httpStatus": 401,
+    "message": "用户未登录",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 1004,
+    "httpStatus": 200,
+    "message": "手机号格式不正确",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 1005,
+    "httpStatus": 200,
+    "message": "该手机号已注册，请直接登录",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 1006,
+    "httpStatus": 200,
+    "message": "该手机号未注册，请先注册",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 2001,
+    "httpStatus": 200,
+    "message": "情侣关系不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 2002,
+    "httpStatus": 200,
+    "message": "已经绑定过情侣关系",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 2003,
+    "httpStatus": 200,
+    "message": "情侣码无效或已过期",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 2004,
+    "httpStatus": 200,
+    "message": "情侣码已过期",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 2005,
+    "httpStatus": 200,
+    "message": "绑定冲突，请刷新重试",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 2006,
+    "httpStatus": 200,
+    "message": "未绑定情侣关系",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 2007,
+    "httpStatus": 200,
+    "message": "需要双方确认才能解绑",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 2008,
+    "httpStatus": 200,
+    "message": "解绑后需等待24小时才能重新绑定",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 3001,
+    "httpStatus": 200,
+    "message": "菜单不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 3002,
+    "httpStatus": 200,
+    "message": "无权操作此菜单",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 3003,
+    "httpStatus": 200,
+    "message": "菜单状态无效",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 4001,
+    "httpStatus": 200,
+    "message": "笔记不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 4002,
+    "httpStatus": 200,
+    "message": "无权操作此笔记",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 5001,
+    "httpStatus": 200,
+    "message": "纪念日不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 5002,
+    "httpStatus": 200,
+    "message": "该日期的纪念日已存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 5003,
+    "httpStatus": 200,
+    "message": "恋爱日不能删除",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 6001,
+    "httpStatus": 200,
+    "message": "投喂记录不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 6002,
+    "httpStatus": 200,
+    "message": "今日已发送投喂",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 6003,
+    "httpStatus": 200,
+    "message": "投喂已过期",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 6004,
+    "httpStatus": 200,
+    "message": "无法接受此投喂",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 7001,
+    "httpStatus": 200,
+    "message": "订单不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 7002,
+    "httpStatus": 200,
+    "message": "订单状态无效",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 7003,
+    "httpStatus": 200,
+    "message": "订单无法取消",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8001,
+    "httpStatus": 200,
+    "message": "菜谱不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8002,
+    "httpStatus": 200,
+    "message": "无权操作此菜谱",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8003,
+    "httpStatus": 200,
+    "message": "菜谱状态无效",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8501,
+    "httpStatus": 200,
+    "message": "心愿不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8502,
+    "httpStatus": 200,
+    "message": "无权操作此心愿",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8601,
+    "httpStatus": 200,
+    "message": "问候记录不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8602,
+    "httpStatus": 200,
+    "message": "今日已发送过该问候",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8603,
+    "httpStatus": 200,
+    "message": "无权操作此问候",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8701,
+    "httpStatus": 200,
+    "message": "爱心树不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8702,
+    "httpStatus": 200,
+    "message": "该皮肤尚未解锁",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8801,
+    "httpStatus": 200,
+    "message": "任务不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8802,
+    "httpStatus": 200,
+    "message": "任务已过期",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8803,
+    "httpStatus": 200,
+    "message": "任务尚未完成",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8804,
+    "httpStatus": 200,
+    "message": "奖励已领取",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8901,
+    "httpStatus": 200,
+    "message": "海报不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8902,
+    "httpStatus": 200,
+    "message": "海报模板不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8903,
+    "httpStatus": 200,
+    "message": "无权操作此海报",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8951,
+    "httpStatus": 200,
+    "message": "邀请码不存在",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8952,
+    "httpStatus": 200,
+    "message": "已使用过邀请码",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 8953,
+    "httpStatus": 200,
+    "message": "不能使用自己的邀请码",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 9001,
+    "httpStatus": 200,
+    "message": "参数无效",
+    "ambiguousUsages": [
+      "通用参数无效",
+      "全局异常处理将其视为鉴权错误并可能返回 HTTP 401",
+      "AI 服务不可用或调用失败"
+    ]
+  },
+  {
+    "code": 9002,
+    "httpStatus": 200,
+    "message": "文件上传失败",
+    "ambiguousUsages": [
+      "文件上传失败",
+      "AI 服务未配置"
+    ]
+  },
+  {
+    "code": 9003,
+    "httpStatus": 200,
+    "message": "验证码错误",
+    "ambiguousUsages": [
+      "验证码错误或为空",
+      "AI 工具名称或确认操作类型不受支持"
+    ]
+  },
+  {
+    "code": 9004,
+    "httpStatus": 200,
+    "message": "验证码已过期",
+    "ambiguousUsages": [
+      "验证码已过期",
+      "AI 没有待确认操作"
+    ]
+  },
+  {
+    "code": 9005,
+    "httpStatus": 200,
+    "message": "操作过于频繁，请稍后重试",
+    "ambiguousUsages": [
+      "操作过于频繁",
+      "AI 生成结果解析失败"
+    ]
+  },
+  {
+    "code": 9006,
+    "httpStatus": 200,
+    "message": "今日已发送过同类型投喂",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 9007,
+    "httpStatus": 200,
+    "message": "今日投喂次数已达上限（3次）",
+    "ambiguousUsages": []
+  },
+  {
+    "code": 9999,
+    "httpStatus": 200,
+    "message": "业务处理失败",
+    "ambiguousUsages": []
+  }
+]

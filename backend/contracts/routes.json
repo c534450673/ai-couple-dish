@@ -1,0 +1,1546 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/ai/chat/confirm",
+    "controller": "AiChatController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 3
+  },
+  {
+    "method": "POST",
+    "path": "/api/ai/chat/reject",
+    "controller": "AiChatController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 3
+  },
+  {
+    "method": "POST",
+    "path": "/api/ai/chat/stream",
+    "controller": "AiChatController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 3
+  },
+  {
+    "method": "POST",
+    "path": "/api/ai/generate",
+    "controller": "AiChatController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 3
+  },
+  {
+    "method": "POST",
+    "path": "/api/anniversary/add",
+    "controller": "AnniversaryController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/anniversary/delete/{id}",
+    "controller": "AnniversaryController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/anniversary/list",
+    "controller": "AnniversaryController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/anniversary/next",
+    "controller": "AnniversaryController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "PUT",
+    "path": "/api/anniversary/reminderConfig",
+    "controller": "AnniversaryController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/anniversary/today",
+    "controller": "AnniversaryController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/anniversary/upcoming",
+    "controller": "AnniversaryController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "PUT",
+    "path": "/api/anniversary/update/{id}",
+    "controller": "AnniversaryController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/cart/add",
+    "controller": "CartController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/cart/batch-remove",
+    "controller": "CartController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/cart/checkout",
+    "controller": "CartController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/cart/clear",
+    "controller": "CartController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/cart/count",
+    "controller": "CartController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/cart/list",
+    "controller": "CartController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "PUT",
+    "path": "/api/cart/quantity/{cartId}",
+    "controller": "CartController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/cart/remove/{cartId}",
+    "controller": "CartController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/challenge/accept/{challengeId}",
+    "controller": "ChallengeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/challenge/cancel/{challengeId}",
+    "controller": "ChallengeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/challenge/checkin",
+    "controller": "ChallengeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/challenge/checkin-records/{challengeId}",
+    "controller": "ChallengeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/challenge/create",
+    "controller": "ChallengeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/challenge/detail/{challengeId}",
+    "controller": "ChallengeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/challenge/list",
+    "controller": "ChallengeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/challenge/pending",
+    "controller": "ChallengeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/challenge/reject/{challengeId}",
+    "controller": "ChallengeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/couple/bind",
+    "controller": "CoupleController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "GET",
+    "path": "/api/couple/codeInfo",
+    "controller": "CoupleController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/couple/generateCode",
+    "controller": "CoupleController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "GET",
+    "path": "/api/couple/home",
+    "controller": "CoupleController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "GET",
+    "path": "/api/couple/info",
+    "controller": "CoupleController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "GET",
+    "path": "/api/couple/loveTimer",
+    "controller": "CoupleController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/couple/recover",
+    "controller": "CoupleController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "GET",
+    "path": "/api/couple/recoverable",
+    "controller": "CoupleController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/couple/refreshCode",
+    "controller": "CoupleController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/couple/unbind/apply",
+    "controller": "CoupleController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/couple/unbind/confirm",
+    "controller": "CoupleController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/couple/unbind/reject",
+    "controller": "CoupleController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "GET",
+    "path": "/api/couple/validateCode",
+    "controller": "CoupleController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/coupleRank/claim/{rank}",
+    "controller": "CoupleRankController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/coupleRank/info",
+    "controller": "CoupleRankController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/coupleRank/rankList",
+    "controller": "CoupleRankController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/coupleRank/rewards",
+    "controller": "CoupleRankController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/coupleTree/info",
+    "controller": "CoupleTreeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/coupleTree/nutrientLogs",
+    "controller": "CoupleTreeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/coupleTree/skin/change",
+    "controller": "CoupleTreeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/coupleTree/skins",
+    "controller": "CoupleTreeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/coupleTree/water",
+    "controller": "CoupleTreeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/dailyGreeting/both/status",
+    "controller": "DailyGreetingController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/dailyGreeting/detail/{id}",
+    "controller": "DailyGreetingController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/dailyGreeting/history",
+    "controller": "DailyGreetingController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/dailyGreeting/send",
+    "controller": "DailyGreetingController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/dailyGreeting/streak",
+    "controller": "DailyGreetingController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/dailyGreeting/today/status",
+    "controller": "DailyGreetingController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/dailyTask/claim/{id}",
+    "controller": "DailyTaskController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/dailyTask/detail/{id}",
+    "controller": "DailyTaskController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/dailyTask/progress/{id}",
+    "controller": "DailyTaskController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/dailyTask/today",
+    "controller": "DailyTaskController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/dailyTask/today/stats",
+    "controller": "DailyTaskController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/deepQa/current",
+    "controller": "DeepQaController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/deepQa/history",
+    "controller": "DeepQaController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/deepQa/progress",
+    "controller": "DeepQaController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/deepQa/reveal/{questionId}",
+    "controller": "DeepQaController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/deepQa/skip",
+    "controller": "DeepQaController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/deepQa/submit",
+    "controller": "DeepQaController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/deepQa/week/{weekNumber}",
+    "controller": "DeepQaController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/feed/accept/{id}",
+    "controller": "FeedController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/feed/received",
+    "controller": "FeedController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/feed/reject/{id}",
+    "controller": "FeedController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/feed/send",
+    "controller": "FeedController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/feed/sent",
+    "controller": "FeedController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/feed/today",
+    "controller": "FeedController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/heartMoment/create",
+    "controller": "HeartMomentController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/heartMoment/delete/{id}",
+    "controller": "HeartMomentController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/heartMoment/list",
+    "controller": "HeartMomentController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/heartMoment/random",
+    "controller": "HeartMomentController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/invite/code",
+    "controller": "InviteController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/invite/info/{inviteCode}",
+    "controller": "InviteController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/invite/rank",
+    "controller": "InviteController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/invite/referrals",
+    "controller": "InviteController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/invite/stats",
+    "controller": "InviteController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/invite/use",
+    "controller": "InviteController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/invite/validate",
+    "controller": "InviteController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/loveCalendar/events/date",
+    "controller": "LoveCalendarController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/loveCalendar/events/range",
+    "controller": "LoveCalendarController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/loveCalendar/events/today",
+    "controller": "LoveCalendarController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/loveCalendar/events/upcoming",
+    "controller": "LoveCalendarController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/loveCalendar/month",
+    "controller": "LoveCalendarController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/loveCalendar/year/overview",
+    "controller": "LoveCalendarController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/add",
+    "controller": "MenuController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/menu/delete/{id}",
+    "controller": "MenuController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/menu/detail/{id}",
+    "controller": "MenuController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/favorite/{id}",
+    "controller": "MenuController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/like/{id}",
+    "controller": "MenuController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/menu/list",
+    "controller": "MenuController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/menu/map",
+    "controller": "MenuController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/menu/nearby",
+    "controller": "MenuController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/menu/recover/{id}",
+    "controller": "MenuController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/menu/stats",
+    "controller": "MenuController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/menu/unfavorite/{id}",
+    "controller": "MenuController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/menu/unlike/{id}",
+    "controller": "MenuController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "PUT",
+    "path": "/api/menu/update/{id}",
+    "controller": "MenuController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/mood/detail/{id}",
+    "controller": "MoodRecordController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/mood/history",
+    "controller": "MoodRecordController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/mood/read/{id}",
+    "controller": "MoodRecordController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/mood/send",
+    "controller": "MoodRecordController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/mood/stats",
+    "controller": "MoodRecordController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/mood/today",
+    "controller": "MoodRecordController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/mood/types",
+    "controller": "MoodRecordController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/mood/unread/count",
+    "controller": "MoodRecordController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/note/add",
+    "controller": "NoteController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/note/comment/{id}",
+    "controller": "NoteController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/note/delete/{id}",
+    "controller": "NoteController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/note/detail/{id}",
+    "controller": "NoteController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/note/like/{id}",
+    "controller": "NoteController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/note/list",
+    "controller": "NoteController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/note/unlike/{id}",
+    "controller": "NoteController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "PUT",
+    "path": "/api/note/update/{id}",
+    "controller": "NoteController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/notification/delete/{id}",
+    "controller": "NotificationController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/notification/list",
+    "controller": "NotificationController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "PUT",
+    "path": "/api/notification/read/{id}",
+    "controller": "NotificationController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "PUT",
+    "path": "/api/notification/readAll",
+    "controller": "NotificationController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/notification/unreadCount",
+    "controller": "NotificationController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/order/accept/{orderId}",
+    "controller": "OrderController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/order/cancel/{orderId}",
+    "controller": "OrderController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/order/complete/{orderId}",
+    "controller": "OrderController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/order/confirm-refund/{orderId}",
+    "controller": "OrderController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/order/couple",
+    "controller": "OrderController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/order/create",
+    "controller": "OrderController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/order/detail/{orderId}",
+    "controller": "OrderController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/order/finish-cooking/{orderId}",
+    "controller": "OrderController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/order/my-buy",
+    "controller": "OrderController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/order/my-sell",
+    "controller": "OrderController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/order/pending-count",
+    "controller": "OrderController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/order/refund/{orderId}",
+    "controller": "OrderController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/order/start-cooking/{orderId}",
+    "controller": "OrderController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/poster/delete/{id}",
+    "controller": "PosterController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/poster/detail/{id}",
+    "controller": "PosterController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/poster/generate",
+    "controller": "PosterController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/poster/list",
+    "controller": "PosterController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/poster/share/{id}",
+    "controller": "PosterController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/poster/templates",
+    "controller": "PosterController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/recipe/collect/{recipeId}",
+    "controller": "RecipeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/recipe/collect/{recipeId}",
+    "controller": "RecipeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/recipe/collected",
+    "controller": "RecipeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/recipe/couple",
+    "controller": "RecipeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/recipe/create",
+    "controller": "RecipeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/recipe/delete/{recipeId}",
+    "controller": "RecipeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/recipe/detail/{recipeId}",
+    "controller": "RecipeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/recipe/like/{recipeId}",
+    "controller": "RecipeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/recipe/like/{recipeId}",
+    "controller": "RecipeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/recipe/my",
+    "controller": "RecipeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/recipe/publish/{recipeId}",
+    "controller": "RecipeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/recipe/recommended",
+    "controller": "RecipeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/recipe/search",
+    "controller": "RecipeController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "PUT",
+    "path": "/api/recipe/update/{recipeId}",
+    "controller": "RecipeController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/relationshipWeather/current",
+    "controller": "RelationshipWeatherController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/relationshipWeather/forecast",
+    "controller": "RelationshipWeatherController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/relationshipWeather/interactions",
+    "controller": "RelationshipWeatherController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/relationshipWeather/suggestions",
+    "controller": "RelationshipWeatherController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/sweetBomb/answer/{id}",
+    "controller": "SweetBombController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/sweetBomb/detail/{id}",
+    "controller": "SweetBombController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/sweetBomb/generate",
+    "controller": "SweetBombController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/sweetBomb/history",
+    "controller": "SweetBombController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/sweetBomb/read/{id}",
+    "controller": "SweetBombController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/sweetBomb/unread",
+    "controller": "SweetBombController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "GET",
+    "path": "/api/sweetBomb/unread/count",
+    "controller": "SweetBombController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 4
+  },
+  {
+    "method": "POST",
+    "path": "/api/timeCapsule/create",
+    "controller": "TimeCapsuleController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/timeCapsule/delete/{id}",
+    "controller": "TimeCapsuleController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/timeCapsule/detail/{id}",
+    "controller": "TimeCapsuleController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/timeCapsule/list",
+    "controller": "TimeCapsuleController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "GET",
+    "path": "/api/timeCapsule/pending",
+    "controller": "TimeCapsuleController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "POST",
+    "path": "/api/timeCapsule/unlock/{id}",
+    "controller": "TimeCapsuleController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 5
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/upload/file",
+    "controller": "UploadController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/upload/image",
+    "controller": "UploadController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/upload/images",
+    "controller": "UploadController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/user/info",
+    "controller": "UserController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/login",
+    "controller": "UserController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/logout",
+    "controller": "UserController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/phoneLogin",
+    "controller": "UserController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/register",
+    "controller": "UserController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/user/sendCode",
+    "controller": "UserController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "PUT",
+    "path": "/api/user/update",
+    "controller": "UserController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 1
+  },
+  {
+    "method": "POST",
+    "path": "/api/wish/add",
+    "controller": "WishController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/wish/delete/{id}",
+    "controller": "WishController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/wish/detail/{id}",
+    "controller": "WishController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/wish/fulfill/{id}",
+    "controller": "WishController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "GET",
+    "path": "/api/wish/list",
+    "controller": "WishController",
+    "sideEffect": false,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "POST",
+    "path": "/api/wish/unfulfill/{id}",
+    "controller": "WishController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  },
+  {
+    "method": "PUT",
+    "path": "/api/wish/update/{id}",
+    "controller": "WishController",
+    "sideEffect": true,
+    "owner": "spring",
+    "migrationBatch": 2
+  }
+]

@@ -1,0 +1,1271 @@
+[
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "userApi",
+    "functionName": "registerByPhone",
+    "method": "POST",
+    "path": "/api/user/register",
+    "sourceLine": 9,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "userApi",
+    "functionName": "loginByPhone",
+    "method": "POST",
+    "path": "/api/user/phoneLogin",
+    "sourceLine": 13,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "userApi",
+    "functionName": "sendVerifyCode",
+    "method": "POST",
+    "path": "/api/user/sendCode",
+    "sourceLine": 17,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "phone"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "userApi",
+    "functionName": "getUserInfo",
+    "method": "GET",
+    "path": "/api/user/info",
+    "sourceLine": 21,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "userApi",
+    "functionName": "updateUserInfo",
+    "method": "PUT",
+    "path": "/api/user/update",
+    "sourceLine": 25,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "userApi",
+    "functionName": "logout",
+    "method": "POST",
+    "path": "/api/user/logout",
+    "sourceLine": 29,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "coupleApi",
+    "functionName": "getCoupleInfo",
+    "method": "GET",
+    "path": "/api/couple/info",
+    "sourceLine": 36,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "coupleApi",
+    "functionName": "getCoupleHome",
+    "method": "GET",
+    "path": "/api/couple/home",
+    "sourceLine": 40,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "coupleApi",
+    "functionName": "generateCoupleCode",
+    "method": "POST",
+    "path": "/api/couple/generateCode",
+    "sourceLine": 44,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "coupleApi",
+    "functionName": "getCodeInfo",
+    "method": "GET",
+    "path": "/api/couple/codeInfo",
+    "sourceLine": 48,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "coupleApi",
+    "functionName": "refreshCode",
+    "method": "POST",
+    "path": "/api/couple/refreshCode",
+    "sourceLine": 52,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "coupleApi",
+    "functionName": "bindCouple",
+    "method": "POST",
+    "path": "/api/couple/bind",
+    "sourceLine": 56,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "coupleApi",
+    "functionName": "validateCoupleCode",
+    "method": "GET",
+    "path": "/api/couple/validateCode",
+    "sourceLine": 60,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "coupleCode"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "coupleApi",
+    "functionName": "getLoveTimer",
+    "method": "GET",
+    "path": "/api/couple/loveTimer",
+    "sourceLine": 64,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "coupleApi",
+    "functionName": "applyUnbind",
+    "method": "POST",
+    "path": "/api/couple/unbind/apply",
+    "sourceLine": 68,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "coupleApi",
+    "functionName": "confirmUnbind",
+    "method": "POST",
+    "path": "/api/couple/unbind/confirm",
+    "sourceLine": 72,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "coupleId"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "menuApi",
+    "functionName": "getMenuList",
+    "method": "GET",
+    "path": "/api/menu/list",
+    "sourceLine": 88,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "menuApi",
+    "functionName": "getMenuDetail",
+    "method": "GET",
+    "path": "/api/menu/detail/{id}",
+    "sourceLine": 92,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "menuApi",
+    "functionName": "addMenu",
+    "method": "POST",
+    "path": "/api/menu/add",
+    "sourceLine": 96,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "menuApi",
+    "functionName": "updateMenu",
+    "method": "PUT",
+    "path": "/api/menu/update/{id}",
+    "sourceLine": 100,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "menuApi",
+    "functionName": "deleteMenu",
+    "method": "DELETE",
+    "path": "/api/menu/delete/{id}",
+    "sourceLine": 104,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "menuApi",
+    "functionName": "likeMenu",
+    "method": "POST",
+    "path": "/api/menu/like/{id}",
+    "sourceLine": 108,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "menuApi",
+    "functionName": "unlikeMenu",
+    "method": "DELETE",
+    "path": "/api/menu/unlike/{id}",
+    "sourceLine": 112,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "menuApi",
+    "functionName": "favoriteMenu",
+    "method": "POST",
+    "path": "/api/menu/favorite/{id}",
+    "sourceLine": 116,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "menuApi",
+    "functionName": "unfavoriteMenu",
+    "method": "DELETE",
+    "path": "/api/menu/unfavorite/{id}",
+    "sourceLine": 120,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "menuApi",
+    "functionName": "getMenuStats",
+    "method": "GET",
+    "path": "/api/menu/stats",
+    "sourceLine": 124,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "createRecipe",
+    "method": "POST",
+    "path": "/api/recipe/create",
+    "sourceLine": 130,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "updateRecipe",
+    "method": "PUT",
+    "path": "/api/recipe/update/{id}",
+    "sourceLine": 133,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "deleteRecipe",
+    "method": "DELETE",
+    "path": "/api/recipe/delete/{id}",
+    "sourceLine": 136,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "publishRecipe",
+    "method": "POST",
+    "path": "/api/recipe/publish/{id}",
+    "sourceLine": 139,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "getRecipeDetail",
+    "method": "GET",
+    "path": "/api/recipe/detail/{id}",
+    "sourceLine": 142,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "getMyRecipes",
+    "method": "GET",
+    "path": "/api/recipe/my",
+    "sourceLine": 145,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "getCoupleRecipes",
+    "method": "GET",
+    "path": "/api/recipe/couple",
+    "sourceLine": 148,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "getRecommendedRecipes",
+    "method": "GET",
+    "path": "/api/recipe/recommended",
+    "sourceLine": 151,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "searchRecipes",
+    "method": "GET",
+    "path": "/api/recipe/search",
+    "sourceLine": 154,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "getCollectedRecipes",
+    "method": "GET",
+    "path": "/api/recipe/collected",
+    "sourceLine": 157,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "likeRecipe",
+    "method": "POST",
+    "path": "/api/recipe/like/{id}",
+    "sourceLine": 160,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "unlikeRecipe",
+    "method": "DELETE",
+    "path": "/api/recipe/like/{id}",
+    "sourceLine": 163,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "collectRecipe",
+    "method": "POST",
+    "path": "/api/recipe/collect/{id}",
+    "sourceLine": 166,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "recipeApi",
+    "functionName": "uncollectRecipe",
+    "method": "DELETE",
+    "path": "/api/recipe/collect/{id}",
+    "sourceLine": 169,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "anniversaryApi",
+    "functionName": "getAnniversaryList",
+    "method": "GET",
+    "path": "/api/anniversary/list",
+    "sourceLine": 176,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "anniversaryApi",
+    "functionName": "getUpcomingAnniversaries",
+    "method": "GET",
+    "path": "/api/anniversary/upcoming",
+    "sourceLine": 180,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "anniversaryApi",
+    "functionName": "getNextAnniversary",
+    "method": "GET",
+    "path": "/api/anniversary/next",
+    "sourceLine": 184,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "anniversaryApi",
+    "functionName": "addAnniversary",
+    "method": "POST",
+    "path": "/api/anniversary/add",
+    "sourceLine": 188,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "anniversaryApi",
+    "functionName": "updateAnniversary",
+    "method": "PUT",
+    "path": "/api/anniversary/update/{id}",
+    "sourceLine": 192,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "anniversaryApi",
+    "functionName": "deleteAnniversary",
+    "method": "DELETE",
+    "path": "/api/anniversary/delete/{id}",
+    "sourceLine": 196,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "feedApi",
+    "functionName": "getTodayFeedStatus",
+    "method": "GET",
+    "path": "/api/feed/today",
+    "sourceLine": 203,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "feedApi",
+    "functionName": "sendFeed",
+    "method": "POST",
+    "path": "/api/feed/send",
+    "sourceLine": 207,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "feedApi",
+    "functionName": "getReceivedFeeds",
+    "method": "GET",
+    "path": "/api/feed/received",
+    "sourceLine": 211,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "feedApi",
+    "functionName": "getSentFeeds",
+    "method": "GET",
+    "path": "/api/feed/sent",
+    "sourceLine": 215,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "feedApi",
+    "functionName": "acceptFeed",
+    "method": "POST",
+    "path": "/api/feed/accept/{id}",
+    "sourceLine": 219,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "feedApi",
+    "functionName": "rejectFeed",
+    "method": "POST",
+    "path": "/api/feed/reject/{id}",
+    "sourceLine": 223,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [
+        "reason"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "noteApi",
+    "functionName": "getNoteList",
+    "method": "GET",
+    "path": "/api/note/list",
+    "sourceLine": 230,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "noteApi",
+    "functionName": "getNoteDetail",
+    "method": "GET",
+    "path": "/api/note/detail/{id}",
+    "sourceLine": 234,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "noteApi",
+    "functionName": "addNote",
+    "method": "POST",
+    "path": "/api/note/add",
+    "sourceLine": 238,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "noteApi",
+    "functionName": "updateNote",
+    "method": "PUT",
+    "path": "/api/note/update/{id}",
+    "sourceLine": 242,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "noteApi",
+    "functionName": "deleteNote",
+    "method": "DELETE",
+    "path": "/api/note/delete/{id}",
+    "sourceLine": 246,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "noteApi",
+    "functionName": "likeNote",
+    "method": "POST",
+    "path": "/api/note/like/{id}",
+    "sourceLine": 250,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "wishApi",
+    "functionName": "getWishList",
+    "method": "GET",
+    "path": "/api/wish/list",
+    "sourceLine": 257,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "wishApi",
+    "functionName": "getWishDetail",
+    "method": "GET",
+    "path": "/api/wish/detail/{id}",
+    "sourceLine": 261,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "wishApi",
+    "functionName": "addWish",
+    "method": "POST",
+    "path": "/api/wish/add",
+    "sourceLine": 265,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "wishApi",
+    "functionName": "updateWish",
+    "method": "PUT",
+    "path": "/api/wish/update/{id}",
+    "sourceLine": 269,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "wishApi",
+    "functionName": "fulfillWish",
+    "method": "POST",
+    "path": "/api/wish/fulfill/{id}",
+    "sourceLine": 273,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "wishApi",
+    "functionName": "unfulfillWish",
+    "method": "POST",
+    "path": "/api/wish/unfulfill/{id}",
+    "sourceLine": 277,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "wishApi",
+    "functionName": "deleteWish",
+    "method": "DELETE",
+    "path": "/api/wish/delete/{id}",
+    "sourceLine": 281,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "notificationApi",
+    "functionName": "getNotificationList",
+    "method": "GET",
+    "path": "/api/notification/list",
+    "sourceLine": 288,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "notificationApi",
+    "functionName": "getUnreadCount",
+    "method": "GET",
+    "path": "/api/notification/unreadCount",
+    "sourceLine": 292,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "notificationApi",
+    "functionName": "markAsRead",
+    "method": "PUT",
+    "path": "/api/notification/read/{id}",
+    "sourceLine": 296,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "id"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "notificationApi",
+    "functionName": "markAllAsRead",
+    "method": "PUT",
+    "path": "/api/notification/readAll",
+    "sourceLine": 300,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "uploadApi",
+    "functionName": "uploadImage",
+    "method": "POST",
+    "path": "/api/upload/image",
+    "sourceLine": 309,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": [
+        "file"
+      ]
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "mapApi",
+    "functionName": "getNearbyRestaurants",
+    "method": "GET",
+    "path": "/api/menu/nearby",
+    "sourceLine": 318,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "mapApi",
+    "functionName": "getMapRestaurants",
+    "method": "GET",
+    "path": "/api/menu/map",
+    "sourceLine": 322,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/ai.js",
+    "exportName": "namedExport",
+    "functionName": "streamChat",
+    "method": "POST",
+    "path": "/api/ai/chat/stream",
+    "sourceLine": 95,
+    "transport": "fetch",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "payload"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/ai.js",
+    "exportName": "namedExport",
+    "functionName": "confirmAction",
+    "method": "POST",
+    "path": "/api/ai/chat/confirm",
+    "sourceLine": 162,
+    "transport": "fetch",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "sessionId"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/ai.js",
+    "exportName": "namedExport",
+    "functionName": "rejectAction",
+    "method": "POST",
+    "path": "/api/ai/chat/reject",
+    "sourceLine": 166,
+    "transport": "fetch",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "sessionId"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/ai.js",
+    "exportName": "namedExport",
+    "functionName": "generateForm",
+    "method": "POST",
+    "path": "/api/ai/generate",
+    "sourceLine": 170,
+    "transport": "fetch",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "type",
+        "prompt"
+      ],
+      "multipart": []
+    }
+  }
+]
