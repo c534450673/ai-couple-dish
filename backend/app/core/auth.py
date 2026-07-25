@@ -93,6 +93,11 @@ def decode_access_token(token: str, secret: str) -> TokenClaims:
 async def current_user_id(
     request: Request,
 ) -> int:
+    claims = await current_token_claims(request)
+    return claims.user_id
+
+
+async def current_token_claims(request: Request) -> TokenClaims:
     route = request.url.path
     authorization_values = request.headers.getlist("authorization")
     if len(authorization_values) != 1:
@@ -147,4 +152,4 @@ async def current_user_id(
         result="completed",
         route=route,
     )
-    return claims.user_id
+    return claims

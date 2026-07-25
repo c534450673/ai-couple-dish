@@ -48,6 +48,7 @@ select = ["E", "F", "I", "UP", "B", "ASYNC", "S"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["S101"]
+"app/api/**/*.py" = ["B008"]
 
 [tool.mypy]
 python_version = "3.12"

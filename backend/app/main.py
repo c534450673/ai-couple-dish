@@ -7,8 +7,11 @@ import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.couple import router as couple_router
 from app.api.health import ready
 from app.api.health import router as health_router
+from app.api.notification import router as notification_router
+from app.api.user import router as user_router
 from app.core.config import Settings, get_settings
 from app.core.errors import install_exception_handlers
 from app.core.logging import configure_logging
@@ -80,8 +83,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                         return_exceptions=True,
                     )
                     return {
-                        "database": not isinstance(results[0], BaseException)
-                        and bool(results[0]),
+                        "database": not isinstance(results[0], BaseException) and bool(results[0]),
                         "redis": not isinstance(results[1], BaseException) and bool(results[1]),
                     }
 
@@ -133,6 +135,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(RequestContextMiddleware)
     install_exception_handlers(app)
     app.include_router(health_router, prefix=active_settings.api_prefix)
+    app.include_router(user_router, prefix=active_settings.api_prefix)
+    app.include_router(couple_router, prefix=active_settings.api_prefix)
+    app.include_router(notification_router, prefix=active_settings.api_prefix)
     app.add_api_route(
         f"{active_settings.api_prefix}/actuator/health",
         ready,
