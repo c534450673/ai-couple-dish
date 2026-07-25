@@ -17,6 +17,7 @@ from pydantic import BaseModel
 from app.core.auth import current_user_id
 from app.core.errors import install_exception_handlers
 from scripts.compare_backends import (
+    ContractConfigurationError,
     RouteOwnershipError,
     SideEffectRejected,
     collect_observation,
@@ -153,12 +154,13 @@ async def test_compare_case_reports_unequal_without_exposing_response_data() -> 
         "caseId",
         "method",
         "route",
-        "equal",
         "spring",
         "fastapi",
         "missingJsonPaths",
         "additionalJsonPaths",
     }
+    assert set(comparison.safe_difference()["spring"]) == {"httpStatus", "code"}
+    assert set(comparison.safe_difference()["fastapi"]) == {"httpStatus", "code"}
 
 
 async def test_compare_case_refuses_spring_owned_route_without_requests() -> None:
@@ -208,11 +210,10 @@ async def test_side_effect_case_requires_flag_and_isolated_database(
 
 
 async def test_side_effect_case_runs_only_with_both_gates() -> None:
-    request_count = 0
+    requests: list[Request] = []
 
-    async def handler(_: Request) -> Response:
-        nonlocal request_count
-        request_count += 1
+    async def handler(request: Request) -> Response:
+        requests.append(request)
         return result_response()
 
     async with AsyncClient(transport=MockTransport(handler)) as spring_client:
@@ -227,7 +228,8 @@ async def test_side_effect_case_runs_only_with_both_gates() -> None:
             )
 
     assert comparison.equal is True
-    assert request_count == 2
+    assert len(requests) == 2
+    assert all(request.url.host == "contract.invalid" for request in requests)
 
 
 class ContractPayload(BaseModel):
@@ -238,11 +240,11 @@ def contract_test_app() -> FastAPI:
     app = FastAPI()
     install_exception_handlers(app)
 
-    @app.get("/__contract/protected")
+    @app.get("/api/__contract/protected")
     async def protected(_: int = Depends(current_user_id)) -> dict[str, Any]:
         return {"code": 200, "message": "操作成功", "data": None}
 
-    @app.post("/__contract/validate")
+    @app.post("/api/__contract/validate")
     async def validate(payload: ContractPayload) -> dict[str, Any]:
         return {"code": 200, "message": "操作成功", "data": payload.model_dump()}
 
@@ -335,7 +337,127 @@ async def test_network_failure_is_safe_and_does_not_leak_error_text() -> None:
     serialized = json.dumps(comparison.safe_difference())
     assert comparison.equal is False
     assert comparison.spring == {"httpStatus": None, "errorCode": "NETWORK_ERROR"}
+    assert comparison.safe_difference()["spring"] == {"httpStatus": None, "code": None}
     assert unsafe_error_text not in serialized
+
+
+@pytest.mark.parametrize(
+    "unsafe_path",
+    [
+        "/api/demo?credential=must-not-leak",
+        "/api/demo#must-not-leak",
+        "https://remote.invalid/api/demo",
+        "/api/demo%3Fcredential=must-not-leak",
+        "/api/demo%23must-not-leak",
+        "/api/demo%253Fcredential=must-not-leak",
+    ],
+)
+async def test_compare_case_rejects_unsafe_path_before_request(unsafe_path: str) -> None:
+    request_count = 0
+
+    async def handler(_: Request) -> Response:
+        nonlocal request_count
+        request_count += 1
+        return result_response()
+
+    async with AsyncClient(transport=MockTransport(handler)) as spring_client:
+        async with AsyncClient(transport=MockTransport(handler)) as fastapi_client:
+            with pytest.raises(ContractConfigurationError) as caught:
+                await compare_case(
+                    dual_case(path=unsafe_path),
+                    spring_client,
+                    fastapi_client,
+                    owner="fastapi",
+                )
+
+    assert request_count == 0
+    assert "must-not-leak" not in str(caught.value)
+
+
+async def test_inventory_side_effect_spoof_is_rejected_before_request() -> None:
+    cases = load_json(FOUNDATION)["cases"]
+    cases.append(
+        dual_case(
+            id="spoofed-write",
+            executionTarget="fastapi",
+            method="POST",
+            path="/api/anniversary/add",
+            sideEffect=False,
+        )
+    )
+    request_count = 0
+
+    async def handler(_: Request) -> Response:
+        nonlocal request_count
+        request_count += 1
+        return result_response()
+
+    async with AsyncClient(transport=MockTransport(handler)) as spring_client:
+        async with AsyncClient(transport=MockTransport(handler)) as fastapi_client:
+            with pytest.raises(ContractConfigurationError):
+                await run_contract(
+                    cases,
+                    load_json(ROUTES),
+                    load_json(OWNERSHIP),
+                    spring_client,
+                    fastapi_client,
+                )
+
+    assert request_count == 0
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "operational_missing",
+        "operational_duplicate",
+        "operational_wrong_target",
+        "test_app_missing",
+        "test_app_duplicate",
+        "test_app_wrong_target",
+    ],
+)
+async def test_fixed_case_sets_are_validated_before_request(mutation: str) -> None:
+    cases = load_json(FOUNDATION)["cases"]
+    if mutation == "operational_missing":
+        cases = [case for case in cases if case["id"] != "fastapi-health-live"]
+    elif mutation == "operational_duplicate":
+        duplicate = dict(next(case for case in cases if case["id"] == "fastapi-health-live"))
+        duplicate["id"] = "duplicate-live"
+        cases.append(duplicate)
+    elif mutation == "operational_wrong_target":
+        next(case for case in cases if case["id"] == "fastapi-health-live")["executionTarget"] = (
+            "dual"
+        )
+    elif mutation == "test_app_missing":
+        cases = [case for case in cases if case["id"] != "test-app-no-token"]
+    elif mutation == "test_app_duplicate":
+        duplicate = dict(next(case for case in cases if case["id"] == "test-app-no-token"))
+        duplicate["id"] = "duplicate-test-app"
+        cases.append(duplicate)
+    else:
+        next(case for case in cases if case["id"] == "test-app-no-token")["executionTarget"] = (
+            "fastapi"
+        )
+    request_count = 0
+
+    async def handler(_: Request) -> Response:
+        nonlocal request_count
+        request_count += 1
+        return result_response()
+
+    async with AsyncClient(transport=MockTransport(handler)) as spring_client:
+        async with AsyncClient(transport=MockTransport(handler)) as fastapi_client:
+            with pytest.raises(ContractConfigurationError):
+                await run_contract(
+                    cases,
+                    load_json(ROUTES),
+                    load_json(OWNERSHIP),
+                    spring_client,
+                    fastapi_client,
+                )
+
+    assert request_count == 0
 
 
 def write_json(path: Path, value: Any) -> None:
@@ -349,7 +471,9 @@ def test_cli_injects_token_from_env_and_emits_safe_json(
     cases_path = tmp_path / "cases.json"
     routes_path = tmp_path / "routes.json"
     ownership_path = tmp_path / "ownership.json"
-    write_json(cases_path, {"version": 1, "cases": [dual_case(requiresToken=True)]})
+    cases = load_json(FOUNDATION)["cases"]
+    cases.append(dual_case(requiresToken=True))
+    write_json(cases_path, {"version": 1, "cases": cases})
     write_json(
         routes_path,
         [
@@ -368,12 +492,15 @@ def test_cli_injects_token_from_env_and_emits_safe_json(
         {
             "defaultOwner": "spring",
             "fastapiRoutes": ["GET /api/demo"],
-            "operationalFastapiRoutes": [],
+            "operationalFastapiRoutes": load_json(OWNERSHIP)["operationalFastapiRoutes"],
         },
     )
 
     async def handler(request: Request) -> Response:
-        assert request.headers["Authorization"] == f"Bearer {credential_value}"
+        if request.url.path == "/api/__contract_unknown__":
+            return Response(404, json={"detail": "Not Found"})
+        if request.url.path == "/api/demo":
+            assert request.headers["Authorization"] == f"Bearer {credential_value}"
         return result_response(data={"private": "never-serialize-complete-data"})
 
     exit_code = main(
@@ -408,7 +535,9 @@ def test_cli_returns_failure_with_only_allowlisted_difference_fields(
     cases_path = tmp_path / "cases.json"
     routes_path = tmp_path / "routes.json"
     ownership_path = tmp_path / "ownership.json"
-    write_json(cases_path, {"version": 1, "cases": [dual_case()]})
+    cases = load_json(FOUNDATION)["cases"]
+    cases.append(dual_case())
+    write_json(cases_path, {"version": 1, "cases": cases})
     write_json(
         routes_path,
         [
@@ -427,11 +556,13 @@ def test_cli_returns_failure_with_only_allowlisted_difference_fields(
         {
             "defaultOwner": "spring",
             "fastapiRoutes": ["GET /api/demo"],
-            "operationalFastapiRoutes": [],
+            "operationalFastapiRoutes": load_json(OWNERSHIP)["operationalFastapiRoutes"],
         },
     )
 
     async def handler(request: Request) -> Response:
+        if request.url.path == "/api/__contract_unknown__":
+            return Response(404, json={"detail": "Not Found"})
         identifier = 1 if request.url.host == "spring.invalid" else 2
         return result_response(data={"id": identifier, "private": "do-not-print"})
 
@@ -461,10 +592,57 @@ def test_cli_returns_failure_with_only_allowlisted_difference_fields(
         "caseId",
         "method",
         "route",
-        "equal",
         "spring",
         "fastapi",
         "missingJsonPaths",
         "additionalJsonPaths",
     }
+    assert set(document["differences"][0]["spring"]) == {"httpStatus", "code"}
+    assert set(document["differences"][0]["fastapi"]) == {"httpStatus", "code"}
     assert "do-not-print" not in captured.out + captured.err
+
+
+def test_cli_side_effect_flag_and_env_cannot_send_remote_request(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    cases_path = tmp_path / "cases.json"
+    cases = load_json(FOUNDATION)["cases"]
+    cases.append(
+        dual_case(
+            id="spoofed-write",
+            executionTarget="fastapi",
+            method="POST",
+            path="/api/anniversary/add",
+            sideEffect=False,
+        )
+    )
+    write_json(cases_path, {"version": 1, "cases": cases})
+    request_count = 0
+
+    async def handler(_: Request) -> Response:
+        nonlocal request_count
+        request_count += 1
+        return result_response()
+
+    exit_code = main(
+        [
+            "--spring",
+            "https://spring.production.invalid",
+            "--fastapi",
+            "https://fastapi.production.invalid",
+            "--cases",
+            str(cases_path),
+            "--routes",
+            str(ROUTES),
+            "--ownership",
+            str(OWNERSHIP),
+            "--allow-side-effects",
+        ],
+        environ={"CONTRACT_ISOLATED_DATABASE": "true"},
+        transport=MockTransport(handler),
+    )
+
+    captured = capsys.readouterr()
+    assert exit_code == 1
+    assert json.loads(captured.out)["result"] == "failed"
+    assert request_count == 0

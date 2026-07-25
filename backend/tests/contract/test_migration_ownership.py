@@ -64,3 +64,9 @@ def test_foundation_cases_have_required_safe_fields() -> None:
         "test-app-invalid-json",
         "test-app-invalid-field",
     }
+    unknown = next(case for case in cases if case["id"] == "fastapi-unknown-route")
+    assert (unknown["method"], unknown["path"], unknown["executionTarget"]) == (
+        "GET",
+        "/api/__contract_unknown__",
+        "fastapi",
+    )
