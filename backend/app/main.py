@@ -10,7 +10,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.couple import router as couple_router
 from app.api.health import ready
 from app.api.health import router as health_router
+from app.api.menu import router as menu_router
 from app.api.notification import router as notification_router
+from app.api.recipe import router as recipe_router
 from app.api.user import router as user_router
 from app.core.config import Settings, get_settings
 from app.core.errors import install_exception_handlers
@@ -138,6 +140,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(user_router, prefix=active_settings.api_prefix)
     app.include_router(couple_router, prefix=active_settings.api_prefix)
     app.include_router(notification_router, prefix=active_settings.api_prefix)
+    app.include_router(menu_router, prefix=active_settings.api_prefix)
+    app.include_router(recipe_router, prefix=active_settings.api_prefix)
     app.add_api_route(
         f"{active_settings.api_prefix}/actuator/health",
         ready,

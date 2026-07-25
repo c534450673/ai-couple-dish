@@ -1,6 +1,7 @@
 from datetime import date, datetime
+from decimal import Decimal
 
-from sqlalchemy import BigInteger, Date, DateTime, Integer, String, Text, text
+from sqlalchemy import BigInteger, Date, DateTime, Integer, Numeric, String, Text, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -68,6 +69,86 @@ class Notification(Base):
     sender_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     is_read: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
     read_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class CoupleMenu(Base):
+    __tablename__ = "t_couple_menu"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    creator_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    restaurant_name: Mapped[str] = mapped_column(String(256), nullable=False)
+    dish_name: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    dish_category: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    price: Mapped[Decimal | None] = mapped_column(Numeric(10, 2), nullable=True)
+    location: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    latitude: Mapped[Decimal | None] = mapped_column(Numeric(10, 8), nullable=True)
+    longitude: Mapped[Decimal | None] = mapped_column(Numeric(11, 8), nullable=True)
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    rating: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    eater_ids: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    eaten_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    status: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    like_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    is_favorite: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    photo_urls: Mapped[str | None] = mapped_column(Text, nullable=True)
+    photo_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    anniversary_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    delete_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class Recipe(Base):
+    __tablename__ = "t_recipe"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    title: Mapped[str] = mapped_column(String(256), nullable=False)
+    cover_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ingredients: Mapped[str | None] = mapped_column(Text, nullable=True)
+    steps: Mapped[str | None] = mapped_column(Text, nullable=True)
+    difficulty: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    cooking_time: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    servings: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    status: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    like_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    collect_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class RecipeLike(Base):
+    __tablename__ = "t_recipe_like"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    recipe_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class RecipeCollect(Base):
+    __tablename__ = "t_recipe_collect"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    recipe_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
     create_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )

@@ -1,3 +1,4 @@
+import asyncio
 import os
 import re
 from collections.abc import AsyncIterator
@@ -7,7 +8,7 @@ from types import SimpleNamespace
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import Connection, inspect
+from sqlalchemy import Connection, func, inspect, select
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker, create_async_engine
 from structlog.testing import capture_logs
 
@@ -16,7 +17,7 @@ os.environ.setdefault("JWT_SECRET", "x" * 64)
 
 from app.core.auth import decode_access_token
 from app.core.config import Settings
-from app.db.models import User
+from app.db.models import CoupleMenu, Recipe, RecipeCollect, RecipeLike, User
 from app.db.session import get_session
 from app.main import create_app
 from app.redis.client import RedisClient
@@ -213,5 +214,194 @@ async def test_http_business_routes_keep_spring_envelopes(
             )
             assert notifications.json()["code"] == 200
             assert notifications.json()["data"][0]["relatedType"] == "couple"
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_menu_and_recipe_routes_use_real_mysql_and_keep_logs_redacted(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    app = create_app(settings())
+    app.state.redis = redis
+
+    async def session_override():
+        async with session_factory() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    restaurant_name = "integration-private-restaurant"
+    recipe_title = "integration-private-recipe"
+    try:
+        with capture_logs() as logs:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                first = await client.post(
+                    "/api/user/login", json={"code": "food-openid-one", "nickName": "甲"}
+                )
+                second = await client.post(
+                    "/api/user/login", json={"code": "food-openid-two", "nickName": "乙"}
+                )
+                first_token = first.json()["data"]["token"]
+                second_token = second.json()["data"]["token"]
+                first_auth = {"Authorization": f"Bearer {first_token}"}
+                second_auth = {"Authorization": f"Bearer {second_token}"}
+
+                code_response = await client.post("/api/couple/generateCode", headers=first_auth)
+                await client.post(
+                    "/api/couple/bind",
+                    headers=second_auth,
+                    json={"coupleCode": code_response.json()["data"]},
+                )
+
+                menu_response = await client.post(
+                    "/api/menu/add",
+                    headers=first_auth,
+                    json={
+                        "restaurantName": restaurant_name,
+                        "dishName": "星河汤",
+                        "price": 88.5,
+                        "rating": 5,
+                        "status": 0,
+                        "eatenDate": "2026-07-26",
+                    },
+                )
+                assert menu_response.status_code == 200
+                menu_id = int(menu_response.json()["data"])
+                menu_list = await client.get("/api/menu/list", headers=second_auth)
+                assert menu_list.json()["data"]["list"][0]["restaurantName"] == restaurant_name
+                assert menu_list.json()["data"]["total"] == 1
+                await client.post(f"/api/menu/like/{menu_id}", headers=second_auth)
+                concurrent_likes = await asyncio.gather(
+                    *[
+                        client.post(f"/api/menu/like/{menu_id}", headers=second_auth)
+                        for _ in range(4)
+                    ]
+                )
+                assert all(response.json()["code"] == 200 for response in concurrent_likes)
+                await client.post(f"/api/menu/favorite/{menu_id}", headers=second_auth)
+                await client.put(
+                    f"/api/menu/update/{menu_id}",
+                    headers=first_auth,
+                    json={"restaurantName": restaurant_name, "eatenDate": None},
+                )
+                menu_detail = await client.get(f"/api/menu/detail/{menu_id}", headers=first_auth)
+                assert menu_detail.json()["data"]["likeCount"] == 5
+                assert menu_detail.json()["data"]["isFavorite"] is True
+                assert menu_detail.json()["data"]["eatenDate"] is None
+
+                mapped_menu = await client.post(
+                    "/api/menu/add",
+                    headers=first_auth,
+                    json={
+                        "restaurantName": "mapped-private-restaurant",
+                        "latitude": 60,
+                        "longitude": 10.01,
+                    },
+                )
+                far_menu = await client.post(
+                    "/api/menu/add",
+                    headers=first_auth,
+                    json={
+                        "restaurantName": "far-private-restaurant",
+                        "latitude": 60,
+                        "longitude": 10.1,
+                    },
+                )
+                assert mapped_menu.json()["code"] == far_menu.json()["code"] == 200
+                nearby = await client.get(
+                    "/api/menu/nearby?latitude=60&longitude=10&radiusMeters=700",
+                    headers=second_auth,
+                )
+                assert [item["id"] for item in nearby.json()["data"]] == [
+                    mapped_menu.json()["data"]
+                ]
+                mapped = await client.get(
+                    "/api/menu/map?centerLat=60&centerLng=10&zoomLevel=18",
+                    headers=second_auth,
+                )
+                assert [item["id"] for item in mapped.json()["data"]] == [
+                    mapped_menu.json()["data"]
+                ]
+
+                recipe_response = await client.post(
+                    "/api/recipe/create",
+                    headers=first_auth,
+                    json={
+                        "title": recipe_title,
+                        "ingredients": [{"name": "水", "amount": "500ml"}],
+                        "steps": [{"content": "加热", "imageUrl": None}],
+                        "difficulty": "easy",
+                        "cookingTime": 10,
+                        "servings": 2,
+                        "publish": True,
+                    },
+                )
+                assert recipe_response.status_code == 200
+                recipe_id = int(recipe_response.json()["data"])
+                couple_page = await client.get("/api/recipe/couple", headers=second_auth)
+                assert couple_page.json()["data"]["records"][0]["title"] == recipe_title
+                await client.post(f"/api/recipe/like/{recipe_id}", headers=second_auth)
+                await client.post(f"/api/recipe/collect/{recipe_id}", headers=second_auth)
+                recipe_detail = await client.get(
+                    f"/api/recipe/detail/{recipe_id}", headers=second_auth
+                )
+                assert recipe_detail.json()["data"]["liked"] is True
+                assert recipe_detail.json()["data"]["collected"] is True
+                assert recipe_detail.json()["data"]["ingredients"] == [
+                    {"name": "水", "amount": "500ml"}
+                ]
+                assert recipe_detail.json()["data"]["steps"] == [
+                    {"stepNo": 1, "content": "加热", "imageUrl": None}
+                ]
+
+                concurrent_unlikes = await asyncio.gather(
+                    client.delete(f"/api/recipe/like/{recipe_id}", headers=second_auth),
+                    client.delete(f"/api/recipe/like/{recipe_id}", headers=second_auth),
+                )
+                assert sorted(response.json()["code"] for response in concurrent_unlikes) == [
+                    200,
+                    3105,
+                ]
+                concurrent_likes = await asyncio.gather(
+                    client.post(f"/api/recipe/like/{recipe_id}", headers=second_auth),
+                    client.post(f"/api/recipe/like/{recipe_id}", headers=second_auth),
+                )
+                assert sorted(response.json()["code"] for response in concurrent_likes) == [
+                    200,
+                    3104,
+                ]
+
+                newer_recipe = await client.post(
+                    "/api/recipe/create",
+                    headers=first_auth,
+                    json={"title": "newer-private-recipe", "publish": True},
+                )
+                newer_recipe_id = int(newer_recipe.json()["data"])
+                await client.post(f"/api/recipe/collect/{newer_recipe_id}", headers=second_auth)
+                await client.delete(f"/api/recipe/collect/{recipe_id}", headers=second_auth)
+                await client.post(f"/api/recipe/collect/{recipe_id}", headers=second_auth)
+                collected_page = await client.get("/api/recipe/collected", headers=second_auth)
+                assert collected_page.json()["data"]["total"] == 2
+                assert [item["id"] for item in collected_page.json()["data"]["records"]] == [
+                    recipe_id,
+                    newer_recipe_id,
+                ]
+
+        serialized_logs = str(logs)
+        assert restaurant_name not in serialized_logs
+        assert recipe_title not in serialized_logs
+        assert "requestId" in serialized_logs
+        assert "durationMs" in serialized_logs
+
+        async with session_factory() as session:
+            assert await session.scalar(select(func.count(CoupleMenu.id))) == 3
+            assert await session.scalar(select(func.count(Recipe.id))) == 2
+            assert await session.scalar(select(func.count(RecipeLike.id))) == 1
+            assert await session.scalar(select(func.count(RecipeCollect.id))) == 2
     finally:
         await redis.close()
