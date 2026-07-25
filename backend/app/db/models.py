@@ -134,6 +134,42 @@ class GreetingStreak(Base):
     )
 
 
+class DailyTask(Base):
+    __tablename__ = "t_daily_task"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    task_date: Mapped[date] = mapped_column(Date, nullable=False)
+    task_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    task_name: Mapped[str] = mapped_column(String(128), nullable=False)
+    task_description: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    target_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("1"))
+    reward_nutrient: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class UserTaskProgress(Base):
+    __tablename__ = "t_user_task_progress"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    task_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    current_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    is_completed: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    complete_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    is_reward_claimed: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("0")
+    )
+    reward_claim_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
 class CoupleUnbindRecord(Base):
     __tablename__ = "t_couple_unbind_record"
 

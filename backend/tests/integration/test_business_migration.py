@@ -23,6 +23,7 @@ from app.db.models import (
     CoupleRank,
     CoupleTree,
     DailyGreeting,
+    DailyTask,
     Feed,
     FoodNote,
     GreetingStreak,
@@ -35,6 +36,7 @@ from app.db.models import (
     RecipeLike,
     TreeNutrientLog,
     User,
+    UserTaskProgress,
     Wish,
 )
 from app.db.session import get_session
@@ -473,6 +475,123 @@ async def test_daily_greeting_routes_keep_atomic_streak_scope_and_redacted_logs(
                     )
                 )
                 == 2
+            )
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_daily_task_routes_keep_atomic_progress_claim_and_tree_reward(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    app = create_app(settings())
+    app.state.redis = redis
+
+    async def session_override():
+        async with session_factory() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    try:
+        with capture_logs() as logs:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                users = []
+                for code, nickname in (
+                    ("task-openid-one", "任务甲"),
+                    ("task-openid-two", "任务乙"),
+                ):
+                    response = await client.post(
+                        "/api/user/login", json={"code": code, "nickName": nickname}
+                    )
+                    users.append({"Authorization": f"Bearer {response.json()['data']['token']}"})
+
+                code_response = await client.post("/api/couple/generateCode", headers=users[0])
+                assert (
+                    await client.post(
+                        "/api/couple/bind",
+                        headers=users[1],
+                        json={"coupleCode": code_response.json()["data"]},
+                    )
+                ).json()["code"] == 200
+
+                concurrent_today = await asyncio.gather(
+                    *[client.get("/api/dailyTask/today", headers=users[0]) for _ in range(4)]
+                )
+                assert all(response.json()["code"] == 200 for response in concurrent_today)
+                tasks = concurrent_today[0].json()["data"]
+                assert len(tasks) == 4
+                task_id = int(tasks[0]["id"])
+                reward = int(tasks[0]["rewardNutrient"])
+
+                not_completed = await client.post(
+                    f"/api/dailyTask/claim/{task_id}", headers=users[0]
+                )
+                assert not_completed.json()["code"] == 8803
+
+                concurrent_progress = await asyncio.gather(
+                    *[
+                        client.post(f"/api/dailyTask/progress/{task_id}?count=1", headers=users[0])
+                        for _ in range(2)
+                    ]
+                )
+                assert all(response.json()["code"] == 200 for response in concurrent_progress)
+                partner_progress = await client.post(
+                    f"/api/dailyTask/progress/{task_id}?count=1", headers=users[1]
+                )
+                assert partner_progress.json()["code"] == 200
+
+                detail = await client.get(f"/api/dailyTask/detail/{task_id}", headers=users[0])
+                assert detail.json()["data"]["status"] == 1
+                assert detail.json()["data"]["myProgress"]["currentCount"] == 2
+                assert detail.json()["data"]["partnerProgress"]["isCompleted"] is True
+
+                concurrent_claim = await asyncio.gather(
+                    *[
+                        client.post(f"/api/dailyTask/claim/{task_id}", headers=users[0])
+                        for _ in range(2)
+                    ]
+                )
+                assert sorted(response.json()["code"] for response in concurrent_claim) == [
+                    200,
+                    8804,
+                ]
+                assert (
+                    await client.post(f"/api/dailyTask/claim/{task_id}", headers=users[1])
+                ).json()["code"] == 200
+
+                stats = await client.get("/api/dailyTask/today/stats", headers=users[0])
+                assert stats.json()["data"]["totalTasks"] == 4
+                assert stats.json()["data"]["completedTasks"] == 1
+                assert stats.json()["data"]["earnedNutrient"] == reward
+
+        serialized_logs = str(logs)
+        assert "task-openid" not in serialized_logs
+        assert "任务甲" not in serialized_logs
+        assert "完成任务" not in serialized_logs
+        assert "requestId" in serialized_logs
+        assert "durationMs" in serialized_logs
+        async with session_factory() as session:
+            assert await session.scalar(select(func.count(DailyTask.id))) == 4
+            assert (
+                await session.scalar(
+                    select(func.count(UserTaskProgress.id)).where(
+                        UserTaskProgress.task_id == task_id
+                    )
+                )
+                == 2
+            )
+            assert (
+                await session.scalar(
+                    select(func.sum(TreeNutrientLog.nutrient_amount)).where(
+                        TreeNutrientLog.source_action == "daily_task"
+                    )
+                )
+                == reward * 2
             )
     finally:
         await redis.close()

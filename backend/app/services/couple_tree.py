@@ -241,6 +241,29 @@ async def water(
     amount = payload.nutrient_amount if payload.nutrient_amount is not None else 10
     source_action = (payload.source_action or "manual_water").strip() or "manual_water"
     couple_id = _couple_id(user)
+    await add_nutrient_in_transaction(
+        session,
+        couple_id,
+        user_id,
+        amount,
+        source_action,
+        payload.remark,
+    )
+    await session.commit()
+    await logger.ainfo(
+        "business_operation_completed", **_fields(request, operation, "success", started)
+    )
+
+
+async def add_nutrient_in_transaction(
+    session: AsyncSession,
+    couple_id: int,
+    user_id: int,
+    amount: int,
+    source_action: str,
+    remark: str | None,
+) -> None:
+    """Add tree nutrient without committing, for transaction-coupled rewards."""
     tree = await _get_or_create_tree(session, couple_id)
     await session.execute(
         update(CoupleTree)
@@ -254,8 +277,7 @@ async def water(
         select(CoupleTree).where(CoupleTree.id == tree.id).execution_options(populate_existing=True)
     )
     if fresh_tree is None:
-        await session.rollback()
-        await _fail(request, operation, started, 500, "爱心树不存在")
+        raise BusinessError(8701, "爱心树不存在")
     next_level = _level(int(fresh_tree.total_nutrient))
     current_base = LEVEL_NUTRIENTS[next_level - 1]
     await session.execute(
@@ -272,12 +294,8 @@ async def water(
             user_id=user_id,
             nutrient_amount=amount,
             source_action=source_action,
-            remark=payload.remark,
+            remark=remark,
         )
-    )
-    await session.commit()
-    await logger.ainfo(
-        "business_operation_completed", **_fields(request, operation, "success", started)
     )
 
 
