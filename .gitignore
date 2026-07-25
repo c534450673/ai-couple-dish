@@ -85,3 +85,13 @@ spring-boot-*.log
 *.bak
 .gitnexus
 .worktrees/
+
+# Python backend
+backend/.venv/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/.coverage
+backend/htmlcov/
+backend/**/__pycache__/
+backend/**/*.py[cod]
