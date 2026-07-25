@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api.ai import router as ai_router
 from app.api.anniversary import router as anniversary_router
+from app.api.cart import router as cart_router
 from app.api.couple import router as couple_router
 from app.api.couple_rank import router as couple_rank_router
 from app.api.couple_tree import router as couple_tree_router
@@ -23,6 +24,7 @@ from app.api.menu import router as menu_router
 from app.api.mood import router as mood_router
 from app.api.note import router as note_router
 from app.api.notification import router as notification_router
+from app.api.order import router as order_router
 from app.api.recipe import router as recipe_router
 from app.api.upload import router as upload_router
 from app.api.user import router as user_router
@@ -188,6 +190,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(heart_moment_router, prefix=active_settings.api_prefix)
     app.include_router(mood_router, prefix=active_settings.api_prefix)
     app.include_router(anniversary_router, prefix=active_settings.api_prefix)
+    app.include_router(cart_router, prefix=active_settings.api_prefix)
+    app.include_router(order_router, prefix=active_settings.api_prefix)
     app.include_router(ai_router, prefix=active_settings.api_prefix)
     app.include_router(notification_router, prefix=active_settings.api_prefix)
     app.include_router(menu_router, prefix=active_settings.api_prefix)

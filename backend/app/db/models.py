@@ -406,6 +406,45 @@ class RecipeCollect(Base):
     )
 
 
+class Cart(Base):
+    __tablename__ = "t_cart"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    recipe_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("1"))
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class Order(Base):
+    __tablename__ = "t_order"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    buyer_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    seller_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    recipe_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    recipe_name: Mapped[str] = mapped_column(String(256), nullable=False)
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("1"))
+    total_amount: Mapped[Decimal | None] = mapped_column(Numeric(10, 2), nullable=True)
+    address: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    status: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    remark: Mapped[str | None] = mapped_column(Text, nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    pay_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    accept_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    complete_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    cancel_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
 class HeartMoment(Base):
     __tablename__ = "t_heart_moment"
 

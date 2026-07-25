@@ -126,6 +126,22 @@ class RecipeRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class AddToCartRequest(BaseModel):
+    recipe_id: int = Field(alias="recipeId", ge=1)
+    quantity: int = Field(default=1, ge=1)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class CreateOrderRequest(BaseModel):
+    recipe_id: int = Field(alias="recipeId", ge=1)
+    quantity: int = Field(default=1, ge=1)
+    address: str | None = Field(default=None, max_length=512)
+    remark: str | None = Field(default=None, max_length=512)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class NoteRequest(BaseModel):
     title: str = Field(min_length=1, max_length=256)
     content: str = Field(min_length=1, max_length=50_000)
