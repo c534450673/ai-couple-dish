@@ -19,8 +19,12 @@ let activeContextId = 0
 const resources = computed(() => homeStore.resources)
 const currentAvatar = computed(() => userStore.userInfo?.avatarUrl || '')
 const feedText = computed(() => {
-  const value = resources.value.feed.data?.content || resources.value.feed.data?.message || ''
-  return typeof value === 'string' && value.trim() ? value : ''
+  const candidates = [
+    resources.value.feed.data?.content,
+    resources.value.feed.data?.message
+  ]
+  const value = candidates.find(candidate => typeof candidate === 'string' && candidate.trim())
+  return value ? value.trim() : ''
 })
 const feedImage = computed(() => {
   const images = resources.value.feed.data?.imageUrls

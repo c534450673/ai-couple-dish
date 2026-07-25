@@ -154,6 +154,15 @@ describe('home-emotion 首页', () => {
     expect(wrapper.text()).not.toContain('动态内容未填写')
   })
 
+  it('Feed content 为空白时继续展示真实 message 字段', () => {
+    mocks.store.resources.feed = resource('success', {
+      content: '   ', message: '真实动态消息', imageUrls: []
+    })
+    const wrapper = mountHome()
+
+    expect(wrapper.find('.recent-feed__text').text()).toBe('真实动态消息')
+  })
+
   it('401 与 2006 分别进入登录和绑定流程，卸载时使请求上下文失效', async () => {
     mocks.store.resources.couple = resource('error', null, { errorCode: '401', flow: 'login' })
     let wrapper = mountHome()
