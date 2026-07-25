@@ -9,11 +9,11 @@ export default defineConfig({
   plugins: [
     vue(),
     AutoImport({
-      resolvers: [VantResolver()],
+      resolvers: [VantResolver()]
     }),
     Components({
-      resolvers: [VantResolver()],
-    }),
+      resolvers: [VantResolver()]
+    })
   ],
   resolve: {
     alias: {
@@ -30,7 +30,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    host: '0.0.0.0',
+    host: '127.0.0.1',
     proxy: {
       '/api': {
         target: process.env.VITE_API_BASE_URL || 'http://localhost:8080',
