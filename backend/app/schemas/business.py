@@ -253,6 +253,13 @@ class TimeCapsuleRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class LoveCalendarRangeRequest(BaseModel):
+    start_date: date = Field(alias="startDate")
+    end_date: date = Field(alias="endDate")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class MoodRecordRequest(BaseModel):
     mood_type: str = Field(alias="moodType", min_length=1, max_length=32)
     description: str | None = Field(default=None, max_length=512)

@@ -20,6 +20,7 @@ from app.api.feed import router as feed_router
 from app.api.health import ready
 from app.api.health import router as health_router
 from app.api.heart_moment import router as heart_moment_router
+from app.api.love_calendar import router as love_calendar_router
 from app.api.menu import router as menu_router
 from app.api.mood import router as mood_router
 from app.api.note import router as note_router
@@ -193,6 +194,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(anniversary_router, prefix=active_settings.api_prefix)
     app.include_router(cart_router, prefix=active_settings.api_prefix)
     app.include_router(order_router, prefix=active_settings.api_prefix)
+    app.include_router(love_calendar_router, prefix=active_settings.api_prefix)
     app.include_router(ai_router, prefix=active_settings.api_prefix)
     app.include_router(notification_router, prefix=active_settings.api_prefix)
     app.include_router(menu_router, prefix=active_settings.api_prefix)

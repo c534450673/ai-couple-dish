@@ -498,3 +498,21 @@ class TimeCapsule(Base):
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
     unlock_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class LoveCalendar(Base):
+    """Spring 保留的自定义恋爱日历事件表。"""
+
+    __tablename__ = "t_love_calendar"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    calendar_date: Mapped[date] = mapped_column(Date, nullable=False)
+    event_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    event_title: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    event_content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_anniversary: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    anniversary_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
