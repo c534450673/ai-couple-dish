@@ -22,8 +22,10 @@ from app.db.models import (
     CoupleMenu,
     CoupleRank,
     CoupleTree,
+    DailyGreeting,
     Feed,
     FoodNote,
+    GreetingStreak,
     HeartMoment,
     MoodRecord,
     NoteLike,
@@ -336,6 +338,142 @@ async def test_couple_tree_routes_keep_scope_atomic_growth_and_redacted_logs(
         async with session_factory() as session:
             assert await session.scalar(select(func.count(CoupleTree.id))) == 1
             assert await session.scalar(select(func.count(TreeNutrientLog.id))) == 2
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_daily_greeting_routes_keep_atomic_streak_scope_and_redacted_logs(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    app = create_app(settings())
+    app.state.redis = redis
+
+    async def session_override():
+        async with session_factory() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    private_content = "integration-private-greeting"
+    try:
+        with capture_logs() as logs:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                users = []
+                for code, nickname in (
+                    ("greeting-openid-one", "晨甲"),
+                    ("greeting-openid-two", "晨乙"),
+                    ("greeting-openid-three", "晨丙"),
+                    ("greeting-openid-four", "晨丁"),
+                ):
+                    response = await client.post(
+                        "/api/user/login", json={"code": code, "nickName": nickname}
+                    )
+                    users.append({"Authorization": f"Bearer {response.json()['data']['token']}"})
+
+                unbound = await client.post(
+                    "/api/dailyGreeting/send",
+                    headers=users[0],
+                    json={"greetingType": 1},
+                )
+                assert unbound.json()["code"] == 2006
+                for first_index, second_index in ((0, 1), (2, 3)):
+                    code_response = await client.post(
+                        "/api/couple/generateCode", headers=users[first_index]
+                    )
+                    assert (
+                        await client.post(
+                            "/api/couple/bind",
+                            headers=users[second_index],
+                            json={"coupleCode": code_response.json()["data"]},
+                        )
+                    ).json()["code"] == 200
+
+                invalid_type = await client.post(
+                    "/api/dailyGreeting/send",
+                    headers=users[0],
+                    json={"greetingType": 3},
+                )
+                assert invalid_type.status_code == 400
+                assert invalid_type.json()["code"] == 400
+                concurrent_send = await asyncio.gather(
+                    *[
+                        client.post(
+                            "/api/dailyGreeting/send",
+                            headers=users[0],
+                            json={"greetingType": 1, "content": private_content},
+                        )
+                        for _ in range(2)
+                    ]
+                )
+                assert sorted(response.json()["code"] for response in concurrent_send) == [
+                    200,
+                    8602,
+                ]
+                greeting_id = next(
+                    int(response.json()["data"])
+                    for response in concurrent_send
+                    if response.json()["code"] == 200
+                )
+
+                partner_send = await client.post(
+                    "/api/dailyGreeting/send",
+                    headers=users[1],
+                    json={"greetingType": 1, "voiceUrl": "/uploads/morning.mp3"},
+                )
+                assert partner_send.json()["code"] == 200
+
+                mine = await client.get(
+                    "/api/dailyGreeting/today/status?greetingType=1", headers=users[0]
+                )
+                assert mine.json()["data"]["hasCheckedToday"] is True
+                assert mine.json()["data"]["streakDays"] == 1
+                both = await client.get(
+                    "/api/dailyGreeting/both/status?greetingType=1", headers=users[0]
+                )
+                assert both.json()["data"]["bothCheckStatus"]["myChecked"] is True
+                assert both.json()["data"]["bothCheckStatus"]["partnerChecked"] is True
+                streak = await client.get(
+                    "/api/dailyGreeting/streak?streakType=1", headers=users[1]
+                )
+                assert streak.json()["data"]["streakDays"] == 1
+
+                history = await client.get(
+                    "/api/dailyGreeting/history?greetingType=1&limit=1", headers=users[0]
+                )
+                assert len(history.json()["data"]) == 1
+                detail = await client.get(
+                    f"/api/dailyGreeting/detail/{greeting_id}", headers=users[1]
+                )
+                assert detail.json()["data"]["sender"]["nickName"] == "晨甲"
+                forbidden = await client.get(
+                    f"/api/dailyGreeting/detail/{greeting_id}", headers=users[2]
+                )
+                assert forbidden.json()["code"] == 8603
+                missing = await client.get("/api/dailyGreeting/detail/999999", headers=users[0])
+                assert missing.json()["code"] == 8601
+
+        serialized_logs = str(logs)
+        assert "greeting-openid" not in serialized_logs
+        assert "晨甲" not in serialized_logs
+        assert private_content not in serialized_logs
+        assert "requestId" in serialized_logs
+        assert "durationMs" in serialized_logs
+        async with session_factory() as session:
+            assert await session.scalar(select(func.count(DailyGreeting.id))) == 2
+            assert await session.scalar(select(func.count(GreetingStreak.id))) == 1
+            assert (
+                await session.scalar(
+                    select(func.count(Notification.id)).where(
+                        Notification.related_type == "daily_greeting"
+                    )
+                )
+                == 2
+            )
     finally:
         await redis.close()
 

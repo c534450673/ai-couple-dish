@@ -53,6 +53,15 @@ class WaterTreeRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class DailyGreetingRequest(BaseModel):
+    greeting_type: int = Field(alias="greetingType", ge=1, le=2)
+    content: str | None = Field(default=None, max_length=512)
+    voice_url: str | None = Field(default=None, alias="voiceUrl", max_length=512)
+    voice_duration: int | None = Field(default=None, alias="voiceDuration", ge=0, le=3600)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class UnbindRequest(BaseModel):
     option: str | None = Field(default=None, pattern=r"^(keep|delete)$")
 

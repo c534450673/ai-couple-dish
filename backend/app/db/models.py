@@ -103,6 +103,37 @@ class TreeNutrientLog(Base):
     )
 
 
+class DailyGreeting(Base):
+    __tablename__ = "t_daily_greeting"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    greeting_type: Mapped[int] = mapped_column(Integer, nullable=False)
+    content: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    voice_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    voice_duration: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    greeting_date: Mapped[date] = mapped_column(Date, nullable=False)
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class GreetingStreak(Base):
+    __tablename__ = "t_greeting_streak"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    streak_type: Mapped[int] = mapped_column(Integer, nullable=False)
+    streak_days: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    max_streak_days: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    last_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
 class CoupleUnbindRecord(Base):
     __tablename__ = "t_couple_unbind_record"
 
