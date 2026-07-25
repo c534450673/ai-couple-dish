@@ -477,3 +477,24 @@ class MoodRecord(Base):
     create_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
+
+
+class TimeCapsule(Base):
+    """情侣时光胶囊；媒体地址以 JSON 数组存储以兼容 Spring 表结构。"""
+
+    __tablename__ = "t_time_capsule"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    creator_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    capsule_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    title: Mapped[str] = mapped_column(String(256), nullable=False)
+    content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    media_urls: Mapped[str | None] = mapped_column(Text, nullable=True)
+    unlock_date: Mapped[date] = mapped_column(Date, nullable=False)
+    status: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    unlock_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

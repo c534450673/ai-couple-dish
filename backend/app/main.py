@@ -26,6 +26,7 @@ from app.api.note import router as note_router
 from app.api.notification import router as notification_router
 from app.api.order import router as order_router
 from app.api.recipe import router as recipe_router
+from app.api.time_capsule import router as time_capsule_router
 from app.api.upload import router as upload_router
 from app.api.user import router as user_router
 from app.api.wish import router as wish_router
@@ -197,6 +198,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(menu_router, prefix=active_settings.api_prefix)
     app.include_router(note_router, prefix=active_settings.api_prefix)
     app.include_router(recipe_router, prefix=active_settings.api_prefix)
+    app.include_router(time_capsule_router, prefix=active_settings.api_prefix)
     app.include_router(upload_router, prefix=active_settings.api_prefix)
     app.include_router(wish_router, prefix=active_settings.api_prefix)
     app.add_api_route(

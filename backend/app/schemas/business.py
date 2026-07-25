@@ -243,6 +243,16 @@ class HeartMomentRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class TimeCapsuleRequest(BaseModel):
+    capsule_type: str = Field(alias="capsuleType", min_length=1, max_length=32)
+    title: str = Field(min_length=1, max_length=256)
+    content: str | None = Field(default=None, max_length=50_000)
+    media_urls: list[str] | None = Field(default=None, alias="mediaUrls", max_length=20)
+    unlock_date: date = Field(alias="unlockDate")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class MoodRecordRequest(BaseModel):
     mood_type: str = Field(alias="moodType", min_length=1, max_length=32)
     description: str | None = Field(default=None, max_length=512)
