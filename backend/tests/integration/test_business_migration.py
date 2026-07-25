@@ -17,7 +17,16 @@ os.environ.setdefault("JWT_SECRET", "x" * 64)
 
 from app.core.auth import decode_access_token
 from app.core.config import Settings
-from app.db.models import CoupleMenu, Recipe, RecipeCollect, RecipeLike, User
+from app.db.models import (
+    Anniversary,
+    CoupleMenu,
+    FoodNote,
+    NoteLike,
+    Recipe,
+    RecipeCollect,
+    RecipeLike,
+    User,
+)
 from app.db.session import get_session
 from app.main import create_app
 from app.redis.client import RedisClient
@@ -403,5 +412,187 @@ async def test_menu_and_recipe_routes_use_real_mysql_and_keep_logs_redacted(
             assert await session.scalar(select(func.count(Recipe.id))) == 2
             assert await session.scalar(select(func.count(RecipeLike.id))) == 1
             assert await session.scalar(select(func.count(RecipeCollect.id))) == 2
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_note_and_anniversary_routes_keep_contracts_and_logs_redacted(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    app = create_app(settings())
+    app.state.redis = redis
+
+    async def session_override():
+        async with session_factory() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    anniversary_name = "integration-private-anniversary"
+    note_title = "integration-private-note"
+    note_content = "integration-private-content"
+    note_location = "integration-private-location"
+    photo_url = "https://private.invalid/note.jpg"
+    try:
+        with capture_logs() as logs:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                first = await client.post(
+                    "/api/user/login", json={"code": "memory-openid-one", "nickName": "甲"}
+                )
+                second = await client.post(
+                    "/api/user/login", json={"code": "memory-openid-two", "nickName": "乙"}
+                )
+                first_auth = {"Authorization": f"Bearer {first.json()['data']['token']}"}
+                second_auth = {"Authorization": f"Bearer {second.json()['data']['token']}"}
+                code = await client.post("/api/couple/generateCode", headers=first_auth)
+                await client.post(
+                    "/api/couple/bind",
+                    headers=second_auth,
+                    json={"coupleCode": code.json()["data"]},
+                )
+
+                anniversary = await client.post(
+                    "/api/anniversary/add",
+                    headers=first_auth,
+                    json={
+                        "name": anniversary_name,
+                        "anniversaryDate": date.today().isoformat(),
+                        "anniversaryType": 2,
+                        "isLunarDate": 1,
+                        "lunarMonth": 8,
+                        "lunarDay": 15,
+                    },
+                )
+                assert anniversary.json()["code"] == 200
+                anniversary_id = int(anniversary.json()["data"])
+                duplicate = await client.post(
+                    "/api/anniversary/add",
+                    headers=second_auth,
+                    json={
+                        "name": "duplicate",
+                        "anniversaryDate": date.today().isoformat(),
+                        "anniversaryType": 2,
+                    },
+                )
+                assert duplicate.json()["code"] == 5002
+
+                anniversary_list = await client.get("/api/anniversary/list", headers=second_auth)
+                assert anniversary_list.json()["code"] == 200
+                anniversary_data = anniversary_list.json()["data"][0]
+                assert anniversary_data["id"] == anniversary_id
+                assert anniversary_data["daysUntil"] == 0
+                assert anniversary_data["isLunarDate"] is True
+                assert (await client.get("/api/anniversary/upcoming", headers=first_auth)).json()[
+                    "data"
+                ][0]["id"] == anniversary_id
+                assert (await client.get("/api/anniversary/next", headers=first_auth)).json()[
+                    "data"
+                ]["id"] == anniversary_id
+                assert (await client.get("/api/anniversary/today", headers=first_auth)).json()[
+                    "data"
+                ]["id"] == anniversary_id
+                reminder = await client.put(
+                    "/api/anniversary/reminderConfig",
+                    headers=second_auth,
+                    json={
+                        "anniversaryId": anniversary_id,
+                        "remindChannels": "app,wechat",
+                        "remindHour": 9,
+                        "appRemindEnabled": 1,
+                    },
+                )
+                assert reminder.json()["code"] == 200
+                forbidden_anniversary_update = await client.put(
+                    f"/api/anniversary/update/{anniversary_id}",
+                    headers=second_auth,
+                    json={"name": "forbidden"},
+                )
+                assert forbidden_anniversary_update.json()["code"] == 3002
+                forbidden_anniversary_delete = await client.delete(
+                    f"/api/anniversary/delete/{anniversary_id}", headers=first_auth
+                )
+                assert forbidden_anniversary_delete.json()["code"] == 5003
+
+                note = await client.post(
+                    "/api/note/add",
+                    headers=first_auth,
+                    json={
+                        "title": f"<b>{note_title}</b>",
+                        "content": f"<script>{note_content}</script>",
+                        "location": note_location,
+                        "isAnniversaryLinked": 1,
+                        "anniversaryId": anniversary_id,
+                        "photoUrls": [photo_url],
+                    },
+                )
+                assert note.json()["code"] == 200
+                note_id = int(note.json()["data"])
+                filtered = await client.get(
+                    f"/api/note/list?anniversaryId={anniversary_id}", headers=second_auth
+                )
+                assert filtered.json()["code"] == 200
+                note_data = filtered.json()["data"][0]
+                assert note_data["title"] == f"&lt;b&gt;{note_title}&lt;/b&gt;"
+                assert note_data["content"] == f"&lt;script&gt;{note_content}&lt;/script&gt;"
+                assert note_data["photoUrls"] == [photo_url]
+                assert note_data["isAuthor"] is False
+                assert note_data["isLiked"] is False
+                detail = await client.get(f"/api/note/detail/{note_id}", headers=second_auth)
+                assert detail.json()["data"]["anniversaryName"] == anniversary_name
+
+                assert (await client.post(f"/api/note/like/{note_id}", headers=second_auth)).json()[
+                    "code"
+                ] == 200
+                assert (await client.post(f"/api/note/like/{note_id}", headers=second_auth)).json()[
+                    "code"
+                ] == 200
+                assert (
+                    await client.post(
+                        f"/api/note/comment/{note_id}",
+                        headers=second_auth,
+                        params={"content": "private-comment"},
+                    )
+                ).json()["code"] == 200
+                assert (
+                    await client.delete(f"/api/note/unlike/{note_id}", headers=second_auth)
+                ).json()["code"] == 200
+                assert (
+                    await client.delete(f"/api/note/unlike/{note_id}", headers=second_auth)
+                ).json()["code"] == 200
+                forbidden_note_update = await client.put(
+                    f"/api/note/update/{note_id}",
+                    headers=second_auth,
+                    json={"title": "forbidden", "content": "forbidden"},
+                )
+                assert forbidden_note_update.json()["code"] == 4002
+                assert (
+                    await client.put(
+                        f"/api/note/update/{note_id}",
+                        headers=first_auth,
+                        json={"title": "updated", "content": "updated"},
+                    )
+                ).json()["code"] == 200
+                assert (
+                    await client.delete(f"/api/note/delete/{note_id}", headers=second_auth)
+                ).json()["code"] == 4002
+                assert (
+                    await client.delete(f"/api/note/delete/{note_id}", headers=first_auth)
+                ).json()["code"] == 200
+
+        serialized_logs = str(logs)
+        for secret in (anniversary_name, note_title, note_content, note_location, photo_url):
+            assert secret not in serialized_logs
+        assert "requestId" in serialized_logs
+        assert "durationMs" in serialized_logs
+
+        async with session_factory() as session:
+            assert await session.scalar(select(func.count(NoteLike.id))) == 0
+            assert await session.scalar(select(func.count(FoodNote.id))) == 1
+            assert await session.scalar(select(func.count(Anniversary.id))) == 1
     finally:
         await redis.close()

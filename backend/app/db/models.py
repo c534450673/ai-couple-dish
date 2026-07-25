@@ -74,6 +74,82 @@ class Notification(Base):
     )
 
 
+class FoodNote(Base):
+    __tablename__ = "t_food_note"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    author_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    title: Mapped[str] = mapped_column(String(256), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    location: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    latitude: Mapped[Decimal | None] = mapped_column(Numeric(10, 8), nullable=True)
+    longitude: Mapped[Decimal | None] = mapped_column(Numeric(11, 8), nullable=True)
+    is_anniversary_linked: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("0")
+    )
+    anniversary_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    view_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    like_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    comment_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    photo_urls: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class NoteLike(Base):
+    __tablename__ = "t_note_like"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    note_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class Anniversary(Base):
+    __tablename__ = "t_anniversary"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    creator_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    anniversary_date: Mapped[date] = mapped_column(Date, nullable=False)
+    is_lunar_date: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    lunar_month: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    lunar_day: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    anniversary_type: Mapped[int] = mapped_column(Integer, nullable=False)
+    remind_days_before: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("7")
+    )
+    auto_remind: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("1"))
+    last_remind_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    remind_channels: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    remind_hour: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    wechat_remind_enabled: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("0")
+    )
+    sms_remind_enabled: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("0")
+    )
+    app_remind_enabled: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("0")
+    )
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
 class CoupleMenu(Base):
     __tablename__ = "t_couple_menu"
 

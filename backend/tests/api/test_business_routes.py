@@ -68,6 +68,22 @@ EXPECTED_ROUTES = {
     ("DELETE", "/api/recipe/like/{recipeId}"),
     ("POST", "/api/recipe/collect/{recipeId}"),
     ("DELETE", "/api/recipe/collect/{recipeId}"),
+    ("GET", "/api/anniversary/list"),
+    ("GET", "/api/anniversary/upcoming"),
+    ("GET", "/api/anniversary/next"),
+    ("POST", "/api/anniversary/add"),
+    ("PUT", "/api/anniversary/update/{id}"),
+    ("DELETE", "/api/anniversary/delete/{id}"),
+    ("GET", "/api/anniversary/today"),
+    ("PUT", "/api/anniversary/reminderConfig"),
+    ("GET", "/api/note/list"),
+    ("GET", "/api/note/detail/{id}"),
+    ("POST", "/api/note/add"),
+    ("PUT", "/api/note/update/{id}"),
+    ("DELETE", "/api/note/delete/{id}"),
+    ("POST", "/api/note/like/{id}"),
+    ("DELETE", "/api/note/unlike/{id}"),
+    ("POST", "/api/note/comment/{id}"),
 }
 
 
@@ -90,6 +106,10 @@ def test_business_route_inventory_is_registered() -> None:
         ("GET", "/api/notification/list"),
         ("GET", "/api/menu/list"),
         ("GET", "/api/recipe/my"),
+        ("GET", "/api/anniversary/list"),
+        ("GET", "/api/anniversary/next"),
+        ("GET", "/api/note/list"),
+        ("GET", "/api/note/detail/1"),
     ],
 )
 async def test_business_routes_require_authentication(method: str, path: str) -> None:

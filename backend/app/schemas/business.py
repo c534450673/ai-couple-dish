@@ -103,3 +103,68 @@ class RecipeRequest(BaseModel):
     publish: bool = False
 
     model_config = ConfigDict(populate_by_name=True)
+
+
+class NoteRequest(BaseModel):
+    title: str = Field(min_length=1, max_length=256)
+    content: str = Field(min_length=1, max_length=50_000)
+    location: str | None = Field(default=None, max_length=512)
+    latitude: Decimal | None = Field(default=None, ge=-90, le=90)
+    longitude: Decimal | None = Field(default=None, ge=-180, le=180)
+    is_anniversary_linked: int | None = Field(default=None, alias="isAnniversaryLinked", ge=0, le=1)
+    anniversary_id: int | None = Field(default=None, alias="anniversaryId", ge=1)
+    photo_urls: list[str] | None = Field(default=None, alias="photoUrls", max_length=20)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class NoteUpdateRequest(BaseModel):
+    title: str | None = Field(default=None, min_length=1, max_length=256)
+    content: str | None = Field(default=None, min_length=1, max_length=50_000)
+    location: str | None = Field(default=None, max_length=512)
+    latitude: Decimal | None = Field(default=None, ge=-90, le=90)
+    longitude: Decimal | None = Field(default=None, ge=-180, le=180)
+    is_anniversary_linked: int | None = Field(default=None, alias="isAnniversaryLinked", ge=0, le=1)
+    anniversary_id: int | None = Field(default=None, alias="anniversaryId", ge=1)
+    photo_urls: list[str] | None = Field(default=None, alias="photoUrls", max_length=20)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class AnniversaryCreateRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=128)
+    anniversary_date: date = Field(alias="anniversaryDate")
+    is_lunar_date: int = Field(default=0, alias="isLunarDate", ge=0, le=1)
+    lunar_month: int | None = Field(default=None, alias="lunarMonth", ge=1, le=12)
+    lunar_day: int | None = Field(default=None, alias="lunarDay", ge=1, le=30)
+    anniversary_type: int = Field(alias="anniversaryType", ge=1, le=4)
+    remind_days_before: int = Field(default=7, alias="remindDaysBefore", ge=0, le=365)
+    auto_remind: int = Field(default=1, alias="autoRemind", ge=0, le=1)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class AnniversaryUpdateRequest(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=128)
+    anniversary_date: date | None = Field(default=None, alias="anniversaryDate")
+    is_lunar_date: int | None = Field(default=None, alias="isLunarDate", ge=0, le=1)
+    lunar_month: int | None = Field(default=None, alias="lunarMonth", ge=1, le=12)
+    lunar_day: int | None = Field(default=None, alias="lunarDay", ge=1, le=30)
+    anniversary_type: int | None = Field(default=None, alias="anniversaryType", ge=1, le=4)
+    remind_days_before: int | None = Field(default=None, alias="remindDaysBefore", ge=0, le=365)
+    auto_remind: int | None = Field(default=None, alias="autoRemind", ge=0, le=1)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class ReminderConfigRequest(BaseModel):
+    anniversary_id: int = Field(alias="anniversaryId", ge=1)
+    auto_remind: int | None = Field(default=None, alias="autoRemind", ge=0, le=1)
+    remind_days_before: int | None = Field(default=None, alias="remindDaysBefore", ge=0, le=365)
+    remind_channels: str | None = Field(default=None, alias="remindChannels", max_length=128)
+    remind_hour: int | None = Field(default=None, alias="remindHour", ge=0, le=23)
+    wechat_remind_enabled: int | None = Field(default=None, alias="wechatRemindEnabled", ge=0, le=1)
+    sms_remind_enabled: int | None = Field(default=None, alias="smsRemindEnabled", ge=0, le=1)
+    app_remind_enabled: int | None = Field(default=None, alias="appRemindEnabled", ge=0, le=1)
+
+    model_config = ConfigDict(populate_by_name=True)

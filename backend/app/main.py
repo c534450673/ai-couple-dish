@@ -7,10 +7,12 @@ import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.anniversary import router as anniversary_router
 from app.api.couple import router as couple_router
 from app.api.health import ready
 from app.api.health import router as health_router
 from app.api.menu import router as menu_router
+from app.api.note import router as note_router
 from app.api.notification import router as notification_router
 from app.api.recipe import router as recipe_router
 from app.api.user import router as user_router
@@ -139,8 +141,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(health_router, prefix=active_settings.api_prefix)
     app.include_router(user_router, prefix=active_settings.api_prefix)
     app.include_router(couple_router, prefix=active_settings.api_prefix)
+    app.include_router(anniversary_router, prefix=active_settings.api_prefix)
     app.include_router(notification_router, prefix=active_settings.api_prefix)
     app.include_router(menu_router, prefix=active_settings.api_prefix)
+    app.include_router(note_router, prefix=active_settings.api_prefix)
     app.include_router(recipe_router, prefix=active_settings.api_prefix)
     app.add_api_route(
         f"{active_settings.api_prefix}/actuator/health",
