@@ -42,6 +42,14 @@ class Settings(BaseSettings):
     file_upload_path: str = Field("/tmp/uploads", alias="FILE_UPLOAD_PATH")  # noqa: S108
     file_base_url: str = Field("http://localhost:8080/api/uploads", alias="FILE_BASE_URL")
 
+    # AI 网关只接受环境变量注入，日志和错误响应不会暴露密钥。
+    ai_base_url: str = Field("", alias="AI_BASE_URL")
+    ai_api_key: SecretStr = Field(default=SecretStr(""), alias="AI_API_KEY")
+    ai_model: str = Field("kimi-k2.6", alias="AI_MODEL", min_length=1, max_length=128)
+    ai_timeout_ms: int = Field(120_000, alias="AI_TIMEOUT_MS", ge=1_000, le=300_000)
+    ai_max_history: int = Field(20, alias="AI_MAX_HISTORY", ge=2, le=100)
+    ai_max_tool_rounds: int = Field(5, alias="AI_MAX_TOOL_ROUNDS", ge=1, le=10)
+
     @field_validator("jwt_secret", mode="before")
     @classmethod
     def mask_jwt_secret_in_validation_errors(cls, value: object) -> object:

@@ -196,3 +196,21 @@ class WishUpdateRequest(BaseModel):
     priority: int | None = Field(default=None, ge=1, le=3)
 
     model_config = ConfigDict(populate_by_name=True)
+
+
+class AiChatRequest(BaseModel):
+    message: str = Field(min_length=1, max_length=10_000)
+    session_id: str | None = Field(default=None, alias="sessionId", max_length=128)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class AiConfirmRequest(BaseModel):
+    session_id: str = Field(alias="sessionId", min_length=1, max_length=128)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class AiGenerateRequest(BaseModel):
+    type: str = Field(min_length=1, max_length=32)
+    prompt: str = Field(min_length=1, max_length=10_000)
