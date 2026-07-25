@@ -538,3 +538,40 @@ class RelationshipWeather(Base):
     create_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
+
+
+class UserInviteCode(Base):
+    __tablename__ = "t_user_invite_code"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    invite_code: Mapped[str] = mapped_column(String(16), nullable=False)
+    invite_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    reward_amount: Mapped[Decimal] = mapped_column(
+        Numeric(10, 2), nullable=False, server_default=text("0")
+    )
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class UserReferral(Base):
+    __tablename__ = "t_user_referral"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    inviter_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    invitee_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    invite_code: Mapped[str] = mapped_column(String(16), nullable=False)
+    register_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    bind_couple_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    reward_status: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    reward_amount: Mapped[Decimal] = mapped_column(
+        Numeric(10, 2), nullable=False, server_default=text("0")
+    )
+    reward_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
