@@ -1,0 +1,9 @@
+{
+  "defaultOwner": "spring",
+  "fastapiRoutes": [],
+  "operationalFastapiRoutes": [
+    "GET /api/health/live",
+    "GET /api/health/ready",
+    "GET /api/actuator/health"
+  ]
+}

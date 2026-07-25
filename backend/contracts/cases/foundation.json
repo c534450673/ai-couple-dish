@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "fastapi-health-live",
+      "executionTarget": "fastapi",
+      "method": "GET",
+      "path": "/api/health/live",
+      "headers": {},
+      "query": {},
+      "json": null,
+      "expectedHttpStatus": 200,
+      "expectedCode": 200,
+      "ignoredJsonPaths": [],
+      "sideEffect": false
+    },
+    {
+      "id": "fastapi-health-ready",
+      "executionTarget": "fastapi",
+      "method": "GET",
+      "path": "/api/health/ready",
+      "headers": {},
+      "query": {},
+      "json": null,
+      "expectedHttpStatus": 200,
+      "expectedCode": 200,
+      "ignoredJsonPaths": [],
+      "sideEffect": false
+    },
+    {
+      "id": "fastapi-actuator-health",
+      "executionTarget": "fastapi",
+      "method": "GET",
+      "path": "/api/actuator/health",
+      "headers": {},
+      "query": {},
+      "json": null,
+      "expectedHttpStatus": 200,
+      "expectedCode": 200,
+      "ignoredJsonPaths": [],
+      "sideEffect": false
+    },
+    {
+      "id": "fastapi-unknown-route",
+      "executionTarget": "fastapi",
+      "method": "GET",
+      "path": "/api/__contract_unknown_route__",
+      "headers": {},
+      "query": {},
+      "json": null,
+      "expectedHttpStatus": 404,
+      "expectedCode": null,
+      "ignoredJsonPaths": [],
+      "sideEffect": false
+    },
+    {
+      "id": "test-app-no-token",
+      "executionTarget": "testApp",
+      "method": "GET",
+      "path": "/__contract/protected",
+      "headers": {},
+      "query": {},
+      "json": null,
+      "expectedHttpStatus": 401,
+      "expectedCode": 401,
+      "ignoredJsonPaths": [],
+      "sideEffect": false
+    },
+    {
+      "id": "test-app-invalid-json",
+      "executionTarget": "testApp",
+      "requestBodyMode": "invalidJson",
+      "method": "POST",
+      "path": "/__contract/validate",
+      "headers": {},
+      "query": {},
+      "json": null,
+      "expectedHttpStatus": 400,
+      "expectedCode": 400,
+      "ignoredJsonPaths": [],
+      "sideEffect": false
+    },
+    {
+      "id": "test-app-invalid-field",
+      "executionTarget": "testApp",
+      "method": "POST",
+      "path": "/__contract/validate",
+      "headers": {},
+      "query": {},
+      "json": {
+        "quantity": "not-an-integer"
+      },
+      "expectedHttpStatus": 400,
+      "expectedCode": 400,
+      "ignoredJsonPaths": [],
+      "sideEffect": false
+    }
+  ]
+}
