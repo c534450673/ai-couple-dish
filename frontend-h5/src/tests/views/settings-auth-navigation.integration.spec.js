@@ -82,10 +82,8 @@ const mountSettings = () => mount(SettingsView, {
 const triggerHttp401 = async () => {
   const config = { headers: {}, method: 'get', url: '/user/info', cache: false }
   transport.handlers.request(config)
-  await expect(transport.handlers.response({
-    config,
-    data: { code: 401, message: 'expired' }
-  })).rejects.toEqual({ code: 401, message: 'expired' })
+  const error = { config, response: { status: 401 } }
+  await expect(transport.handlers.responseError(error)).rejects.toBe(error)
   expect(isUnauthorizedNavigationStarted()).toBe(true)
 }
 
@@ -109,8 +107,10 @@ describe('设置页与请求层未授权导航组合', () => {
   })
 
   it('真实 HTTP 401 后资料页不会二次 replace', async () => {
-    session.userStore.fetchUserInfo.mockRejectedValue({ code: 401 })
-    await triggerHttp401()
+    session.userStore.fetchUserInfo.mockImplementationOnce(async () => {
+      await triggerHttp401()
+      throw { code: 401 }
+    })
 
     const wrapper = mountSettings()
     await flushPromises()
@@ -123,7 +123,14 @@ describe('设置页与请求层未授权导航组合', () => {
   it('真实登出 HTTP 401 后设置页不会二次 replace，正常登出仍跳转一次', async () => {
     const wrapper = mountSettings()
     await flushPromises()
-    await triggerHttp401()
+    session.userStore.logout.mockImplementationOnce(async () => {
+      try {
+        await triggerHttp401()
+      } catch (error) {
+        return error
+      }
+      return undefined
+    })
 
     await wrapper.find('[data-test="logout-action"]').trigger('click')
     await flushPromises()
