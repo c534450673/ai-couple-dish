@@ -516,3 +516,25 @@ class LoveCalendar(Base):
     create_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
+
+
+class RelationshipWeather(Base):
+    __tablename__ = "t_relationship_weather"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    weather_level: Mapped[str] = mapped_column(String(32), nullable=False)
+    interaction_score: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("60")
+    )
+    days_since_last_interaction: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("0")
+    )
+    temperature_score: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("60")
+    )
+    alert_sent: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    alert_type: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
