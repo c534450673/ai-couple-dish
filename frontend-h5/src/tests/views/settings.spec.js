@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => ({
     delete: vi.fn()
   },
   router: { push: vi.fn(), replace: vi.fn() },
+  auth: { unauthorizedNavigationStarted: false },
   userStore: {
     token: 'local-session',
     userInfo: null,
@@ -24,7 +25,10 @@ const mocks = vi.hoisted(() => ({
   logUiEvent: vi.fn()
 }))
 
-vi.mock('@/api/request', () => ({ default: mocks.request }))
+vi.mock('@/api/request', () => ({
+  default: mocks.request,
+  isUnauthorizedNavigationStarted: () => mocks.auth.unauthorizedNavigationStarted
+}))
 vi.mock('vue-router', () => ({ useRouter: () => mocks.router }))
 vi.mock('@/stores/user', () => ({ useUserStore: () => mocks.userStore }))
 vi.mock('vant', () => ({
@@ -64,6 +68,7 @@ describe('Couple Cosmos 设置页', () => {
     localStorage.clear()
     vi.clearAllMocks()
     mocks.userStore.token = 'local-session'
+    mocks.auth.unauthorizedNavigationStarted = false
     mocks.userStore.userInfo = null
     mocks.userStore.coupleInfo = { id: 17, partnerName: 'TA' }
     mocks.userStore.fetchUserInfo.mockResolvedValue({ data: profile })
@@ -230,6 +235,39 @@ describe('Couple Cosmos 设置页', () => {
 
     expect(wrapper.find('[data-test="settings-unauthorized"]').exists()).toBe(true)
     expect(wrapper.text()).not.toContain('缓存昵称')
+    expect(mocks.router.replace).toHaveBeenCalledWith('/login')
+  })
+
+  it('请求层已启动 401 导航时资料页不重复跳转', async () => {
+    mocks.auth.unauthorizedNavigationStarted = true
+    mocks.userStore.fetchUserInfo.mockRejectedValue({ code: 401 })
+    const wrapper = mountSettings()
+    await flush()
+
+    expect(wrapper.find('[data-test="settings-unauthorized"]').exists()).toBe(true)
+    expect(mocks.router.replace).not.toHaveBeenCalled()
+  })
+
+  it('登出请求由请求层处理 401 时不重复跳转，正常登出仍由页面跳转', async () => {
+    mocks.auth.unauthorizedNavigationStarted = true
+    const wrapper = mountSettings()
+    await flush()
+
+    await wrapper.find('[data-test="logout-action"]').trigger('click')
+    await flush()
+
+    expect(mocks.userStore.logout).toHaveBeenCalledOnce()
+    expect(mocks.router.replace).not.toHaveBeenCalled()
+  })
+
+  it('无 token 的设置页仍主动进入登录流程', async () => {
+    mocks.userStore.token = ''
+    localStorage.removeItem('token')
+    const wrapper = mountSettings()
+    await flush()
+
+    expect(wrapper.find('[data-test="settings-unauthorized"]').exists()).toBe(true)
+    expect(mocks.router.replace).toHaveBeenCalledOnce()
     expect(mocks.router.replace).toHaveBeenCalledWith('/login')
   })
 })

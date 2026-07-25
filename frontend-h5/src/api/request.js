@@ -33,6 +33,8 @@ const retryTimerCancels = new Map()
 const retryConfigs = new Set()
 let unauthorizedNavigationStarted = false
 
+export const isUnauthorizedNavigationStarted = () => unauthorizedNavigationStarted
+
 // 简单内存缓存 (用于 GET 请求)
 const memoryCache = new Map()
 const DEFAULT_CACHE_TIME = 5 * 60 * 1000 // 5分钟缓存

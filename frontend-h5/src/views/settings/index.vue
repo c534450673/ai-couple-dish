@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { showConfirmDialog, showToast } from 'vant'
 import { coupleApi, uploadApi } from '@/api'
+import { isUnauthorizedNavigationStarted } from '@/api/request'
 import { useUserStore } from '@/stores/user'
 import { useThemeStore } from '@/stores/theme'
 import { logUiEvent, normalizeUiErrorCode } from '@/composables/useStructuredLog'
@@ -58,7 +59,7 @@ const loadProfile = async () => {
   } catch (error) {
     if (normalizeUiErrorCode(error) === '401') {
       profileStatus.value = 'unauthorized'
-      await router.replace('/login')
+      if (!isUnauthorizedNavigationStarted()) await router.replace('/login')
       return
     }
     profileStatus.value = 'error'
@@ -230,7 +231,7 @@ const logout = async () => {
   if (isLoggingOut.value) return
   isLoggingOut.value = true
   await userStore.logout()
-  await router.replace('/login')
+  if (!isUnauthorizedNavigationStarted()) await router.replace('/login')
 }
 
 onMounted(() => {
