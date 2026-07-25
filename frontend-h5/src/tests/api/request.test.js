@@ -42,7 +42,23 @@ const transport = vi.hoisted(() => {
   }
 })
 
+const session = vi.hoisted(() => ({
+  router: {
+    currentRoute: { value: { path: '/settings' } },
+    push: vi.fn(() => Promise.resolve()),
+    replace: vi.fn(() => Promise.resolve())
+  },
+  userStore: {
+    clearLocalSession: vi.fn(),
+    logout: vi.fn()
+  },
+  logUiEvent: vi.fn()
+}))
+
 vi.mock('axios', () => ({ default: transport.axios }))
+vi.mock('@/router', () => ({ default: session.router }))
+vi.mock('@/stores/user', () => ({ useUserStore: () => session.userStore }))
+vi.mock('@/composables/useStructuredLog', () => ({ logUiEvent: session.logUiEvent }))
 
 import { resetRequestState } from '@/api/request'
 
@@ -50,6 +66,9 @@ describe('API Request Module', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.useFakeTimers()
+    localStorage.clear()
+    session.router.currentRoute.value.path = '/settings'
+    session.router.replace.mockResolvedValue(undefined)
     resetRequestState()
   })
 
@@ -113,6 +132,56 @@ describe('API Request Module', () => {
       transport.state.requestHandler(repeatedConfig)
 
       expect(repeatedConfig.adapter).toBeUndefined()
+    })
+  })
+
+  describe('unauthorized session cleanup', () => {
+    it('业务码 401 只清理本机会话，不调用远程 logout', async () => {
+      localStorage.setItem('token', 'expired-session')
+      const config = { headers: {}, method: 'get', url: '/profile' }
+      transport.state.requestHandler(config)
+
+      await expect(transport.state.responseHandler({
+        config,
+        data: { code: 401, message: 'expired' }
+      })).rejects.toEqual({ code: 401, message: 'expired' })
+
+      expect(session.userStore.clearLocalSession).toHaveBeenCalledOnce()
+      expect(session.userStore.logout).not.toHaveBeenCalled()
+      expect(session.router.replace).toHaveBeenCalledOnce()
+      expect(session.router.replace).toHaveBeenCalledWith('/login')
+      expect(session.logUiEvent).toHaveBeenCalledWith(
+        'request.auth.unauthorized',
+        expect.objectContaining({
+          module: 'request', operation: 'local_session_clear', result: 'success',
+          durationMs: expect.any(Number), errorCode: 'NONE', redirectStarted: true
+        })
+      )
+      expect(JSON.stringify(session.logUiEvent.mock.calls)).not.toContain('expired-session')
+    })
+
+    it('并发 HTTP 401 只触发一次登录页跳转且不递归调用远程 logout', async () => {
+      localStorage.setItem('token', 'expired-session')
+      const firstConfig = { headers: {}, method: 'get', url: '/first' }
+      const secondConfig = { headers: {}, method: 'get', url: '/second' }
+      transport.state.requestHandler(firstConfig)
+      transport.state.requestHandler(secondConfig)
+
+      await Promise.all([
+        transport.state.responseErrorHandler({
+          config: firstConfig,
+          response: { status: 401 }
+        }).catch(() => undefined),
+        transport.state.responseErrorHandler({
+          config: secondConfig,
+          response: { status: 401 }
+        }).catch(() => undefined)
+      ])
+
+      expect(session.userStore.clearLocalSession).toHaveBeenCalledTimes(2)
+      expect(session.userStore.logout).not.toHaveBeenCalled()
+      expect(session.router.replace).toHaveBeenCalledOnce()
+      expect(session.router.replace).toHaveBeenCalledWith('/login')
     })
   })
 })

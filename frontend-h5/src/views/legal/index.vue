@@ -5,6 +5,7 @@ import { logUiEvent } from '@/composables/useStructuredLog'
 
 const router = useRouter()
 const actionStates = reactive({ export: 'idle', deletion: 'idle' })
+const actionStartedAt = reactive({ export: null, deletion: null })
 const kindUnavailableCode = 'BACKEND_CAPABILITY_UNAVAILABLE'
 
 const eventName = (kind) => kind === 'export' ? 'legal.export' : 'legal.account.deletion'
@@ -26,18 +27,21 @@ const logAction = (kind, result, startedAt = Date.now()) => {
 }
 
 const startAction = (kind) => {
+  const startedAt = Date.now()
+  actionStartedAt[kind] = startedAt
   actionStates[kind] = 'confirming'
-  logAction(kind, 'started')
+  logAction(kind, 'started', startedAt)
 }
 
 const cancelAction = (kind) => {
-  const startedAt = Date.now()
+  const startedAt = actionStartedAt[kind] ?? Date.now()
   actionStates[kind] = 'idle'
   logAction(kind, 'cancelled', startedAt)
+  actionStartedAt[kind] = null
 }
 
 const confirmAction = (kind) => {
-  const startedAt = Date.now()
+  const startedAt = actionStartedAt[kind] ?? Date.now()
   if (!globalThis.localStorage?.getItem('token')) {
     actionStates[kind] = 'unauthorized'
     logAction(kind, 'unauthorized', startedAt)
@@ -49,6 +53,7 @@ const confirmAction = (kind) => {
 
 const resetAction = (kind) => {
   actionStates[kind] = 'idle'
+  actionStartedAt[kind] = null
 }
 </script>
 

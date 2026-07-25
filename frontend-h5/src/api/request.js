@@ -5,6 +5,7 @@ import axios from 'axios'
 import { showToast } from 'vant'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
+import { logUiEvent } from '@/composables/useStructuredLog'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
@@ -30,6 +31,7 @@ const pendingRequestMap = new Map()
 let requestStateVersion = 0
 const retryTimerCancels = new Map()
 const retryConfigs = new Set()
+let unauthorizedNavigationStarted = false
 
 // 简单内存缓存 (用于 GET 请求)
 const memoryCache = new Map()
@@ -89,6 +91,30 @@ const clearExpiredCache = () => {
   }
 }
 
+const handleUnauthorized = () => {
+  const startedAt = Date.now()
+  const userStore = useUserStore()
+  const sessionCleared = userStore.clearLocalSession({ reason: 'unauthorized' })
+  const alreadyAtLogin = router.currentRoute.value?.path === '/login'
+  const shouldRedirect = !alreadyAtLogin && !unauthorizedNavigationStarted
+
+  logUiEvent('request.auth.unauthorized', {
+    module: 'request', operation: 'local_session_clear',
+    result: sessionCleared === false ? 'skipped' : 'success',
+    durationMs: Date.now() - startedAt, errorCode: 'NONE',
+    cleanupApplied: sessionCleared !== false, redirectStarted: shouldRedirect
+  })
+  if (!shouldRedirect) return
+
+  unauthorizedNavigationStarted = true
+  Promise.resolve(router.replace('/login')).catch(() => {
+    logUiEvent('request.auth.redirect', {
+      module: 'request', operation: 'login_redirect', result: 'error',
+      durationMs: Date.now() - startedAt, errorCode: 'LOGIN_REDIRECT_FAILED'
+    })
+  })
+}
+
 const clearRetryConfig = (config) => {
   if (!config) return
   retryConfigs.delete(config)
@@ -136,6 +162,7 @@ api.interceptors.request.use(
 
     const token = localStorage.getItem('token')
     if (token) {
+      unauthorizedNavigationStarted = false
       config.headers.Authorization = `Bearer ${token}`
     }
     return config
@@ -164,9 +191,7 @@ api.interceptors.response.use(
       return res
     } else if (res.code === 401) {
       // Token过期
-      const userStore = useUserStore()
-      userStore.logout()
-      router.push('/login')
+      handleUnauthorized()
       return Promise.reject(res)
     } else {
       showToast(res.message || '请求失败')
@@ -229,9 +254,7 @@ api.interceptors.response.use(
 
     if (error.response) {
       if (error.response.status === 401) {
-        const userStore = useUserStore()
-        userStore.logout()
-        router.push('/login')
+        handleUnauthorized()
       } else {
         showToast('网络错误')
       }

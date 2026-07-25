@@ -68,7 +68,7 @@ describe('Couple Cosmos 设置页', () => {
     mocks.userStore.coupleInfo = { id: 17, partnerName: 'TA' }
     mocks.userStore.fetchUserInfo.mockResolvedValue({ data: profile })
     mocks.userStore.updateUserInfo.mockResolvedValue({ data: null })
-    mocks.userStore.getCoupleInfo.mockResolvedValue(undefined)
+    mocks.userStore.getCoupleInfo.mockResolvedValue({ status: 'success' })
     mocks.userStore.logout.mockResolvedValue(undefined)
     mocks.confirm.mockResolvedValue(undefined)
     mocks.request.put.mockResolvedValue({ data: null })
@@ -154,6 +154,25 @@ describe('Couple Cosmos 设置页', () => {
     expect(mocks.userStore.getCoupleInfo).toHaveBeenCalledOnce()
     expect(mocks.toast).toHaveBeenCalledWith(expect.stringContaining('等待对方处理'))
     expect(mocks.userStore.coupleInfo).not.toBeNull()
+  })
+
+  it('解绑申请成功但状态刷新失败时保留旧快照并暴露未确认状态', async () => {
+    mocks.userStore.getCoupleInfo.mockResolvedValueOnce({ status: 'error', errorCode: '503' })
+    const wrapper = mountSettings()
+    await flush()
+
+    await wrapper.find('[data-test="unbind-action"]').trigger('click')
+    await flush()
+
+    expect(mocks.request.post).toHaveBeenCalledWith('/couple/unbind/apply', {})
+    expect(wrapper.find('[data-test="unbind-refresh-warning"]').text()).toContain('保留原关系信息')
+    expect(wrapper.find('[data-test="unbind-unbound"]').exists()).toBe(false)
+    expect(wrapper.text()).toContain('已绑定')
+    expect(mocks.toast).not.toHaveBeenCalledWith(expect.stringContaining('已解绑'))
+    expect(mocks.logUiEvent).toHaveBeenCalledWith(
+      'settings.couple.unbind.apply',
+      expect.objectContaining({ result: 'refresh_error', errorCode: '503' })
+    )
   })
 
   it('未绑定时进入 unbound 状态且不发解绑请求', async () => {

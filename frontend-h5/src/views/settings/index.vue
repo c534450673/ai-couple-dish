@@ -32,6 +32,7 @@ const isUploading = ref(false)
 const isLoggingOut = ref(false)
 const isUnbinding = ref(false)
 const unboundVisible = ref(false)
+const unbindRefreshWarning = ref(false)
 const memberUnavailable = ref(false)
 const notificationDisplayEnabled = ref(
   globalThis.localStorage?.getItem(NOTIFICATION_PREFERENCE_KEY) !== 'disabled'
@@ -150,6 +151,7 @@ const showMemberUnavailable = () => {
 const applyUnbind = async () => {
   const startedAt = Date.now()
   unboundVisible.value = false
+  unbindRefreshWarning.value = false
   if (!coupleInfo.value) {
     unboundVisible.value = true
     logUiEvent('settings.couple.unbind.apply', {
@@ -180,7 +182,16 @@ const applyUnbind = async () => {
   isUnbinding.value = true
   try {
     await coupleApi.applyUnbind({})
-    await userStore.getCoupleInfo()
+    const refreshResult = await userStore.getCoupleInfo()
+    if (refreshResult.status === 'error') {
+      unbindRefreshWarning.value = true
+      logUiEvent('settings.couple.unbind.apply', {
+        module: 'settings', operation: 'unbind_apply', result: 'refresh_error',
+        durationMs: Date.now() - startedAt, errorCode: refreshResult.errorCode
+      })
+      showToast('申请已提交，关系状态刷新失败')
+      return
+    }
     logUiEvent('settings.couple.unbind.apply', {
       module: 'settings', operation: 'unbind_apply', result: 'success',
       durationMs: Date.now() - startedAt, errorCode: 'NONE'
@@ -483,6 +494,13 @@ onMounted(() => {
             data-test="unbind-unbound"
           >
             当前没有已绑定的情侣关系，未发送请求。
+          </p>
+          <p
+            v-if="unbindRefreshWarning"
+            class="unavailable-copy"
+            data-test="unbind-refresh-warning"
+          >
+            解绑申请已提交，但关系状态暂未确认；当前保留原关系信息。
           </p>
         </section>
 

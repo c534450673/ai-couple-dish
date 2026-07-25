@@ -37,6 +37,10 @@ export const useNotificationStore = defineStore('notification', {
     readAllPending: false
   }),
 
+  getters: {
+    writePending: (state) => state.readAllPending || Object.keys(state.pendingReadIds).length > 0
+  },
+
   actions: {
     async loadPage({ reset = false } = {}) {
       const requestId = ++this.requestSequence
@@ -156,7 +160,14 @@ export const useNotificationStore = defineStore('notification', {
 
     async markAsRead(id) {
       const index = this.items.findIndex(entry => entry.id === id)
-      if (index < 0 || this.items[index].isRead || this.pendingReadIds[id]) return
+      if (index < 0 || this.items[index].isRead) return
+      if (this.writePending) {
+        logUiEvent('notification.read.one', {
+          module: 'notification', operation: 'read_one', result: 'skipped', durationMs: 0,
+          errorCode: 'WRITE_IN_PROGRESS', notificationIdHash: hashIdentifier(id), itemCount: 0
+        })
+        return
+      }
 
       const startedAt = Date.now()
       const previousItem = { ...this.items[index] }
@@ -194,7 +205,13 @@ export const useNotificationStore = defineStore('notification', {
     },
 
     async markAllAsRead() {
-      if (this.readAllPending) return
+      if (this.writePending) {
+        logUiEvent('notification.read.all', {
+          module: 'notification', operation: 'read_all', result: 'skipped', durationMs: 0,
+          errorCode: 'WRITE_IN_PROGRESS', itemCount: 0
+        })
+        return
+      }
       const startedAt = Date.now()
       const unreadLoadedCount = this.items.filter(entry => !entry.isRead).length
       this.readAllPending = true

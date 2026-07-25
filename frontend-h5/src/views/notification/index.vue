@@ -4,6 +4,9 @@ import { storeToRefs } from 'pinia'
 import AppHeader from '@/components/cosmos/AppHeader.vue'
 import AsyncState from '@/components/cosmos/AsyncState.vue'
 import { useNotificationStore, NOTIFICATION_FILTERS } from '@/stores/notification'
+import { logUiEvent } from '@/composables/useStructuredLog'
+
+const NOTIFICATION_PREFERENCE_KEY = 'couple-cosmos:notification-display'
 
 const FILTER_LABELS = {
   all: '全部',
@@ -14,6 +17,7 @@ const FILTER_LABELS = {
 const TYPE_LABELS = { 1: '系统', 2: '互动', 3: '提醒' }
 
 const notificationStore = useNotificationStore()
+const notificationDisplayEnabled = globalThis.localStorage?.getItem(NOTIFICATION_PREFERENCE_KEY) !== 'disabled'
 const {
   items,
   filter,
@@ -24,7 +28,7 @@ const {
   unreadStatus,
   isFilterUnavailable,
   readAllPending,
-  pendingReadIds
+  writePending
 } = storeToRefs(notificationStore)
 
 const formatTime = (value) => {
@@ -37,6 +41,19 @@ const formatTime = (value) => {
 }
 
 onMounted(async () => {
+  const startedAt = Date.now()
+  if (!notificationDisplayEnabled) {
+    logUiEvent('notification.preference.apply', {
+      module: 'notification', operation: 'display_preference_apply', result: 'disabled',
+      durationMs: Date.now() - startedAt, errorCode: 'NONE', enabled: false
+    })
+    return
+  }
+
+  logUiEvent('notification.preference.apply', {
+    module: 'notification', operation: 'display_preference_apply', result: 'enabled',
+    durationMs: Date.now() - startedAt, errorCode: 'NONE', enabled: true
+  })
   await Promise.all([
     notificationStore.loadPage({ reset: true }),
     notificationStore.loadUnreadCount()
@@ -52,10 +69,11 @@ onMounted(async () => {
     >
       <template #actions>
         <button
+          v-if="notificationDisplayEnabled"
           class="read-all"
           data-test="read-all"
           type="button"
-          :disabled="readAllPending || items.length === 0"
+          :disabled="writePending || items.length === 0"
           @click="notificationStore.markAllAsRead"
         >
           <van-icon name="passed" />
@@ -65,131 +83,144 @@ onMounted(async () => {
     </AppHeader>
 
     <main class="notification-content">
-      <div class="summary-row">
-        <p>
-          全部未读
-          <strong v-if="unreadStatus === 'success'">{{ unreadCount }}</strong>
-          <strong v-else>未知</strong>
-        </p>
-        <span v-if="unreadStatus === 'error'">未读数获取失败，保留上次可信值</span>
-      </div>
-
-      <nav
-        class="filters"
-        aria-label="通知筛选"
-      >
-        <button
-          v-for="filterName in NOTIFICATION_FILTERS"
-          :key="filterName"
-          :data-test="`filter-${filterName}`"
-          type="button"
-          :class="{ active: filter === filterName }"
-          @click="notificationStore.setFilter(filterName)"
-        >
-          {{ FILTER_LABELS[filterName] }}
-        </button>
-      </nav>
-
       <section
-        v-if="isFilterUnavailable"
+        v-if="!notificationDisplayEnabled"
         class="state-panel"
-        data-test="ai-unavailable"
+        data-test="notification-display-disabled"
         role="status"
       >
-        <van-icon name="warning-o" />
-        <h2>暂不支持 AI 通知筛选</h2>
-        <p>服务端没有 AI 通知类型能力，因此未发送列表请求。</p>
+        <van-icon name="closed-eye" />
+        <h2>本机通知显示已关闭</h2>
+        <p>此设备不会读取或显示通知列表；可在设置中重新开启。</p>
       </section>
-      <AsyncState
-        v-else-if="status === 'loading'"
-        status="loading"
-        message="正在加载通知"
-      />
-      <section
-        v-else-if="status === 'unauthorized'"
-        class="state-panel"
-        data-test="notification-unauthorized"
-        role="alert"
-      >
-        <van-icon name="contact" />
-        <h2>需要重新登录</h2>
-        <p>当前会话无法读取通知，请重新登录。</p>
-      </section>
-      <AsyncState
-        v-else-if="status === 'error'"
-        status="error"
-        message="通知加载失败，已有可信数据不会被清空"
-        @retry="notificationStore.retry"
-      />
-      <AsyncState
-        v-else-if="status === 'empty'"
-        status="empty"
-        message="当前筛选下没有通知"
-      />
 
       <template v-else>
-        <p
-          v-if="errorCode"
-          class="inline-error"
+        <div class="summary-row">
+          <p>
+            全部未读
+            <strong v-if="unreadStatus === 'success'">{{ unreadCount }}</strong>
+            <strong v-else>未知</strong>
+          </p>
+          <span v-if="unreadStatus === 'error'">未读数获取失败，保留上次可信值</span>
+        </div>
+
+        <nav
+          class="filters"
+          aria-label="通知筛选"
+        >
+          <button
+            v-for="filterName in NOTIFICATION_FILTERS"
+            :key="filterName"
+            :data-test="`filter-${filterName}`"
+            type="button"
+            :class="{ active: filter === filterName }"
+            @click="notificationStore.setFilter(filterName)"
+          >
+            {{ FILTER_LABELS[filterName] }}
+          </button>
+        </nav>
+
+        <section
+          v-if="isFilterUnavailable"
+          class="state-panel"
+          data-test="ai-unavailable"
+          role="status"
+        >
+          <van-icon name="warning-o" />
+          <h2>暂不支持 AI 通知筛选</h2>
+          <p>服务端没有 AI 通知类型能力，因此未发送列表请求。</p>
+        </section>
+        <AsyncState
+          v-else-if="status === 'loading'"
+          status="loading"
+          message="正在加载通知"
+        />
+        <section
+          v-else-if="status === 'unauthorized'"
+          class="state-panel"
+          data-test="notification-unauthorized"
           role="alert"
         >
-          新一页加载失败，已有通知已保留。
-          <button
-            type="button"
-            @click="notificationStore.retry"
+          <van-icon name="contact" />
+          <h2>需要重新登录</h2>
+          <p>当前会话无法读取通知，请重新登录。</p>
+        </section>
+        <AsyncState
+          v-else-if="status === 'error'"
+          status="error"
+          message="通知加载失败，已有可信数据不会被清空"
+          @retry="notificationStore.retry"
+        />
+        <AsyncState
+          v-else-if="status === 'empty'"
+          status="empty"
+          message="当前筛选下没有通知"
+        />
+
+        <template v-else>
+          <p
+            v-if="errorCode"
+            class="inline-error"
+            role="alert"
           >
-            重试
-          </button>
-        </p>
-        <ol class="notification-list">
-          <li
-            v-for="entry in items"
-            :key="entry.id"
-          >
+            新一页加载失败，已有通知已保留。
             <button
               type="button"
-              class="notification-card"
-              :class="{ unread: !entry.isRead }"
-              :disabled="Boolean(pendingReadIds[entry.id])"
-              @click="notificationStore.markAsRead(entry.id)"
+              @click="notificationStore.retry"
             >
-              <span
-                class="type-icon"
-                aria-hidden="true"
-              >
-                <van-icon :name="entry.type === 2 ? 'like-o' : entry.type === 3 ? 'clock-o' : 'info-o'" />
-              </span>
-              <span class="notification-copy">
-                <span class="notification-meta">
-                  <span>{{ TYPE_LABELS[entry.type] || '通知' }}</span>
-                  <time>{{ formatTime(entry.createTime) }}</time>
-                </span>
-                <strong>{{ entry.title }}</strong>
-                <span>{{ entry.content }}</span>
-              </span>
-              <span
-                v-if="!entry.isRead"
-                class="unread-dot"
-                aria-label="未读"
-              />
+              重试
             </button>
-          </li>
-        </ol>
-        <button
-          v-if="hasMore"
-          class="load-more"
-          type="button"
-          :disabled="status === 'loading'"
-          @click="notificationStore.loadMore"
-        >
-          加载更多
-        </button>
-        <p
-          v-else
-          class="list-end"
-        >
-          已加载当前筛选的全部通知
-        </p>
+          </p>
+          <ol class="notification-list">
+            <li
+              v-for="entry in items"
+              :key="entry.id"
+            >
+              <button
+                type="button"
+                class="notification-card"
+                :class="{ unread: !entry.isRead }"
+                :disabled="writePending"
+                @click="notificationStore.markAsRead(entry.id)"
+              >
+                <span
+                  class="type-icon"
+                  aria-hidden="true"
+                >
+                  <van-icon :name="entry.type === 2 ? 'like-o' : entry.type === 3 ? 'clock-o' : 'info-o'" />
+                </span>
+                <span class="notification-copy">
+                  <span class="notification-meta">
+                    <span>{{ TYPE_LABELS[entry.type] || '通知' }}</span>
+                    <time>{{ formatTime(entry.createTime) }}</time>
+                  </span>
+                  <strong>{{ entry.title }}</strong>
+                  <span>{{ entry.content }}</span>
+                </span>
+                <span
+                  v-if="!entry.isRead"
+                  class="unread-dot"
+                  aria-label="未读"
+                />
+              </button>
+            </li>
+          </ol>
+          <button
+            v-if="hasMore"
+            class="load-more"
+            type="button"
+            :disabled="status === 'loading'"
+            @click="notificationStore.loadMore"
+          >
+            加载更多
+          </button>
+          <p
+            v-else
+            class="list-end"
+          >
+            已加载当前筛选的全部通知
+          </p>
+        </template>
       </template>
     </main>
   </div>

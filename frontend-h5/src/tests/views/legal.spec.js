@@ -3,10 +3,14 @@ import { mount } from '@vue/test-utils'
 
 const mocks = vi.hoisted(() => ({
   router: { back: vi.fn(), push: vi.fn() },
-  logUiEvent: vi.fn()
+  logUiEvent: vi.fn(),
+  request: { get: vi.fn(), post: vi.fn(), put: vi.fn(), delete: vi.fn() },
+  userStore: { logout: vi.fn() }
 }))
 
 vi.mock('vue-router', () => ({ useRouter: () => mocks.router }))
+vi.mock('@/api/request', () => ({ default: mocks.request }))
+vi.mock('@/stores/user', () => ({ useUserStore: () => mocks.userStore }))
 vi.mock('@/composables/useStructuredLog', async () => {
   const actual = await vi.importActual('@/composables/useStructuredLog')
   return { ...actual, logUiEvent: mocks.logUiEvent }
@@ -94,6 +98,34 @@ describe('法律、隐私与数据权利页', () => {
     expect(wrapper.text()).not.toContain('申请已提交')
     expect(localStorage.getItem('token')).toBe(snapshot.token)
     expect(localStorage.getItem('userInfo')).toBe(snapshot.userInfo)
+    expect(mocks.userStore.logout).not.toHaveBeenCalled()
+    expect(Object.values(mocks.request).every(method => method.mock.calls.length === 0)).toBe(true)
+  })
+
+  it('导出与删号完整交互保持零网络，并从开始检查累计日志耗时', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-25T10:00:00Z'))
+    localStorage.setItem('token', 'local-session')
+    const wrapper = mountLegal()
+
+    await wrapper.find('[data-test="export-action"]').trigger('click')
+    vi.advanceTimersByTime(240)
+    await wrapper.find('[data-test="export-confirm"]').trigger('click')
+    await wrapper.find('[data-test="deletion-action"]').trigger('click')
+    vi.advanceTimersByTime(360)
+    await wrapper.find('[data-test="deletion-confirm"]').trigger('click')
+
+    expect(Object.values(mocks.request).every(method => method.mock.calls.length === 0)).toBe(true)
+    expect(mocks.userStore.logout).not.toHaveBeenCalled()
+    expect(mocks.logUiEvent).toHaveBeenCalledWith(
+      'legal.export',
+      expect.objectContaining({ result: 'unavailable', durationMs: 240 })
+    )
+    expect(mocks.logUiEvent).toHaveBeenCalledWith(
+      'legal.account.deletion',
+      expect.objectContaining({ result: 'unavailable', durationMs: 360 })
+    )
+    vi.useRealTimers()
   })
 
   it('不保留 Stitch 的原型状态切换器', () => {

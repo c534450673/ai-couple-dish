@@ -50,13 +50,27 @@ describe('用户 Store', () => {
       expect(store.token).toBe('test_token_123')
     })
 
-    it('应该从 localStorage 恢复 userInfo', () => {
-      const userInfo = { id: 1, nickName: '测试用户' }
+    it('应该从 localStorage 恢复并迁移白名单 userInfo', () => {
+      const userInfo = {
+        id: 1,
+        nickName: '测试用户',
+        avatarUrl: '/avatar.webp',
+        memberLevel: 1,
+        openid: 'wx-sensitive-openid',
+        phone: '13800138000'
+      }
       localStorage.setItem('userInfo', JSON.stringify(userInfo))
       const pinia = createPinia()
       setActivePinia(pinia)
       const store = useUserStore()
-      expect(store.userInfo).toEqual(userInfo)
+      const expectedProfile = {
+        id: 1,
+        nickName: '测试用户',
+        avatarUrl: '/avatar.webp',
+        memberLevel: 1
+      }
+      expect(store.userInfo).toEqual(expectedProfile)
+      expect(JSON.parse(localStorage.getItem('userInfo'))).toEqual(expectedProfile)
     })
   })
 
@@ -131,17 +145,32 @@ describe('用户 Store', () => {
   })
 
   describe('setLoginInfo', () => {
-    it('应该正确设置登录信息', () => {
+    it('应该正确设置登录信息且只持久化用户白名单字段', () => {
       const token = 'test_token'
-      const userInfo = { id: 1, nickName: '新用户' }
+      const userInfo = {
+        id: 1,
+        nickName: '新用户',
+        avatarUrl: '/avatar.webp',
+        memberLevel: 0,
+        openid: 'wx-sensitive-openid',
+        phone: '13800138000'
+      }
+      const expectedProfile = {
+        id: 1,
+        nickName: '新用户',
+        avatarUrl: '/avatar.webp',
+        memberLevel: 0
+      }
 
       userStore.setLoginInfo(token, userInfo)
 
       expect(userStore.token).toBe(token)
-      expect(userStore.userInfo).toEqual(userInfo)
+      expect(userStore.userInfo).toEqual(expectedProfile)
       expect(userStore.isLoggedIn).toBe(true)
       expect(localStorage.getItem('token')).toBe(token)
-      expect(localStorage.getItem('userInfo')).toBe(JSON.stringify(userInfo))
+      expect(JSON.parse(localStorage.getItem('userInfo'))).toEqual(expectedProfile)
+      expect(localStorage.getItem('userInfo')).not.toContain('openid')
+      expect(localStorage.getItem('userInfo')).not.toContain('13800138000')
     })
   })
 
@@ -162,13 +191,49 @@ describe('用户 Store', () => {
       expect(userStore.coupleInfo).toEqual(coupleInfo)
     })
 
-    it('获取失败时应该清除情侣信息', async () => {
+    it('获取失败时应该保留旧情侣快照并返回可判定结果', async () => {
       userStore.token = 'valid_token'
-      coupleApi.getCoupleInfo.mockRejectedValue(new Error('获取失败'))
+      const snapshot = { id: 7, coupleCode: 'OLD123' }
+      userStore.coupleInfo = snapshot
+      localStorage.setItem('coupleInfo', JSON.stringify(snapshot))
+      coupleApi.getCoupleInfo.mockRejectedValue({ code: 503 })
 
-      await userStore.getCoupleInfo()
+      const result = await userStore.getCoupleInfo()
 
-      expect(userStore.coupleInfo).toBeNull()
+      expect(result).toEqual({ status: 'error', errorCode: '503' })
+      expect(userStore.coupleInfo).toEqual(snapshot)
+      expect(JSON.parse(localStorage.getItem('coupleInfo'))).toEqual(snapshot)
+    })
+  })
+
+  describe('fetchUserInfo', () => {
+    it('只将消费者需要的资料白名单写入 Store 和 localStorage', async () => {
+      userApi.getUserInfo.mockResolvedValue({
+        data: {
+          id: 42,
+          openid: 'wx-sensitive-openid',
+          nickName: '星河',
+          avatarUrl: '/avatar.webp',
+          phone: '13800138000',
+          memberLevel: 1,
+          createTime: '2026-07-23T10:00:00',
+          unexpectedServerField: 'must-not-persist'
+        }
+      })
+
+      const result = await userStore.fetchUserInfo()
+      const expectedProfile = {
+        id: 42,
+        nickName: '星河',
+        avatarUrl: '/avatar.webp',
+        memberLevel: 1
+      }
+
+      expect(result.data).toEqual(expectedProfile)
+      expect(userStore.userInfo).toEqual(expectedProfile)
+      expect(JSON.parse(localStorage.getItem('userInfo'))).toEqual(expectedProfile)
+      expect(localStorage.getItem('userInfo')).not.toContain('openid')
+      expect(localStorage.getItem('userInfo')).not.toContain('13800138000')
     })
   })
 

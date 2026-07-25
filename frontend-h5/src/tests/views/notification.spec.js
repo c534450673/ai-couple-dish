@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 
 const mocks = vi.hoisted(() => ({
   request: { get: vi.fn(), put: vi.fn() },
@@ -39,6 +39,7 @@ const item = (id, type = 2, isRead = 0) => ({
 describe('通知 Store 与页面', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+    localStorage.clear()
     vi.clearAllMocks()
     mocks.request.get.mockResolvedValue({ data: [] })
     mocks.request.put.mockResolvedValue({ data: null })
@@ -173,6 +174,87 @@ describe('通知 Store 与页面', () => {
     await store.markAllAsRead()
     expect(store.items[0].isRead).toBe(0)
     expect(store.unreadCount).toBe(1)
+  })
+
+  it('单条已读在途时拒绝启动全部已读，完成后才允许下一写入', async () => {
+    const store = useNotificationStore()
+    const pending = deferred()
+    store.items = [item(1), item(2)]
+    store.unreadCount = 2
+    mocks.request.put.mockReturnValueOnce(pending.promise)
+
+    const single = store.markAsRead(1)
+    await store.markAllAsRead()
+
+    expect(mocks.request.put).toHaveBeenCalledOnce()
+    expect(mocks.request.put).toHaveBeenCalledWith('/notification/read/1', null, {
+      retryConfig: { retries: 0 }
+    })
+    pending.resolve({ data: null })
+    await single
+
+    mocks.request.put.mockResolvedValueOnce({ data: null })
+    await store.markAllAsRead()
+    expect(mocks.request.put).toHaveBeenCalledTimes(2)
+    expect(store.items.every(entry => entry.isRead === 1)).toBe(true)
+    expect(store.unreadCount).toBe(0)
+  })
+
+  it('全部已读在途时拒绝单条已读，失败后仍保留可信快照', async () => {
+    const store = useNotificationStore()
+    const pending = deferred()
+    store.items = [item(1), item(2)]
+    store.unreadCount = 2
+    mocks.request.put.mockReturnValueOnce(pending.promise)
+
+    const readAll = store.markAllAsRead()
+    await store.markAsRead(1)
+
+    expect(mocks.request.put).toHaveBeenCalledOnce()
+    expect(store.items).toEqual([item(1), item(2)])
+    expect(store.unreadCount).toBe(2)
+    pending.reject({ code: 500 })
+    await readAll
+    expect(store.items).toEqual([item(1), item(2)])
+    expect(store.unreadCount).toBe(2)
+  })
+
+  it('页面任一已读写入 pending 时禁用全部其他已读控件', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const wrapper = mount(NotificationView, { global: { plugins: [pinia] } })
+    await flushPromises()
+    const store = useNotificationStore()
+    store.items = [item(1), item(2)]
+    store.unreadCount = 2
+    const pending = deferred()
+    mocks.request.put.mockReturnValueOnce(pending.promise)
+
+    const write = store.markAsRead(1)
+    await flushPromises()
+
+    expect(wrapper.find('[data-test="read-all"]').attributes('disabled')).toBeDefined()
+    expect(wrapper.findAll('.notification-card').every(card => card.attributes('disabled') !== undefined)).toBe(true)
+    pending.resolve({ data: null })
+    await write
+  })
+
+  it('关闭本机通知显示后页面真实消费偏好且不读取通知数据', async () => {
+    localStorage.setItem('couple-cosmos:notification-display', 'disabled')
+    const pinia = createPinia()
+    setActivePinia(pinia)
+
+    const wrapper = mount(NotificationView, { global: { plugins: [pinia] } })
+    await flushPromises()
+
+    expect(wrapper.find('[data-test="notification-display-disabled"]').text()).toContain('本机通知显示已关闭')
+    expect(wrapper.find('[data-test="read-all"]').exists()).toBe(false)
+    expect(wrapper.findAll('.notification-card')).toHaveLength(0)
+    expect(mocks.request.get).not.toHaveBeenCalled()
+    expect(mocks.logUiEvent).toHaveBeenCalledWith(
+      'notification.preference.apply',
+      expect.objectContaining({ result: 'disabled', enabled: false, errorCode: 'NONE' })
+    )
   })
 
   it('页面显示 AI unavailable 且不创建轮询定时器', async () => {
