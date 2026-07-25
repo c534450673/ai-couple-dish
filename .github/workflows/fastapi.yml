@@ -1,0 +1,65 @@
+name: FastAPI
+
+on:
+  pull_request:
+    paths:
+      - "backend/app/**"
+      - "backend/tests/**"
+      - "backend/scripts/**"
+      - "backend/migrations/**"
+      - "backend/contracts/**"
+      - "backend/pyproject.toml"
+      - "backend/uv.lock"
+      - "backend/Dockerfile.fastapi"
+      - ".github/workflows/fastapi.yml"
+  push:
+    branches: [main]
+    paths:
+      - "backend/app/**"
+      - "backend/tests/**"
+      - "backend/scripts/**"
+      - "backend/migrations/**"
+      - "backend/contracts/**"
+      - "backend/pyproject.toml"
+      - "backend/uv.lock"
+      - "backend/Dockerfile.fastapi"
+      - ".github/workflows/fastapi.yml"
+
+jobs:
+  python-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.21"
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install locked dependencies
+        run: uv sync --frozen
+        working-directory: backend
+      - name: Check lockfile
+        run: uv lock --check
+        working-directory: backend
+      - name: Ruff checks
+        run: uv run ruff check app tests scripts
+        working-directory: backend
+      - name: Mypy application
+        run: uv run mypy app
+        working-directory: backend
+      - name: Unit and API tests
+        run: uv run pytest -m "not integration and not contract" --cov=app --cov-report=term-missing
+        working-directory: backend
+      - name: Contract tests
+        run: uv run pytest -m contract -q
+        working-directory: backend
+      - name: Security tests
+        run: uv run pytest tests/security -q
+        working-directory: backend
+      - name: Integration tests
+        run: uv run pytest -m integration -q
+        working-directory: backend
+      - name: Build FastAPI image
+        run: docker build -f backend/Dockerfile.fastapi backend

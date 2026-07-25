@@ -2,6 +2,13 @@
 
 This document describes all environment variables used in the AI Couple Dish project.
 
+## Migration status
+
+The backend is in a staged migration. Java Spring Boot (`backend/Dockerfile`) remains the
+only business writer for all 193 business routes. `backend/Dockerfile.fastapi` is a
+non-root FastAPI foundation image for health endpoints only; business routes have not
+migrated. The H5 browser client keeps using same-origin relative `/api` through Nginx.
+
 ## Quick Start
 
 1. Copy `.env.example` to `.env` in the project root
@@ -41,6 +48,21 @@ This document describes all environment variables used in the AI Couple Dish pro
 openssl rand -base64 64
 ```
 
+### FastAPI foundation verification
+
+FastAPI checks use Python 3.12 and `uv` 0.11.21. The acceptance script requires an
+explicit isolated schema URL and refuses to continue when either value is absent:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `SCHEMA_DATABASE_URL` | Runtime-injected async MySQL URL for an isolated QA database | Yes for schema verification |
+| `SCHEMA_DATABASE_ISOLATED` | Must be `true` to confirm the database is isolated | Yes for the acceptance script |
+
+Values must be injected at runtime (`<inject-at-runtime>`), never committed or printed.
+The verifier is read-only by default. `--stamp` requires the canonical snapshot and hash,
+owner approval, a backup, and a known isolated database; it must never be used against
+production. See [the dual-stack runbook](runbooks/fastapi-dual-stack.md).
+
 ### Server Configuration
 
 | Variable | Description | Default | Required |
@@ -64,7 +86,7 @@ Variables must be prefixed with `VITE_` to be exposed to the Vite-processed code
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `VITE_API_BASE_URL` | Backend API base URL | `http://localhost:8080/api` | Yes |
+| `VITE_API_BASE_URL` | Backend API base URL | empty (same-origin `/api` via Vite proxy) | Yes |
 | `VITE_WS_URL` | WebSocket server URL | `ws://localhost:8080/ws` | No |
 
 ### UniApp Version

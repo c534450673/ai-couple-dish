@@ -2,6 +2,11 @@
 
 一款面向情侣的私密菜单管理应用，支持记录约会餐厅、管理心愿清单、纪念日提醒等功能。
 
+当前后端处于 FastAPI 基础设施迁移期：Java Spring Boot `backend/Dockerfile` 仍是 193
+条业务 route 的唯一业务写者；`backend/Dockerfile.fastapi` 仅提供 health 等基础能力，
+尚未承载业务 route，也不表示后端迁移完成。H5 继续通过同源相对 `/api` 访问 Nginx，
+由 Nginx 将业务请求转发至 Spring。
+
 ## 项目结构
 
 ```
@@ -20,6 +25,7 @@ ai-couple-dish/
 ### 后端
 
 - **Java 17** + Spring Boot 2.7
+- **FastAPI** + Python 3.12（迁移期基础 health 服务，业务仍由 Spring 承载）
 - **MySQL** + MyBatis Plus
 - **Redis** - 缓存和会话
 - **JWT** - 用户认证
@@ -109,6 +115,9 @@ npm run dev:mp-weixin
 ## API 文档
 
 运行后端服务后访问: http://localhost:8080/api/doc.html
+
+Spring Swagger v2 合同来源为 `/api/v2/api-docs`；FastAPI 基础服务不会替代 Spring 的
+业务文档。双栈启动、schema 审计和回滚步骤见 [FastAPI 双栈运行手册](docs/runbooks/fastapi-dual-stack.md)。
 
 详细 API 规范见 [docs/API_DESIGN.md](docs/API_DESIGN.md)
 
