@@ -14,6 +14,7 @@ from app.api.couple import router as couple_router
 from app.api.feed import router as feed_router
 from app.api.health import ready
 from app.api.health import router as health_router
+from app.api.heart_moment import router as heart_moment_router
 from app.api.menu import router as menu_router
 from app.api.note import router as note_router
 from app.api.notification import router as notification_router
@@ -175,6 +176,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(user_router, prefix=active_settings.api_prefix)
     app.include_router(couple_router, prefix=active_settings.api_prefix)
     app.include_router(feed_router, prefix=active_settings.api_prefix)
+    app.include_router(heart_moment_router, prefix=active_settings.api_prefix)
     app.include_router(anniversary_router, prefix=active_settings.api_prefix)
     app.include_router(ai_router, prefix=active_settings.api_prefix)
     app.include_router(notification_router, prefix=active_settings.api_prefix)

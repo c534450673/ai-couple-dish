@@ -274,3 +274,18 @@ class RecipeCollect(Base):
     create_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
+
+
+class HeartMoment(Base):
+    __tablename__ = "t_heart_moment"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    creator_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    moment_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    media_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )

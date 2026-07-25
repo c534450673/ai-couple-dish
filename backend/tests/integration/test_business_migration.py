@@ -22,6 +22,7 @@ from app.db.models import (
     CoupleMenu,
     Feed,
     FoodNote,
+    HeartMoment,
     NoteLike,
     Notification,
     Recipe,
@@ -144,6 +145,94 @@ async def test_user_couple_notification_flow_uses_real_mysql_and_redis(
             claims = decode_access_token(first["token"], SECRET)
             await user_service.logout(request, session, first_id, claims)
             assert await redis.raw.exists(f"logout:blacklist:{claims.jti}") == 1
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_heart_moment_routes_keep_couple_scope_and_logs_redacted(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    app = create_app(settings())
+    app.state.redis = redis
+
+    async def session_override():
+        async with session_factory() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    private_content = "integration-private-heart-moment"
+    try:
+        with capture_logs() as logs:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                users = []
+                user_ids = []
+                for code in ("moment-one", "moment-two", "moment-three", "moment-four"):
+                    response = await client.post("/api/user/login", json={"code": code})
+                    users.append({"Authorization": f"Bearer {response.json()['data']['token']}"})
+                    user_ids.append(int(response.json()["data"]["userInfo"]["id"]))
+                assert (
+                    await client.post(
+                        "/api/heartMoment/create", headers=users[0], json={"momentType": "text"}
+                    )
+                ).json()["code"] == 2006
+                first_code = await client.post("/api/couple/generateCode", headers=users[0])
+                await client.post(
+                    "/api/couple/bind",
+                    headers=users[1],
+                    json={"coupleCode": first_code.json()["data"]},
+                )
+                second_code = await client.post("/api/couple/generateCode", headers=users[2])
+                await client.post(
+                    "/api/couple/bind",
+                    headers=users[3],
+                    json={"coupleCode": second_code.json()["data"]},
+                )
+                created = await client.post(
+                    "/api/heartMoment/create",
+                    headers=users[0],
+                    json={"momentType": "text", "content": private_content},
+                )
+                moment_id = int(created.json()["data"])
+                listed = await client.get(
+                    "/api/heartMoment/list?page=0&pageSize=0", headers=users[1]
+                )
+                listed_item = listed.json()["data"][0]
+                assert listed_item["id"] == moment_id
+                assert set(listed_item) == {
+                    "id",
+                    "momentType",
+                    "content",
+                    "mediaUrl",
+                    "createTime",
+                    "timeDesc",
+                    "creator",
+                }
+                assert listed_item["creator"]["id"] == user_ids[0]
+                assert (await client.get("/api/heartMoment/random", headers=users[1])).json()[
+                    "data"
+                ]["id"] == moment_id
+                assert (
+                    await client.delete(f"/api/heartMoment/delete/{moment_id}", headers=users[1])
+                ).json()["code"] == 3002
+                assert (
+                    await client.delete(f"/api/heartMoment/delete/{moment_id}", headers=users[2])
+                ).json()["code"] == 3002
+                assert (
+                    await client.delete(f"/api/heartMoment/delete/{moment_id}", headers=users[0])
+                ).json()["code"] == 200
+                assert (await client.get("/api/heartMoment/random", headers=users[1])).json()[
+                    "data"
+                ] is None
+        assert private_content not in str(logs)
+        async with session_factory() as session:
+            item = await session.get(HeartMoment, moment_id)
+            assert item is not None and item.is_deleted == 1
     finally:
         await redis.close()
 

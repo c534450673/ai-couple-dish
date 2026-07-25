@@ -198,6 +198,14 @@ class WishUpdateRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class HeartMomentRequest(BaseModel):
+    moment_type: str = Field(alias="momentType", min_length=1, max_length=32)
+    content: str | None = Field(default=None, max_length=50_000)
+    media_url: str | None = Field(default=None, alias="mediaUrl", max_length=512)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class AiChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=10_000)
     session_id: str | None = Field(default=None, alias="sessionId", max_length=128)
