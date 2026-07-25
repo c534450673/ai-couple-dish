@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import hashlib
+import hmac
 import json
 import logging
 import os
@@ -22,6 +24,8 @@ else:
 
 LOGGER = logging.getLogger("mysql_schema_verify")
 BASELINE_REVISION = "0001_existing_mysql_baseline"
+CANONICAL_SNAPSHOT = Path(__file__).parents[1] / "contracts" / "mysql-schema.json"
+CANONICAL_HASH = Path(__file__).parents[1] / "contracts" / "mysql-schema.sha256"
 
 
 class SchemaVerificationError(RuntimeError):
@@ -88,16 +92,64 @@ def compare_schemas(expected: dict[str, Any], actual: dict[str, Any]) -> dict[st
     }
 
 
-def _load_snapshot(path: Path) -> dict[str, Any]:
+def _parse_snapshot(payload: bytes, path: Path) -> dict[str, Any]:
     try:
-        document: object = json.loads(path.read_text())
-    except (OSError, json.JSONDecodeError):
-        LOGGER.error("event=mysql_schema_snapshot_load_failed file=%s", path.name)
-        raise SchemaVerificationError(f"Schema snapshot cannot be loaded: {path.name}") from None
+        document: object = json.loads(payload)
+    except json.JSONDecodeError:
+        LOGGER.error("event=mysql_schema_snapshot_invalid category=json file=%s", path.name)
+        raise SchemaVerificationError(f"Schema snapshot is invalid: {path.name}") from None
     if not isinstance(document, dict) or not isinstance(document.get("tables"), dict):
-        LOGGER.error("event=mysql_schema_snapshot_invalid file=%s", path.name)
+        LOGGER.error("event=mysql_schema_snapshot_invalid category=shape file=%s", path.name)
         raise SchemaVerificationError(f"Schema snapshot is invalid: {path.name}")
     return cast(dict[str, Any], document)
+
+
+def _load_snapshot(path: Path) -> dict[str, Any]:
+    try:
+        payload = path.read_bytes()
+    except OSError:
+        LOGGER.error("event=mysql_schema_snapshot_load_failed file=%s", path.name)
+        raise SchemaVerificationError(f"Schema snapshot cannot be loaded: {path.name}") from None
+    return _parse_snapshot(payload, path)
+
+
+def _load_audited_snapshot(path: Path) -> dict[str, Any]:
+    LOGGER.info(
+        "event=mysql_schema_audit_validation_started snapshotFile=%s hashFile=%s",
+        CANONICAL_SNAPSHOT.name,
+        CANONICAL_HASH.name,
+    )
+    try:
+        requested_path = path.resolve(strict=True)
+        canonical_path = CANONICAL_SNAPSHOT.resolve(strict=True)
+    except OSError:
+        LOGGER.error("event=mysql_schema_audit_validation_failed category=missing_artifact")
+        raise SchemaVerificationError("Canonical schema audit artifacts are unavailable") from None
+    if requested_path != canonical_path:
+        LOGGER.error(
+            "event=mysql_schema_audit_validation_failed category=noncanonical_snapshot "
+            "snapshotFile=%s",
+            path.name,
+        )
+        raise SchemaVerificationError("Stamp requires the canonical schema snapshot")
+
+    try:
+        payload = CANONICAL_SNAPSHOT.read_bytes()
+        expected_digest = CANONICAL_HASH.read_text().strip()
+    except OSError:
+        LOGGER.error("event=mysql_schema_audit_validation_failed category=unreadable_artifact")
+        raise SchemaVerificationError("Canonical schema audit artifacts are unavailable") from None
+    actual_digest = hashlib.sha256(payload).hexdigest()
+    if len(expected_digest) != 64 or not hmac.compare_digest(actual_digest, expected_digest):
+        LOGGER.error("event=mysql_schema_audit_validation_failed category=hash_mismatch")
+        raise SchemaVerificationError("Canonical schema snapshot hash mismatch")
+
+    snapshot = _parse_snapshot(payload, CANONICAL_SNAPSHOT)
+    LOGGER.info(
+        "event=mysql_schema_audit_validation_completed status=matched tableCount=%s",
+        len(cast(dict[str, Any], snapshot["tables"])),
+    )
+    return snapshot
 
 
 async def verify_schema(
@@ -147,11 +199,10 @@ def _stamp(database_url: str) -> None:
     LOGGER.info("event=mysql_schema_stamp_completed revision=%s", BASELINE_REVISION)
 
 
-async def _main_async(snapshot_path: Path, *, stamp: bool) -> str | None:
+async def _main_async(expected: dict[str, Any], *, stamp: bool) -> str | None:
     database_url = os.environ.get("SCHEMA_DATABASE_URL")
     if not database_url:
         raise SchemaVerificationError("SCHEMA_DATABASE_URL is required")
-    expected = _load_snapshot(snapshot_path)
     engine = create_async_engine(database_url, pool_pre_ping=True)
     try:
         diff = await verify_schema(engine, expected)
@@ -168,18 +219,21 @@ async def _main_async(snapshot_path: Path, *, stamp: bool) -> str | None:
     return database_url if stamp else None
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Verify MySQL schema against the audited snapshot")
     parser.add_argument(
         "--snapshot",
         type=Path,
-        default=Path(__file__).parents[1] / "contracts" / "mysql-schema.json",
+        default=CANONICAL_SNAPSHOT,
     )
     parser.add_argument("--stamp", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s level=%(levelname)s %(message)s")
     try:
-        stamp_database_url = asyncio.run(_main_async(args.snapshot, stamp=args.stamp))
+        expected = (
+            _load_audited_snapshot(args.snapshot) if args.stamp else _load_snapshot(args.snapshot)
+        )
+        stamp_database_url = asyncio.run(_main_async(expected, stamp=args.stamp))
         if stamp_database_url is not None:
             _stamp(stamp_database_url)
     except (SchemaCaptureError, SchemaVerificationError) as exc:
