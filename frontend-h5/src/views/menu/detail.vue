@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { showConfirmDialog, showToast } from 'vant'
 import { useMenuStore } from '@/stores/menu'
 import { logUiEvent } from '@/composables/useStructuredLog'
+import placeRestaurant from '@/assets/cosmos/place-restaurant.webp'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,6 +13,7 @@ const retryUsed = ref(false)
 const id = computed(() => route.params.id)
 const pending = computed(() => store.mutationStatus === 'loading')
 const statusText = value => ({ 0: '想去', 1: '去过', 2: '种草' }[value] || '未分类')
+const heroImage = computed(() => store.detail?.photoUrl || store.detail?.imageUrl || store.detail?.coverUrl || placeRestaurant)
 
 const load = async () => {
   try {
@@ -74,14 +76,10 @@ onMounted(load)
       </div>
     </header>
 
-    <div
-      data-test="menu-detail-placeholder"
-      data-contract="backend-image-missing"
-      class="hero-placeholder cosmos-media cosmos-media--place"
-      role="img"
-      aria-label="餐厅本地占位图"
-    >
-      <span>后端图片合同缺失 · 本地占位</span>
+    <div class="detail-hero">
+      <img data-test="menu-detail-hero" :src="heroImage" :alt="`${store.detail?.restaurantName || '餐厅'} 主视觉`" width="1280" height="720">
+      <div class="detail-hero__shade" aria-hidden="true" />
+      <span class="detail-hero__badge">COUPLE COSMOS DINING</span>
     </div>
 
     <section v-if="store.detailStatus === 'loading'" class="detail-state" role="status">正在加载餐厅详情</section>
@@ -137,9 +135,10 @@ onMounted(load)
 .detail-actions { position: absolute; z-index: 2; top: $space-4; right: $page-padding; left: $page-padding; display: flex; justify-content: space-between; }
 .detail-actions div { display: flex; gap: $space-2; }
 .detail-actions button { width: 44px; min-width: 44px; min-height: 44px; border: 1px solid $cosmos-border; border-radius: 50%; background: rgba(13, 17, 42, .82); color: $cosmos-text; }
-.hero-placeholder { position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 520px; }
-.hero-placeholder::after { position: absolute; inset: 0; content: ''; background: linear-gradient(transparent 50%, $cosmos-bg); }
-.hero-placeholder span { position: absolute; z-index: 1; right: $page-padding; bottom: $space-5; padding: $space-1 $space-2; border-radius: 4px; background: rgba(8, 12, 37, .82); color: $cosmos-text-muted; font-size: $fs-caption; }
+.detail-hero { position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 520px; overflow: hidden; background: $cosmos-surface-raised; }
+.detail-hero img { width: 100%; height: 100%; object-fit: cover; }
+.detail-hero__shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8, 12, 37, .12), $cosmos-bg); }
+.detail-hero__badge { position: absolute; bottom: $space-5; left: $page-padding; color: $cosmos-gold; font-size: 10px; font-weight: $fw-bold; letter-spacing: .08em; }
 .detail-state { display: grid; min-height: 320px; gap: $space-4; place-content: center; justify-items: center; padding: $page-padding; text-align: center; }
 .detail-state button { min-height: 44px; padding: 0 $space-5; border: 0; border-radius: 6px; background: $cosmos-primary; color: #fff; }
 .identity-section, .facts, .content-section { margin: 0 $page-padding; }

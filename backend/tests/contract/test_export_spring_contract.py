@@ -526,7 +526,7 @@ def test_h5_consumers_match_current_source_calls() -> None:
 
     extracted = _extract_axios_consumers(index_source) + _extract_ai_consumers(ai_source)
 
-    assert len(extracted) == 76
+    assert len(extracted) == 78
     assert consumers == extracted
 
 
@@ -537,7 +537,7 @@ def test_h5_axios_entries_are_independently_extracted_from_source() -> None:
     extracted = _extract_axios_consumers(source)
     recorded = [item for item in consumers if item["transport"] == "axios"]
 
-    assert len(extracted) == 72
+    assert len(extracted) == 74
     assert recorded == extracted
 
 

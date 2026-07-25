@@ -40,6 +40,31 @@ class Couple(Base):
     unbind_apply_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
+class CoupleRank(Base):
+    __tablename__ = "t_couple_rank"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    current_rank: Mapped[str] = mapped_column(
+        String(32), nullable=False, server_default=text("'bronze'")
+    )
+    rank_score: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    consecutive_interaction_days: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("0")
+    )
+    temperature_score: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("60")
+    )
+    promotion_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    demotion_warning: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
 class CoupleUnbindRecord(Base):
     __tablename__ = "t_couple_unbind_record"
 

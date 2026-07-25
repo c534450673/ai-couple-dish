@@ -41,6 +41,10 @@ class BindCoupleRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class CoupleRankClaimRequest(BaseModel):
+    rank: str = Field(min_length=1, max_length=32)
+
+
 class UnbindRequest(BaseModel):
     option: str | None = Field(default=None, pattern=r"^(keep|delete)$")
 

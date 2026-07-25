@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.ai import router as ai_router
 from app.api.anniversary import router as anniversary_router
 from app.api.couple import router as couple_router
+from app.api.couple_rank import router as couple_rank_router
 from app.api.feed import router as feed_router
 from app.api.health import ready
 from app.api.health import router as health_router
@@ -176,6 +177,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(health_router, prefix=active_settings.api_prefix)
     app.include_router(user_router, prefix=active_settings.api_prefix)
     app.include_router(couple_router, prefix=active_settings.api_prefix)
+    app.include_router(couple_rank_router, prefix=active_settings.api_prefix)
     app.include_router(feed_router, prefix=active_settings.api_prefix)
     app.include_router(heart_moment_router, prefix=active_settings.api_prefix)
     app.include_router(mood_router, prefix=active_settings.api_prefix)

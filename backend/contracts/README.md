@@ -13,7 +13,7 @@
   Spring 响应正文。
 - Swagger 中 GET/POST/PUT/DELETE/PATCH 共 198 个 operation；`routes.json` 为 27 个业务
   Controller 的 193 个 operation，`method + path` 唯一。
-- `h5-consumers.json`：当前源码中 72 个 Axios 调用和 4 个 AI fetch，共 76 个消费者。
+- `h5-consumers.json`：当前源码中 74 个 Axios 调用和 4 个 AI fetch，共 78 个消费者。
 - `error-codes.json`：60 个可观察错误码；`redis-keys.json`：8 个 pattern。
 
 ## OpenAPI 规范化与静态对账

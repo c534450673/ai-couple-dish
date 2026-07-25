@@ -66,6 +66,11 @@ const defaultReply = ({ method, pathname }) => {
   if (is(method, 'GET', pathname, '/api/couple/info')) return json({ id: 2, partner: { nickName: '测试伴侣', nickname: '测试伴侣', avatarUrl: '' } })
   if (is(method, 'GET', pathname, '/api/couple/home')) return json({})
   if (is(method, 'GET', pathname, '/api/couple/loveTimer')) return json({ loveDays: 365 })
+  if (is(method, 'GET', pathname, '/api/mood/today')) return json([
+    { id: 901, moodType: 'happy', moodTypeName: '开心', moodIcon: '😊', sender: { id: 1 } },
+    { id: 902, moodType: 'love', moodTypeName: '爱你', moodIcon: '❤️', sender: { id: 2 } }
+  ])
+  if (is(method, 'POST', pathname, '/api/mood/send')) return json(903)
   if (is(method, 'GET', pathname, '/api/couple/codeInfo')) return json({ coupleCode: 'AB12CD34', expiresAt: '2099-01-01T00:00:00Z' })
   if (is(method, 'POST', pathname, '/api/couple/generateCode')) return json('AB12CD34')
   if (is(method, 'POST', pathname, '/api/couple/bind')) return json({ id: 2 })
@@ -155,6 +160,8 @@ export const test = base.extend({
       runtimeErrors.push({
         source: 'requestfailed',
         errorCode: errorText === 'net::ERR_ABORTED' ? 'REQUEST_ABORTED' : 'REQUEST_FAILED',
+        pathname,
+        errorText,
         durationMs: 0
       })
     })

@@ -863,11 +863,43 @@
   },
   {
     "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "moodApi",
+    "functionName": "getTodayMoods",
+    "method": "GET",
+    "path": "/api/mood/today",
+    "sourceLine": 230,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "moodApi",
+    "functionName": "sendMood",
+    "method": "POST",
+    "path": "/api/mood/send",
+    "sourceLine": 234,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
     "exportName": "noteApi",
     "functionName": "getNoteList",
     "method": "GET",
     "path": "/api/note/list",
-    "sourceLine": 230,
+    "sourceLine": 241,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -884,7 +916,7 @@
     "functionName": "getNoteDetail",
     "method": "GET",
     "path": "/api/note/detail/{id}",
-    "sourceLine": 234,
+    "sourceLine": 245,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -901,7 +933,7 @@
     "functionName": "addNote",
     "method": "POST",
     "path": "/api/note/add",
-    "sourceLine": 238,
+    "sourceLine": 249,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -918,7 +950,7 @@
     "functionName": "updateNote",
     "method": "PUT",
     "path": "/api/note/update/{id}",
-    "sourceLine": 242,
+    "sourceLine": 253,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -937,7 +969,7 @@
     "functionName": "deleteNote",
     "method": "DELETE",
     "path": "/api/note/delete/{id}",
-    "sourceLine": 246,
+    "sourceLine": 257,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -954,7 +986,7 @@
     "functionName": "likeNote",
     "method": "POST",
     "path": "/api/note/like/{id}",
-    "sourceLine": 250,
+    "sourceLine": 261,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -971,7 +1003,7 @@
     "functionName": "getWishList",
     "method": "GET",
     "path": "/api/wish/list",
-    "sourceLine": 257,
+    "sourceLine": 268,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -986,7 +1018,7 @@
     "functionName": "getWishDetail",
     "method": "GET",
     "path": "/api/wish/detail/{id}",
-    "sourceLine": 261,
+    "sourceLine": 272,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1003,7 +1035,7 @@
     "functionName": "addWish",
     "method": "POST",
     "path": "/api/wish/add",
-    "sourceLine": 265,
+    "sourceLine": 276,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1020,7 +1052,7 @@
     "functionName": "updateWish",
     "method": "PUT",
     "path": "/api/wish/update/{id}",
-    "sourceLine": 269,
+    "sourceLine": 280,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1039,7 +1071,7 @@
     "functionName": "fulfillWish",
     "method": "POST",
     "path": "/api/wish/fulfill/{id}",
-    "sourceLine": 273,
+    "sourceLine": 284,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1056,7 +1088,7 @@
     "functionName": "unfulfillWish",
     "method": "POST",
     "path": "/api/wish/unfulfill/{id}",
-    "sourceLine": 277,
+    "sourceLine": 288,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1073,7 +1105,7 @@
     "functionName": "deleteWish",
     "method": "DELETE",
     "path": "/api/wish/delete/{id}",
-    "sourceLine": 281,
+    "sourceLine": 292,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1090,7 +1122,7 @@
     "functionName": "getNotificationList",
     "method": "GET",
     "path": "/api/notification/list",
-    "sourceLine": 288,
+    "sourceLine": 299,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1107,7 +1139,7 @@
     "functionName": "getUnreadCount",
     "method": "GET",
     "path": "/api/notification/unreadCount",
-    "sourceLine": 292,
+    "sourceLine": 303,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1122,7 +1154,7 @@
     "functionName": "markAsRead",
     "method": "PUT",
     "path": "/api/notification/read/{id}",
-    "sourceLine": 296,
+    "sourceLine": 307,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1139,7 +1171,7 @@
     "functionName": "markAllAsRead",
     "method": "PUT",
     "path": "/api/notification/readAll",
-    "sourceLine": 300,
+    "sourceLine": 311,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1154,7 +1186,7 @@
     "functionName": "uploadImage",
     "method": "POST",
     "path": "/api/upload/image",
-    "sourceLine": 309,
+    "sourceLine": 320,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1171,7 +1203,7 @@
     "functionName": "getNearbyRestaurants",
     "method": "GET",
     "path": "/api/menu/nearby",
-    "sourceLine": 318,
+    "sourceLine": 329,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1188,7 +1220,7 @@
     "functionName": "getMapRestaurants",
     "method": "GET",
     "path": "/api/menu/map",
-    "sourceLine": 322,
+    "sourceLine": 333,
     "transport": "axios",
     "parameters": {
       "path": [],

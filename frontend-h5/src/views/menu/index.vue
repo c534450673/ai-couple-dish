@@ -1,8 +1,10 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMenuStore } from '@/stores/menu'
 import { logUiEvent } from '@/composables/useStructuredLog'
+import placeRestaurant from '@/assets/cosmos/place-restaurant.webp'
+import foodHero from '@/assets/cosmos/food-hero.webp'
 
 const router = useRouter()
 const store = useMenuStore()
@@ -11,14 +13,16 @@ const status = ref('')
 const retryUsed = ref(false)
 const pageSize = 10
 
-const statusOptions = [
-  { label: '全部', value: '' },
-  { label: '想去', value: 0 },
-  { label: '去过', value: 1 },
-  { label: '种草', value: 2 }
-]
+const discoveryTab = ref('explore')
 
-const statusText = (value) => ({ 0: '想去', 1: '去过', 2: '种草' }[value] || '未分类')
+const itemImage = item => item?.photoUrl || item?.imageUrl || item?.coverUrl || placeRestaurant
+const recommended = computed(() => store.items[0] || null)
+const groupedItems = computed(() => ({
+  want: store.items.filter(item => Number(item.status) === 0).slice(0, 1),
+  visited: store.items.filter(item => Number(item.status) === 1).slice(0, 1),
+  recommended: store.items.filter(item => Number(item.status) === 2).slice(0, 1),
+  favorite: store.items.filter(item => item.isFavorite || item.favorite).slice(0, 1)
+}))
 
 const listParams = (page = 1) => ({
   ...(status.value !== '' ? { status: status.value } : {}),
@@ -42,10 +46,14 @@ const handleSearch = () => {
   return loadList()
 }
 
-const selectStatus = (value) => {
-  status.value = value
-  return loadList()
+const selectDiscoveryTab = (tab) => {
+  discoveryTab.value = tab
+  if (tab === 'recipes') return router.push('/recipes')
+  if (tab === 'map') return router.push('/map')
+  return undefined
 }
+
+const openItem = item => item?.id ? router.push(`/menu/${item.id}`) : undefined
 
 const loadMore = async () => {
   if (!store.pagination.hasMore || store.isLoadingMore) return
@@ -92,11 +100,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="menu-library">
-    <header class="page-heading">
+  <main class="menu-library menu-library--discovery">
+    <header class="page-heading discovery-header">
       <div>
         <p class="eyebrow">COUPLE COSMOS</p>
-        <h1>我们的美食库</h1>
+        <h1>探索星系</h1>
+        <p class="discovery-subtitle">为你们发现下一次约会的浪漫坐标</p>
       </div>
       <button
         class="icon-action"
@@ -108,33 +117,27 @@ onMounted(() => {
       </button>
     </header>
 
-    <form class="search-row" @submit.prevent="handleSearch">
+    <form class="search-row search-row--discovery" @submit.prevent="handleSearch">
       <van-icon name="search" aria-hidden="true" />
-      <input v-model="keyword" type="search" placeholder="按餐厅名搜索" aria-label="按餐厅名搜索">
-      <button type="submit">搜索</button>
+      <input v-model="keyword" type="search" placeholder="搜索餐厅、食谱或地点..." aria-label="搜索餐厅、食谱或地点">
+      <button type="submit" aria-label="提交搜索"><van-icon name="search" /></button>
     </form>
 
-    <nav class="segments" aria-label="菜单状态">
-      <button
-        v-for="option in statusOptions"
-        :key="String(option.value)"
-        type="button"
-        :class="{ active: status === option.value }"
-        @click="selectStatus(option.value)"
-      >
-        {{ option.label }}
-      </button>
+    <nav class="segments discovery-tabs" aria-label="探索类别">
+      <button type="button" :class="{ active: discoveryTab === 'explore' }" @click="selectDiscoveryTab('explore')">探店</button>
+      <button type="button" :class="{ active: discoveryTab === 'recipes' }" @click="selectDiscoveryTab('recipes')">食谱</button>
+      <button type="button" :class="{ active: discoveryTab === 'map' }" @click="selectDiscoveryTab('map')">地图</button>
     </nav>
 
-    <p class="contract-note">
-      <van-icon name="info-o" /> 收藏筛选暂不可用；后端图片合同缺失，列表统一显示本地占位。
-    </p>
-
-    <section class="stats-band" aria-label="菜单统计">
-      <div><span>全部</span><strong>{{ store.stats.totalCount || 0 }}</strong></div>
-      <div><span>想去</span><strong>{{ store.stats.wantToGoCount || 0 }}</strong></div>
-      <div><span>去过</span><strong>{{ store.stats.visitedCount || 0 }}</strong></div>
-      <div><span>种草</span><strong>{{ store.stats.seededCount || 0 }}</strong></div>
+    <section v-if="store.listStatus === 'success' && recommended" class="chef-feature" aria-labelledby="chef-feature-title">
+      <img :src="itemImage(recommended)" alt="主厨推荐料理" width="1280" height="720">
+      <div class="chef-feature__shade" aria-hidden="true" />
+      <div class="chef-feature__copy">
+        <span class="feature-kicker">CHEF SIGNATURE</span>
+        <h2 id="chef-feature-title">{{ recommended.restaurantName }}</h2>
+        <p>{{ recommended.dishName || '为今晚挑一处值得奔赴的味觉坐标' }}</p>
+        <button type="button" @click="openItem(recommended)">查看这颗星</button>
+      </div>
     </section>
 
     <section v-if="store.listStatus === 'loading' && !store.items.length" class="state-panel" role="status">
@@ -156,39 +159,33 @@ onMounted(() => {
       <button data-test="menu-empty-add" type="button" @click="router.push('/menu/add')">添加餐厅</button>
     </section>
 
-    <section v-else class="menu-grid" aria-live="polite">
+    <section v-else class="menu-grid discovery-grid" aria-live="polite">
       <article
-        v-for="item in store.items"
-        :key="item.id"
-        class="menu-card"
-        tabindex="0"
-        @click="router.push(`/menu/${item.id}`)"
-        @keydown.enter="router.push(`/menu/${item.id}`)"
+        v-for="group in [
+          { key: 'want', label: '想去' },
+          { key: 'visited', label: '已去' },
+          { key: 'recommended', label: '推荐' },
+          { key: 'favorite', label: '收藏' }
+        ]"
+        :key="group.key"
+        class="discovery-group"
       >
-        <div
-          :data-test="`menu-placeholder-${item.id}`"
-          class="menu-placeholder cosmos-media cosmos-media--place"
-          data-contract="backend-image-missing"
-          role="img"
-          :aria-label="`${item.restaurantName} 本地餐厅占位图`"
+        <div class="discovery-group__heading"><h2>{{ group.label }}</h2><span aria-hidden="true">›</span></div>
+        <button
+          v-if="groupedItems[group.key][0]"
+          class="discovery-card"
+          type="button"
+          @click="openItem(groupedItems[group.key][0])"
         >
-          <span>本地占位</span>
-        </div>
-        <div class="menu-card__body">
-          <div class="card-title-row">
-            <div>
-              <span class="status-chip">{{ statusText(item.status) }}</span>
-              <h2>{{ item.restaurantName }}</h2>
-            </div>
-            <strong v-if="item.rating" class="rating"><van-icon name="star" /> {{ item.rating }}</strong>
-          </div>
-          <p v-if="item.dishName" class="dish-name">{{ item.dishName }}</p>
-          <div class="card-meta">
-            <span v-if="item.dishCategory">{{ item.dishCategory }}</span>
-            <span v-if="item.price">¥{{ item.price }}</span>
-            <span>{{ item.likeCount || 0 }} 赞</span>
-          </div>
-        </div>
+          <img :src="itemImage(groupedItems[group.key][0])" :alt="`${groupedItems[group.key][0].restaurantName} 餐厅`" width="480" height="600">
+          <span class="discovery-card__shade" aria-hidden="true" />
+          <span class="discovery-card__name">{{ groupedItems[group.key][0].restaurantName }}</span>
+        </button>
+        <div v-else class="discovery-card discovery-card--empty" data-test="discovery-empty">等待下一次记录</div>
+      </article>
+      <article class="nearby-galaxy">
+        <img :src="foodHero" alt="附近星系中的料理" width="1280" height="871">
+        <div class="nearby-galaxy__copy"><h2>寻找附近的星系</h2><p>在你们的区域发现新的约会坐标</p><button type="button" @click="selectDiscoveryTab('map')">开启定位</button></div>
       </article>
       <button
         v-if="store.loadMoreError"
@@ -247,5 +244,36 @@ h1 { font-size: 28px; line-height: 36px; }
 .dish-name { margin-top: $space-3; color: $cosmos-text; }
 .card-meta { display: flex; gap: $space-3; margin-top: $space-3; color: $cosmos-text-muted; font-size: $fs-caption; }
 .load-more { width: 100%; min-height: 44px; border: 1px solid $cosmos-border; border-radius: 6px; background: $cosmos-surface-raised; color: $cosmos-text; }
+.menu-library--discovery { background: radial-gradient(circle at 50% 0, rgba(92, 66, 145, .22), transparent 34%), $cosmos-bg; }
+.discovery-header { align-items: flex-start; }
+.discovery-subtitle { margin-top: $space-1; color: $cosmos-text-muted; font-size: $fs-caption; }
+.search-row--discovery { border-radius: 999px; background: rgba(255, 255, 255, .06); backdrop-filter: blur(16px); }
+.search-row--discovery button { display: inline-grid; width: 40px; min-width: 40px; padding: 0; place-items: center; border-radius: 50%; }
+.discovery-tabs { gap: $space-3; margin-top: $space-5; }
+.discovery-tabs button { min-width: 82px; }
+.chef-feature { position: relative; min-height: 220px; margin: $space-5 0 $space-6; overflow: hidden; border: 1px solid $cosmos-border; border-radius: 24px; background: $cosmos-surface; }
+.chef-feature img, .chef-feature__shade { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.chef-feature__shade { background: linear-gradient(180deg, transparent 25%, rgba(6, 8, 25, .92)); }
+.chef-feature__copy { position: relative; display: grid; min-height: 220px; align-content: end; gap: $space-2; padding: $space-5; }
+.feature-kicker { color: $cosmos-gold; font-size: 10px; font-weight: $fw-bold; letter-spacing: .08em; }
+.chef-feature h2 { max-width: 90%; font-size: 24px; line-height: 30px; }
+.chef-feature p { color: $cosmos-text-muted; font-size: $fs-caption; }
+.chef-feature button, .nearby-galaxy button { width: fit-content; min-height: 40px; padding: 0 $space-4; border: 0; border-radius: 999px; background: $cosmos-primary; color: #fff; font-weight: $fw-semibold; }
+.discovery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: $space-4 $space-3; }
+.discovery-group { min-width: 0; }
+.discovery-group__heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: $space-2; }
+.discovery-group__heading h2 { font-size: $fs-label; }
+.discovery-group__heading span { color: $cosmos-text-muted; font-size: 22px; }
+.discovery-card { position: relative; display: block; width: 100%; aspect-ratio: 4 / 5; overflow: hidden; border: 1px solid $cosmos-border; border-radius: 20px; background: $cosmos-surface; color: #fff; text-align: left; }
+.discovery-card img, .discovery-card__shade { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.discovery-card__shade { background: linear-gradient(180deg, transparent 42%, rgba(6, 8, 25, .82)); }
+.discovery-card__name { position: absolute; right: $space-3; bottom: $space-3; left: $space-3; overflow: hidden; font-size: $fs-caption; font-weight: $fw-semibold; text-overflow: ellipsis; white-space: nowrap; }
+.discovery-card--empty { display: grid; padding: $space-3; place-items: center; color: $cosmos-text-muted; font-size: $fs-caption; text-align: center; }
+.nearby-galaxy { position: relative; grid-column: 1 / -1; min-height: 190px; margin-top: $space-2; overflow: hidden; border: 1px solid $cosmos-border; border-radius: 24px; }
+.nearby-galaxy img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(.48) saturate(.8); }
+.nearby-galaxy__copy { position: relative; display: grid; min-height: 190px; align-content: end; gap: $space-2; padding: $space-5; }
+.nearby-galaxy__copy h2 { font-size: 22px; }
+.nearby-galaxy__copy p { color: $cosmos-text-muted; font-size: $fs-caption; }
+@media (prefers-reduced-motion: reduce) { .chef-feature img, .discovery-card img { transition: none; } }
 @media (min-width: 720px) { .menu-library { max-width: 980px; margin: 0 auto; } .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .load-more { grid-column: 1 / -1; } }
 </style>

@@ -50,15 +50,16 @@ describe('菜单页面', () => {
     vi.unstubAllGlobals()
   })
 
-  it('列表不提供伪收藏筛选，并明确图片合同降级', async () => {
+  it('列表呈现探索星系结构和本地稳定视觉资产，不伪造收藏数据', async () => {
     menuStore.items = [{ id: 1, restaurantName: '星港餐厅', status: 0 }]
     menuStore.listStatus = 'success'
     const wrapper = mount(MenuIndex)
     await flush()
 
-    expect(wrapper.text()).toContain('后端图片合同缺失')
-    expect(wrapper.text()).toContain('收藏筛选暂不可用')
-    expect(wrapper.find('[data-test="menu-placeholder-1"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('探索星系')
+    expect(wrapper.text()).toContain('CHEF SIGNATURE')
+    expect(wrapper.find('.chef-feature img').attributes('src')).toContain('place-restaurant.webp')
+    expect(wrapper.findAll('[data-test="discovery-empty"]')).toHaveLength(3)
     expect(JSON.stringify(menuStore.fetchList.mock.calls)).not.toContain('isFavorite')
   })
 
@@ -87,14 +88,14 @@ describe('菜单页面', () => {
     expect(menuStore.retryList).toHaveBeenCalledOnce()
   })
 
-  it('详情始终使用本地占位，提供真实编辑路由和 pending 操作', async () => {
+  it('详情使用本地稳定主视觉，提供真实编辑路由和 pending 操作', async () => {
     route.params = { id: '7' }
     menuStore.detail = { id: 7, restaurantName: '星港餐厅', likeCount: 2, isFavorite: false }
     menuStore.detailStatus = 'success'
     const wrapper = mount(MenuDetail)
     await flush()
 
-    expect(wrapper.find('[data-test="menu-detail-placeholder"]').attributes('data-contract')).toBe('backend-image-missing')
+    expect(wrapper.find('[data-test="menu-detail-hero"]').attributes('src')).toContain('place-restaurant.webp')
     await wrapper.find('[data-test="menu-edit"]').trigger('click')
     expect(router.push).toHaveBeenCalledWith('/menu/7/edit')
     expect(wrapper.find('[data-test="menu-like"]').attributes('disabled')).toBeUndefined()

@@ -20,6 +20,7 @@ from app.core.config import Settings
 from app.db.models import (
     Anniversary,
     CoupleMenu,
+    CoupleRank,
     Feed,
     FoodNote,
     HeartMoment,
@@ -146,6 +147,93 @@ async def test_user_couple_notification_flow_uses_real_mysql_and_redis(
             claims = decode_access_token(first["token"], SECRET)
             await user_service.logout(request, session, first_id, claims)
             assert await redis.raw.exists(f"logout:blacklist:{claims.jti}") == 1
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_couple_rank_routes_keep_couple_scope_lazy_init_and_idempotent_claim(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    app = create_app(settings())
+    app.state.redis = redis
+
+    async def session_override():
+        async with session_factory() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    try:
+        with capture_logs() as logs:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                users = []
+                for code, nickname in (
+                    ("rank-openid-one", "甲"),
+                    ("rank-openid-two", "乙"),
+                    ("rank-openid-three", "丙"),
+                    ("rank-openid-four", "丁"),
+                ):
+                    response = await client.post(
+                        "/api/user/login", json={"code": code, "nickName": nickname}
+                    )
+                    users.append({"Authorization": f"Bearer {response.json()['data']['token']}"})
+
+                first_code = await client.post("/api/couple/generateCode", headers=users[0])
+                assert (
+                    await client.post(
+                        "/api/couple/bind",
+                        headers=users[1],
+                        json={"coupleCode": first_code.json()["data"]},
+                    )
+                ).json()["code"] == 200
+                second_code = await client.post("/api/couple/generateCode", headers=users[2])
+                assert (
+                    await client.post(
+                        "/api/couple/bind",
+                        headers=users[3],
+                        json={"coupleCode": second_code.json()["data"]},
+                    )
+                ).json()["code"] == 200
+
+                unbound = await client.get("/api/coupleRank/info", headers={})
+                assert unbound.status_code == 401
+                concurrent_info = await asyncio.gather(
+                    *[client.get("/api/coupleRank/info", headers=users[0]) for _ in range(4)]
+                )
+                assert all(response.json()["code"] == 200 for response in concurrent_info)
+                info = concurrent_info[0].json()["data"]
+                assert info["currentRank"] == "bronze"
+                assert info["rankScore"] == 0
+                assert len(info["rankList"]) == 6
+
+                first_rank_list = await client.get("/api/coupleRank/rankList", headers=users[1])
+                assert first_rank_list.json()["code"] == 200
+                assert len(first_rank_list.json()["data"]) == 1
+                assert (await client.get("/api/coupleRank/rankList", headers=users[2])).json()[
+                    "data"
+                ] == first_rank_list.json()["data"]
+
+                rewards = await client.get("/api/coupleRank/rewards", headers=users[1])
+                assert rewards.json()["code"] == 200
+                assert len(rewards.json()["data"]) == 6
+                assert rewards.json()["data"][0]["claimed"] is True
+                first_claim = await client.post("/api/coupleRank/claim/bronze", headers=users[0])
+                second_claim = await client.post("/api/coupleRank/claim/bronze", headers=users[1])
+                assert first_claim.json()["code"] == second_claim.json()["code"] == 200
+                not_reached = await client.post("/api/coupleRank/claim/gold", headers=users[0])
+                assert not_reached.json()["code"] == 8803
+
+        assert "rank-openid" not in str(logs)
+        assert "甲" not in str(logs)
+        assert "requestId" in str(logs)
+        assert "durationMs" in str(logs)
+        async with session_factory() as session:
+            assert await session.scalar(select(func.count(CoupleRank.id))) == 1
     finally:
         await redis.close()
 
