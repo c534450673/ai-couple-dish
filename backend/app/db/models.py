@@ -289,3 +289,22 @@ class HeartMoment(Base):
     create_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
+
+
+class MoodRecord(Base):
+    __tablename__ = "t_mood_record"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    mood_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    description: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    mood_icon: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    mood_color: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    record_date: Mapped[date] = mapped_column(Date, nullable=False)
+    is_read: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    read_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )

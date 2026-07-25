@@ -206,6 +206,13 @@ class HeartMomentRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class MoodRecordRequest(BaseModel):
+    mood_type: str = Field(alias="moodType", min_length=1, max_length=32)
+    description: str | None = Field(default=None, max_length=512)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class AiChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=10_000)
     session_id: str | None = Field(default=None, alias="sessionId", max_length=128)

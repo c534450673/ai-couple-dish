@@ -23,6 +23,7 @@ from app.db.models import (
     Feed,
     FoodNote,
     HeartMoment,
+    MoodRecord,
     NoteLike,
     Notification,
     Recipe,
@@ -233,6 +234,146 @@ async def test_heart_moment_routes_keep_couple_scope_and_logs_redacted(
         async with session_factory() as session:
             item = await session.get(HeartMoment, moment_id)
             assert item is not None and item.is_deleted == 1
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_mood_routes_keep_couple_scope_create_notifications_and_redact_logs(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    app = create_app(settings())
+    app.state.redis = redis
+
+    async def session_override():
+        async with session_factory() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    private_description = "integration-private-mood-description"
+    try:
+        with capture_logs() as logs:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                users = []
+                user_ids = []
+                for code in ("mood-one", "mood-two", "mood-three", "mood-four"):
+                    response = await client.post("/api/user/login", json={"code": code})
+                    users.append({"Authorization": f"Bearer {response.json()['data']['token']}"})
+                    user_ids.append(int(response.json()["data"]["userInfo"]["id"]))
+
+                assert (
+                    await client.post(
+                        "/api/mood/send", headers=users[0], json={"moodType": "happy"}
+                    )
+                ).json()["code"] == 2006
+                types = await client.get("/api/mood/types", headers=users[0])
+                assert types.json()["code"] == 200
+                assert {item["type"] for item in types.json()["data"]} == {
+                    "happy",
+                    "love",
+                    "miss_you",
+                    "tired",
+                    "upset",
+                    "sad",
+                    "angry",
+                    "anxious",
+                }
+
+                first_code = await client.post("/api/couple/generateCode", headers=users[0])
+                await client.post(
+                    "/api/couple/bind",
+                    headers=users[1],
+                    json={"coupleCode": first_code.json()["data"]},
+                )
+                second_code = await client.post("/api/couple/generateCode", headers=users[2])
+                await client.post(
+                    "/api/couple/bind",
+                    headers=users[3],
+                    json={"coupleCode": second_code.json()["data"]},
+                )
+
+                created = await client.post(
+                    "/api/mood/send",
+                    headers=users[0],
+                    json={"moodType": "happy", "description": private_description},
+                )
+                mood_id = int(created.json()["data"])
+                assert (
+                    await client.post(
+                        "/api/mood/send", headers=users[0], json={"moodType": "unknown"}
+                    )
+                ).json()["code"] == 400
+                today = await client.get("/api/mood/today", headers=users[1])
+                mood = today.json()["data"][0]
+                assert set(mood) == {
+                    "id",
+                    "moodType",
+                    "moodTypeName",
+                    "description",
+                    "moodIcon",
+                    "moodColor",
+                    "recordDate",
+                    "isRead",
+                    "readTime",
+                    "createTime",
+                    "sender",
+                }
+                assert mood["id"] == mood_id
+                assert mood["isRead"] is False
+                assert mood["sender"]["id"] == user_ids[0]
+                assert (await client.get("/api/mood/history?limit=0", headers=users[1])).json()[
+                    "data"
+                ][0]["id"] == mood_id
+                stats = await client.get("/api/mood/stats", headers=users[1])
+                assert stats.json()["data"]["todayCount"] == 1
+                assert stats.json()["data"]["weekCount"] == 1
+                assert stats.json()["data"]["monthCount"] == 1
+                assert stats.json()["data"]["distribution"] == [
+                    {
+                        "moodType": "happy",
+                        "moodTypeName": "开心",
+                        "count": 1,
+                        "percentage": 100.0,
+                    }
+                ]
+                assert (await client.get("/api/mood/unread/count", headers=users[1])).json()[
+                    "data"
+                ] == 1
+                assert (await client.get("/api/mood/unread/count", headers=users[0])).json()[
+                    "data"
+                ] == 0
+                assert (await client.get(f"/api/mood/detail/{mood_id}", headers=users[2])).json()[
+                    "code"
+                ] == 3002
+                assert (await client.post(f"/api/mood/read/{mood_id}", headers=users[2])).json()[
+                    "code"
+                ] == 3002
+                assert (await client.post(f"/api/mood/read/{mood_id}", headers=users[1])).json()[
+                    "code"
+                ] == 200
+                assert (await client.get("/api/mood/unread/count", headers=users[1])).json()[
+                    "data"
+                ] == 0
+        assert private_description not in str(logs)
+        async with session_factory() as session:
+            record = await session.get(MoodRecord, mood_id)
+            notification = await session.scalar(
+                select(Notification).where(
+                    Notification.related_id == mood_id,
+                    Notification.related_type == "mood_record",
+                )
+            )
+            assert record is not None and record.is_read == 1 and record.read_time is not None
+            assert (
+                notification is not None
+                and notification.user_id == user_ids[1]
+                and notification.type == 2
+            )
     finally:
         await redis.close()
 
