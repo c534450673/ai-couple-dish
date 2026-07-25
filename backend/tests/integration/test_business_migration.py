@@ -21,6 +21,7 @@ from app.db.models import (
     Anniversary,
     CoupleMenu,
     CoupleRank,
+    CoupleTree,
     Feed,
     FoodNote,
     HeartMoment,
@@ -30,6 +31,7 @@ from app.db.models import (
     Recipe,
     RecipeCollect,
     RecipeLike,
+    TreeNutrientLog,
     User,
     Wish,
 )
@@ -234,6 +236,106 @@ async def test_couple_rank_routes_keep_couple_scope_lazy_init_and_idempotent_cla
         assert "durationMs" in str(logs)
         async with session_factory() as session:
             assert await session.scalar(select(func.count(CoupleRank.id))) == 1
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_couple_tree_routes_keep_scope_atomic_growth_and_redacted_logs(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    app = create_app(settings())
+    app.state.redis = redis
+
+    async def session_override():
+        async with session_factory() as session:
+            yield session
+
+    app.dependency_overrides[get_session] = session_override
+    try:
+        with capture_logs() as logs:
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                users = []
+                for code, nickname in (("tree-openid-one", "树甲"), ("tree-openid-two", "树乙")):
+                    response = await client.post(
+                        "/api/user/login", json={"code": code, "nickName": nickname}
+                    )
+                    users.append({"Authorization": f"Bearer {response.json()['data']['token']}"})
+
+                code_response = await client.post("/api/couple/generateCode", headers=users[0])
+                assert (
+                    await client.post(
+                        "/api/couple/bind",
+                        headers=users[1],
+                        json={"coupleCode": code_response.json()["data"]},
+                    )
+                ).json()["code"] == 200
+
+                concurrent_info = await asyncio.gather(
+                    *[client.get("/api/coupleTree/info", headers=users[0]) for _ in range(4)]
+                )
+                assert all(response.json()["code"] == 200 for response in concurrent_info)
+                info = concurrent_info[0].json()["data"]
+                assert info["level"] == 1
+                assert info["totalNutrient"] == 0
+                assert info["availableSkins"][0]["unlocked"] is True
+
+                assert (
+                    await client.post(
+                        "/api/coupleTree/water",
+                        headers=users[0],
+                        json={
+                            "nutrientAmount": 100,
+                            "sourceAction": "manual_water",
+                            "remark": "只在测试日志中保存",
+                        },
+                    )
+                ).json()["code"] == 200
+                assert (
+                    await client.post(
+                        "/api/coupleTree/water",
+                        headers=users[1],
+                        json={"nutrientAmount": 10},
+                    )
+                ).json()["code"] == 200
+
+                grown = (await client.get("/api/coupleTree/info", headers=users[1])).json()["data"]
+                assert grown["level"] == 2
+                assert grown["totalNutrient"] == 110
+                assert grown["currentLevelNutrient"] == 10
+                assert grown["availableSkins"][1]["unlocked"] is False
+
+                logs_response = await client.get(
+                    "/api/coupleTree/nutrientLogs?limit=1", headers=users[0]
+                )
+                logs_data = logs_response.json()["data"]
+                assert len(logs_data) == 1
+                assert logs_data[0]["nutrientAmount"] == 10
+                assert logs_data[0]["sourceActionName"] == "手动浇水"
+                assert logs_data[0]["userName"] == "树乙"
+
+                locked = await client.post(
+                    "/api/coupleTree/skin/change?skinId=spring", headers=users[0]
+                )
+                assert locked.json()["code"] == 9001
+                changed = await client.post(
+                    "/api/coupleTree/skin/change?skinId=default", headers=users[1]
+                )
+                assert changed.json()["code"] == 200
+
+        assert "tree-openid" not in str(logs)
+        assert "树甲" not in str(logs)
+        assert "只在测试日志中保存" not in str(logs)
+        assert "requestId" in str(logs)
+        assert "durationMs" in str(logs)
+        async with session_factory() as session:
+            assert await session.scalar(select(func.count(CoupleTree.id))) == 1
+            assert await session.scalar(select(func.count(TreeNutrientLog.id))) == 2
     finally:
         await redis.close()
 

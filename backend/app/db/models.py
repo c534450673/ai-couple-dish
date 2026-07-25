@@ -65,6 +65,44 @@ class CoupleRank(Base):
     )
 
 
+class CoupleTree(Base):
+    __tablename__ = "t_couple_tree"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    level: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("1"))
+    total_nutrient: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, server_default=text("0")
+    )
+    current_level_nutrient: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, server_default=text("0")
+    )
+    skin_id: Mapped[str] = mapped_column(
+        String(64), nullable=False, server_default=text("'default'")
+    )
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class TreeNutrientLog(Base):
+    __tablename__ = "t_tree_nutrient_log"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    nutrient_amount: Mapped[int] = mapped_column(Integer, nullable=False)
+    source_action: Mapped[str] = mapped_column(String(64), nullable=False)
+    remark: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
 class CoupleUnbindRecord(Base):
     __tablename__ = "t_couple_unbind_record"
 

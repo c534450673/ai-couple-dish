@@ -45,6 +45,14 @@ class CoupleRankClaimRequest(BaseModel):
     rank: str = Field(min_length=1, max_length=32)
 
 
+class WaterTreeRequest(BaseModel):
+    nutrient_amount: int | None = Field(default=None, alias="nutrientAmount", ge=1, le=1000)
+    source_action: str | None = Field(default=None, alias="sourceAction", max_length=64)
+    remark: str | None = Field(default=None, max_length=256)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class UnbindRequest(BaseModel):
     option: str | None = Field(default=None, pattern=r"^(keep|delete)$")
 
