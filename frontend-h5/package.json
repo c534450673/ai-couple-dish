@@ -28,11 +28,11 @@
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.54.1",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vitest/coverage-v8": "^1.4.0",
     "@vitest/ui": "^1.4.0",
     "@vue/test-utils": "^2.4.5",
-    "@playwright/test": "^1.54.1",
     "autoprefixer": "^10.4.19",
     "axios-mock-adapter": "^1.22.0",
     "eslint": "^8.57.0",

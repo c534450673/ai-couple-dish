@@ -16,7 +16,8 @@ const applySession = async (page, { authenticated = true, coupled = true } = {})
 }
 
 export const test = contractTest.extend({
-  auth: async ({ page }, use) => {
+  auth: async ({ page, apiMock }, use) => {
+    void apiMock
     await applySession(page)
     await use({
       authenticated: () => applySession(page),

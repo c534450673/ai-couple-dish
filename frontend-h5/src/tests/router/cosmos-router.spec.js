@@ -86,6 +86,12 @@ describe('Couple Cosmos 路由', () => {
     expect(ai.meta.requiresCouple).toBe(false)
   })
 
+  it('固定底部操作条页面隐藏浮动 AI 按钮，避免操作控件重叠', () => {
+    for (const name of ['MenuAdd', 'MenuEdit', 'MenuDetail', 'RecipeNew', 'RecipeEdit', 'RecipeDetail', 'MemoryNoteNew']) {
+      expect(routes.find(route => route.name === name).meta.hideAiFab).toBe(true)
+    }
+  })
+
   it('生产路由表不注册 states，非生产路由表保留视觉回归入口', () => {
     expect(createRouteTable({ production: true }).some(route => route.path === '/states')).toBe(false)
     expect(createRouteTable({ production: false }).some(route => route.path === '/states')).toBe(true)

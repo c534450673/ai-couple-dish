@@ -67,19 +67,19 @@ const baseRoutes = [
     path: '/menu/add',
     name: 'MenuAdd',
     component: () => import('@/views/menu/add.vue'),
-    meta: { title: '添加菜单', requiresAuth: true, requiresCouple: true, shell: true }
+    meta: { title: '添加菜单', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
   },
   {
     path: '/menu/:id/edit',
     name: 'MenuEdit',
     component: () => import('@/views/menu/add.vue'),
-    meta: { title: '编辑菜单', requiresAuth: true, requiresCouple: true, shell: true }
+    meta: { title: '编辑菜单', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
   },
   {
     path: '/menu/:id',
     name: 'MenuDetail',
     component: () => import('@/views/menu/detail.vue'),
-    meta: { title: '菜单详情', requiresAuth: true, requiresCouple: true, shell: true }
+    meta: { title: '菜单详情', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
   },
   {
     path: '/recipe/add',
@@ -119,25 +119,25 @@ const baseRoutes = [
     path: '/recipes/new',
     name: 'RecipeNew',
     component: () => import('@/views/recipe/add.vue'),
-    meta: { title: '新建菜谱', requiresAuth: true, requiresCouple: true, shell: true }
+    meta: { title: '新建菜谱', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
   },
   {
     path: '/recipes/:id/edit',
     name: 'RecipeEdit',
     component: () => import('@/views/recipe/add.vue'),
-    meta: { title: '编辑菜谱', requiresAuth: true, requiresCouple: true, shell: true }
+    meta: { title: '编辑菜谱', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
   },
   {
     path: '/recipes/:id',
     name: 'RecipeDetail',
     component: () => import('@/views/recipe/detail.vue'),
-    meta: { title: '菜谱详情', requiresAuth: true, requiresCouple: true, shell: true }
+    meta: { title: '菜谱详情', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
   },
   {
     path: '/memories/notes/new',
     name: 'MemoryNoteNew',
     component: () => import('@/views/memories/note-editor.vue'),
-    meta: { title: '新建回忆', requiresAuth: true, requiresCouple: true, shell: true }
+    meta: { title: '新建回忆', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
   },
   {
     path: '/memories/notes/:id',
@@ -163,6 +163,12 @@ const baseRoutes = [
     name: 'Legal',
     component: () => import('@/views/legal/index.vue'),
     meta: { title: '协议与隐私', requiresAuth: false, requiresCouple: false, shell: false }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/errors/NotFound.vue'),
+    meta: { title: '页面不存在', requiresAuth: false, requiresCouple: false, shell: false }
   }
 ]
 
