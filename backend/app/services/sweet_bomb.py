@@ -93,6 +93,23 @@ async def _bomb_for_couple(
     return bomb
 
 
+async def _partner_id(
+    request: Request,
+    session: AsyncSession,
+    user: User,
+    couple: Couple,
+    operation: str,
+    started: float,
+) -> int:
+    partner_id = couple.user2_id if couple.user1_id == user.id else couple.user1_id
+    if partner_id is None or partner_id == user.id:
+        await _fail(request, operation, started, 2006, "未绑定情侣关系")
+    partner = await session.scalar(select(User).where(User.id == partner_id, User.is_deleted == 0))
+    if partner is None or partner.couple_id != couple.id:
+        await _fail(request, operation, started, 2006, "未绑定情侣关系")
+    return partner.id
+
+
 def _content(value: str) -> dict[str, object]:
     try:
         parsed = json.loads(value)
@@ -141,13 +158,22 @@ async def _generated_content(
         }
     if bomb_type == "data":
         menu_count = await session.scalar(
-            select(func.count(CoupleMenu.id)).where(CoupleMenu.couple_id == couple_id)
+            select(func.count(CoupleMenu.id)).where(
+                CoupleMenu.couple_id == couple_id,
+                CoupleMenu.is_deleted == 0,
+            )
         )
         anniversary_count = await session.scalar(
-            select(func.count(Anniversary.id)).where(Anniversary.couple_id == couple_id)
+            select(func.count(Anniversary.id)).where(
+                Anniversary.couple_id == couple_id,
+                Anniversary.is_deleted == 0,
+            )
         )
         capsule_count = await session.scalar(
-            select(func.count(TimeCapsule.id)).where(TimeCapsule.couple_id == couple_id)
+            select(func.count(TimeCapsule.id)).where(
+                TimeCapsule.couple_id == couple_id,
+                TimeCapsule.is_deleted == 0,
+            )
         )
         return {
             "title": "恋爱数据站 📊",
@@ -177,6 +203,7 @@ async def generate(
     started = perf_counter()
     operation = "generate"
     user, couple = await _couple_context(request, session, user_id, operation, started)
+    partner_id = await _partner_id(request, session, user, couple, operation, started)
     bomb_type = secrets.choice(_BOMB_TYPES)
     try:
         now = datetime.now()
@@ -193,20 +220,18 @@ async def generate(
         )
         session.add(bomb)
         await session.flush()
-        partner_id = couple.user2_id if couple.user1_id == user.id else couple.user1_id
-        if partner_id is not None:
-            session.add(
-                Notification(
-                    user_id=partner_id,
-                    type=2,
-                    title="💣 甜蜜炸弹",
-                    content="你收到了一个甜蜜炸弹，快来看看吧~",
-                    related_id=bomb.id,
-                    related_type="sweet_bomb",
-                    sender_id=user.id,
-                    is_read=0,
-                )
+        session.add(
+            Notification(
+                user_id=partner_id,
+                type=2,
+                title="💣 甜蜜炸弹",
+                content="你收到了一个甜蜜炸弹，快来看看吧~",
+                related_id=bomb.id,
+                related_type="sweet_bomb",
+                sender_id=user.id,
+                is_read=0,
             )
+        )
         await session.commit()
     except BusinessError:
         raise
