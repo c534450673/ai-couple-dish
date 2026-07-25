@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -11,6 +12,7 @@ import pytest
 
 from scripts.export_spring_contract import (
     ContractExportError,
+    _safe_source,
     export_contract,
     normalize_openapi,
     route_inventory,
@@ -56,6 +58,215 @@ EXPECTED_REDIS_PATTERNS = {
 
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _split_js_arguments(arguments: str) -> list[str]:
+    values: list[str] = []
+    start = 0
+    depth = 0
+    quote: str | None = None
+    escaped = False
+    for index, character in enumerate(arguments):
+        if quote is not None:
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == quote:
+                quote = None
+            continue
+        if character in {"'", '"', "`"}:
+            quote = character
+        elif character in "([{":
+            depth += 1
+        elif character in ")]}":
+            depth -= 1
+        elif character == "," and depth == 0:
+            values.append(arguments[start:index].strip())
+            start = index + 1
+    values.append(arguments[start:].strip())
+    return values
+
+
+def _call_arguments(source: str, opening_parenthesis: int) -> list[str]:
+    depth = 0
+    quote: str | None = None
+    escaped = False
+    for index in range(opening_parenthesis, len(source)):
+        character = source[index]
+        if quote is not None:
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == quote:
+                quote = None
+            continue
+        if character in {"'", '"', "`"}:
+            quote = character
+        elif character == "(":
+            depth += 1
+        elif character == ")":
+            depth -= 1
+            if depth == 0:
+                return _split_js_arguments(source[opening_parenthesis + 1 : index])
+    raise AssertionError("JavaScript call is not balanced")
+
+
+def _parameter_names(signature: str) -> list[str]:
+    return [
+        parameter.split("=", maxsplit=1)[0].strip()
+        for parameter in _split_js_arguments(signature)
+        if parameter.strip()
+    ]
+
+
+def _query_parameters(config: str, public_parameters: list[str]) -> list[str]:
+    object_match = re.search(r"\bparams\s*:\s*\{([^}]*)\}", config, re.DOTALL)
+    if object_match:
+        return re.findall(r"\b[A-Za-z_$][\w$]*\b", object_match.group(1))
+    value_match = re.search(r"\bparams\s*:\s*([A-Za-z_$][\w$]*)", config)
+    if value_match:
+        value = value_match.group(1)
+        if "params" in public_parameters and value.lower().endswith("params"):
+            return ["params"]
+        return [value]
+    if re.search(r"[{,]\s*params\s*[,}]", config):
+        return ["params"]
+    return []
+
+
+def _normalize_js_path(expression: str) -> str:
+    path = expression.strip().strip("'\"`")
+    path = re.sub(r"\$\{(?:data\.)?(\w+)\}", r"{\1}", path)
+    return f"/api{path}"
+
+
+def _extract_axios_consumers(source: str) -> list[dict[str, Any]]:
+    consumers: list[dict[str, Any]] = []
+    export_name: str | None = None
+    function_name: str | None = None
+    public_parameters: list[str] = []
+    function_start = 0
+    offset = 0
+    for line_number, line in enumerate(source.splitlines(keepends=True), start=1):
+        export_match = re.match(r"export const (\w+) = \{", line)
+        if export_match:
+            export_name = export_match.group(1)
+        elif export_name and line.startswith("}"):
+            export_name = None
+            function_name = None
+        function_match = re.match(r"  (\w+)\((.*?)\) \{", line)
+        if function_match:
+            function_name = function_match.group(1)
+            public_parameters = _parameter_names(function_match.group(2))
+            function_start = offset
+        call = re.search(r"return api\.(get|post|put|delete|patch)\(", line)
+        if call and export_name is not None and function_name is not None:
+            method = call.group(1).upper()
+            opening_parenthesis = offset + call.end() - 1
+            arguments = _call_arguments(source, opening_parenthesis)
+            path = _normalize_js_path(arguments[0])
+            path_parameters = re.findall(r"\{([^}]+)\}", path)
+            config_index = 1 if method == "GET" else 2
+            config = arguments[config_index] if len(arguments) > config_index else ""
+            query_parameters = _query_parameters(config, public_parameters)
+            body: list[str] = []
+            multipart: list[str] = []
+            if method in {"POST", "PUT", "PATCH"} and len(arguments) > 1:
+                body_argument = arguments[1]
+                if body_argument == "formData":
+                    multipart = re.findall(
+                        r"formData\.append\(['\"]([^'\"]+)", source[function_start:offset]
+                    )
+                elif body_argument not in {"", "null", "undefined"}:
+                    body = [body_argument]
+            consumers.append(
+                {
+                    "sourceFile": "frontend-h5/src/api/index.js",
+                    "exportName": export_name,
+                    "functionName": function_name,
+                    "method": method,
+                    "path": path,
+                    "sourceLine": line_number,
+                    "transport": "axios",
+                    "parameters": {
+                        "path": path_parameters,
+                        "query": query_parameters,
+                        "body": body,
+                        "multipart": multipart,
+                    },
+                }
+            )
+        offset += len(line)
+    return consumers
+
+
+def _extract_ai_consumers(source: str) -> list[dict[str, Any]]:
+    helper = re.search(
+        r"async function postJson\([^)]*\) \{(?P<body>.*?)^}",
+        source,
+        re.DOTALL | re.MULTILINE,
+    )
+    assert helper is not None
+    helper_method = re.search(r"method:\s*['\"]([A-Z]+)['\"]", helper.group("body"))
+    assert helper_method is not None
+
+    stream = re.search(
+        r"export async function streamChat\([^)]*\) \{(?P<body>.*?)^}",
+        source,
+        re.DOTALL | re.MULTILINE,
+    )
+    assert stream is not None
+    stream_fetch = re.search(
+        r"fetch\(`\$\{BASE_URL\}(?P<path>[^`]+)`\s*,\s*\{(?P<options>.*?)\n\s*}\)",
+        stream.group("body"),
+        re.DOTALL,
+    )
+    assert stream_fetch is not None
+    stream_method = re.search(r"method:\s*['\"]([A-Z]+)['\"]", stream_fetch.group("options"))
+    stream_body = re.search(r"body:\s*JSON\.stringify\((\w+)\)", stream_fetch.group("options"))
+    assert stream_method is not None and stream_body is not None
+    method_offset = stream.start("body") + stream_fetch.start("options") + stream_method.start()
+    consumers = [
+        {
+            "sourceFile": "frontend-h5/src/api/ai.js",
+            "exportName": "namedExport",
+            "functionName": "streamChat",
+            "method": stream_method.group(1),
+            "path": f"/api{stream_fetch.group('path')}",
+            "sourceLine": source.count("\n", 0, method_offset) + 1,
+            "transport": "fetch",
+            "parameters": {
+                "path": [],
+                "query": [],
+                "body": [stream_body.group(1)],
+                "multipart": [],
+            },
+        }
+    ]
+
+    wrapper_pattern = re.compile(
+        r"export function (?P<name>\w+)\([^)]*\) \{\n"
+        r"(?P<indent>\s*)return postJson\((?P<arguments>[^\n]+)\)\n}",
+    )
+    for wrapper in wrapper_pattern.finditer(source):
+        arguments = _split_js_arguments(wrapper.group("arguments"))
+        body = re.findall(r"\b[A-Za-z_$][\w$]*\b", arguments[1])
+        return_offset = wrapper.start("indent") + len(wrapper.group("indent"))
+        consumers.append(
+            {
+                "sourceFile": "frontend-h5/src/api/ai.js",
+                "exportName": "namedExport",
+                "functionName": wrapper.group("name"),
+                "method": helper_method.group(1),
+                "path": f"/api{arguments[0].strip(chr(39) + chr(34))}",
+                "sourceLine": source.count("\n", 0, return_offset) + 1,
+                "transport": "fetch",
+                "parameters": {"path": [], "query": [], "body": body, "multipart": []},
+            }
+        )
+    return consumers
 
 
 def test_normalization_removes_environment_noise_and_is_idempotent() -> None:
@@ -131,6 +342,44 @@ def test_export_is_deterministic_and_uses_atomic_outputs(tmp_path: Path) -> None
     assert openapi_output.read_bytes().endswith(b"\n")
 
 
+def test_export_restores_both_outputs_when_second_publish_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = load_json(FIXTURE)
+    transport = httpx.MockTransport(lambda _request: httpx.Response(200, json=source))
+    openapi_output = tmp_path / "spring-openapi.json"
+    routes_output = tmp_path / "routes.json"
+    openapi_output.write_bytes(b"old-openapi\n")
+    routes_output.write_bytes(b"old-routes\n")
+    real_replace = os.replace
+    published_targets: list[Path] = []
+
+    def fail_second_publish(source_path: str | Path, destination: str | Path) -> None:
+        source = Path(source_path)
+        target = Path(destination)
+        if source.suffix == ".tmp" and target in {openapi_output, routes_output}:
+            published_targets.append(target)
+            if target == routes_output:
+                raise OSError("second publish failed")
+        real_replace(source, target)
+
+    monkeypatch.setattr("scripts.export_spring_contract.os.replace", fail_second_publish)
+
+    with pytest.raises(ContractExportError):
+        export_contract(
+            "http://spring.invalid/api/v2/api-docs",
+            openapi_output,
+            routes_output,
+            transport=transport,
+        )
+
+    assert published_targets == [openapi_output, routes_output]
+    assert openapi_output.read_bytes() == b"old-openapi\n"
+    assert routes_output.read_bytes() == b"old-routes\n"
+    assert not list(tmp_path.glob(".*.tmp"))
+    assert not list(tmp_path.glob(".*.bak"))
+
+
 @pytest.mark.parametrize(
     ("response", "forbidden"),
     [
@@ -178,6 +427,18 @@ def test_export_write_errors_do_not_leak_os_details(
         )
 
     assert "private disk mount detail" not in str(raised.value)
+
+
+def test_safe_source_removes_userinfo_query_and_fragment() -> None:
+    source = _safe_source(
+        "https://private-user:private-password@spring.invalid:8443/api/v2/api-docs"
+        "?token=private-query#private-fragment"
+    )
+
+    assert source == "https://spring.invalid:8443/api/v2/api-docs"
+    assert "private-user" not in source
+    assert "private-password" not in source
+    assert "private-query" not in source
 
 
 def test_spring_routes_are_complete_unique_and_sorted() -> None:
@@ -260,68 +521,23 @@ def test_get_side_effect_exceptions_are_explicit() -> None:
 
 def test_h5_consumers_match_current_source_calls() -> None:
     consumers = load_json(CONTRACTS / "h5-consumers.json")
-
-    assert len(consumers) == 76
-    identities = {
-        (item["sourceFile"], item["exportName"], item["functionName"])
-        for item in consumers
-    }
-    assert len(identities) == 76
-    assert {item["transport"] for item in consumers} == {"axios", "fetch"}
-    for item in consumers:
-        source = REPOSITORY / item["sourceFile"]
-        assert source.is_file()
-        line = source.read_text(encoding="utf-8").splitlines()[item["sourceLine"] - 1]
-        assert item["method"].lower() in line.lower() or item["path"].removeprefix("/api") in line
-        assert set(item["parameters"]) == {"path", "query", "body", "multipart"}
-        assert all(isinstance(values, list) for values in item["parameters"].values())
-
     index_source = (REPOSITORY / "frontend-h5/src/api/index.js").read_text(encoding="utf-8")
-    assert len(re.findall(r"return api\.(?:get|post|put|delete|patch)\(", index_source)) == 72
-    assert {
-        item["functionName"]
-        for item in consumers
-        if item["sourceFile"] == "frontend-h5/src/api/ai.js"
-    } == {"streamChat", "confirmAction", "rejectAction", "generateForm"}
+    ai_source = (REPOSITORY / "frontend-h5/src/api/ai.js").read_text(encoding="utf-8")
+
+    extracted = _extract_axios_consumers(index_source) + _extract_ai_consumers(ai_source)
+
+    assert len(extracted) == 76
+    assert consumers == extracted
 
 
 def test_h5_axios_entries_are_independently_extracted_from_source() -> None:
     consumers = load_json(CONTRACTS / "h5-consumers.json")
     source = (REPOSITORY / "frontend-h5/src/api/index.js").read_text(encoding="utf-8")
-    export_name: str | None = None
-    function_name: str | None = None
-    extracted: set[tuple[str, str, str, str, int]] = set()
-    for line_number, line in enumerate(source.splitlines(), start=1):
-        export_match = re.match(r"export const (\w+) = \{", line)
-        if export_match:
-            export_name = export_match.group(1)
-            continue
-        if export_name and line.startswith("}"):
-            export_name = None
-            function_name = None
-            continue
-        function_match = re.match(r"  (\w+)\([^)]*\) \{", line)
-        if function_match:
-            function_name = function_match.group(1)
-        call = re.search(r"return api\.(get|post|put|delete|patch)\((['\"`])(.+?)\2", line)
-        if not call or export_name is None or function_name is None:
-            continue
-        path = re.sub(r"\$\{(?:data\.)?(\w+)\}", r"{\1}", call.group(3))
-        extracted.add(
-            (export_name, function_name, call.group(1).upper(), f"/api{path}", line_number)
-        )
 
-    recorded = {
-        (
-            item["exportName"],
-            item["functionName"],
-            item["method"],
-            item["path"],
-            item["sourceLine"],
-        )
-        for item in consumers
-        if item["transport"] == "axios"
-    }
+    extracted = _extract_axios_consumers(source)
+    recorded = [item for item in consumers if item["transport"] == "axios"]
+
+    assert len(extracted) == 72
     assert recorded == extracted
 
 

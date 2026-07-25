@@ -186,7 +186,15 @@ def route_inventory(document: dict[str, Any]) -> list[dict[str, Any]]:
 
 def _safe_source(url: str) -> str:
     parsed = urlsplit(url)
-    return f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+    hostname = parsed.hostname or ""
+    if ":" in hostname:
+        hostname = f"[{hostname}]"
+    try:
+        port = parsed.port
+    except ValueError:
+        port = None
+    authority = f"{hostname}:{port}" if port is not None else hostname
+    return f"{parsed.scheme}://{authority}{parsed.path}"
 
 
 def _fetch_document(url: str, transport: httpx.BaseTransport | None) -> dict[str, Any]:
@@ -232,27 +240,93 @@ def _json_bytes(value: Any) -> bytes:
     return (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode()
 
 
-def _atomic_write(path: Path, content: bytes) -> None:
+def _prepare_file(path: Path, content: bytes, suffix: str) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary_path: Path | None = None
     try:
         with tempfile.NamedTemporaryFile(
             dir=path.parent,
             prefix=f".{path.name}.",
-            suffix=".tmp",
+            suffix=suffix,
             delete=False,
         ) as temporary:
             temporary_path = Path(temporary.name)
             temporary.write(content)
             temporary.flush()
             os.fsync(temporary.fileno())
-        os.replace(temporary_path, path)
     except OSError:
         if temporary_path is not None:
             temporary_path.unlink(missing_ok=True)
-        LOGGER.error("event=spring_contract_write_failed file=%s", path.name)
-        raise ContractExportError(f"合同文件写入失败: {path.name}") from None
-    LOGGER.info("event=spring_contract_write_completed file=%s bytes=%s", path.name, len(content))
+        raise
+    return temporary_path
+
+
+def _cleanup_files(paths: list[Path | None]) -> None:
+    for path in paths:
+        if path is None:
+            continue
+        try:
+            path.unlink(missing_ok=True)
+        except OSError:
+            LOGGER.warning("event=spring_contract_cleanup_failed file=%s", path.name)
+
+
+def _atomic_write(outputs: tuple[tuple[Path, bytes], ...]) -> None:
+    prepared: dict[Path, Path | None] = {}
+    backups: dict[Path, Path | None] = {}
+    published: list[Path] = []
+    current_path: Path | None = None
+    phase = "prepare"
+    try:
+        for path, content in outputs:
+            current_path = path
+            prepared[path] = _prepare_file(path, content, ".tmp")
+        for path, _content in outputs:
+            current_path = path
+            backups[path] = (
+                _prepare_file(path, path.read_bytes(), ".bak") if path.exists() else None
+            )
+        LOGGER.info("event=spring_contract_publish_prepared fileCount=%s", len(outputs))
+
+        phase = "publish"
+        for path, _content in outputs:
+            current_path = path
+            temporary_path = cast(Path, prepared[path])
+            os.replace(temporary_path, path)
+            prepared[path] = None
+            published.append(path)
+            LOGGER.info("event=spring_contract_publish_completed file=%s", path.name)
+    except OSError:
+        rollback_failed = False
+        for path in reversed(published):
+            backup_path = backups.get(path)
+            try:
+                if backup_path is None:
+                    path.unlink(missing_ok=True)
+                else:
+                    os.replace(backup_path, path)
+                    backups[path] = None
+                LOGGER.info("event=spring_contract_rollback_completed file=%s", path.name)
+            except OSError:
+                rollback_failed = True
+                LOGGER.critical("event=spring_contract_rollback_failed file=%s", path.name)
+        _cleanup_files([*prepared.values(), *backups.values()])
+        failed_file = current_path.name if current_path is not None else "unknown"
+        LOGGER.error(
+            "event=spring_contract_write_failed phase=%s file=%s rollbackFailed=%s",
+            phase,
+            failed_file,
+            str(rollback_failed).lower(),
+        )
+        raise ContractExportError(f"合同文件事务写入失败: {failed_file}") from None
+
+    _cleanup_files([*backups.values()])
+    for path, content in outputs:
+        LOGGER.info(
+            "event=spring_contract_write_completed file=%s bytes=%s",
+            path.name,
+            len(content),
+        )
 
 
 def export_contract(
@@ -266,8 +340,12 @@ def export_contract(
     document = _fetch_document(url, transport)
     normalized = normalize_openapi(document)
     inventory = route_inventory(normalized)
-    _atomic_write(output, _json_bytes(normalized))
-    _atomic_write(routes, _json_bytes(inventory))
+    _atomic_write(
+        (
+            (output, _json_bytes(normalized)),
+            (routes, _json_bytes(inventory)),
+        )
+    )
     LOGGER.info(
         "event=spring_contract_export_completed pathCount=%s routeCount=%s",
         len(normalized.get("paths", {})),
