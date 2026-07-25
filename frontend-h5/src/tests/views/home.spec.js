@@ -145,6 +145,15 @@ describe('home-emotion 首页', () => {
     expect(wrapper.find('[data-test="feed-degraded"]').text()).toContain('部分动态暂未加载')
   })
 
+  it('Feed 成功但 content/message 为空时进入局部空态，不生成合成正文', () => {
+    mocks.store.resources.feed = resource('success', { content: '', message: '', imageUrls: [] })
+    const wrapper = mountHome()
+
+    expect(wrapper.find('[data-test="feed-state"]').text()).toContain('暂无可显示的动态')
+    expect(wrapper.find('.recent-feed__text').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('动态内容未填写')
+  })
+
   it('401 与 2006 分别进入登录和绑定流程，卸载时使请求上下文失效', async () => {
     mocks.store.resources.couple = resource('error', null, { errorCode: '401', flow: 'login' })
     let wrapper = mountHome()
@@ -160,6 +169,22 @@ describe('home-emotion 首页', () => {
     await flushPromises()
     expect(mocks.router.replace).toHaveBeenCalledWith('/bind')
     wrapper.unmount()
+  })
+
+  it('卸载后迟到的 loadAll 不会触发访问流程导航', async () => {
+    let resolveLoadAll
+    mocks.store.loadAll.mockReturnValueOnce(new Promise(resolve => { resolveLoadAll = resolve }))
+    mocks.store.resources.couple = resource('error', null, { errorCode: '401', flow: 'login' })
+    const wrapper = mountHome()
+    await flushPromises()
+    expect(mocks.store.loadAll).toHaveBeenCalledOnce()
+
+    wrapper.unmount()
+    resolveLoadAll([])
+    await flushPromises()
+
+    expect(mocks.router.replace).not.toHaveBeenCalled()
+    expect(mocks.store.invalidatePending).toHaveBeenCalledOnce()
   })
 
   it('导航日志只记录目标路由和动效偏好', async () => {

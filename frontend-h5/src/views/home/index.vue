@@ -13,10 +13,15 @@ const router = useRouter()
 const homeStore = useHomeStore()
 const userStore = useUserStore()
 const prefersReducedMotion = useReducedMotion()
+let mounted = false
+let activeContextId = 0
 
 const resources = computed(() => homeStore.resources)
 const currentAvatar = computed(() => userStore.userInfo?.avatarUrl || '')
-const feedText = computed(() => resources.value.feed.data?.content || resources.value.feed.data?.message || '')
+const feedText = computed(() => {
+  const value = resources.value.feed.data?.content || resources.value.feed.data?.message || ''
+  return typeof value === 'string' && value.trim() ? value : ''
+})
 const feedImage = computed(() => {
   const images = resources.value.feed.data?.imageUrls
   return Array.isArray(images) ? images[0] || '' : ''
@@ -33,34 +38,42 @@ const logNavigation = (target) => {
   })
 }
 
-const redirectForAccessFlow = () => {
+const redirectForAccessFlow = (contextId = activeContextId) => {
+  if (!mounted || contextId !== activeContextId) return false
   const states = Object.values(resources.value)
   const targetRoute = states.some(resource => resource.flow === 'login')
     ? '/login'
     : (states.some(resource => resource.flow === 'bind') ? '/bind' : null)
-  if (!targetRoute) return
+  if (!targetRoute) return false
   logUiEvent('home.access_redirect', {
     state: 'redirect',
     targetRoute,
     reducedMotion: prefersReducedMotion.value
   })
   router.replace(targetRoute)
+  return true
 }
 
 const retryResource = async (resource) => {
+  const contextId = activeContextId
   await homeStore.retryResource(resource)
-  redirectForAccessFlow()
+  redirectForAccessFlow(contextId)
 }
 
 onMounted(async () => {
+  mounted = true
+  const contextId = ++activeContextId
   // 等待应用层用户快照请求先完成，避免 request 去重器取消首页关系摘要。
   await nextTick()
+  if (!mounted || contextId !== activeContextId) return
   await homeStore.loadAll()
-  redirectForAccessFlow()
+  redirectForAccessFlow(contextId)
 })
 
 onUnmounted(() => {
   homeStore.invalidatePending()
+  mounted = false
+  activeContextId += 1
 })
 </script>
 
@@ -215,7 +228,7 @@ onUnmounted(() => {
         </div>
 
         <router-link
-          v-if="resources.feed.status === 'success'"
+          v-if="resources.feed.status === 'success' && feedText"
           class="recent-feed__entry"
           to="/feed"
           @click="logNavigation('/feed')"
@@ -253,6 +266,7 @@ onUnmounted(() => {
         >
           <span v-if="resources.feed.status === 'loading'">动态加载中</span>
           <span v-else-if="resources.feed.status === 'empty'">暂无动态</span>
+          <span v-else-if="resources.feed.status === 'success'">暂无可显示的动态</span>
           <span v-else>动态暂时无法加载</span>
           <button
             v-if="resources.feed.status === 'error'"

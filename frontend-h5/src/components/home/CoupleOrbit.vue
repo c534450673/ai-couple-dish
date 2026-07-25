@@ -179,6 +179,12 @@ defineEmits(['retry'])
   font-size: 12px;
 }
 
+.couple-orbit__retry:focus-visible,
+.couple-orbit__timer button:focus-visible {
+  outline: 3px solid #54e8d3;
+  outline-offset: 2px;
+}
+
 .couple-orbit__timer {
   display: flex;
   align-items: center;
