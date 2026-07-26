@@ -13,6 +13,15 @@ def test_each_route_has_exactly_one_owner() -> None:
     assert isinstance(document, dict)
     assert document["defaultOwner"] == "spring"
     assert document["fastapiRoutes"] == [
+        "POST /api/challenge/accept/{challengeId}",
+        "POST /api/challenge/cancel/{challengeId}",
+        "POST /api/challenge/checkin",
+        "GET /api/challenge/checkin-records/{challengeId}",
+        "POST /api/challenge/create",
+        "GET /api/challenge/detail/{challengeId}",
+        "GET /api/challenge/list",
+        "GET /api/challenge/pending",
+        "POST /api/challenge/reject/{challengeId}",
         "POST /api/couple/bind",
         "GET /api/couple/codeInfo",
         "POST /api/couple/generateCode",
@@ -81,6 +90,16 @@ def test_each_route_has_exactly_one_owner() -> None:
                 "nginx-config-check",
             ],
         },
+        "challenge-v1": {
+            "activeOwner": "fastapi",
+            "rollbackOwner": "spring",
+            "nginxLocation": "challenge-exact-contract-regex",
+            "requires": [
+                "real-mysql-redis-gates",
+                "contract-route-owner-check",
+                "nginx-config-check",
+            ],
+        },
     }
     assert document["integrationGatedRoutes"] == document["fastapiRoutes"]
     assert document["operationalFastapiRoutes"] == [
@@ -111,7 +130,7 @@ def test_business_routes_have_one_declared_owner() -> None:
         if route["owner"] == "fastapi"
     }
     assert fastapi_route_keys == fastapi_routes
-    assert len(route_keys - fastapi_routes) == 157
+    assert len(route_keys - fastapi_routes) == 148
 
 
 def test_foundation_cases_have_required_safe_fields() -> None:

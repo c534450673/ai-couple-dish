@@ -164,7 +164,7 @@
     "path": "/api/challenge/accept/{challengeId}",
     "controller": "ChallengeController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -172,7 +172,7 @@
     "path": "/api/challenge/cancel/{challengeId}",
     "controller": "ChallengeController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -180,7 +180,7 @@
     "path": "/api/challenge/checkin",
     "controller": "ChallengeController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -188,7 +188,7 @@
     "path": "/api/challenge/checkin-records/{challengeId}",
     "controller": "ChallengeController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -196,7 +196,7 @@
     "path": "/api/challenge/create",
     "controller": "ChallengeController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -204,7 +204,7 @@
     "path": "/api/challenge/detail/{challengeId}",
     "controller": "ChallengeController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -212,7 +212,7 @@
     "path": "/api/challenge/list",
     "controller": "ChallengeController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -220,7 +220,7 @@
     "path": "/api/challenge/pending",
     "controller": "ChallengeController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -228,7 +228,7 @@
     "path": "/api/challenge/reject/{challengeId}",
     "controller": "ChallengeController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {

@@ -1,6 +1,15 @@
 {
   "defaultOwner": "spring",
   "fastapiRoutes": [
+    "POST /api/challenge/accept/{challengeId}",
+    "POST /api/challenge/cancel/{challengeId}",
+    "POST /api/challenge/checkin",
+    "GET /api/challenge/checkin-records/{challengeId}",
+    "POST /api/challenge/create",
+    "GET /api/challenge/detail/{challengeId}",
+    "GET /api/challenge/list",
+    "GET /api/challenge/pending",
+    "POST /api/challenge/reject/{challengeId}",
     "POST /api/couple/bind",
     "GET /api/couple/codeInfo",
     "POST /api/couple/generateCode",
@@ -39,6 +48,15 @@
     "PUT /api/wish/update/{id}"
   ],
   "integrationGatedRoutes": [
+    "POST /api/challenge/accept/{challengeId}",
+    "POST /api/challenge/cancel/{challengeId}",
+    "POST /api/challenge/checkin",
+    "GET /api/challenge/checkin-records/{challengeId}",
+    "POST /api/challenge/create",
+    "GET /api/challenge/detail/{challengeId}",
+    "GET /api/challenge/list",
+    "GET /api/challenge/pending",
+    "POST /api/challenge/reject/{challengeId}",
     "POST /api/couple/bind",
     "GET /api/couple/codeInfo",
     "POST /api/couple/generateCode",
@@ -101,6 +119,16 @@
       "activeOwner": "fastapi",
       "rollbackOwner": "spring",
       "nginxLocation": "heart-moment-exact-contract-regex",
+      "requires": [
+        "real-mysql-redis-gates",
+        "contract-route-owner-check",
+        "nginx-config-check"
+      ]
+    },
+    "challenge-v1": {
+      "activeOwner": "fastapi",
+      "rollbackOwner": "spring",
+      "nginxLocation": "challenge-exact-contract-regex",
       "requires": [
         "real-mysql-redis-gates",
         "contract-route-owner-check",
