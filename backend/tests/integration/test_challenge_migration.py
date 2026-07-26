@@ -1,18 +1,17 @@
 import asyncio
 import os
 import re
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Awaitable
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
 import pytest
-from httpx import ASGITransport, AsyncClient
-from sqlalchemy import Connection, inspect, text
+from httpx import ASGITransport, AsyncClient, Response
+from sqlalchemy import Connection, event, inspect, text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
-    async_sessionmaker,
     create_async_engine,
 )
 from structlog.testing import capture_logs
@@ -22,7 +21,7 @@ os.environ.setdefault("JWT_SECRET", "x" * 64)
 
 from app.core.auth import create_access_token, decode_access_token
 from app.core.config import Settings
-from app.db.session import get_session
+from app.db.session import Database
 from app.main import create_app
 from app.redis.client import RedisClient
 from app.redis.keys import logout_blacklist_key
@@ -85,43 +84,38 @@ async def challenge_engine(mysql_url: str) -> AsyncIterator[AsyncEngine]:
 
 
 class Context:
-    def __init__(self, client: AsyncClient, engine: AsyncEngine, redis: RedisClient) -> None:
+    def __init__(
+        self,
+        client: AsyncClient,
+        engine: AsyncEngine,
+        redis: RedisClient,
+        database: Database,
+    ) -> None:
         self.client = client
         self.engine = engine
         self.redis = redis
+        self.database = database
         self.auth = {user_id: _headers(user_id) for user_id in (101, 102, 201, 202, 301)}
 
 
 @pytest.fixture
-async def context(challenge_engine: AsyncEngine, redis_url: str) -> AsyncIterator[Context]:
+async def context(
+    challenge_engine: AsyncEngine, mysql_url: str, redis_url: str
+) -> AsyncIterator[Context]:
     redis = RedisClient(redis_url)
     await redis.connect()
+    database = Database(mysql_url, pool_size=12, max_overflow=4)
+    await database.connect()
     app = create_app(_settings())
     app.state.redis = redis
-    factory = async_sessionmaker(challenge_engine, expire_on_commit=False)
-
-    async def session_override() -> AsyncIterator[AsyncSession]:
-        async with factory() as session:
-            try:
-                yield session
-            except Exception:
-                await session.rollback()
-                await challenge_service.logger.awarning(
-                    "database_session_rolled_back",
-                    module="database",
-                    operation="rollback",
-                    result="completed",
-                    dependency="database",
-                )
-                raise
-
-    app.dependency_overrides[get_session] = session_override
+    app.state.db = database
     try:
         async with AsyncClient(
             transport=ASGITransport(app=app, raise_app_exceptions=False), base_url="http://test"
         ) as client:
-            yield Context(client, challenge_engine, redis)
+            yield Context(client, challenge_engine, redis, database)
     finally:
+        await database.close()
         await redis.close()
 
 
@@ -157,6 +151,81 @@ async def _snapshot(context: Context, challenge_id: int) -> tuple[list[dict[str,
     return challenge, records
 
 
+class _LockAttemptObserver:
+    def __init__(self, engine: AsyncEngine, table_name: str) -> None:
+        self._engine = engine.sync_engine
+        self._table_name = table_name.lower()
+        self._loop = asyncio.get_running_loop()
+        self._changed = asyncio.Event()
+        self.count = 0
+        event.listen(self._engine, "before_cursor_execute", self._before_cursor_execute)
+
+    def _before_cursor_execute(
+        self,
+        _connection: Any,
+        _cursor: Any,
+        statement: str,
+        _parameters: Any,
+        _context: Any,
+        _executemany: bool,
+    ) -> None:
+        normalized = " ".join(statement.lower().split())
+        if "for update" not in normalized or self._table_name not in normalized:
+            return
+        self.count += 1
+        self._loop.call_soon_threadsafe(self._changed.set)
+
+    async def wait_for(self, minimum: int, *, wait_seconds: float = 5) -> int:
+        deadline = self._loop.time() + wait_seconds
+        while self.count < minimum:
+            self._changed.clear()
+            if self.count >= minimum:
+                break
+            remaining = deadline - self._loop.time()
+            if remaining <= 0:
+                raise AssertionError(
+                    f"expected {minimum} blocked {self._table_name} lock attempts, "
+                    f"observed {self.count}"
+                )
+            try:
+                await asyncio.wait_for(self._changed.wait(), timeout=remaining)
+            except TimeoutError as exc:
+                raise AssertionError(
+                    f"expected {minimum} blocked {self._table_name} lock attempts, "
+                    f"observed {self.count}"
+                ) from exc
+        return self.count
+
+    def close(self) -> None:
+        event.remove(self._engine, "before_cursor_execute", self._before_cursor_execute)
+
+
+async def _run_requests_behind_locks(
+    context: Context,
+    challenge_id: int,
+    requests: list[Awaitable[Response]],
+    *,
+    expected_waiters: int,
+) -> tuple[list[Response], int]:
+    observer = _LockAttemptObserver(context.database.engine, "t_couple")
+    tasks: list[asyncio.Future[Response]] = []
+    async with context.engine.connect() as blocker:
+        transaction = await blocker.begin()
+        await blocker.execute(text("SELECT id FROM t_couple WHERE id=11 FOR UPDATE"))
+        await blocker.execute(
+            text("SELECT id FROM t_challenge WHERE id=:id FOR UPDATE"),
+            {"id": challenge_id},
+        )
+        tasks = [asyncio.ensure_future(request) for request in requests]
+        try:
+            waiter_count = await observer.wait_for(expected_waiters)
+            assert all(not task.done() for task in tasks)
+        finally:
+            observer.close()
+            await transaction.commit()
+    return list(await asyncio.gather(*tasks)), waiter_count
+
+
 async def _create(context: Context, *, target_days: int = 3, user_id: int = 101) -> int:
     response = await context.client.post(
         "/api/challenge/create",
@@ -171,6 +240,24 @@ async def _create(context: Context, *, target_days: int = 3, user_id: int = 101)
     )
     assert response.json()["code"] == 200
     return int(response.json()["data"])
+
+
+async def _id_route_payloads(context: Context, challenge_id: int) -> list[dict[str, Any]]:
+    responses = await asyncio.gather(
+        context.client.post(f"/api/challenge/accept/{challenge_id}", headers=context.auth[102]),
+        context.client.post(f"/api/challenge/reject/{challenge_id}", headers=context.auth[102]),
+        context.client.post(f"/api/challenge/cancel/{challenge_id}", headers=context.auth[101]),
+        context.client.post(
+            "/api/challenge/checkin",
+            headers=context.auth[101],
+            json={"challengeId": challenge_id},
+        ),
+        context.client.get(f"/api/challenge/detail/{challenge_id}", headers=context.auth[101]),
+        context.client.get(
+            f"/api/challenge/checkin-records/{challenge_id}", headers=context.auth[101]
+        ),
+    )
+    return [response.json() for response in responses]
 
 
 @pytest.mark.integration
@@ -252,16 +339,22 @@ async def test_challenge_happy_path_dto_scope_and_accepted_pending_compatibility
 @pytest.mark.integration
 async def test_same_user_eight_concurrent_checkins_are_idempotent(context: Context) -> None:
     challenge_id = await _create(context, target_days=3)
-    responses = await asyncio.gather(
-        *[
-            context.client.post(
-                "/api/challenge/checkin",
-                headers=context.auth[101],
-                json={"challengeId": challenge_id, "content": "same"},
-            )
-            for _ in range(8)
-        ]
-    )
+    private_content = "private-idempotent-content-marker"
+    with capture_logs() as logs:
+        responses, waiter_count = await _run_requests_behind_locks(
+            context,
+            challenge_id,
+            [
+                context.client.post(
+                    "/api/challenge/checkin",
+                    headers=context.auth[101],
+                    json={"challengeId": challenge_id, "content": private_content},
+                )
+                for _ in range(8)
+            ],
+            expected_waiters=8,
+        )
+    assert waiter_count >= 8
     payloads = [response.json() for response in responses]
     assert all(payload["code"] == 200 for payload in payloads)
     assert len({payload["data"]["id"] for payload in payloads}) == 1
@@ -273,6 +366,17 @@ async def test_same_user_eight_concurrent_checkins_are_idempotent(context: Conte
         )
         == 1
     )
+    challenge_logs = [
+        entry
+        for entry in logs
+        if entry.get("module") == "challenge" and entry.get("operation") == "checkin"
+    ]
+    assert len(challenge_logs) == 8
+    assert [entry["result"] for entry in challenge_logs].count("success") == 1
+    assert [entry["result"] for entry in challenge_logs].count("idempotent") == 7
+    allowed = {"requestId", "module", "operation", "result", "durationMs", "errorCode"}
+    assert all(set(entry) - {"event", "log_level"} == allowed for entry in challenge_logs)
+    assert private_content not in str(challenge_logs)
     assert (
         await _scalar(
             context.engine, "SELECT current_days FROM t_challenge WHERE id=:id", id=challenge_id
@@ -294,16 +398,20 @@ async def test_two_users_same_day_contribute_one_progress_day_without_lost_inser
             ),
             {"id": challenge_id, "day": date.today() - timedelta(days=1)},
         )
-    responses = await asyncio.gather(
-        *[
+    responses, waiter_count = await _run_requests_behind_locks(
+        context,
+        challenge_id,
+        [
             context.client.post(
                 "/api/challenge/checkin",
                 headers=context.auth[user_id],
                 json={"challengeId": challenge_id},
             )
             for user_id in (101, 102)
-        ]
+        ],
+        expected_waiters=2,
     )
+    assert waiter_count >= 2
     assert all(response.json()["code"] == 200 for response in responses)
     assert (
         await _scalar(
@@ -400,16 +508,20 @@ async def test_completion_threshold_is_linearized_for_two_concurrent_users(
         id=challenge_id,
         day=date.today() - timedelta(days=1),
     )
-    responses = await asyncio.gather(
-        *[
+    responses, waiter_count = await _run_requests_behind_locks(
+        context,
+        challenge_id,
+        [
             context.client.post(
                 "/api/challenge/checkin",
                 headers=context.auth[user_id],
                 json={"challengeId": challenge_id},
             )
             for user_id in (101, 102)
-        ]
+        ],
+        expected_waiters=2,
     )
+    assert waiter_count >= 2
     payloads = [response.json() for response in responses]
     assert sorted(payload["code"] for payload in payloads) == [200, 9999]
     rejected = next(payload for payload in payloads if payload["code"] == 9999)
@@ -458,6 +570,17 @@ async def test_checkin_failure_after_flush_rolls_back_and_logs_safely(
     }
     assert await _snapshot(context, challenge_id) == before
     assert any(entry.get("event") == "database_session_rolled_back" for entry in logs)
+    async with context.engine.connect() as connection:
+        transaction = await connection.begin()
+        await connection.execute(text("SET innodb_lock_wait_timeout=1"))
+        await asyncio.wait_for(
+            connection.execute(
+                text("SELECT id FROM t_challenge WHERE id=:id FOR UPDATE"),
+                {"id": challenge_id},
+            ),
+            timeout=2,
+        )
+        await transaction.rollback()
     challenge_logs = [entry for entry in logs if entry.get("module") == "challenge"]
     assert len(challenge_logs) == 1
     assert challenge_logs[0]["event"] == "business_operation_failed"
@@ -509,39 +632,94 @@ async def test_after_unbind_all_nine_routes_reject_without_mutation(context: Con
 async def test_unbind_and_checkin_race_has_only_complete_linearized_outcomes(
     context: Context,
 ) -> None:
-    challenge_id = await _create(context)
+    checkin_first_id = await _create(context)
+    unbind_started = asyncio.Event()
+    unbind_acquired = asyncio.Event()
 
-    async def unbind() -> None:
-        async with context.engine.begin() as connection:
+    async def unbind_after_checkin_lock() -> None:
+        async with context.engine.connect() as connection:
+            transaction = await connection.begin()
+            unbind_started.set()
             await connection.execute(text("SELECT id FROM t_couple WHERE id=11 FOR UPDATE"))
+            unbind_acquired.set()
             await connection.execute(text("UPDATE t_user SET couple_id=NULL WHERE id IN (101,102)"))
             await connection.execute(text("UPDATE t_couple SET status=0 WHERE id=11"))
+            await transaction.commit()
 
-    checkin_response, _ = await asyncio.gather(
-        context.client.post(
-            "/api/challenge/checkin",
-            headers=context.auth[101],
-            json={"challengeId": challenge_id},
-        ),
-        unbind(),
+    async with context.engine.connect() as challenge_blocker:
+        blocker_transaction = await challenge_blocker.begin()
+        await challenge_blocker.execute(
+            text("SELECT id FROM t_challenge WHERE id=:id FOR UPDATE"),
+            {"id": checkin_first_id},
+        )
+        challenge_attempts = _LockAttemptObserver(context.database.engine, "t_challenge")
+        checkin_task = asyncio.create_task(
+            context.client.post(
+                "/api/challenge/checkin",
+                headers=context.auth[101],
+                json={"challengeId": checkin_first_id},
+            )
+        )
+        couple_attempts = _LockAttemptObserver(context.engine, "t_couple")
+        try:
+            assert await challenge_attempts.wait_for(1) >= 1
+            assert not checkin_task.done()
+            unbind_task = asyncio.create_task(unbind_after_checkin_lock())
+            await asyncio.wait_for(unbind_started.wait(), timeout=2)
+            assert await couple_attempts.wait_for(1) >= 1
+            assert not unbind_acquired.is_set()
+        finally:
+            challenge_attempts.close()
+            couple_attempts.close()
+            await blocker_transaction.commit()
+
+    checkin_first_response = await checkin_task
+    await unbind_task
+    assert checkin_first_response.json()["code"] == 200
+    assert await _snapshot(context, checkin_first_id) == (
+        [{"current_days": 1, "status": 0, "end_date": None, "is_deleted": 0}],
+        1,
     )
-    assert checkin_response.json()["code"] in {200, 2006}
-    snapshot = await _snapshot(context, challenge_id)
-    if checkin_response.json()["code"] == 200:
-        assert snapshot == (
-            [{"current_days": 1, "status": 0, "end_date": None, "is_deleted": 0}],
-            1,
-        )
-    else:
-        assert snapshot == (
-            [{"current_days": 0, "status": 0, "end_date": None, "is_deleted": 0}],
-            0,
-        )
     assert await _rows(
         context.engine,
         "SELECT couple_id FROM t_user WHERE id IN (101,102) ORDER BY id",
     ) == [{"couple_id": None}, {"couple_id": None}]
     assert await _scalar(context.engine, "SELECT status FROM t_couple WHERE id=11") == 0
+
+    async with context.engine.begin() as connection:
+        await connection.execute(text("UPDATE t_couple SET status=1 WHERE id=11"))
+        await connection.execute(text("UPDATE t_user SET couple_id=11 WHERE id IN (101,102)"))
+    unbind_first_id = await _create(context)
+    async with context.engine.connect() as unbind_blocker:
+        unbind_transaction = await unbind_blocker.begin()
+        await unbind_blocker.execute(text("SELECT id FROM t_couple WHERE id=11 FOR UPDATE"))
+        await unbind_blocker.execute(text("UPDATE t_user SET couple_id=NULL WHERE id IN (101,102)"))
+        await unbind_blocker.execute(text("UPDATE t_couple SET status=0 WHERE id=11"))
+        couple_attempts = _LockAttemptObserver(context.database.engine, "t_couple")
+        rejected_checkin_task = asyncio.create_task(
+            context.client.post(
+                "/api/challenge/checkin",
+                headers=context.auth[101],
+                json={"challengeId": unbind_first_id},
+            )
+        )
+        try:
+            assert await couple_attempts.wait_for(1) >= 1
+            assert not rejected_checkin_task.done()
+        finally:
+            couple_attempts.close()
+            await unbind_transaction.commit()
+
+    rejected_checkin = await rejected_checkin_task
+    assert rejected_checkin.json() == {
+        "code": 2006,
+        "message": "未绑定情侣关系",
+        "data": None,
+    }
+    assert await _snapshot(context, unbind_first_id) == (
+        [{"current_days": 0, "status": 0, "end_date": None, "is_deleted": 0}],
+        0,
+    )
 
 
 @pytest.mark.integration
@@ -598,6 +776,22 @@ async def test_role_matrix_and_cross_couple_scope_preserve_rows(context: Context
         (9999, "只有创建者可以取消挑战"),
     ]
     assert await _snapshot(context, first_id) == before
+
+
+@pytest.mark.integration
+async def test_all_id_routes_hide_foreign_missing_and_soft_deleted_existence(
+    context: Context,
+) -> None:
+    soft_deleted_id = await _create(context, user_id=101)
+    foreign_id = await _create(context, user_id=201)
+    await _execute(
+        context.engine,
+        "UPDATE t_challenge SET is_deleted=1 WHERE id=:id",
+        id=soft_deleted_id,
+    )
+    expected = {"code": 9999, "message": "无权访问该挑战", "data": None}
+    for candidate_id in (foreign_id, soft_deleted_id, 9_999_999):
+        assert await _id_route_payloads(context, candidate_id) == [expected] * 6
 
 
 @pytest.mark.integration

@@ -132,9 +132,7 @@ async def _scoped_challenge(
     if lock:
         statement = statement.with_for_update()
     challenge = await session.scalar(statement)
-    if challenge is None:
-        await _fail(request, operation, started, 9999, "挑战不存在")
-    if challenge.couple_id != context.id:
+    if challenge is None or challenge.couple_id != context.id:
         await _fail(request, operation, started, 9999, "无权访问该挑战")
     return challenge
 
