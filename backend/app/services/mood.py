@@ -223,8 +223,7 @@ async def _list(
         )
     )
     if limit is not None:
-        safe_limit = limit if 1 <= limit <= 100 else 30
-        statement = statement.limit(safe_limit)
+        statement = statement.limit(limit)
     result = await session.execute(statement)
     items = await _payloads(session, list(result.scalars().all()))
     await logger.ainfo(

@@ -39,6 +39,14 @@ def test_each_route_has_exactly_one_owner() -> None:
         "DELETE /api/heartMoment/delete/{id}",
         "GET /api/heartMoment/list",
         "GET /api/heartMoment/random",
+        "GET /api/mood/detail/{id}",
+        "GET /api/mood/history",
+        "POST /api/mood/read/{id}",
+        "POST /api/mood/send",
+        "GET /api/mood/stats",
+        "GET /api/mood/today",
+        "GET /api/mood/types",
+        "GET /api/mood/unread/count",
         "DELETE /api/notification/delete/{id}",
         "GET /api/notification/list",
         "PUT /api/notification/read/{id}",
@@ -100,6 +108,16 @@ def test_each_route_has_exactly_one_owner() -> None:
                 "nginx-config-check",
             ],
         },
+        "mood-v1": {
+            "activeOwner": "fastapi",
+            "rollbackOwner": "spring",
+            "nginxLocation": "mood-exact-contract-regex",
+            "requires": [
+                "real-mysql-redis-gates",
+                "contract-route-owner-check",
+                "nginx-config-check",
+            ],
+        },
     }
     assert document["integrationGatedRoutes"] == document["fastapiRoutes"]
     assert document["operationalFastapiRoutes"] == [
@@ -130,7 +148,7 @@ def test_business_routes_have_one_declared_owner() -> None:
         if route["owner"] == "fastapi"
     }
     assert fastapi_route_keys == fastapi_routes
-    assert len(route_keys - fastapi_routes) == 148
+    assert len(route_keys - fastapi_routes) == 140
 
 
 def test_foundation_cases_have_required_safe_fields() -> None:

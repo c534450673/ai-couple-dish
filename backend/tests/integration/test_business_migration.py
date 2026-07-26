@@ -961,7 +961,7 @@ async def test_mood_routes_keep_couple_scope_create_notifications_and_redact_log
                 assert mood["sender"]["id"] == user_ids[0]
                 assert (await client.get("/api/mood/history?limit=0", headers=users[1])).json()[
                     "data"
-                ][0]["id"] == mood_id
+                ] == []
                 stats = await client.get("/api/mood/stats", headers=users[1])
                 assert stats.json()["data"]["todayCount"] == 1
                 assert stats.json()["data"]["weekCount"] == 1
@@ -1007,6 +1007,22 @@ async def test_mood_routes_keep_couple_scope_create_notifications_and_redact_log
                 and notification.user_id == user_ids[1]
                 and notification.type == 2
             )
+
+        async with mysql_business_engine.begin() as connection:
+            await connection.exec_driver_sql("ALTER TABLE t_notification DROP COLUMN title")
+        async with AsyncClient(
+            transport=ASGITransport(app=app, raise_app_exceptions=False),
+            base_url="http://test",
+        ) as client:
+            failed = await client.post(
+                "/api/mood/send",
+                headers=users[0],
+                json={"moodType": "love", "description": "must-rollback"},
+            )
+            assert failed.status_code == 500
+        async with session_factory() as session:
+            mood_count = await session.scalar(select(func.count(MoodRecord.id)))
+            assert mood_count == 1
     finally:
         await redis.close()
 

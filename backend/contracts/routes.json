@@ -844,7 +844,7 @@
     "path": "/api/mood/detail/{id}",
     "controller": "MoodRecordController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -852,7 +852,7 @@
     "path": "/api/mood/history",
     "controller": "MoodRecordController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -860,7 +860,7 @@
     "path": "/api/mood/read/{id}",
     "controller": "MoodRecordController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -868,7 +868,7 @@
     "path": "/api/mood/send",
     "controller": "MoodRecordController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -876,7 +876,7 @@
     "path": "/api/mood/stats",
     "controller": "MoodRecordController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -884,7 +884,7 @@
     "path": "/api/mood/today",
     "controller": "MoodRecordController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -892,7 +892,7 @@
     "path": "/api/mood/types",
     "controller": "MoodRecordController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -900,7 +900,7 @@
     "path": "/api/mood/unread/count",
     "controller": "MoodRecordController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
