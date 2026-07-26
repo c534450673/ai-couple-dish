@@ -25,7 +25,14 @@
     "POST /api/user/phoneLogin",
     "POST /api/user/register",
     "POST /api/user/sendCode",
-    "PUT /api/user/update"
+    "PUT /api/user/update",
+    "POST /api/wish/add",
+    "DELETE /api/wish/delete/{id}",
+    "GET /api/wish/detail/{id}",
+    "POST /api/wish/fulfill/{id}",
+    "GET /api/wish/list",
+    "POST /api/wish/unfulfill/{id}",
+    "PUT /api/wish/update/{id}"
   ],
   "integrationGatedRoutes": [
     "POST /api/couple/bind",
@@ -52,13 +59,30 @@
     "POST /api/user/phoneLogin",
     "POST /api/user/register",
     "POST /api/user/sendCode",
-    "PUT /api/user/update"
+    "PUT /api/user/update",
+    "POST /api/wish/add",
+    "DELETE /api/wish/delete/{id}",
+    "GET /api/wish/detail/{id}",
+    "POST /api/wish/fulfill/{id}",
+    "GET /api/wish/list",
+    "POST /api/wish/unfulfill/{id}",
+    "PUT /api/wish/update/{id}"
   ],
   "cutoverBatches": {
     "user-couple-notification-v1": {
       "activeOwner": "fastapi",
       "rollbackOwner": "spring",
       "nginxLocation": "batch-1-exact-contract-regex",
+      "requires": [
+        "real-mysql-redis-gates",
+        "contract-route-owner-check",
+        "nginx-config-check"
+      ]
+    },
+    "wish-v1": {
+      "activeOwner": "fastapi",
+      "rollbackOwner": "spring",
+      "nginxLocation": "wish-exact-contract-regex",
       "requires": [
         "real-mysql-redis-gates",
         "contract-route-owner-check",

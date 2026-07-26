@@ -1492,7 +1492,7 @@
     "path": "/api/wish/add",
     "controller": "WishController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -1500,7 +1500,7 @@
     "path": "/api/wish/delete/{id}",
     "controller": "WishController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -1508,7 +1508,7 @@
     "path": "/api/wish/detail/{id}",
     "controller": "WishController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -1516,7 +1516,7 @@
     "path": "/api/wish/fulfill/{id}",
     "controller": "WishController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -1524,7 +1524,7 @@
     "path": "/api/wish/list",
     "controller": "WishController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -1532,7 +1532,7 @@
     "path": "/api/wish/unfulfill/{id}",
     "controller": "WishController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -1540,7 +1540,7 @@
     "path": "/api/wish/update/{id}",
     "controller": "WishController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   }
 ]

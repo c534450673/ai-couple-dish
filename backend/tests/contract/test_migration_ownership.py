@@ -38,6 +38,13 @@ def test_each_route_has_exactly_one_owner() -> None:
         "POST /api/user/register",
         "POST /api/user/sendCode",
         "PUT /api/user/update",
+        "POST /api/wish/add",
+        "DELETE /api/wish/delete/{id}",
+        "GET /api/wish/detail/{id}",
+        "POST /api/wish/fulfill/{id}",
+        "GET /api/wish/list",
+        "POST /api/wish/unfulfill/{id}",
+        "PUT /api/wish/update/{id}",
     ]
     assert document["cutoverBatches"] == {
         "user-couple-notification-v1": {
@@ -49,7 +56,17 @@ def test_each_route_has_exactly_one_owner() -> None:
                 "contract-route-owner-check",
                 "nginx-config-check",
             ],
-        }
+        },
+        "wish-v1": {
+            "activeOwner": "fastapi",
+            "rollbackOwner": "spring",
+            "nginxLocation": "wish-exact-contract-regex",
+            "requires": [
+                "real-mysql-redis-gates",
+                "contract-route-owner-check",
+                "nginx-config-check",
+            ],
+        },
     }
     assert document["integrationGatedRoutes"] == document["fastapiRoutes"]
     assert document["operationalFastapiRoutes"] == [
@@ -80,7 +97,7 @@ def test_business_routes_have_one_declared_owner() -> None:
         if route["owner"] == "fastapi"
     }
     assert fastapi_route_keys == fastapi_routes
-    assert len(route_keys - fastapi_routes) == 168
+    assert len(route_keys - fastapi_routes) == 161
 
 
 def test_foundation_cases_have_required_safe_fields() -> None:
