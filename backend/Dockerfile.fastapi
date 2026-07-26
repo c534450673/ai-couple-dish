@@ -25,6 +25,7 @@ RUN groupadd --system --gid 10001 app \
 WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
 COPY app ./app
+COPY scripts/run_couple_code_reminder.py scripts/run_feed_expiry.py ./scripts/
 RUN mkdir -p /app/uploads && chown -R app:app /app
 USER app
 EXPOSE 8000

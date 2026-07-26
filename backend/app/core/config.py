@@ -35,6 +35,7 @@ class Settings(BaseSettings):
 
     # Shadow worker is deliberately opt-in. It must never start from the web lifespan.
     fastapi_scheduler_enabled: bool = Field(False, alias="FASTAPI_SCHEDULER_ENABLED")
+    fastapi_feed_expiry_enabled: bool = Field(False, alias="FASTAPI_FEED_EXPIRY_ENABLED")
     couple_code_scheduler_lock_ttl_seconds: int = Field(
         300,
         alias="COUPLE_CODE_SCHEDULER_LOCK_TTL_SECONDS",

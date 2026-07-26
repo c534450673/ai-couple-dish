@@ -1,8 +1,9 @@
 import json
 import secrets
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from time import perf_counter
 from typing import Never
+from zoneinfo import ZoneInfo
 
 import structlog
 from fastapi import Request
@@ -171,12 +172,29 @@ def _notification(
     )
 
 
+def _expiry_notification(feed: Feed) -> Notification:
+    return Notification(
+        user_id=feed.sender_id,
+        type=2,
+        title="⏰ 投喂已过期",
+        content="您发送的投喂已过期未被领取，下次记得提醒TA及时领取哦！",
+        related_id=feed.id,
+        related_type="feed",
+        sender_id=None,
+        is_read=0,
+    )
+
+
 def _day_bounds() -> tuple[datetime, datetime]:
-    current = date.today()
+    current = _business_now().date()
     return (
         datetime.combine(current, datetime.min.time()),
         datetime.combine(current + timedelta(days=1), datetime.min.time()),
     )
+
+
+def _business_now() -> datetime:
+    return datetime.now(ZoneInfo("Asia/Shanghai")).replace(tzinfo=None)
 
 
 async def today(request: Request, session: AsyncSession, user_id: int) -> dict[str, object | None]:
@@ -184,7 +202,7 @@ async def today(request: Request, session: AsyncSession, user_id: int) -> dict[s
     operation = "today"
     await _user(request, session, user_id, operation, started)
     start_of_day, end_of_day = _day_bounds()
-    now = datetime.now()
+    now = _business_now()
     all_sent = await session.execute(
         select(Feed.feed_type).where(
             Feed.sender_id == user_id,
@@ -246,7 +264,7 @@ async def send(
         await _fail(request, operation, started, 9001, "参数无效")
 
     redis = request.app.state.redis.raw
-    lock_key = f"lock:feed:send:{user_id}:{date.today().isoformat()}"
+    lock_key = f"lock:feed:send:{user_id}:{_business_now().date().isoformat()}"
     lock_value = secrets.token_urlsafe(16)
     if not await redis.set(lock_key, lock_value, ex=LOCK_TTL_SECONDS, nx=True):
         await _fail(request, operation, started, 9005, "操作过于频繁，请稍后重试")
@@ -278,7 +296,7 @@ async def send(
         if sent_count >= DAILY_LIMIT:
             await _fail(request, operation, started, 9007, "今日投喂次数已达上限（3次）")
 
-        now = datetime.now()
+        now = _business_now()
         item = Feed(
             couple_id=user.couple_id,
             sender_id=user_id,
@@ -323,7 +341,7 @@ async def received(
         .where(Feed.receiver_id == user_id)
         .order_by(Feed.create_time.desc(), Feed.id.desc())
     )
-    now = datetime.now()
+    now = _business_now()
     items = [await _payload(session, item, now) for item in result.scalars().all()]
     await logger.ainfo(
         "business_operation_completed",
@@ -343,7 +361,7 @@ async def sent(
         .where(Feed.sender_id == user_id)
         .order_by(Feed.create_time.desc(), Feed.id.desc())
     )
-    now = datetime.now()
+    now = _business_now()
     items = [await _payload(session, item, now) for item in result.scalars().all()]
     await logger.ainfo(
         "business_operation_completed",
@@ -361,19 +379,11 @@ async def accept(request: Request, session: AsyncSession, user_id: int, feed_id:
         await _fail(request, operation, started, 6001, "投喂记录不存在")
     if item.receiver_id != user_id:
         await _fail(request, operation, started, 6004, "无法接受此投喂")
-    now = datetime.now()
+    now = _business_now()
     if item.status != 0 or item.expire_time <= now:
         if item.status == 0:
             item.status = 3
-            session.add(
-                _notification(
-                    item.sender_id,
-                    "投喂已过期",
-                    "你的投喂已过期，可以重新发起投喂。",
-                    item.id,
-                    item.receiver_id,
-                )
-            )
+            session.add(_expiry_notification(item))
             await session.commit()
         await _fail(request, operation, started, 6003, "投喂已过期")
     item.status = 1
@@ -427,9 +437,11 @@ async def reject(
     )
 
 
-async def expire_due(session: AsyncSession, request_id: str = "scheduler") -> int:
+async def expire_due(
+    session: AsyncSession, request_id: str = "scheduler", now: datetime | None = None
+) -> int:
     started = perf_counter()
-    now = datetime.now()
+    now = now or _business_now()
     result = await session.execute(
         select(Feed)
         .where(Feed.status == 0, Feed.expire_time < now)
@@ -438,19 +450,29 @@ async def expire_due(session: AsyncSession, request_id: str = "scheduler") -> in
     items = list(result.scalars().all())
     for item in items:
         item.status = 3
-        session.add(
-            _notification(
-                item.sender_id,
-                "投喂已过期",
-                "你的投喂已过期，可以重新发起投喂。",
-                item.id,
-                item.receiver_id,
-            )
-        )
+        session.add(_expiry_notification(item))
     if items:
-        await session.commit()
+        try:
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            await logger.aerror(
+                "feed_expiry",
+                requestId=request_id,
+                module="feed_expiry",
+                operation="commit",
+                result="failed",
+                durationMs=int((perf_counter() - started) * 1000),
+                errorCode="DATABASE",
+            )
+            raise
     await logger.ainfo(
-        "business_operation_completed",
-        **_log_fields(request_id, "expire_due", "success", started),
+        "feed_expiry",
+        requestId=request_id,
+        module="feed_expiry",
+        operation="expire_due",
+        result=f"processed_{len(items)}",
+        durationMs=int((perf_counter() - started) * 1000),
+        errorCode="NONE",
     )
     return len(items)

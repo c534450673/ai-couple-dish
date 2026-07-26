@@ -254,3 +254,14 @@ run lock 与 HMAC marker、备份并验证回滚。回滚时先停止 FastAPI Cr
 
 Anniversary、DailyGreeting、DailyTask 和 Feed expiry 仍有其各自的多 writer 风险；本 worker
 不迁移或接管这些任务。
+
+## Feed expiry shadow worker
+
+Spring `FeedExpireTask` 仍是默认唯一 writer。FastAPI worker 默认关闭，绝不能在 Web lifespan 启动；仅由单个受管 CronJob 每十分钟一次调用：
+
+```bash
+cd backend
+FASTAPI_FEED_EXPIRY_ENABLED=true uv run python -m scripts.run_feed_expiry
+```
+
+切换前先禁用 Spring task，并获得单 CronJob、监控和回滚批准。还必须先将 Feed mutation HTTP owner 切到 FastAPI，或批准 Spring mutation 改为行锁/`status=0` 条件更新；否则跨栈 accept/reject 与 worker 不线性化。回滚时先停止 FastAPI CronJob，再恢复 Spring task。禁止双写。

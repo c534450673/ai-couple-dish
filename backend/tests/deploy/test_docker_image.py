@@ -24,10 +24,21 @@ def test_fastapi_dockerfile_keeps_build_tools_out_of_runtime() -> None:
     assert "gcc" in builder
     assert "COPY --from=builder /app/.venv /app/.venv" in runtime
     assert "COPY app ./app" in runtime
+    assert (
+        "COPY scripts/run_couple_code_reminder.py scripts/run_feed_expiry.py ./scripts/" in runtime
+    )
     assert "gcc" not in runtime
     assert "apt-get install" not in runtime
     assert "COPY --from=uv-bin" not in runtime
     assert "uv sync" not in runtime
+
+
+def test_fastapi_dockerfile_contains_supported_scheduler_commands() -> None:
+    dockerfile = DOCKERFILE.read_text(encoding="utf-8")
+
+    assert "scripts/run_couple_code_reminder.py" in dockerfile
+    assert "scripts/run_feed_expiry.py" in dockerfile
+    assert "COPY scripts ./scripts" not in dockerfile
 
 
 def test_fastapi_dockerfile_runs_as_non_root_with_healthcheck_and_command() -> None:

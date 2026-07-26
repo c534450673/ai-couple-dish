@@ -43,7 +43,6 @@ from app.core.middleware import RequestContextMiddleware
 from app.core.static_files import PosterStaticFiles
 from app.db.session import Database
 from app.redis.client import RedisClient
-from app.services import feed as feed_service
 from app.services import poster_renderer
 
 logger = structlog.get_logger()
@@ -80,26 +79,6 @@ async def _close_dependency(dependency: str, resource: Database | RedisClient) -
         await _log_dependency_result(dependency, "close", "failed", error)
     else:
         await _log_dependency_result(dependency, "close", "completed")
-
-
-async def _cancel_task(task: asyncio.Task[None]) -> None:
-    task.cancel()
-    try:
-        await task
-    except asyncio.CancelledError:
-        pass
-
-
-async def _feed_expiry_loop(database: Database) -> None:
-    while True:
-        await asyncio.sleep(600)
-        try:
-            async with database.session() as session:
-                await feed_service.expire_due(session)
-        except asyncio.CancelledError:
-            raise
-        except Exception as error:
-            await _log_dependency_result("database", "expire_feeds", "failed", error)
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -149,8 +128,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     await _log_dependency_result("redis", "connect", "failed", error)
                     raise
                 await _log_dependency_result("redis", "connect", "completed")
-                expiry_task = asyncio.create_task(_feed_expiry_loop(database))
-                resources.push_async_callback(_cancel_task, expiry_task)
                 await logger.ainfo(
                     "application_started",
                     module="application",

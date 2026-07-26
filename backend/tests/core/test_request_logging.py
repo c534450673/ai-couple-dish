@@ -96,6 +96,36 @@ def test_configured_poster_logging_emits_exact_six_field_json() -> None:
     logging.getLogger().handlers.clear()
 
 
+def test_configured_feed_expiry_logging_emits_exact_six_field_json() -> None:
+    stream = StringIO()
+    settings = Settings(_env_file=None, **BASE_SETTINGS)
+    configure_logging(settings, stream=stream)
+
+    structlog.get_logger().error(
+        "private-feed-expiry-event",
+        requestId="run-1",
+        module="feed_expiry",
+        operation="expire_due",
+        result="processed_1",
+        durationMs=1,
+        errorCode="NONE",
+        feedId=700,
+        content="private feed content",
+        receiverId=701,
+    )
+
+    assert json.loads(stream.getvalue()) == {
+        "requestId": "run-1",
+        "module": "feed_expiry",
+        "operation": "expire_due",
+        "result": "processed_1",
+        "durationMs": 1,
+        "errorCode": "NONE",
+    }
+    assert "private feed content" not in stream.getvalue()
+    logging.getLogger().handlers.clear()
+
+
 def app_for_request_logging() -> FastAPI:
     app = FastAPI()
     app.add_middleware(RequestContextMiddleware)

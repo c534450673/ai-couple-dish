@@ -12,5 +12,20 @@
       "Spring task disabled by approved deployment change",
       "single managed CronJob worker with monitoring and rollback approval"
     ]
+  },
+  "feed_expiration": {
+    "defaultOwner": "spring",
+    "springTask": "FeedExpireTask.handleExpiredFeeds",
+    "fastapiShadowCommand": "python -m scripts.run_feed_expiry",
+    "enabledByDefault": false,
+    "schedule": "*/10 * * * *",
+    "businessTimezone": "Asia/Shanghai",
+    "singleWriter": true,
+    "switchPrerequisites": [
+      "explicit FASTAPI_FEED_EXPIRY_ENABLED=true",
+      "Spring task disabled by approved deployment change",
+      "Feed mutating HTTP owner moved to FastAPI or Spring mutation uses row lock/status=0 conditional update",
+      "single managed CronJob worker with monitoring and rollback approval"
+    ]
   }
 }

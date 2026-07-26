@@ -54,7 +54,7 @@ def allowlist_processor(
     sanitized = sanitize_event(event_dict)
     if sanitized.get("module") == "poster":
         return {key: sanitized[key] for key in POSTER_LOG_FIELDS if key in sanitized}
-    if sanitized.get("module") == "couple_code_scheduler":
+    if sanitized.get("module") in {"couple_code_scheduler", "feed_expiry"}:
         return {key: sanitized[key] for key in SCHEDULER_LOG_FIELDS if key in sanitized}
     return sanitized
 
