@@ -302,9 +302,9 @@ async def test_real_fastapi_self_check_counts_operational_and_test_app_cases() -
     assert report["result"] == "passed"
     assert report["routes"] == {
         "total": 193,
-        "fastapi": 53,
-        "springSkipped": 140,
-        "fastapiIntegrationGated": 53,
+        "fastapi": 59,
+        "springSkipped": 134,
+        "fastapiIntegrationGated": 59,
         "operationalFastapi": 3,
     }
     assert report["cases"] == {

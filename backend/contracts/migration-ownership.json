@@ -40,6 +40,12 @@
     "PUT /api/notification/read/{id}",
     "PUT /api/notification/readAll",
     "GET /api/notification/unreadCount",
+    "POST /api/timeCapsule/create",
+    "DELETE /api/timeCapsule/delete/{id}",
+    "GET /api/timeCapsule/detail/{id}",
+    "GET /api/timeCapsule/list",
+    "GET /api/timeCapsule/pending",
+    "POST /api/timeCapsule/unlock/{id}",
     "GET /api/user/info",
     "POST /api/user/login",
     "POST /api/user/logout",
@@ -95,6 +101,12 @@
     "PUT /api/notification/read/{id}",
     "PUT /api/notification/readAll",
     "GET /api/notification/unreadCount",
+    "POST /api/timeCapsule/create",
+    "DELETE /api/timeCapsule/delete/{id}",
+    "GET /api/timeCapsule/detail/{id}",
+    "GET /api/timeCapsule/list",
+    "GET /api/timeCapsule/pending",
+    "POST /api/timeCapsule/unlock/{id}",
     "GET /api/user/info",
     "POST /api/user/login",
     "POST /api/user/logout",
@@ -155,6 +167,16 @@
       "activeOwner": "fastapi",
       "rollbackOwner": "spring",
       "nginxLocation": "mood-exact-contract-regex",
+      "requires": [
+        "real-mysql-redis-gates",
+        "contract-route-owner-check",
+        "nginx-config-check"
+      ]
+    },
+    "time-capsule-v1": {
+      "activeOwner": "fastapi",
+      "rollbackOwner": "spring",
+      "nginxLocation": "time-capsule-exact-contract-regex",
       "requires": [
         "real-mysql-redis-gates",
         "contract-route-owner-check",

@@ -1364,7 +1364,7 @@
     "path": "/api/timeCapsule/create",
     "controller": "TimeCapsuleController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -1372,7 +1372,7 @@
     "path": "/api/timeCapsule/delete/{id}",
     "controller": "TimeCapsuleController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -1380,7 +1380,7 @@
     "path": "/api/timeCapsule/detail/{id}",
     "controller": "TimeCapsuleController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -1388,7 +1388,7 @@
     "path": "/api/timeCapsule/list",
     "controller": "TimeCapsuleController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -1396,7 +1396,7 @@
     "path": "/api/timeCapsule/pending",
     "controller": "TimeCapsuleController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -1404,7 +1404,7 @@
     "path": "/api/timeCapsule/unlock/{id}",
     "controller": "TimeCapsuleController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {

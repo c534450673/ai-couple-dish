@@ -52,6 +52,12 @@ def test_each_route_has_exactly_one_owner() -> None:
         "PUT /api/notification/read/{id}",
         "PUT /api/notification/readAll",
         "GET /api/notification/unreadCount",
+        "POST /api/timeCapsule/create",
+        "DELETE /api/timeCapsule/delete/{id}",
+        "GET /api/timeCapsule/detail/{id}",
+        "GET /api/timeCapsule/list",
+        "GET /api/timeCapsule/pending",
+        "POST /api/timeCapsule/unlock/{id}",
         "GET /api/user/info",
         "POST /api/user/login",
         "POST /api/user/logout",
@@ -118,6 +124,16 @@ def test_each_route_has_exactly_one_owner() -> None:
                 "nginx-config-check",
             ],
         },
+        "time-capsule-v1": {
+            "activeOwner": "fastapi",
+            "rollbackOwner": "spring",
+            "nginxLocation": "time-capsule-exact-contract-regex",
+            "requires": [
+                "real-mysql-redis-gates",
+                "contract-route-owner-check",
+                "nginx-config-check",
+            ],
+        },
     }
     assert document["integrationGatedRoutes"] == document["fastapiRoutes"]
     assert document["operationalFastapiRoutes"] == [
@@ -148,7 +164,7 @@ def test_business_routes_have_one_declared_owner() -> None:
         if route["owner"] == "fastapi"
     }
     assert fastapi_route_keys == fastapi_routes
-    assert len(route_keys - fastapi_routes) == 140
+    assert len(route_keys - fastapi_routes) == 134
 
 
 def test_foundation_cases_have_required_safe_fields() -> None:
