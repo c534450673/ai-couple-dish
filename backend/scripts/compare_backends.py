@@ -329,22 +329,35 @@ def _validate_contract(
     if ownership.get("defaultOwner") != "spring":
         raise ContractConfigurationError("default route owner must be spring")
     raw_fastapi_routes = ownership.get("fastapiRoutes")
+    raw_integration_gated_routes = ownership.get("integrationGatedRoutes", [])
     raw_operational_routes = ownership.get("operationalFastapiRoutes")
-    if not isinstance(raw_fastapi_routes, list) or not isinstance(raw_operational_routes, list):
+    if (
+        not isinstance(raw_fastapi_routes, list)
+        or not isinstance(raw_integration_gated_routes, list)
+        or not isinstance(raw_operational_routes, list)
+    ):
         raise ContractConfigurationError("ownership routes must be arrays")
     fastapi_route_values = [_normalize_route_key(value) for value in raw_fastapi_routes]
+    integration_gated_values = [
+        _normalize_route_key(value) for value in raw_integration_gated_routes
+    ]
     operational_route_values = [_normalize_route_key(value) for value in raw_operational_routes]
     if operational_route_values != list(OPERATIONAL_ROUTES):
         raise ContractConfigurationError("operational routes must match the fixed health set")
     if len(fastapi_route_values) != len(set(fastapi_route_values)):
         raise ContractConfigurationError("fastapi business routes must be unique")
+    if len(integration_gated_values) != len(set(integration_gated_values)):
+        raise ContractConfigurationError("integration-gated routes must be unique")
     fastapi_routes = set(fastapi_route_values)
+    integration_gated_routes = set(integration_gated_values)
     route_keys = [_route_key(route) for route in routes]
     if len(route_keys) != len(set(route_keys)):
         raise ContractConfigurationError("business routes must be unique")
     inventory = dict(zip(route_keys, routes, strict=True))
     if fastapi_routes - inventory.keys():
         raise ContractConfigurationError("fastapi ownership contains an unknown business route")
+    if integration_gated_routes - fastapi_routes:
+        raise ContractConfigurationError("integration-gated route is not FastAPI-owned")
     if any(type(route.get("sideEffect")) is not bool for route in routes):
         raise ContractConfigurationError("inventory sideEffect must be boolean")
     if any(
@@ -352,6 +365,7 @@ def _validate_contract(
         for route_key, route in inventory.items()
     ):
         raise ContractConfigurationError("route owner disagrees with migration ownership")
+    fastapi_integration_gated_routes = integration_gated_routes
 
     ids: set[str] = set()
     operational_counts: Counter[str] = Counter()
@@ -398,8 +412,10 @@ def _validate_contract(
 
         raise ContractConfigurationError("case route is outside the execution inventory")
 
-    if not fastapi_routes <= business_counts.keys():
-        raise ContractConfigurationError("each FastAPI business route requires one dual case")
+    if not fastapi_routes <= business_counts.keys() | fastapi_integration_gated_routes:
+        raise ContractConfigurationError(
+            "each FastAPI business route requires a dual case or an integration gate"
+        )
     if operational_counts != Counter(OPERATIONAL_ROUTES):
         raise ContractConfigurationError("each operational route requires exactly one case")
     if test_app_counts != Counter(TEST_APP_CASES.keys()):
@@ -410,6 +426,7 @@ def _validate_contract(
         "total": len(routes),
         "fastapi": len(fastapi_routes),
         "springSkipped": len(routes) - len(fastapi_routes),
+        "fastapiIntegrationGated": len(fastapi_integration_gated_routes),
         "operationalFastapi": len(OPERATIONAL_ROUTES),
     }
 

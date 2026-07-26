@@ -236,7 +236,7 @@
     "path": "/api/couple/bind",
     "controller": "CoupleController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -244,7 +244,7 @@
     "path": "/api/couple/codeInfo",
     "controller": "CoupleController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -252,7 +252,7 @@
     "path": "/api/couple/generateCode",
     "controller": "CoupleController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -260,7 +260,7 @@
     "path": "/api/couple/home",
     "controller": "CoupleController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -268,7 +268,7 @@
     "path": "/api/couple/info",
     "controller": "CoupleController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -276,7 +276,7 @@
     "path": "/api/couple/loveTimer",
     "controller": "CoupleController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -284,7 +284,7 @@
     "path": "/api/couple/recover",
     "controller": "CoupleController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -292,7 +292,7 @@
     "path": "/api/couple/recoverable",
     "controller": "CoupleController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -300,7 +300,7 @@
     "path": "/api/couple/refreshCode",
     "controller": "CoupleController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -308,7 +308,7 @@
     "path": "/api/couple/unbind/apply",
     "controller": "CoupleController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -316,7 +316,7 @@
     "path": "/api/couple/unbind/confirm",
     "controller": "CoupleController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -324,7 +324,7 @@
     "path": "/api/couple/unbind/reject",
     "controller": "CoupleController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -332,7 +332,7 @@
     "path": "/api/couple/validateCode",
     "controller": "CoupleController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -972,7 +972,7 @@
     "path": "/api/notification/delete/{id}",
     "controller": "NotificationController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -980,7 +980,7 @@
     "path": "/api/notification/list",
     "controller": "NotificationController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -988,7 +988,7 @@
     "path": "/api/notification/read/{id}",
     "controller": "NotificationController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -996,7 +996,7 @@
     "path": "/api/notification/readAll",
     "controller": "NotificationController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -1004,7 +1004,7 @@
     "path": "/api/notification/unreadCount",
     "controller": "NotificationController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 2
   },
   {
@@ -1436,7 +1436,7 @@
     "path": "/api/user/info",
     "controller": "UserController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -1444,7 +1444,7 @@
     "path": "/api/user/login",
     "controller": "UserController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -1452,7 +1452,7 @@
     "path": "/api/user/logout",
     "controller": "UserController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -1460,7 +1460,7 @@
     "path": "/api/user/phoneLogin",
     "controller": "UserController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -1468,7 +1468,7 @@
     "path": "/api/user/register",
     "controller": "UserController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -1476,7 +1476,7 @@
     "path": "/api/user/sendCode",
     "controller": "UserController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {
@@ -1484,7 +1484,7 @@
     "path": "/api/user/update",
     "controller": "UserController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 1
   },
   {

@@ -305,7 +305,6 @@ def test_route_inventory_sorts_prefixes_and_excludes_basic_error_controller() ->
         ("GET", "/api/alpha/items/{id}"),
         ("POST", "/api/zeta/items"),
     ]
-    assert all(route["owner"] == "spring" for route in routes)
     assert not any(route["path"] == "/api/error" for route in routes)
 
 
@@ -341,6 +340,38 @@ def test_export_is_deterministic_and_uses_atomic_outputs(tmp_path: Path) -> None
     assert first_hashes == hashes
     assert not list(tmp_path.glob(".*.tmp"))
     assert openapi_output.read_bytes().endswith(b"\n")
+
+
+def test_export_preserves_fastapi_route_ownership(tmp_path: Path) -> None:
+    output = tmp_path / "spring-openapi.json"
+    routes = tmp_path / "routes.json"
+    (tmp_path / "migration-ownership.json").write_text(
+        json.dumps(
+            {
+                "defaultOwner": "spring",
+                "fastapiRoutes": ["GET /api/alpha/items/{id}"],
+                "operationalFastapiRoutes": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    transport = httpx.MockTransport(
+        lambda _request: httpx.Response(200, json=load_json(FIXTURE))
+    )
+
+    export_contract(
+        "http://spring.invalid/api/v2/api-docs",
+        output,
+        routes,
+        transport=transport,
+    )
+
+    inventory = load_json(routes)
+    owners = {f"{route['method']} {route['path']}": route["owner"] for route in inventory}
+    assert owners == {
+        "GET /api/alpha/items/{id}": "fastapi",
+        "POST /api/zeta/items": "spring",
+    }
 
 
 def test_export_restores_both_outputs_when_second_publish_fails(
@@ -450,7 +481,17 @@ def test_spring_routes_are_complete_unique_and_sorted() -> None:
     assert len({(route["method"], route["path"]) for route in routes}) == 193
     assert all(route["method"] in HTTP_METHODS for route in routes)
     assert all(route["path"].startswith("/api/") for route in routes)
-    assert all(route["owner"] == "spring" for route in routes)
+    ownership = load_json(CONTRACTS / "migration-ownership.json")
+    fastapi_routes = set(ownership["fastapiRoutes"])
+    assert all(
+        route["owner"]
+        == (
+            "fastapi"
+            if f"{route['method']} {route['path']}" in fastapi_routes
+            else "spring"
+        )
+        for route in routes
+    )
     assert len({route["controller"] for route in routes}) == 27
     assert all(route["controller"].endswith("Controller") for route in routes)
     assert all(route["migrationBatch"] in {1, 2, 3, 4, 5} for route in routes)

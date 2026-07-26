@@ -1,8 +1,9 @@
 # FastAPI 双栈基础设施运行手册
 
-本文只描述迁移期基础设施。Java `backend/Dockerfile` 和 Spring Boot 仍是 193 条业务
-route 的唯一业务写者；`backend/Dockerfile.fastapi` 只提供 FastAPI 基础 health route，
-不表示后端迁移完成。H5 继续使用同源相对 `/api`，浏览器不直接访问 FastAPI 端口。
+本文只描述迁移期基础设施。Java `backend/Dockerfile` 和 Spring Boot 仍是未切流业务
+route 的唯一写者；当前首批用户、情侣、通知共 25 条 HTTP route 已由 FastAPI 接管，
+其余业务 route 仍由 Spring 处理。`backend/Dockerfile.fastapi` 提供 FastAPI 业务与基础
+health route。H5 继续使用同源相对 `/api`，浏览器不直接访问 FastAPI 端口。
 
 ## 前置条件
 
@@ -37,7 +38,23 @@ uv run uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
 只读检查：`GET /api/health/live`、`GET /api/health/ready` 和
-`GET /api/actuator/health` 是 FastAPI 基础 route；业务 `/api/**` 仍由 Spring 处理。
+`GET /api/actuator/health` 是 FastAPI 基础 route。首批切流的 `/api/user/**`、
+`/api/couple/**` 和 `/api/notification/**` 合同 route 也由 FastAPI 提供，其余 `/api/**`
+仍由 Spring 处理；权威清单见 `backend/contracts/migration-ownership.json`。
+
+## 首批 HTTP 切流与回滚
+
+`user-couple-notification-v1` 是当前唯一启用的 HTTP 切流批次，覆盖用户 7 条、情侣 13 条、
+通知 5 条，共 25 条合同 route。Nginx 使用两个精确正则 location 将已登记路径转发到
+`fastapi_backend`，未知路径仍落到 Spring 的通用 `/api/` location。配置校验必须确认：
+
+- `routes.json` 中这 25 条的 owner 为 `fastapi`，其余 168 条仍为 `spring`；
+- FastAPI/真实 MySQL/Redis 集成门禁、合同 owner 检查和 Nginx 配置检查全部通过；
+- `cutoverBatches.user-couple-notification-v1.rollbackOwner` 保持为 `spring`。
+
+回滚时只回退同一个 Nginx 配置提交，先执行 `nginx -t` 再 reload；不要同时修改数据库、
+Redis 或 Java 业务代码。回滚后重新运行 owner 检查，确认 25 条路径回到 Spring，再停止
+FastAPI 批次。任何校验失败都保留当前配置和备份，不 reload 未通过语法检查的文件。
 
 ## 双栈 Compose
 

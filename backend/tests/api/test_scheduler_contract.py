@@ -39,7 +39,8 @@ def test_scheduler_ownership_is_separate_from_http_ownership() -> None:
     scheduler_ownership = json.loads((BACKEND / "contracts/scheduler-ownership.json").read_text())
 
     assert http_ownership["defaultOwner"] == "spring"
-    assert http_ownership["fastapiRoutes"] == []
+    assert "POST /api/couple/generateCode" in http_ownership["fastapiRoutes"]
+    assert "GET /api/coupleRank/info" not in http_ownership["fastapiRoutes"]
     contract = scheduler_ownership["couple_code_expiration_reminder"]
     assert contract["defaultOwner"] == "spring"
     assert contract["fastapiShadowCommand"] == "python -m scripts.run_couple_code_reminder"

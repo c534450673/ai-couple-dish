@@ -184,6 +184,53 @@ def route_inventory(document: dict[str, Any]) -> list[dict[str, Any]]:
     return sorted(routes, key=lambda route: (route["path"], route["method"]))
 
 
+def _apply_migration_ownership(
+    inventory: list[dict[str, Any]], ownership_path: Path
+) -> list[dict[str, Any]]:
+    if not ownership_path.exists():
+        return inventory
+    try:
+        document = json.loads(ownership_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        LOGGER.error(
+            "event=spring_contract_ownership_failed result=invalid errorCode=%s",
+            type(error).__name__,
+        )
+        raise ContractExportError("迁移 owner 清单不可读取") from None
+    if not isinstance(document, dict) or not isinstance(document.get("fastapiRoutes"), list):
+        LOGGER.error(
+            "event=spring_contract_ownership_failed result=invalid errorCode=INVALID_SCHEMA"
+        )
+        raise ContractExportError("迁移 owner 清单格式无效")
+
+    fastapi_routes = {str(value) for value in document["fastapiRoutes"]}
+    route_keys = {f"{route['method']} {route['path']}" for route in inventory}
+    if fastapi_routes - route_keys:
+        LOGGER.error(
+            "event=spring_contract_ownership_failed result=invalid errorCode=UNKNOWN_ROUTE"
+        )
+        raise ContractExportError("迁移 owner 清单包含未知路由")
+
+    merged = [
+        {
+            **route,
+            "owner": (
+                "fastapi"
+                if f"{route['method']} {route['path']}" in fastapi_routes
+                else "spring"
+            ),
+        }
+        for route in inventory
+    ]
+    LOGGER.info(
+        "event=spring_contract_ownership_applied result=completed "
+        "fastapiRouteCount=%s springRouteCount=%s",
+        len(fastapi_routes),
+        len(merged) - len(fastapi_routes),
+    )
+    return merged
+
+
 def _safe_source(url: str) -> str:
     parsed = urlsplit(url)
     hostname = parsed.hostname or ""
@@ -339,7 +386,9 @@ def export_contract(
     """Fetch, normalize, inventory and atomically write the Spring contracts."""
     document = _fetch_document(url, transport)
     normalized = normalize_openapi(document)
-    inventory = route_inventory(normalized)
+    inventory = _apply_migration_ownership(
+        route_inventory(normalized), routes.with_name("migration-ownership.json")
+    )
     _atomic_write(
         (
             (output, _json_bytes(normalized)),

@@ -21,4 +21,4 @@ def test_couple_rank_routes_match_spring_contract_and_remain_spring_owned() -> N
         if item["controller"] == "CoupleRankController"
     }
     assert selected == expected
-    assert ownership["fastapiRoutes"] == []
+    assert not set(expected).intersection(ownership["fastapiRoutes"])

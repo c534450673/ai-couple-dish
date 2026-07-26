@@ -12,7 +12,46 @@ def test_each_route_has_exactly_one_owner() -> None:
     document = load_json(BACKEND / "contracts/migration-ownership.json")
     assert isinstance(document, dict)
     assert document["defaultOwner"] == "spring"
-    assert document["fastapiRoutes"] == []
+    assert document["fastapiRoutes"] == [
+        "POST /api/couple/bind",
+        "GET /api/couple/codeInfo",
+        "POST /api/couple/generateCode",
+        "GET /api/couple/home",
+        "GET /api/couple/info",
+        "GET /api/couple/loveTimer",
+        "POST /api/couple/recover",
+        "GET /api/couple/recoverable",
+        "POST /api/couple/refreshCode",
+        "POST /api/couple/unbind/apply",
+        "POST /api/couple/unbind/confirm",
+        "POST /api/couple/unbind/reject",
+        "GET /api/couple/validateCode",
+        "DELETE /api/notification/delete/{id}",
+        "GET /api/notification/list",
+        "PUT /api/notification/read/{id}",
+        "PUT /api/notification/readAll",
+        "GET /api/notification/unreadCount",
+        "GET /api/user/info",
+        "POST /api/user/login",
+        "POST /api/user/logout",
+        "POST /api/user/phoneLogin",
+        "POST /api/user/register",
+        "POST /api/user/sendCode",
+        "PUT /api/user/update",
+    ]
+    assert document["cutoverBatches"] == {
+        "user-couple-notification-v1": {
+            "activeOwner": "fastapi",
+            "rollbackOwner": "spring",
+            "nginxLocation": "batch-1-exact-contract-regex",
+            "requires": [
+                "real-mysql-redis-gates",
+                "contract-route-owner-check",
+                "nginx-config-check",
+            ],
+        }
+    }
+    assert document["integrationGatedRoutes"] == document["fastapiRoutes"]
     assert document["operationalFastapiRoutes"] == [
         "GET /api/health/live",
         "GET /api/health/ready",
@@ -22,7 +61,7 @@ def test_each_route_has_exactly_one_owner() -> None:
     assert len(all_routes) == len(set(all_routes))
 
 
-def test_all_193_business_routes_remain_spring_owned_and_skipped() -> None:
+def test_business_routes_have_one_declared_owner() -> None:
     routes = load_json(BACKEND / "contracts/routes.json")
     ownership = load_json(BACKEND / "contracts/migration-ownership.json")
     assert isinstance(routes, list)
@@ -33,9 +72,15 @@ def test_all_193_business_routes_remain_spring_owned_and_skipped() -> None:
 
     assert len(routes) == 193
     assert len(route_keys) == 193
-    assert all(route["owner"] == "spring" for route in routes)
-    assert fastapi_routes.isdisjoint(route_keys)
-    assert len(route_keys - fastapi_routes) == 193
+    assert fastapi_routes <= route_keys
+    assert {route["owner"] for route in routes} == {"spring", "fastapi"}
+    fastapi_route_keys = {
+        f"{route['method']} {route['path']}"
+        for route in routes
+        if route["owner"] == "fastapi"
+    }
+    assert fastapi_route_keys == fastapi_routes
+    assert len(route_keys - fastapi_routes) == 168
 
 
 def test_foundation_cases_have_required_safe_fields() -> None:

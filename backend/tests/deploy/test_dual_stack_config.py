@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -11,6 +12,8 @@ DOCKER_DIR = ROOT / "deploy/dev/docker"
 BASE_COMPOSE = DOCKER_DIR / "docker-compose.yml"
 OVERLAY_COMPOSE = DOCKER_DIR / "docker-compose.fastapi.yml"
 NGINX_CONFIG = DOCKER_DIR / "nginx/conf.d/api-fastapi-foundation.conf"
+OWNERSHIP = ROOT / "backend/contracts/migration-ownership.json"
+ROUTES = ROOT / "backend/contracts/routes.json"
 
 
 def _compose_config() -> dict:
@@ -57,17 +60,36 @@ def test_merged_compose_keeps_java_backend_and_resolves_context() -> None:
     assert (context / backend["build"]["dockerfile"]).is_file()
 
 
-def test_nginx_defaults_all_business_routes_to_spring() -> None:
+def test_nginx_routes_cutover_batch_to_fastapi_and_defaults_unknown_to_spring() -> None:
     config = NGINX_CONFIG.read_text(encoding="utf-8")
     assert "location = /api/health/live" in config
     assert "location = /api/health/ready" in config
     assert "location = /api/actuator/health" in config
     assert "location /api/" in config
-    assert config.count("proxy_pass http://fastapi_backend;") == 4
+    assert config.count("proxy_pass http://fastapi_backend;") == 6
     assert config.count("proxy_pass http://spring_backend;") == 1
     assert "split_clients" not in config
     assert "mirror" not in config
     assert "proxy_pass http://fastapi_backend" not in config.split("location /api/", 1)[1]
+    assert "FastAPI cutover batch 1" in config
+    assert "location ~ ^/api/notification/(read|delete)/[0-9]+$" in config
+
+
+def test_nginx_cutover_patterns_match_exact_owner_inventory() -> None:
+    config = NGINX_CONFIG.read_text(encoding="utf-8")
+    patterns = [re.compile(value) for value in re.findall(r"location ~ (\^.*?\$) \{", config)]
+    ownership = json.loads(OWNERSHIP.read_text(encoding="utf-8"))
+    routes = json.loads(ROUTES.read_text(encoding="utf-8"))
+
+    for route_key in ownership["fastapiRoutes"]:
+        path = route_key.split(" ", 1)[1].replace("{id}", "123")
+        assert sum(bool(pattern.fullmatch(path)) for pattern in patterns) == 1
+
+    for route in routes:
+        if route["owner"] != "spring":
+            continue
+        path = route["path"].replace("{id}", "123").replace("{rank}", "1")
+        assert not any(pattern.fullmatch(path) for pattern in patterns)
 
 
 def test_nginx_forwards_required_headers_in_each_location() -> None:
@@ -80,7 +102,7 @@ def test_nginx_forwards_required_headers_in_each_location() -> None:
         "X-Forwarded-Proto $scheme",
         "X-Forwarded-Host $host",
     ):
-        assert config.count(f"proxy_set_header {header};") == 5
+        assert config.count(f"proxy_set_header {header};") == 7
 
 
 def test_nginx_access_log_is_request_metadata_only() -> None:
