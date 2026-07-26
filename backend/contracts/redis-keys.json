@@ -15,6 +15,11 @@
     "sensitive": true
   },
   {
+    "pattern": "lock:user:phone:<phone>",
+    "ttl": "15 seconds",
+    "sensitive": true
+  },
+  {
     "pattern": "couple:code:<8-char-code>",
     "ttl": "7 days",
     "sensitive": true

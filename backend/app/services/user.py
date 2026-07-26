@@ -19,6 +19,13 @@ logger = structlog.get_logger()
 PHONE_PATTERN = re.compile(r"^1[3-9]\d{9}$")
 VERIFY_CODE_TTL_SECONDS = 300
 VERIFY_RATE_LIMIT_SECONDS = 60
+PHONE_OPERATION_LOCK_TTL_SECONDS = 15
+RELEASE_PHONE_OPERATION_LOCK_SCRIPT = """
+if redis.call('get', KEYS[1]) == ARGV[1] then
+    return redis.call('del', KEYS[1])
+end
+return 0
+"""
 
 
 def _operation_log_fields(
@@ -156,8 +163,29 @@ async def _verify_code(request: Request, phone: str, code: str | None) -> None:
         raise BusinessError(9004, "验证码已过期，请重新获取")
     if not secrets.compare_digest(str(stored), code):
         raise BusinessError(9003, "验证码错误")
+
+
+async def _consume_verify_code(request: Request, phone: str) -> None:
+    """仅在手机号业务成功后消费验证码，保留失败重试能力。"""
     await request.app.state.redis.raw.delete(verify_code_key(phone))
     await request.app.state.redis.raw.delete(f"user:verify:expire:{phone}")
+
+
+async def _release_phone_operation_lock(request: Request, lock_key: str, lock_value: str) -> None:
+    try:
+        await request.app.state.redis.raw.eval(
+            RELEASE_PHONE_OPERATION_LOCK_SCRIPT, 1, lock_key, lock_value
+        )
+    except Exception:
+        await logger.aerror(
+            "dependency_operation_failed",
+            requestId=request.state.request_id,
+            module="user",
+            operation="release_phone_operation_lock",
+            result="error",
+            durationMs=0,
+            errorCode="REDIS_LOCK_RELEASE_FAILED",
+        )
 
 
 async def send_verify_code(request: Request, phone: str) -> None:
@@ -185,25 +213,39 @@ async def _phone_login(
     request: Request, session: AsyncSession, payload: PhoneLoginRequest, *, register: bool
 ) -> dict[str, object]:
     _validate_phone(payload.phone)
-    await _verify_code(request, payload.phone, payload.verify_code)
-    user = await _find_user(session, phone=payload.phone)
-    if register and user is not None:
-        raise BusinessError(1005, "该手机号已注册，请直接登录")
-    if not register and user is None:
-        raise BusinessError(1006, "该手机号未注册，请先注册")
-    if user is None:
-        user = await _commit_new_user(
-            session,
-            User(
-                openid=f"phone_{payload.phone}",
-                phone=payload.phone,
-                nick_name=f"用户{payload.phone[-4:]}",
-                member_level=0,
-                status=0,
-                is_deleted=0,
-            ),
-        )
-    return _login_payload(user, request.app.state.settings)
+    redis = request.app.state.redis.raw
+    lock_key = f"lock:user:phone:{payload.phone}"
+    lock_value = secrets.token_urlsafe(16)
+    if not await redis.set(
+        lock_key,
+        lock_value,
+        ex=PHONE_OPERATION_LOCK_TTL_SECONDS,
+        nx=True,
+    ):
+        raise BusinessError(9005, "操作过于频繁，请稍后重试")
+    try:
+        await _verify_code(request, payload.phone, payload.verify_code)
+        user = await _find_user(session, phone=payload.phone)
+        if register and user is not None:
+            raise BusinessError(1005, "该手机号已注册，请直接登录")
+        if not register and user is None:
+            raise BusinessError(1006, "该手机号未注册，请先注册")
+        if user is None:
+            user = await _commit_new_user(
+                session,
+                User(
+                    openid=f"phone_{payload.phone}",
+                    phone=payload.phone,
+                    nick_name=f"用户{payload.phone[-4:]}",
+                    member_level=0,
+                    status=0,
+                    is_deleted=0,
+                ),
+            )
+        await _consume_verify_code(request, payload.phone)
+        return _login_payload(user, request.app.state.settings)
+    finally:
+        await _release_phone_operation_lock(request, lock_key, lock_value)
 
 
 async def phone_login(

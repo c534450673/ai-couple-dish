@@ -204,6 +204,18 @@ def test_business_route_inventory_is_registered() -> None:
     assert EXPECTED_ROUTES <= actual
 
 
+def test_couple_unbind_query_names_match_spring_contract() -> None:
+    paths = create_app(settings()).openapi()["paths"]
+
+    for path in ("/api/couple/unbind/confirm", "/api/couple/unbind/reject"):
+        query_names = {
+            parameter["name"]
+            for parameter in paths[path]["post"]["parameters"]
+            if parameter["in"] == "query"
+        }
+        assert query_names == {"coupleId"}
+
+
 @pytest.mark.parametrize(
     ("method", "path"),
     [

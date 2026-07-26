@@ -48,6 +48,7 @@ EXPECTED_REDIS_PATTERNS = {
     "logout:blacklist:<jti>",
     "user:verify:code:<phone>",
     "user:verify:expire:<phone>",
+    "lock:user:phone:<phone>",
     "couple:code:<8-char-code>",
     "couple:code:user:<userId>",
     "ai:session:msg:<userId>:<sessionId>",
@@ -574,7 +575,7 @@ def test_redis_keys_are_exact_and_unique() -> None:
     patterns = [entry["pattern"] for entry in entries]
 
     assert set(patterns) == EXPECTED_REDIS_PATTERNS
-    assert len(patterns) == len(set(patterns)) == 8
+    assert len(patterns) == len(set(patterns)) == 9
     assert all(set(entry) == {"pattern", "ttl", "sensitive"} for entry in entries)
 
 

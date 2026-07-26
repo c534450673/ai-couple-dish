@@ -17,11 +17,14 @@ os.environ.setdefault("JWT_SECRET", "x" * 64)
 
 from app.core.auth import decode_access_token
 from app.core.config import Settings
+from app.core.errors import BusinessError
 from app.db.models import (
     Anniversary,
+    Couple,
     CoupleMenu,
     CoupleRank,
     CoupleTree,
+    CoupleUnbindRecord,
     DailyGreeting,
     DailyTask,
     Feed,
@@ -46,6 +49,7 @@ from app.schemas.business import (
     BindCoupleRequest,
     GenerateCodeRequest,
     PhoneLoginRequest,
+    UnbindRequest,
     WechatLoginRequest,
 )
 from app.services import couple as couple_service
@@ -153,6 +157,181 @@ async def test_user_couple_notification_flow_uses_real_mysql_and_redis(
             claims = decode_access_token(first["token"], SECRET)
             await user_service.logout(request, session, first_id, claims)
             assert await redis.raw.exists(f"logout:blacklist:{claims.jti}") == 1
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_couple_unbind_state_machine_and_concurrent_confirm_are_atomic(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    try:
+        async with session_factory() as session:
+            request = request_context(redis)
+            first = await user_service.wechat_login(
+                request,
+                session,
+                WechatLoginRequest(code="unbind-openid-one", nickName="解绑甲"),
+            )
+            second = await user_service.wechat_login(
+                request,
+                session,
+                WechatLoginRequest(code="unbind-openid-two", nickName="解绑乙"),
+            )
+            first_id = int(first["userInfo"]["id"])
+            second_id = int(second["userInfo"]["id"])
+            code = await couple_service.generate_code(
+                request, session, first_id, GenerateCodeRequest(loveStartDate=date.today())
+            )
+            relation = await couple_service.bind(
+                request, session, second_id, BindCoupleRequest(coupleCode=code)
+            )
+            couple_id = int(relation["id"])
+
+            await couple_service.apply_unbind(request, session, first_id, UnbindRequest())
+            couple = await session.scalar(select(Couple).where(Couple.id == couple_id))
+            assert couple is not None
+            assert (couple.status, couple.unbind_applicant_id) == (3, first_id)
+            with pytest.raises(BusinessError) as applicant_error:
+                await couple_service.reject_unbind(request, session, first_id, couple_id)
+            assert applicant_error.value.code == 2007
+
+            await couple_service.reject_unbind(request, session, second_id, couple_id)
+            await session.refresh(couple)
+            assert (couple.status, couple.unbind_applicant_id, couple.unbind_apply_time) == (
+                1,
+                None,
+                None,
+            )
+            rejected = await session.scalars(
+                select(Notification).where(
+                    Notification.user_id == first_id,
+                    Notification.related_id == couple_id,
+                    Notification.title == "💕 解绑被拒绝",
+                )
+            )
+            assert len(list(rejected)) == 1
+
+            await couple_service.apply_unbind(request, session, first_id, UnbindRequest())
+            await session.refresh(couple)
+            couple.unbind_apply_time = datetime.now() - timedelta(days=8)
+            await session.commit()
+            with pytest.raises(BusinessError) as expired_error:
+                await couple_service.confirm_unbind(request, session, second_id, couple_id)
+            assert expired_error.value.code == 2001
+            await session.refresh(couple)
+            assert (couple.status, couple.unbind_applicant_id) == (1, None)
+
+            await couple_service.apply_unbind(request, session, first_id, UnbindRequest())
+
+        async def confirm_with_new_session(user_id: int) -> str:
+            async with session_factory() as isolated_session:
+                try:
+                    await couple_service.confirm_unbind(
+                        request_context(redis), isolated_session, user_id, couple_id
+                    )
+                except BusinessError as error:
+                    return f"error:{error.code}"
+                return "success"
+
+        outcomes = await asyncio.gather(
+            confirm_with_new_session(first_id), confirm_with_new_session(second_id)
+        )
+        assert sorted(outcomes) == ["error:2006", "success"]
+
+        async with session_factory() as session:
+            couple = await session.scalar(select(Couple).where(Couple.id == couple_id))
+            assert couple is not None
+            assert couple.status == 2
+            users = list(
+                await session.scalars(select(User).where(User.id.in_([first_id, second_id])))
+            )
+            assert all(user.couple_id is None for user in users)
+            records = list(
+                await session.scalars(
+                    select(CoupleUnbindRecord).where(CoupleUnbindRecord.couple_id == couple_id)
+                )
+            )
+            assert len(records) == 1
+            notifications = list(
+                await session.scalars(
+                    select(Notification).where(
+                        Notification.related_id == couple_id,
+                        Notification.title == "💔 已解绑",
+                    )
+                )
+            )
+            assert {notification.user_id for notification in notifications} == {
+                first_id,
+                second_id,
+            }
+    finally:
+        await redis.close()
+
+
+@pytest.mark.integration
+async def test_concurrent_bind_same_code_creates_one_couple_and_notification(
+    mysql_business_engine: AsyncEngine, redis_url: str
+) -> None:
+    redis = RedisClient(redis_url)
+    await redis.connect()
+    session_factory = async_sessionmaker(mysql_business_engine, expire_on_commit=False)
+    try:
+        async with session_factory() as session:
+            request = request_context(redis)
+            users = [
+                await user_service.wechat_login(
+                    request,
+                    session,
+                    WechatLoginRequest(code=f"bind-race-{suffix}", nickName=suffix),
+                )
+                for suffix in ("甲", "乙", "丙")
+            ]
+            creator_id = int(users[0]["userInfo"]["id"])
+            candidate_ids = [int(users[1]["userInfo"]["id"]), int(users[2]["userInfo"]["id"])]
+            code = await couple_service.generate_code(
+                request, session, creator_id, GenerateCodeRequest(loveStartDate=date.today())
+            )
+
+        async def bind_with_new_session(candidate_id: int) -> str:
+            async with session_factory() as isolated_session:
+                try:
+                    await couple_service.bind(
+                        request_context(redis),
+                        isolated_session,
+                        candidate_id,
+                        BindCoupleRequest(coupleCode=code),
+                    )
+                except BusinessError as error:
+                    return f"error:{error.code}"
+                return "success"
+
+        outcomes = await asyncio.gather(
+            *(bind_with_new_session(candidate_id) for candidate_id in candidate_ids)
+        )
+        assert outcomes.count("success") == 1
+        assert sum(value.startswith("error:") for value in outcomes) == 1
+
+        async with session_factory() as session:
+            couples = list(await session.scalars(select(Couple)))
+            assert len(couples) == 1
+            bound_ids = {couples[0].user1_id, couples[0].user2_id}
+            assert creator_id in bound_ids
+            assert len(bound_ids.intersection(candidate_ids)) == 1
+            users = list(await session.scalars(select(User).where(User.id.in_([*candidate_ids]))))
+            assert sum(user.couple_id is not None for user in users) == 1
+            notifications = list(
+                await session.scalars(
+                    select(Notification).where(
+                        Notification.user_id == creator_id,
+                        Notification.related_type == "couple",
+                    )
+                )
+            )
+            assert len(notifications) == 1
     finally:
         await redis.close()
 

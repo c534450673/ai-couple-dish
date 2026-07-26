@@ -70,7 +70,7 @@ async def apply_unbind(
 @router.post("/unbind/confirm")
 async def confirm_unbind(
     request: Request,
-    couple_id: int = Query(...),
+    couple_id: int = Query(..., alias="coupleId"),
     user_id: int = Depends(current_user_id),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, object | None]:
@@ -81,7 +81,7 @@ async def confirm_unbind(
 @router.post("/unbind/reject")
 async def reject_unbind(
     request: Request,
-    couple_id: int = Query(...),
+    couple_id: int = Query(..., alias="coupleId"),
     user_id: int = Depends(current_user_id),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, object | None]:

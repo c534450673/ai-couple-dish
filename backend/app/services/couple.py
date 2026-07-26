@@ -42,6 +42,25 @@ async def _couple(session: AsyncSession, couple_id: int) -> Couple | None:
     return result.scalar_one_or_none()
 
 
+async def _locked_couple(session: AsyncSession, couple_id: int) -> Couple | None:
+    result = await session.execute(select(Couple).where(Couple.id == couple_id).with_for_update())
+    return result.scalar_one_or_none()
+
+
+async def _locked_users(session: AsyncSession, user_ids: list[int]) -> dict[int, User]:
+    ordered_ids = sorted(set(user_ids))
+    result = await session.execute(
+        select(User)
+        .where(User.id.in_(ordered_ids), User.is_deleted == 0)
+        .order_by(User.id)
+        .with_for_update()
+    )
+    users = {user.id: user for user in result.scalars().all()}
+    if len(users) != len(ordered_ids):
+        raise BusinessError(1001, "用户不存在")
+    return users
+
+
 def _partner_id(couple: Couple, user_id: int) -> int:
     if couple.user1_id == user_id and couple.user2_id is not None:
         return couple.user2_id
@@ -189,7 +208,11 @@ async def bind(
         sender_id = int(values.get("userId", "0"))
         if sender_id == user_id:
             raise BusinessError(2005, "绑定冲突，请刷新重试")
-        sender = await _user(session, sender_id)
+        locked_users = await _locked_users(session, [user_id, sender_id])
+        user = locked_users[user_id]
+        sender = locked_users[sender_id]
+        if user.couple_id is not None:
+            raise BusinessError(2002, "已经绑定过情侣关系")
         if sender.couple_id is not None:
             raise BusinessError(2002, "已经绑定过情侣关系")
         start_date = date.fromisoformat(values.get("loveStartDate", date.today().isoformat()))
@@ -297,7 +320,7 @@ async def apply_unbind(
     user = await _user(session, user_id)
     if user.couple_id is None:
         raise BusinessError(2006, "未绑定情侣关系")
-    couple = await _couple(session, user.couple_id)
+    couple = await _locked_couple(session, user.couple_id)
     if couple is None or couple.status != 1:
         raise BusinessError(2001, "情侣关系不存在")
     couple.status = 3
@@ -309,7 +332,7 @@ async def apply_unbind(
             user_id=partner_id,
             type=2,
             title="💔 申请解绑",
-            content="你的伴侣申请了解绑，请确认",
+            content="你的伴侣申请了解绑，请在7天内确认",
             related_id=couple.id,
             related_type="couple",
             sender_id=user_id,
@@ -327,12 +350,23 @@ async def confirm_unbind(
 ) -> None:
     started = perf_counter()
     user = await _user(session, user_id)
-    couple = await _couple(session, couple_id)
+    couple = await _locked_couple(session, couple_id)
     if couple is None or user.couple_id != couple_id or couple.status != 3:
         raise BusinessError(2006, "未绑定情侣关系")
     if couple.user2_id is None:
         raise BusinessError(2001, "情侣关系不存在")
     now = datetime.now()
+    if couple.unbind_apply_time and now - couple.unbind_apply_time > timedelta(days=7):
+        couple.status = 1
+        couple.unbind_applicant_id = None
+        couple.unbind_apply_time = None
+        await session.commit()
+        await logger.awarning(
+            "business_operation_failed",
+            **_log_fields(request, "confirm_unbind", "rejected", started, "2001"),
+        )
+        raise BusinessError(2001, "解绑申请已过期，请重新申请")
+    locked_users = await _locked_users(session, [couple.user1_id, couple.user2_id])
     session.add(
         CoupleUnbindRecord(
             couple_id=couple.id,
@@ -349,11 +383,25 @@ async def confirm_unbind(
             status=0,
         )
     )
-    first = await _user(session, couple.user1_id)
-    second = await _user(session, couple.user2_id)
+    first = locked_users[couple.user1_id]
+    second = locked_users[couple.user2_id]
     first.couple_id = None
     second.couple_id = None
     couple.status = 2
+    notification_content = "你们已解除情侣关系，数据将保留30天，期间重新绑定可恢复数据"
+    for recipient_id in {couple.user1_id, couple.user2_id}:
+        session.add(
+            Notification(
+                user_id=recipient_id,
+                type=2,
+                title="💔 已解绑",
+                content=notification_content,
+                related_id=couple.id,
+                related_type="couple",
+                sender_id=None,
+                is_read=0,
+            )
+        )
     await session.commit()
     await logger.ainfo(
         "business_operation_completed", **_log_fields(request, "confirm_unbind", "success", started)
@@ -365,14 +413,28 @@ async def reject_unbind(
 ) -> None:
     started = perf_counter()
     user = await _user(session, user_id)
-    couple = await _couple(session, couple_id)
+    couple = await _locked_couple(session, couple_id)
     if couple is None or user.couple_id != couple_id or couple.status != 3:
         raise BusinessError(2006, "未绑定情侣关系")
-    if couple.unbind_applicant_id == user_id:
+    applicant_id = couple.unbind_applicant_id
+    if applicant_id == user_id:
         raise BusinessError(2007, "需要双方确认才能解绑")
     couple.status = 1
     couple.unbind_applicant_id = None
     couple.unbind_apply_time = None
+    if applicant_id is not None:
+        session.add(
+            Notification(
+                user_id=applicant_id,
+                type=2,
+                title="💕 解绑被拒绝",
+                content="你的伴侣拒绝了你的解绑申请",
+                related_id=couple_id,
+                related_type="couple",
+                sender_id=None,
+                is_read=0,
+            )
+        )
     await session.commit()
     await logger.ainfo(
         "business_operation_completed", **_log_fields(request, "reject_unbind", "success", started)
@@ -423,18 +485,22 @@ async def recover(
     if user.couple_id is not None:
         raise BusinessError(2002, "已经绑定过情侣关系")
     result = await session.execute(
-        select(CoupleUnbindRecord).where(
+        select(CoupleUnbindRecord)
+        .where(
             CoupleUnbindRecord.id == record_id,
             CoupleUnbindRecord.status == 0,
             CoupleUnbindRecord.data_expire_time > datetime.now(),
             or_(CoupleUnbindRecord.user1_id == user_id, CoupleUnbindRecord.user2_id == user_id),
         )
+        .with_for_update()
     )
     record = result.scalar_one_or_none()
     if record is None:
         raise BusinessError(2001, "情侣关系不存在")
     partner_id = record.user2_id if record.user1_id == user_id else record.user1_id
-    partner = await _user(session, partner_id)
+    locked_users = await _locked_users(session, [user_id, partner_id])
+    user = locked_users[user_id]
+    partner = locked_users[partner_id]
     if partner.couple_id is not None:
         raise BusinessError(2002, "已经绑定过情侣关系")
     start_date = record.love_start_date.date() if record.love_start_date else date.today()
