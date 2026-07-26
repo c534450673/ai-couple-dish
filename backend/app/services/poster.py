@@ -409,7 +409,6 @@ async def _feed_content(
             select(Feed).where(
                 Feed.id == related_id,
                 Feed.couple_id == context.couple.id,
-                Feed.status == 1,
             )
         )
         if item is None:

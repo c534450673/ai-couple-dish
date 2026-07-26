@@ -230,6 +230,16 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
                             expire_time=datetime.now() + timedelta(days=1),
                             create_time=datetime(current_year, 6, 1, 10, 0),
                         )
+                        pending_feed = Feed(
+                            couple_id=first_user.couple_id,
+                            sender_id=first_user.id,
+                            receiver_id=partner_user.id,
+                            feed_type="meal",
+                            content="待领取投喂文案",
+                            status=0,
+                            expire_time=datetime.now() + timedelta(days=1),
+                            create_time=datetime(current_year, 6, 2, 10, 0),
+                        )
                         menu = CoupleMenu(
                             couple_id=first_user.couple_id,
                             creator_id=first_user.id,
@@ -285,6 +295,7 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
                             [
                                 anniversary,
                                 feed,
+                                pending_feed,
                                 menu,
                                 note,
                                 *foreign_anniversaries,
@@ -297,6 +308,7 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
                         inactive_id = inactive.id
                         anniversary_id = anniversary.id
                         feed_id = feed.id
+                        pending_feed_id = pending_feed.id
                         menu_id = menu.id
                         first_user_id = first_user.id
                         foreign_related_ids = {
@@ -359,6 +371,20 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
                             json={"posterType": poster_type, "relatedId": 2**63 - 1},
                         )
                         assert absent.json()["code"] == 8901
+
+                    pending_feed_response = await client.post(
+                        "/api/poster/generate",
+                        headers=first,
+                        json={"posterType": "feed", "relatedId": pending_feed_id},
+                    )
+                    assert pending_feed_response.status_code == 200
+                    assert pending_feed_response.json()["code"] == 200
+                    pending_poster_id = pending_feed_response.json()["data"]["id"]
+                    assert (
+                        await client.delete(
+                            f"/api/poster/delete/{pending_poster_id}", headers=first
+                        )
+                    ).json()["code"] == 200
 
                     requests = [
                         {
