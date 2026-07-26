@@ -16,7 +16,7 @@ test.describe('Couple Cosmos 导航 @mock', () => {
       await expect(page).toHaveURL(url)
     }
     await page.goto('/menu')
-    await page.locator('.menu-card').first().click()
+    await page.getByRole('button', { name: '查看这颗星' }).click()
     await expect(page).toHaveURL(/\/menu\/101$/)
     await page.goBack()
     await expect(page).toHaveURL(/\/menu$/)

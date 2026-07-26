@@ -1,22 +1,3 @@
-<template>
-  <div class="error-boundary">
-    <slot v-if="!hasError"></slot>
-    <div v-else class="error-container">
-      <div class="error-icon">
-        <van-icon name="warning" size="48" color="#ff4757" />
-      </div>
-      <div class="error-title">{{ title }}</div>
-      <div class="error-message">{{ message }}</div>
-      <van-button type="primary" round size="small" @click="handleRetry">
-        重试
-      </van-button>
-      <van-button plain round size="small" @click="handleGoBack">
-        返回上一页
-      </van-button>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref, onErrorCaptured } from 'vue'
 import { useRouter } from 'vue-router'
@@ -77,6 +58,25 @@ defineExpose({
   }
 })
 </script>
+
+<template>
+  <div class="error-boundary">
+    <slot v-if="!hasError"></slot>
+    <div v-else class="error-container">
+      <div class="error-icon">
+        <van-icon name="warning" size="48" color="#ff4757" />
+      </div>
+      <div class="error-title">{{ title }}</div>
+      <div class="error-message">{{ message }}</div>
+      <van-button type="primary" round size="small" @click="handleRetry">
+        重试
+      </van-button>
+      <van-button plain round size="small" @click="handleGoBack">
+        返回上一页
+      </van-button>
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .error-boundary {

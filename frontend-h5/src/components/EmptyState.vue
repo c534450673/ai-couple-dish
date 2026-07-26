@@ -1,29 +1,3 @@
-<template>
-  <div class="empty-state">
-    <div class="empty-icon" v-if="icon">
-      <van-icon :name="icon" :size="iconSize" :color="iconColor" />
-    </div>
-    <div class="empty-image" v-else-if="image">
-      <img :src="image" :alt="description" />
-    </div>
-    <div class="empty-title" v-if="title">{{ title }}</div>
-    <div class="empty-description" v-if="description">{{ description }}</div>
-    <div class="empty-actions" v-if="$slots.action || actionText">
-      <slot name="action">
-        <van-button
-          v-if="actionText"
-          type="primary"
-          round
-          size="small"
-          @click="handleAction"
-        >
-          {{ actionText }}
-        </van-button>
-      </slot>
-    </div>
-  </div>
-</template>
-
 <script setup>
 const props = defineProps({
   icon: {
@@ -62,6 +36,32 @@ const handleAction = () => {
   emit('action')
 }
 </script>
+
+<template>
+  <div class="empty-state">
+    <div class="empty-icon" v-if="icon">
+      <van-icon :name="icon" :size="iconSize" :color="iconColor" />
+    </div>
+    <div class="empty-image" v-else-if="image">
+      <img :src="image" :alt="description" />
+    </div>
+    <div class="empty-title" v-if="title">{{ title }}</div>
+    <div class="empty-description" v-if="description">{{ description }}</div>
+    <div class="empty-actions" v-if="$slots.action || actionText">
+      <slot name="action">
+        <van-button
+          v-if="actionText"
+          type="primary"
+          round
+          size="small"
+          @click="handleAction"
+        >
+          {{ actionText }}
+        </van-button>
+      </slot>
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .empty-state {

@@ -29,7 +29,7 @@ describe('Couple Cosmos 设计令牌', () => {
     expect(css).toContain('$cosmos-gold: #ffc857')
     expect(css).toContain('$cosmos-card-radius: 24px')
     expect(css).toContain('$cosmos-sheet-radius: 28px')
-    expect(css).toContain("$font-family-base: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif")
+    expect(css).toContain('$font-family-base: \'PingFang SC\', \'Noto Sans SC\', \'Microsoft YaHei\', sans-serif')
     expect(css).not.toContain('#fff8f5')
   })
 

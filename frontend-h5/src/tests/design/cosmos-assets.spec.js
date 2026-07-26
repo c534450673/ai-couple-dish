@@ -141,8 +141,8 @@ describe('Couple Cosmos 运行时资源', () => {
     const main = await readFile('src/assets/styles/main.scss', 'utf8')
 
     expect(main).toContain('.cosmos-media')
-    expect(main).toContain("url('../cosmos/food-hero.webp')")
-    expect(main).toContain("url('../cosmos/partner-avatar.webp')")
-    expect(main).toContain("url('../cosmos/place-restaurant.webp')")
+    expect(main).toContain('url(\'../cosmos/food-hero.webp\')')
+    expect(main).toContain('url(\'../cosmos/partner-avatar.webp\')')
+    expect(main).toContain('url(\'../cosmos/place-restaurant.webp\')')
   })
 })

@@ -101,58 +101,58 @@ export const validateForm = (data, rules) => {
       let errorMsg = ''
 
       switch (rule) {
-        case 'required':
-          isValid = validateRequired(value)
-          errorMsg = '此项为必填'
-          break
-        case 'phone':
-          if (value) {
-            isValid = validatePhone(value)
-            errorMsg = '手机号格式不正确'
-          }
-          break
-        case 'email':
-          if (value) {
-            isValid = validateEmail(value)
-            errorMsg = '邮箱格式不正确'
-          }
-          break
-        case 'verifyCode':
-          if (value) {
-            isValid = validateVerifyCode(value)
-            errorMsg = '验证码格式不正确'
-          }
-          break
-        case 'nickName':
-          if (value) {
-            isValid = validateNickName(value)
-            errorMsg = '昵称长度需在2-20字之间'
-          }
-          break
-        case 'password':
-          if (value) {
-            isValid = validatePassword(value)
-            errorMsg = '密码长度需在6-20位'
-          }
-          break
-        case 'url':
-          if (value) {
-            isValid = validateUrl(value)
-            errorMsg = 'URL格式不正确'
-          }
-          break
-        case 'price':
-          if (value) {
-            isValid = validatePrice(value)
-            errorMsg = '价格格式不正确'
-          }
-          break
-        default:
-          // 自定义验证函数
-          if (typeof rule === 'function') {
-            isValid = rule(value)
-            errorMsg = '验证失败'
-          }
+      case 'required':
+        isValid = validateRequired(value)
+        errorMsg = '此项为必填'
+        break
+      case 'phone':
+        if (value) {
+          isValid = validatePhone(value)
+          errorMsg = '手机号格式不正确'
+        }
+        break
+      case 'email':
+        if (value) {
+          isValid = validateEmail(value)
+          errorMsg = '邮箱格式不正确'
+        }
+        break
+      case 'verifyCode':
+        if (value) {
+          isValid = validateVerifyCode(value)
+          errorMsg = '验证码格式不正确'
+        }
+        break
+      case 'nickName':
+        if (value) {
+          isValid = validateNickName(value)
+          errorMsg = '昵称长度需在2-20字之间'
+        }
+        break
+      case 'password':
+        if (value) {
+          isValid = validatePassword(value)
+          errorMsg = '密码长度需在6-20位'
+        }
+        break
+      case 'url':
+        if (value) {
+          isValid = validateUrl(value)
+          errorMsg = 'URL格式不正确'
+        }
+        break
+      case 'price':
+        if (value) {
+          isValid = validatePrice(value)
+          errorMsg = '价格格式不正确'
+        }
+        break
+      default:
+        // 自定义验证函数
+        if (typeof rule === 'function') {
+          isValid = rule(value)
+          errorMsg = '验证失败'
+        }
       }
 
       if (!isValid) {
