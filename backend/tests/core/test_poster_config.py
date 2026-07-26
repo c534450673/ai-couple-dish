@@ -62,6 +62,26 @@ def test_poster_public_path_rejects_unsafe_or_mismatched_values(
         )
 
 
+@pytest.mark.parametrize(
+    ("base_url", "public_path"),
+    [
+        ("/api//uploads", "/api//uploads"),
+        ("/api/./uploads", "/api/./uploads"),
+        ("/api/uploads/../private", "/api/uploads/../private"),
+    ],
+)
+def test_poster_public_path_rejects_raw_empty_and_dot_segments(
+    base_url: str, public_path: str
+) -> None:
+    with pytest.raises(ValidationError):
+        Settings(
+            _env_file=None,
+            FILE_BASE_URL=base_url,
+            FILE_PUBLIC_PATH=public_path,
+            **BASE,
+        )
+
+
 @pytest.mark.parametrize("concurrency", [1, 2, 4])
 def test_poster_render_concurrency_is_bounded(concurrency: int) -> None:
     settings = Settings(

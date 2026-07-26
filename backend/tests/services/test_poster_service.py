@@ -78,6 +78,24 @@ def test_generate_input_requires_type_or_template_and_validates_known_fields() -
     assert valid.image_url == "/api/uploads/user/1/year.png"
 
 
+def test_generate_input_accepts_signed_int64_max_and_rejects_overflow() -> None:
+    maximum = 2**63 - 1
+    valid = poster.validate_generate_input(
+        PosterGenerateRequest(posterType="feed", templateId=maximum, relatedId=maximum),
+        current_year=2026,
+    )
+    assert valid.template_id == maximum
+    assert valid.related_id == maximum
+
+    for field_name in ("templateId", "relatedId"):
+        with pytest.raises(BusinessError) as error:
+            poster.validate_generate_input(
+                PosterGenerateRequest(posterType="feed", **{field_name: 2**63}),
+                current_year=2026,
+            )
+        assert error.value.code == 9001
+
+
 @pytest.mark.parametrize(
     "payload",
     [
@@ -135,3 +153,31 @@ def test_invite_code_is_eight_uppercase_alphanumeric_characters() -> None:
 
     assert len(values) > 1
     assert all(len(value) == 8 and value.isalnum() and value == value.upper() for value in values)
+
+
+async def test_decode_rejection_summary_logs_each_reason_once(monkeypatch) -> None:
+    records: list[tuple[str, str]] = []
+
+    async def capture_log(
+        _event: str,
+        _request: object,
+        _operation: str,
+        result: str,
+        _started: float,
+        error_code: str = "NONE",
+    ) -> None:
+        records.append((error_code, result))
+
+    monkeypatch.setattr(poster, "_log", capture_log)
+
+    await poster._log_decode_rejections(
+        object(),
+        ("decode", "animated", "bomb", "decode"),
+        0.0,
+    )
+
+    assert records == [
+        ("IMAGE_CANDIDATE_ANIMATED", "rejected"),
+        ("IMAGE_CANDIDATE_BOMB", "rejected"),
+        ("IMAGE_CANDIDATE_DECODE", "rejected"),
+    ]

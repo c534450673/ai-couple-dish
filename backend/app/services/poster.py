@@ -2,6 +2,7 @@ import asyncio
 import json
 import secrets
 import string
+from collections import Counter
 from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
@@ -42,8 +43,17 @@ FEED_TYPE_NAMES = {
     "snack": "小吃",
     "drink": "饮品",
 }
+IMAGE_REJECTION_ERROR_CODES = {
+    "file": "IMAGE_CANDIDATE_FILE",
+    "format": "IMAGE_CANDIDATE_FORMAT",
+    "dimensions": "IMAGE_CANDIDATE_DIMENSIONS",
+    "animated": "IMAGE_CANDIDATE_ANIMATED",
+    "bomb": "IMAGE_CANDIDATE_BOMB",
+    "decode": "IMAGE_CANDIDATE_DECODE",
+}
 INVITE_ALPHABET = string.ascii_uppercase + string.digits
 SHANGHAI = ZoneInfo("Asia/Shanghai")
+MAX_SIGNED_INT64 = 2**63 - 1
 
 
 @dataclass(frozen=True)
@@ -107,6 +117,16 @@ def _invalid() -> Never:
     raise BusinessError(9001, "参数无效")
 
 
+def _validate_poster_type(poster_type: str | None) -> None:
+    if poster_type is not None and poster_type not in POSTER_TYPES:
+        _invalid()
+
+
+def _validate_positive_int64(value: int | None) -> None:
+    if value is not None and not 1 <= value <= MAX_SIGNED_INT64:
+        _invalid()
+
+
 def _validate_custom_structure(value: Any, *, depth: int = 0) -> int:
     if depth > 3:
         _invalid()
@@ -123,14 +143,11 @@ def validate_generate_input(
     payload: PosterGenerateRequest, *, current_year: int
 ) -> ValidatedGenerateInput:
     poster_type = payload.poster_type.strip() if payload.poster_type else None
-    if poster_type is not None and poster_type not in POSTER_TYPES:
-        _invalid()
-    if payload.template_id is not None and payload.template_id <= 0:
-        _invalid()
+    _validate_poster_type(poster_type)
+    _validate_positive_int64(payload.template_id)
     if poster_type is None and payload.template_id is None:
         _invalid()
-    if payload.related_id is not None and payload.related_id <= 0:
-        _invalid()
+    _validate_positive_int64(payload.related_id)
     if poster_type == "annual" and payload.related_id is not None:
         if not 2000 <= payload.related_id <= current_year:
             _invalid()
@@ -236,6 +253,7 @@ async def get_templates(
 ) -> list[dict[str, object | None]]:
     started = perf_counter()
     try:
+        _validate_poster_type(poster_type)
         await _require_user(session, user_id)
         query = select(PosterTemplate).where(PosterTemplate.is_active == 1)
         if poster_type is not None:
@@ -252,8 +270,7 @@ async def get_templates(
 
 
 def _validate_list_filters(poster_type: str | None, limit: int) -> None:
-    if poster_type is not None and poster_type not in POSTER_TYPES:
-        _invalid()
+    _validate_poster_type(poster_type)
     if not 1 <= limit <= 100:
         _invalid()
 
@@ -351,10 +368,19 @@ async def _anniversary_content(
     current: date,
 ) -> RenderContent:
     if related_id is not None:
-        item = await session.scalar(select(Anniversary).where(Anniversary.id == related_id))
-        if item is None or item.is_deleted != 0:
-            raise BusinessError(8901, "海报不存在")
-        if item.couple_id != context.couple.id:
+        item = await session.scalar(
+            select(Anniversary).where(
+                Anniversary.id == related_id,
+                Anniversary.couple_id == context.couple.id,
+                Anniversary.is_deleted == 0,
+            )
+        )
+        if item is None:
+            owner_couple_id = await session.scalar(
+                select(Anniversary.couple_id).where(Anniversary.id == related_id)
+            )
+            if owner_couple_id is None or int(owner_couple_id) == context.couple.id:
+                raise BusinessError(8901, "海报不存在")
             raise BusinessError(8903, "无权操作此海报")
         event_name = item.name
         event_date = item.anniversary_date
@@ -379,10 +405,19 @@ async def _feed_content(
     session: AsyncSession, context: CoupleContext, related_id: int | None
 ) -> RenderContent:
     if related_id is not None:
-        item = await session.scalar(select(Feed).where(Feed.id == related_id))
+        item = await session.scalar(
+            select(Feed).where(
+                Feed.id == related_id,
+                Feed.couple_id == context.couple.id,
+                Feed.status == 1,
+            )
+        )
         if item is None:
-            raise BusinessError(8901, "海报不存在")
-        if item.couple_id != context.couple.id:
+            owner_couple_id = await session.scalar(
+                select(Feed.couple_id).where(Feed.id == related_id)
+            )
+            if owner_couple_id is None or int(owner_couple_id) == context.couple.id:
+                raise BusinessError(8901, "海报不存在")
             raise BusinessError(8903, "无权操作此海报")
     else:
         item = await session.scalar(
@@ -425,10 +460,20 @@ async def _map_content(
     session: AsyncSession, context: CoupleContext, related_id: int | None
 ) -> RenderContent:
     if related_id is not None:
-        item = await session.scalar(select(CoupleMenu).where(CoupleMenu.id == related_id))
-        if item is None or item.is_deleted != 0 or item.status != 1:
-            raise BusinessError(8901, "海报不存在")
-        if item.couple_id != context.couple.id:
+        item = await session.scalar(
+            select(CoupleMenu).where(
+                CoupleMenu.id == related_id,
+                CoupleMenu.couple_id == context.couple.id,
+                CoupleMenu.status == 1,
+                CoupleMenu.is_deleted == 0,
+            )
+        )
+        if item is None:
+            owner_couple_id = await session.scalar(
+                select(CoupleMenu.couple_id).where(CoupleMenu.id == related_id)
+            )
+            if owner_couple_id is None or int(owner_couple_id) == context.couple.id:
+                raise BusinessError(8901, "海报不存在")
             raise BusinessError(8903, "无权操作此海报")
     else:
         item = await session.scalar(
@@ -609,6 +654,23 @@ async def _local_candidates(
     return tuple(paths)
 
 
+async def _log_decode_rejections(
+    request: Request,
+    reasons: tuple[str, ...],
+    started: float,
+) -> None:
+    for reason in sorted(Counter(reasons)):
+        error_code = IMAGE_REJECTION_ERROR_CODES.get(reason, "IMAGE_CANDIDATE_REJECTED")
+        await _log(
+            "poster_image_candidate_rejected",
+            request,
+            "generate.decode",
+            "rejected",
+            started,
+            error_code,
+        )
+
+
 async def _commit_generated_poster(session: AsyncSession, item: UserPoster) -> None:
     session.add(item)
     await session.flush()
@@ -688,6 +750,7 @@ async def generate(
             "9002",
         )
         raise BusinessError(9002, "文件上传失败") from error
+    await _log_decode_rejections(request, published.rejection_reasons, started)
     await _log("poster_render_completed", request, "generate.render", "success", started)
     await _log("poster_file_published", request, "generate.publish", "success", started)
 
@@ -704,23 +767,42 @@ async def generate(
     try:
         await _commit_generated_poster(session, item)
     except Exception as error:
-        await session.rollback()
+        rollback_failed = False
         try:
-            await asyncio.to_thread(
+            await session.rollback()
+        except Exception:
+            rollback_failed = True
+        compensation_error: str | None = None
+        try:
+            compensation_state = await asyncio.to_thread(
                 poster_renderer.unlink_published_poster,
                 upload_root=Path(settings.file_upload_path),
                 file_base_url=settings.file_base_url,
                 file_public_path=settings.file_public_path,
                 poster_url=published.url,
             )
-        except OSError:
+        except Exception:
+            compensation_error = "POSTER_COMPENSATION_FAILED"
+        else:
+            if compensation_state == "refused":
+                compensation_error = "POSTER_COMPENSATION_REFUSED"
+        if rollback_failed:
+            await _log(
+                "poster_rollback_failed",
+                request,
+                "generate.rollback",
+                "cleanup_failed",
+                started,
+                "DATABASE_ROLLBACK_FAILED",
+            )
+        if compensation_error is not None:
             await _log(
                 "poster_compensation_failed",
                 request,
                 "generate.compensate",
                 "cleanup_failed",
                 started,
-                "POSTER_COMPENSATION_FAILED",
+                compensation_error,
             )
         await _log(
             "poster_generation_failed",
@@ -738,8 +820,7 @@ async def generate(
 async def _owned_poster(
     session: AsyncSession, user_id: int, poster_id: int, *, include_deleted: bool
 ) -> UserPoster:
-    if poster_id <= 0:
-        raise BusinessError(9001, "参数无效")
+    _validate_positive_int64(poster_id)
     await _require_user(session, user_id)
     item = await session.scalar(select(UserPoster).where(UserPoster.id == poster_id))
     if item is None or (not include_deleted and item.is_deleted != 0):
@@ -782,8 +863,7 @@ async def share(
 async def delete(request: Request, session: AsyncSession, user_id: int, poster_id: int) -> None:
     started = perf_counter()
     try:
-        if poster_id <= 0:
-            _invalid()
+        _validate_positive_int64(poster_id)
         await _require_user(session, user_id)
         item = await session.scalar(
             select(UserPoster).where(UserPoster.id == poster_id).with_for_update()

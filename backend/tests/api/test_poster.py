@@ -105,3 +105,67 @@ async def test_poster_routes_keep_result_wrapper_and_query_aliases(monkeypatch) 
         "message": "操作成功",
         "data": [{"id": 2, "posterType": "map"}],
     }
+
+
+async def test_detail_and_share_routes_call_matching_service_operations(monkeypatch) -> None:
+    from app.services import poster as poster_service
+
+    app = create_app(_settings())
+
+    async def authenticated_user() -> int:
+        return 42
+
+    async def no_session() -> AsyncIterator[object]:
+        yield object()
+
+    async def detail(*_args, **_kwargs):
+        return {"operation": "detail"}
+
+    async def share(*_args, **_kwargs):
+        return {"operation": "share"}
+
+    monkeypatch.setattr(poster_service, "detail", detail)
+    monkeypatch.setattr(poster_service, "share", share)
+    app.dependency_overrides[current_user_id] = authenticated_user
+    app.dependency_overrides[get_session] = no_session
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        detail_response = await client.get("/api/poster/detail/7")
+        share_response = await client.get("/api/poster/share/7")
+
+    assert detail_response.json()["data"] == {"operation": "detail"}
+    assert share_response.json()["data"] == {"operation": "share"}
+
+
+async def test_poster_contract_rejects_unknown_types_and_ids_outside_signed_int64() -> None:
+    app = create_app(_settings())
+
+    async def authenticated_user() -> int:
+        return 42
+
+    async def no_session() -> AsyncIterator[object]:
+        yield object()
+
+    app.dependency_overrides[current_user_id] = authenticated_user
+    app.dependency_overrides[get_session] = no_session
+    too_large = 2**63
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        responses = [
+            await client.get("/api/poster/templates", params={"posterType": "unknown"}),
+            await client.get("/api/poster/list", params={"posterType": "unknown"}),
+            await client.post(
+                "/api/poster/generate",
+                json={"posterType": "annual", "templateId": too_large},
+            ),
+            await client.post(
+                "/api/poster/generate",
+                json={"posterType": "feed", "relatedId": too_large},
+            ),
+            await client.get("/api/poster/detail/0"),
+            await client.get(f"/api/poster/detail/{too_large}"),
+            await client.get(f"/api/poster/share/{too_large}"),
+            await client.delete(f"/api/poster/delete/{too_large}"),
+        ]
+
+    assert [response.json()["code"] for response in responses] == [9001] * len(responses)

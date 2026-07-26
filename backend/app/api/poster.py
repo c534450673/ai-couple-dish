@@ -50,7 +50,7 @@ async def detail(
     user_id: int = Depends(current_user_id),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, object]:
-    data = await poster_service.share(request, session, user_id, id)
+    data = await poster_service.detail(request, session, user_id, id)
     return {"code": 200, "message": "操作成功", "data": data}
 
 
@@ -72,5 +72,5 @@ async def share(
     user_id: int = Depends(current_user_id),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, object]:
-    data = await poster_service.detail(request, session, user_id, id)
+    data = await poster_service.share(request, session, user_id, id)
     return {"code": 200, "message": "操作成功", "data": data}

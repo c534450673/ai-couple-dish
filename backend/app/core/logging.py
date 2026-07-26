@@ -24,6 +24,14 @@ ALLOWED_FIELDS = {
     "errorCode",
     "dependency",
 }
+POSTER_LOG_FIELDS = (
+    "requestId",
+    "module",
+    "operation",
+    "result",
+    "durationMs",
+    "errorCode",
+)
 
 
 def sanitize_event(event: MutableMapping[str, Any]) -> dict[str, Any]:
@@ -35,7 +43,10 @@ def allowlist_processor(
     _method_name: str,
     event_dict: MutableMapping[str, Any],
 ) -> dict[str, Any]:
-    return sanitize_event(event_dict)
+    sanitized = sanitize_event(event_dict)
+    if sanitized.get("module") == "poster":
+        return {key: sanitized[key] for key in POSTER_LOG_FIELDS if key in sanitized}
+    return sanitized
 
 
 def configure_logging(settings: Settings, *, stream: TextIO = sys.stdout) -> None:

@@ -101,9 +101,10 @@ class Settings(BaseSettings):
 
         def canonical(path: str) -> str:
             normalized = path.rstrip("/") or "/"
-            if any(part in {".", "..", ""} for part in PurePosixPath(normalized).parts[1:]):
+            raw_parts = normalized[1:].split("/") if normalized != "/" else []
+            if any(part in {".", "..", ""} for part in raw_parts):
                 raise ValueError("文件公开路径不得包含空段或点段")
-            return normalized
+            return PurePosixPath(normalized).as_posix()
 
         if canonical(parsed.path) != canonical(public_path):
             raise ValueError("FILE_PUBLIC_PATH 必须与 FILE_BASE_URL 的路径一致")

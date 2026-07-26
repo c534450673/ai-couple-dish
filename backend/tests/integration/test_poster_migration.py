@@ -14,7 +14,12 @@ import uvicorn
 from httpx import AsyncClient
 from PIL import Image
 from sqlalchemy import Connection, func, inspect, select
-from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 from structlog.testing import capture_logs
 
 os.environ.setdefault("DB_PASSWORD", "db-secret")
@@ -178,7 +183,7 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
                             .scalars()
                             .all()
                         )
-                        first_user, partner_user, outsider_user, _ = users
+                        first_user, partner_user, outsider_user, outsider_partner_user = users
                         assert first_user.couple_id is not None
                         assert outsider_user.couple_id != first_user.couple_id
                         templates = [
@@ -243,7 +248,50 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
                             is_deleted=0,
                             create_time=datetime(current_year, 4, 1, 9, 0),
                         )
-                        session.add_all([anniversary, feed, menu, note])
+                        foreign_anniversaries = [
+                            Anniversary(
+                                couple_id=outsider_user.couple_id,
+                                creator_id=outsider_user.id,
+                                name=f"FOREIGN_ANNIVERSARY_{is_deleted}",
+                                anniversary_date=date(current_year, 8, 1),
+                                anniversary_type=2,
+                                is_deleted=is_deleted,
+                            )
+                            for is_deleted in (0, 1)
+                        ]
+                        foreign_feeds = [
+                            Feed(
+                                couple_id=outsider_user.couple_id,
+                                sender_id=outsider_user.id,
+                                receiver_id=outsider_partner_user.id,
+                                feed_type="meal",
+                                content=f"FOREIGN_FEED_{status}",
+                                status=status,
+                                expire_time=datetime.now() + timedelta(days=1),
+                            )
+                            for status in (1, 0)
+                        ]
+                        foreign_menus = [
+                            CoupleMenu(
+                                couple_id=outsider_user.couple_id,
+                                creator_id=outsider_user.id,
+                                restaurant_name=f"FOREIGN_MENU_{status}_{is_deleted}",
+                                status=status,
+                                is_deleted=is_deleted,
+                            )
+                            for status, is_deleted in ((1, 0), (0, 0), (1, 1))
+                        ]
+                        session.add_all(
+                            [
+                                anniversary,
+                                feed,
+                                menu,
+                                note,
+                                *foreign_anniversaries,
+                                *foreign_feeds,
+                                *foreign_menus,
+                            ]
+                        )
                         await session.commit()
                         template_ids = {item.template_type: item.id for item in templates}
                         inactive_id = inactive.id
@@ -251,6 +299,11 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
                         feed_id = feed.id
                         menu_id = menu.id
                         first_user_id = first_user.id
+                        foreign_related_ids = {
+                            "anniversary": [item.id for item in foreign_anniversaries],
+                            "feed": [item.id for item in foreign_feeds],
+                            "map": [item.id for item in foreign_menus],
+                        }
 
                     source = tmp_path / "user" / str(first_user_id) / "source.png"
                     source.parent.mkdir(parents=True)
@@ -291,6 +344,21 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
                     assert (
                         await client.get("/api/poster/list", headers=first, params={"limit": 101})
                     ).json()["code"] == 9001
+
+                    for poster_type, related_ids in foreign_related_ids.items():
+                        for related_id in related_ids:
+                            response = await client.post(
+                                "/api/poster/generate",
+                                headers=first,
+                                json={"posterType": poster_type, "relatedId": related_id},
+                            )
+                            assert response.json()["code"] == 8903
+                        absent = await client.post(
+                            "/api/poster/generate",
+                            headers=first,
+                            json={"posterType": poster_type, "relatedId": 2**63 - 1},
+                        )
+                        assert absent.json()["code"] == 8901
 
                     requests = [
                         {
@@ -428,11 +496,18 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
                     )
 
                     with monkeypatch.context() as patch:
+                        rollback_attempted = False
 
                         async def db_failure(_session, _item) -> None:
                             raise RuntimeError("POSTER_DB_EXCEPTION_SENTINEL")
 
+                        async def rollback_failure(_session: AsyncSession) -> None:
+                            nonlocal rollback_attempted
+                            rollback_attempted = True
+                            raise RuntimeError("POSTER_ROLLBACK_EXCEPTION_SENTINEL")
+
                         patch.setattr(poster_service, "_commit_generated_poster", db_failure)
+                        patch.setattr(AsyncSession, "rollback", rollback_failure)
                         failed_db = await client.post(
                             "/api/poster/generate",
                             headers=first,
@@ -440,9 +515,52 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
                         )
                     assert failed_db.status_code == 500
                     assert failed_db.json()["code"] == 500
+                    assert rollback_attempted
                     assert (
                         await asyncio.to_thread(_matching_files, tmp_path, "*.png") == before_files
                     )
+
+                    actual_unlink = poster_renderer.unlink_published_poster
+                    for compensation_outcome in ("refused", "exception"):
+                        compensation_before = await asyncio.to_thread(
+                            _matching_files, tmp_path, "*.png"
+                        )
+                        with monkeypatch.context() as patch:
+
+                            async def compensation_db_failure(_session, _item) -> None:
+                                raise RuntimeError("POSTER_COMPENSATION_DB_SENTINEL")
+
+                            def compensation_unlink(*, outcome=compensation_outcome, **kwargs):
+                                if outcome == "exception":
+                                    raise OSError("POSTER_COMPENSATION_UNLINK_SENTINEL")
+                                actual_unlink(**kwargs)
+                                return "refused"
+
+                            patch.setattr(
+                                poster_service,
+                                "_commit_generated_poster",
+                                compensation_db_failure,
+                            )
+                            patch.setattr(
+                                poster_renderer,
+                                "unlink_published_poster",
+                                compensation_unlink,
+                            )
+                            compensation_response = await client.post(
+                                "/api/poster/generate",
+                                headers=first,
+                                json={"posterType": "annual"},
+                            )
+                        assert compensation_response.status_code == 500
+                        compensation_after = await asyncio.to_thread(
+                            _matching_files, tmp_path, "*.png"
+                        )
+                        if compensation_outcome == "refused":
+                            assert compensation_after == compensation_before
+                        else:
+                            orphaned = compensation_after - compensation_before
+                            assert len(orphaned) == 1
+                            await asyncio.to_thread(orphaned.pop().unlink)
 
                     retry_poster = (
                         await client.post(
@@ -475,6 +593,16 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
         poster_logs = [entry for entry in logs if entry.get("module") == "poster"]
         assert poster_logs
         assert all(set(entry) <= POSTER_LOG_FIELDS for entry in poster_logs)
+        compensation_codes = {
+            str(entry.get("errorCode"))
+            for entry in poster_logs
+            if entry.get("operation") in {"generate.rollback", "generate.compensate"}
+        }
+        assert {
+            "DATABASE_ROLLBACK_FAILED",
+            "POSTER_COMPENSATION_REFUSED",
+            "POSTER_COMPENSATION_FAILED",
+        } <= compensation_codes
         logged = str(poster_logs)
         for secret in (
             sentinel_title,
@@ -482,6 +610,9 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
             "海报甲",
             "公开投喂文案",
             "POSTER_DB_EXCEPTION_SENTINEL",
+            "POSTER_ROLLBACK_EXCEPTION_SENTINEL",
+            "POSTER_COMPENSATION_DB_SENTINEL",
+            "POSTER_COMPENSATION_UNLINK_SENTINEL",
             "POSTER_UNLINK_EXCEPTION_SENTINEL",
             absolute_path_sentinel,
             "/api/uploads/poster/",

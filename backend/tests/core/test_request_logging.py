@@ -67,6 +67,35 @@ def test_configured_logging_emits_allowlisted_json_with_service_metadata() -> No
     logging.getLogger().handlers.clear()
 
 
+def test_configured_poster_logging_emits_exact_six_field_json() -> None:
+    stream = StringIO()
+    settings = Settings(_env_file=None, **BASE_SETTINGS)
+    configure_logging(settings, stream=stream)
+
+    structlog.get_logger().error(
+        "poster_private_event_name",
+        requestId="poster-request",
+        module="poster",
+        operation="generate.decode",
+        result="rejected_1",
+        durationMs=7,
+        errorCode="IMAGE_CANDIDATE_DECODE",
+        path="must-not-leak",
+    )
+
+    event = json.loads(stream.getvalue())
+    assert event == {
+        "requestId": "poster-request",
+        "module": "poster",
+        "operation": "generate.decode",
+        "result": "rejected_1",
+        "durationMs": 7,
+        "errorCode": "IMAGE_CANDIDATE_DECODE",
+    }
+
+    logging.getLogger().handlers.clear()
+
+
 def app_for_request_logging() -> FastAPI:
     app = FastAPI()
     app.add_middleware(RequestContextMiddleware)

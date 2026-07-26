@@ -83,6 +83,7 @@ class PublishedPoster:
     path: Path
     url: str
     output_bytes: int
+    rejection_reasons: tuple[str, ...] = ()
 
 
 def parse_template_config(raw_config: str) -> PosterPalette:
@@ -236,10 +237,10 @@ def decode_source_image(path: Path) -> Image.Image:
                         oriented.close()
     except ImageCandidateRejected:
         raise
+    except (Image.DecompressionBombError, Image.DecompressionBombWarning) as error:
+        raise ImageCandidateRejected("bomb") from error
     except (
         UnidentifiedImageError,
-        Image.DecompressionBombError,
-        Image.DecompressionBombWarning,
         OSError,
         SyntaxError,
         ValueError,
@@ -337,17 +338,21 @@ def _cover_image(source: Image.Image, size: tuple[int, int]) -> Image.Image:
     return cropped
 
 
-def _render_canvas(payload: PosterRenderPayload, font_dir: Path) -> Image.Image:
+def _render_canvas(
+    payload: PosterRenderPayload, font_dir: Path
+) -> tuple[Image.Image, tuple[str, ...]]:
     regular_path, bold_path = _validated_fonts(font_dir)
     palette = payload.palette
     canvas = Image.new("RGB", CANVAS_SIZE, palette.background)
     draw = ImageDraw.Draw(canvas)
 
     source: Image.Image | None = None
+    rejection_reasons: list[str] = []
     for candidate in payload.image_candidates:
         try:
             source = decode_source_image(candidate)
-        except ImageCandidateRejected:
+        except ImageCandidateRejected as error:
+            rejection_reasons.append(error.reason_class)
             continue
         break
     if source is not None:
@@ -433,7 +438,14 @@ def _render_canvas(payload: PosterRenderPayload, font_dir: Path) -> Image.Image:
 
     couple_name = sanitize_text(payload.couple_name, max_chars=40) or "我们的双人宇宙"
     invite_code = sanitize_text(payload.invite_code, max_chars=8)
-    draw.text((72, 1185), couple_name, font=footer_font, fill=palette.text)
+    couple_line = _wrapped_lines(
+        draw,
+        couple_name,
+        footer_font,
+        max_width=936,
+        max_lines=1,
+    )[0]
+    draw.text((72, 1185), couple_line, font=footer_font, fill=palette.text)
     draw.text((72, 1240), f"邀请码 {invite_code}", font=footer_font, fill=palette.primary)
     generated = payload.generated_date.isoformat()
     generated_width = draw.textlength(generated, font=footer_font)
@@ -445,21 +457,25 @@ def _render_canvas(payload: PosterRenderPayload, font_dir: Path) -> Image.Image:
         font=footer_small_font,
         fill=palette.secondary,
     )
-    return canvas
+    return canvas, tuple(rejection_reasons)
 
 
-def _fsync_directory(path: Path) -> None:
-    flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
+def _open_managed_directory(root: Path, parts: tuple[str, ...]) -> int:
+    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    current_fd = os.open(root, flags)
     try:
-        descriptor = os.open(path, flags)
-    except OSError:
-        return
-    try:
-        os.fsync(descriptor)
-    except OSError:
-        pass
-    finally:
-        os.close(descriptor)
+        for part in parts:
+            try:
+                os.mkdir(part, mode=0o755, dir_fd=current_fd)
+            except FileExistsError:
+                pass
+            next_fd = os.open(part, flags, dir_fd=current_fd)
+            os.close(current_fd)
+            current_fd = next_fd
+        return current_fd
+    except Exception:
+        os.close(current_fd)
+        raise
 
 
 def render_and_publish(
@@ -472,55 +488,78 @@ def render_and_publish(
 ) -> PublishedPoster:
     if user_id <= 0:
         raise PosterRenderError
-    root = upload_root.resolve()
-    day_path = payload.generated_date.strftime("%Y/%m/%d")
-    parent = root / "poster" / "user" / str(user_id) / day_path
-    temp_path: Path | None = None
-    final_path: Path | None = None
+    upload_root.mkdir(parents=True, exist_ok=True)
+    root = upload_root.resolve(strict=True)
+    day_parts = tuple(payload.generated_date.strftime("%Y/%m/%d").split("/"))
+    parent_parts = ("poster", "user", str(user_id), *day_parts)
+    parent = root.joinpath(*parent_parts)
+    parent_fd: int | None = None
+    temp_name: str | None = None
+    linked_final_name: str | None = None
     published = False
     canvas: Image.Image | None = None
+    rejection_reasons: tuple[str, ...] = ()
     try:
-        parent.mkdir(parents=True, exist_ok=True)
-        if not parent.resolve().is_relative_to((root / "poster").resolve()):
-            raise PosterRenderError
-        for _attempt in range(4):
-            file_id = uuid4().hex
-            candidate = parent / f"{file_id}.png"
-            if not candidate.exists():
-                final_path = candidate
-                break
-        if final_path is None:
-            raise PosterRenderError
-        temp_path = parent / f".{file_id}.{secrets.token_hex(8)}.tmp"
-        descriptor = os.open(temp_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        parent_fd = _open_managed_directory(root, parent_parts)
+        temp_name = f".render.{secrets.token_hex(16)}.tmp"
+        descriptor = os.open(
+            temp_name,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            0o600,
+            dir_fd=parent_fd,
+        )
         try:
             with os.fdopen(descriptor, "wb") as output:
                 descriptor = -1
-                canvas = _render_canvas(payload, font_dir)
+                canvas, rejection_reasons = _render_canvas(payload, font_dir)
                 canvas.save(output, format="PNG", compress_level=6)
                 output.flush()
                 os.fsync(output.fileno())
         finally:
             if descriptor >= 0:
                 os.close(descriptor)
-        with Image.open(temp_path) as verification:
-            verification.load()
-            if (
-                verification.format != "PNG"
-                or verification.size != CANVAS_SIZE
-                or verification.mode != "RGB"
-            ):
-                raise PosterRenderError
-        os.replace(temp_path, final_path)
+        verification_fd = os.open(temp_name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=parent_fd)
+        with os.fdopen(verification_fd, "rb") as verification_file:
+            with Image.open(verification_file) as verification:
+                verification.load()
+                if (
+                    verification.format != "PNG"
+                    or verification.size != CANVAS_SIZE
+                    or verification.mode != "RGB"
+                ):
+                    raise PosterRenderError
+        for _attempt in range(4):
+            candidate_name = f"{uuid4().hex}.png"
+            try:
+                os.link(
+                    temp_name,
+                    candidate_name,
+                    src_dir_fd=parent_fd,
+                    dst_dir_fd=parent_fd,
+                    follow_symlinks=False,
+                )
+            except FileExistsError:
+                continue
+            linked_final_name = candidate_name
+            break
+        if linked_final_name is None:
+            raise PosterRenderError
+        os.unlink(temp_name, dir_fd=parent_fd)
+        temp_name = None
+        try:
+            os.fsync(parent_fd)
+        except OSError:
+            pass
+        output_bytes = os.stat(linked_final_name, dir_fd=parent_fd, follow_symlinks=False).st_size
         published = True
-        temp_path = None
-        _fsync_directory(parent)
+        final_path = parent / linked_final_name
         key = final_path.relative_to(root).as_posix()
         return PublishedPoster(
             key=key,
             path=final_path,
             url=f"{file_base_url.rstrip('/')}/{key}",
-            output_bytes=final_path.stat().st_size,
+            output_bytes=output_bytes,
+            rejection_reasons=rejection_reasons,
         )
     except PosterRenderError:
         raise
@@ -529,16 +568,22 @@ def render_and_publish(
     finally:
         if canvas is not None:
             canvas.close()
-        if temp_path is not None:
+        if temp_name is not None and parent_fd is not None:
             try:
-                temp_path.unlink(missing_ok=True)
+                os.unlink(temp_name, dir_fd=parent_fd)
+            except FileNotFoundError:
+                pass
             except OSError:
                 pass
-        if final_path is not None and not published:
+        if linked_final_name is not None and not published and parent_fd is not None:
             try:
-                final_path.unlink(missing_ok=True)
+                os.unlink(linked_final_name, dir_fd=parent_fd)
+            except FileNotFoundError:
+                pass
             except OSError:
                 pass
+        if parent_fd is not None:
+            os.close(parent_fd)
 
 
 def _poster_key_from_url(

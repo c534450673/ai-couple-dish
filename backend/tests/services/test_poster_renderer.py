@@ -1,8 +1,9 @@
 import importlib.util
 import json
-import os
+from dataclasses import replace
 from datetime import date
 from pathlib import Path
+from uuid import UUID
 
 import pytest
 from PIL import Image
@@ -104,6 +105,21 @@ def test_text_is_nfkc_normalized_and_strips_controls_and_bidi() -> None:
     assert value == "ABC标题…"
 
 
+def test_couple_display_name_stays_inside_footer_safe_width(tmp_path: Path) -> None:
+    published = renderer.render_and_publish(
+        upload_root=tmp_path,
+        file_base_url="/api/uploads",
+        user_id=7,
+        payload=replace(_payload(), couple_name="双" * 40),
+        font_dir=FONT_DIR,
+    )
+
+    with Image.open(published.path) as image:
+        image.load()
+        overflow = image.crop((1009, 1180, 1080, 1225))
+        assert set(overflow.get_flattened_data()) == {(16, 21, 37)}
+
+
 def test_local_image_resolution_enforces_member_prefix_url_and_symlink_scope(
     tmp_path: Path,
 ) -> None:
@@ -195,6 +211,64 @@ def test_source_decoder_applies_exif_and_rejects_unsafe_formats(tmp_path: Path) 
             renderer.decode_source_image(invalid)
 
 
+def test_source_decoder_classifies_pixel_limit_and_decompression_bomb(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    over_pixel_limit = tmp_path / "over-pixel-limit.png"
+    Image.new("1", (4096, 4096)).save(over_pixel_limit)
+    with pytest.raises(renderer.ImageCandidateRejected) as dimensions:
+        renderer.decode_source_image(over_pixel_limit)
+    assert dimensions.value.reason_class == "dimensions"
+
+    warning_bomb = tmp_path / "warning-bomb.png"
+    Image.new("RGB", (40, 40), "red").save(warning_bomb)
+    monkeypatch.setattr(Image, "MAX_IMAGE_PIXELS", 1000)
+    with pytest.raises(renderer.ImageCandidateRejected) as bomb:
+        renderer.decode_source_image(warning_bomb)
+    assert bomb.value.reason_class == "bomb"
+
+
+def test_renderer_reports_all_candidate_decode_rejection_reasons(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    bad = tmp_path / "bad.png"
+    bad.write_bytes(b"not-an-image")
+    animated = tmp_path / "animated.webp"
+    Image.new("RGB", (20, 20), "red").save(
+        animated,
+        format="WEBP",
+        save_all=True,
+        append_images=[Image.new("RGB", (20, 20), "blue")],
+    )
+    warning_bomb = tmp_path / "warning-bomb.png"
+    Image.new("RGB", (40, 40), "red").save(warning_bomb)
+    valid = tmp_path / "valid.png"
+    Image.new("RGB", (40, 40), "green").save(valid)
+    original_decode = renderer.decode_source_image
+
+    def decode_with_scoped_bomb_limit(path: Path) -> Image.Image:
+        if path != warning_bomb:
+            return original_decode(path)
+        previous_limit = Image.MAX_IMAGE_PIXELS
+        Image.MAX_IMAGE_PIXELS = 1000
+        try:
+            return original_decode(path)
+        finally:
+            Image.MAX_IMAGE_PIXELS = previous_limit
+
+    monkeypatch.setattr(renderer, "decode_source_image", decode_with_scoped_bomb_limit)
+
+    published = renderer.render_and_publish(
+        upload_root=tmp_path / "uploads",
+        file_base_url="/api/uploads",
+        user_id=7,
+        payload=_payload(candidates=(bad, animated, warning_bomb, valid)),
+        font_dir=FONT_DIR,
+    )
+
+    assert published.rejection_reasons == ("decode", "animated", "bomb")
+
+
 def test_renderer_falls_back_after_bad_candidate_and_strips_source_metadata(
     tmp_path: Path,
 ) -> None:
@@ -217,11 +291,68 @@ def test_renderer_falls_back_after_bad_candidate_and_strips_source_metadata(
         assert image.info == {}
 
 
+@pytest.mark.parametrize("symlink_component", ["poster", "user_id"])
+def test_publish_refuses_symlink_in_managed_directory_chain(
+    tmp_path: Path, symlink_component: str
+) -> None:
+    upload_root = tmp_path / "uploads"
+    upload_root.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    if symlink_component == "poster":
+        link = upload_root / "poster"
+    else:
+        link = upload_root / "poster" / "user" / "7"
+        link.parent.mkdir(parents=True)
+    link.symlink_to(outside, target_is_directory=True)
+
+    with pytest.raises(renderer.PosterRenderError):
+        renderer.render_and_publish(
+            upload_root=upload_root,
+            file_base_url="/api/uploads",
+            user_id=7,
+            payload=_payload(),
+            font_dir=FONT_DIR,
+        )
+
+    assert not list(outside.iterdir())
+
+
+def test_atomic_publish_collision_preserves_existing_final_and_retries_uuid(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first_id = UUID("11111111-1111-1111-1111-111111111111")
+    second_id = UUID("22222222-2222-2222-2222-222222222222")
+    identifiers = iter((first_id, second_id))
+    collision = tmp_path / "poster" / "user" / "7" / "2026" / "07" / "26" / f"{first_id.hex}.png"
+    sentinel = b"existing-final-must-not-change"
+    original_render = renderer._render_canvas
+
+    def render_after_collision(*args, **kwargs):
+        canvas = original_render(*args, **kwargs)
+        collision.write_bytes(sentinel)
+        return canvas
+
+    monkeypatch.setattr(renderer, "uuid4", lambda: next(identifiers))
+    monkeypatch.setattr(renderer, "_render_canvas", render_after_collision)
+
+    published = renderer.render_and_publish(
+        upload_root=tmp_path,
+        file_base_url="/api/uploads",
+        user_id=7,
+        payload=_payload(),
+        font_dir=FONT_DIR,
+    )
+
+    assert collision.read_bytes() == sentinel
+    assert published.path.name == f"{second_id.hex}.png"
+
+
 def test_atomic_publish_failure_leaves_no_temp_or_final(tmp_path: Path, monkeypatch) -> None:
-    def fail_replace(_source: os.PathLike[str], _target: os.PathLike[str]) -> None:
+    def fail_link(*_args, **_kwargs) -> None:
         raise OSError("sentinel path must not be logged")
 
-    monkeypatch.setattr(renderer.os, "replace", fail_replace)
+    monkeypatch.setattr(renderer.os, "link", fail_link)
 
     with pytest.raises(renderer.PosterRenderError):
         renderer.render_and_publish(
