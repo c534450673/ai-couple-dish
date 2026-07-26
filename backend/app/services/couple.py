@@ -1,14 +1,24 @@
+import json
 import secrets
 from datetime import date, datetime, timedelta
 from time import perf_counter
 
 import structlog
 from fastapi import Request
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import BusinessError
-from app.db.models import Couple, CoupleUnbindRecord, Notification, User
+from app.db.models import (
+    Anniversary,
+    Couple,
+    CoupleMenu,
+    CoupleUnbindRecord,
+    Feed,
+    Notification,
+    User,
+    Wish,
+)
 from app.schemas.business import BindCoupleRequest, GenerateCodeRequest, UnbindRequest
 
 logger = structlog.get_logger()
@@ -59,6 +69,36 @@ async def _locked_users(session: AsyncSession, user_ids: list[int]) -> dict[int,
     if len(users) != len(ordered_ids):
         raise BusinessError(1001, "用户不存在")
     return users
+
+
+async def _couple_backup_counts(session: AsyncSession, couple_id: int) -> dict[str, int]:
+    result = await session.execute(
+        select(
+            select(func.count(CoupleMenu.id))
+            .where(CoupleMenu.couple_id == couple_id)
+            .scalar_subquery()
+            .label("menu_count"),
+            select(func.count(Anniversary.id))
+            .where(Anniversary.couple_id == couple_id)
+            .scalar_subquery()
+            .label("anniversary_count"),
+            select(func.count(Feed.id))
+            .where(Feed.couple_id == couple_id)
+            .scalar_subquery()
+            .label("feed_count"),
+            select(func.count(Wish.id))
+            .where(Wish.couple_id == couple_id)
+            .scalar_subquery()
+            .label("wish_count"),
+        )
+    )
+    row = result.one()
+    return {
+        "menuCount": int(row.menu_count),
+        "anniversaryCount": int(row.anniversary_count),
+        "feedCount": int(row.feed_count),
+        "wishCount": int(row.wish_count),
+    }
 
 
 def _partner_id(couple: Couple, user_id: int) -> int:
@@ -367,6 +407,7 @@ async def confirm_unbind(
         )
         raise BusinessError(2001, "解绑申请已过期，请重新申请")
     locked_users = await _locked_users(session, [couple.user1_id, couple.user2_id])
+    backup_counts = await _couple_backup_counts(session, couple.id)
     session.add(
         CoupleUnbindRecord(
             couple_id=couple.id,
@@ -378,6 +419,7 @@ async def confirm_unbind(
             else None,
             love_days=couple.love_days,
             couple_nickname=couple.couple_nickname,
+            backup_data=json.dumps(backup_counts, separators=(",", ":")),
             unbind_time=now,
             data_expire_time=now + timedelta(days=UNBIND_RETENTION_DAYS),
             status=0,
@@ -404,7 +446,9 @@ async def confirm_unbind(
         )
     await session.commit()
     await logger.ainfo(
-        "business_operation_completed", **_log_fields(request, "confirm_unbind", "success", started)
+        "business_operation_completed",
+        **_log_fields(request, "confirm_unbind", "success", started),
+        backupCounts=backup_counts,
     )
 
 

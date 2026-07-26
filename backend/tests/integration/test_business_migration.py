@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 import re
 from collections.abc import AsyncIterator
@@ -256,6 +257,12 @@ async def test_couple_unbind_state_machine_and_concurrent_confirm_are_atomic(
                 )
             )
             assert len(records) == 1
+            assert json.loads(records[0].backup_data or "null") == {
+                "menuCount": 0,
+                "anniversaryCount": 0,
+                "feedCount": 0,
+                "wishCount": 0,
+            }
             notifications = list(
                 await session.scalars(
                     select(Notification).where(

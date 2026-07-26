@@ -212,6 +212,7 @@ class CoupleUnbindRecord(Base):
     love_start_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     love_days: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
     couple_nickname: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    backup_data: Mapped[str | None] = mapped_column(Text, nullable=True)
     unbind_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     data_expire_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     status: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
