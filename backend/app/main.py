@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.ai import router as ai_router
 from app.api.anniversary import router as anniversary_router
 from app.api.cart import router as cart_router
+from app.api.challenge import router as challenge_router
 from app.api.couple import router as couple_router
 from app.api.couple_rank import router as couple_rank_router
 from app.api.couple_tree import router as couple_tree_router
@@ -199,6 +200,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(mood_router, prefix=active_settings.api_prefix)
     app.include_router(anniversary_router, prefix=active_settings.api_prefix)
     app.include_router(cart_router, prefix=active_settings.api_prefix)
+    app.include_router(challenge_router, prefix=active_settings.api_prefix)
     app.include_router(order_router, prefix=active_settings.api_prefix)
     app.include_router(love_calendar_router, prefix=active_settings.api_prefix)
     app.include_router(ai_router, prefix=active_settings.api_prefix)

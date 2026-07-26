@@ -19,6 +19,25 @@ class DeepQaSubmitRequest(BaseModel):
         return value.strip() if isinstance(value, str) else value
 
 
+class ChallengeCreateRequest(BaseModel):
+    challenge_type: str = Field(alias="challengeType", min_length=1, max_length=64)
+    title: str = Field(min_length=1, max_length=64)
+    description: str | None = Field(default=None, max_length=256)
+    target_days: int = Field(alias="targetDays", ge=1, le=3650)
+    start_date: date | None = Field(default=None, alias="startDate")
+    reward: str | None = Field(default=None, max_length=128)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class ChallengeCheckinRequest(BaseModel):
+    challenge_id: int = Field(alias="challengeId", gt=0)
+    content: str | None = Field(default=None, max_length=512)
+    image_url: str | None = Field(default=None, alias="imageUrl", max_length=512)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
 class WechatLoginRequest(BaseModel):
     code: str = Field(min_length=1, max_length=256)
     nick_name: str | None = Field(default=None, alias="nickName", max_length=64)

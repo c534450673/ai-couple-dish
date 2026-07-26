@@ -643,3 +643,42 @@ class UserReferral(Base):
     create_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
+
+
+class Challenge(Base):
+    __tablename__ = "t_challenge"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    creator_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    partner_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    challenge_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    title: Mapped[str] = mapped_column(String(256), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    target_days: Mapped[int] = mapped_column(Integer, nullable=False)
+    current_days: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    status: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    start_date: Mapped[date] = mapped_column(Date, nullable=False)
+    end_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    reward: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class CheckinRecord(Base):
+    __tablename__ = "t_checkin_record"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    challenge_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    checkin_date: Mapped[date] = mapped_column(Date, nullable=False)
+    content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    image_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
