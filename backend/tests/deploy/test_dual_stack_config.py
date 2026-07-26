@@ -66,7 +66,7 @@ def test_nginx_routes_cutover_batch_to_fastapi_and_defaults_unknown_to_spring() 
     assert "location = /api/health/ready" in config
     assert "location = /api/actuator/health" in config
     assert "location /api/" in config
-    assert config.count("proxy_pass http://fastapi_backend;") == 20
+    assert config.count("proxy_pass http://fastapi_backend;") == 21
     assert config.count("proxy_pass http://spring_backend;") == 1
     assert "split_clients" not in config
     assert "mirror" not in config
@@ -79,8 +79,7 @@ def test_nginx_routes_cutover_batch_to_fastapi_and_defaults_unknown_to_spring() 
     assert "location ~ ^/api/heartMoment/delete/[0-9]+$" in config
     assert "FastAPI cutover batch 4" in config
     assert (
-        "location ~ ^/api/challenge/(accept|cancel|checkin-records|detail|reject)/[0-9]+$"
-        in config
+        "location ~ ^/api/challenge/(accept|cancel|checkin-records|detail|reject)/[0-9]+$" in config
     )
     assert "FastAPI cutover batch 5" in config
     assert "location ~ ^/api/mood/(detail|read)/[0-9]+$" in config
@@ -89,13 +88,13 @@ def test_nginx_routes_cutover_batch_to_fastapi_and_defaults_unknown_to_spring() 
     assert "FastAPI cutover batch 7" in config
     assert "location ~ ^/api/sweetBomb/(answer|detail|read)/[0-9]+$" in config
     assert "FastAPI cutover batch 8" in config
-    assert (
-        "location ~ ^/api/invite/(code|info/[^/]+|rank|referrals|stats|use|validate)$"
-        in config
-    )
+    assert "location ~ ^/api/invite/(code|info/[^/]+|rank|referrals|stats|use|validate)$" in config
     assert "FastAPI cutover batch 9" in config
+    assert "location ~ ^/api/coupleTree/(info|nutrientLogs|skin/change|skins|water)$" in config
+    assert "FastAPI cutover batch 10" in config
     assert (
-        "location ~ ^/api/coupleTree/(info|nutrientLogs|skin/change|skins|water)$" in config
+        "location ~ ^/api/dailyGreeting/(both/status|detail/[1-9][0-9]*|history|send|"
+        "streak|today/status)$" in config
     )
 
 
@@ -115,6 +114,9 @@ def test_nginx_cutover_patterns_match_exact_owner_inventory() -> None:
         path = re.sub(r"\{[^/]+\}", "123", route["path"])
         assert not any(pattern.fullmatch(path) for pattern in patterns)
 
+    assert not any(pattern.fullmatch("/api/dailyGreeting/unknown") for pattern in patterns)
+    assert not any(pattern.fullmatch("/api/dailyGreeting/detail/0") for pattern in patterns)
+
 
 def test_nginx_forwards_required_headers_in_each_location() -> None:
     config = NGINX_CONFIG.read_text(encoding="utf-8")
@@ -126,7 +128,7 @@ def test_nginx_forwards_required_headers_in_each_location() -> None:
         "X-Forwarded-Proto $scheme",
         "X-Forwarded-Host $host",
     ):
-        assert config.count(f"proxy_set_header {header};") == 21
+        assert config.count(f"proxy_set_header {header};") == 22
 
 
 def test_nginx_access_log_is_request_metadata_only() -> None:

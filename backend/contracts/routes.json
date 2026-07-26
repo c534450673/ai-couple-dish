@@ -412,7 +412,7 @@
     "path": "/api/dailyGreeting/both/status",
     "controller": "DailyGreetingController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -420,7 +420,7 @@
     "path": "/api/dailyGreeting/detail/{id}",
     "controller": "DailyGreetingController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -428,7 +428,7 @@
     "path": "/api/dailyGreeting/history",
     "controller": "DailyGreetingController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -436,7 +436,7 @@
     "path": "/api/dailyGreeting/send",
     "controller": "DailyGreetingController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -444,7 +444,7 @@
     "path": "/api/dailyGreeting/streak",
     "controller": "DailyGreetingController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -452,7 +452,7 @@
     "path": "/api/dailyGreeting/today/status",
     "controller": "DailyGreetingController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {

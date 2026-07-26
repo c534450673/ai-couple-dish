@@ -1,7 +1,7 @@
 # FastAPI 双栈基础设施运行手册
 
 本文只描述迁移期基础设施。Java `backend/Dockerfile` 和 Spring Boot 仍是未切流业务
-route 的唯一写者；当前用户、情侣、通知、心愿、心动瞬间、情侣挑战、心情、时光胶囊、甜蜜炸弹、邀请返利和情侣爱心树共 78 条 HTTP route 已由 FastAPI 接管，
+route 的唯一写者；当前用户、情侣、通知、心愿、心动瞬间、情侣挑战、心情、时光胶囊、甜蜜炸弹、邀请返利、情侣爱心树和每日问候共 84 条 HTTP route 已由 FastAPI 接管，
 其余业务 route 仍由 Spring 处理。`backend/Dockerfile.fastapi` 提供 FastAPI 业务与基础
 health route。H5 继续使用同源相对 `/api`，浏览器不直接访问 FastAPI 端口。
 
@@ -39,18 +39,24 @@ uv run uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 只读检查：`GET /api/health/live`、`GET /api/health/ready` 和
 `GET /api/actuator/health` 是 FastAPI 基础 route。已切流的 `/api/user/**`、
-`/api/couple/**`、`/api/coupleTree/**`、`/api/notification/**`、`/api/wish/**`、`/api/heartMoment/**`、`/api/challenge/**`、`/api/mood/**`、`/api/timeCapsule/**`、`/api/sweetBomb/**` 和 `/api/invite/**` 合同 route 由 FastAPI 提供，其余 `/api/**`
+`/api/couple/**`、`/api/coupleTree/**`、`/api/dailyGreeting/**`、`/api/notification/**`、`/api/wish/**`、`/api/heartMoment/**`、`/api/challenge/**`、`/api/mood/**`、`/api/timeCapsule/**`、`/api/sweetBomb/**` 和 `/api/invite/**` 合同 route 由 FastAPI 提供，其余 `/api/**`
 仍由 Spring 处理；权威清单见 `backend/contracts/migration-ownership.json`。
 
 ## HTTP 切流与回滚
 
-当前启用 `user-couple-notification-v1`、`wish-v1`、`heart-moment-v1`、`challenge-v1`、`mood-v1`、`time-capsule-v1`、`sweet-bomb-v1`、`invite-v1` 和 `couple-tree-v1` 九个 HTTP 切流批次，覆盖用户 7 条、
-情侣 13 条、通知 5 条、心愿 7 条、心动瞬间 4 条、情侣挑战 9 条、心情 8 条、时光胶囊 6 条、甜蜜炸弹 7 条、邀请返利 7 条和情侣爱心树 5 条，共 78 条合同 route。Nginx 使用十六个精确正则 location 将已登记路径转发到
+当前启用 `user-couple-notification-v1`、`wish-v1`、`heart-moment-v1`、`challenge-v1`、`mood-v1`、`time-capsule-v1`、`sweet-bomb-v1`、`invite-v1`、`couple-tree-v1` 和 `daily-greeting-v1` 十个 HTTP 切流批次，覆盖用户 7 条、
+情侣 13 条、通知 5 条、心愿 7 条、心动瞬间 4 条、情侣挑战 9 条、心情 8 条、时光胶囊 6 条、甜蜜炸弹 7 条、邀请返利 7 条、情侣爱心树 5 条和每日问候 6 条，共 84 条合同 route。Nginx 使用十七个精确正则 location 将已登记路径转发到
 `fastapi_backend`，未知路径仍落到 Spring 的通用 `/api/` location。配置校验必须确认：
 
-- `routes.json` 中这 78 条的 owner 为 `fastapi`，其余 115 条仍为 `spring`；
+- `routes.json` 中这 84 条的 owner 为 `fastapi`，其余 109 条仍为 `spring`；
 - FastAPI/真实 MySQL/Redis 集成门禁、合同 owner 检查和 Nginx 配置检查全部通过；
-- 九个启用批次的 `rollbackOwner` 均保持为 `spring`。
+- 十个启用批次的 `rollbackOwner` 均保持为 `spring`。
+
+启用 `daily-greeting-v1` 前，必须先在已核验并 stamp 到 `0001_existing_mysql_baseline`
+的目标数据库执行 `uv run alembic -c alembic.ini upgrade head`。迁移会先脱敏统计活跃问候重复、
+连续打卡重复和非法软删值；任一计数非零即中止，禁止修改 Nginx owner。迁移成功后再运行真实
+MySQL/Redis 门禁与 `nginx -t`。该唯一索引与 Spring 过渡写路径兼容，HTTP 回滚时保留数据库
+迁移，只回退 owner 和 Nginx 配置，不执行 downgrade。
 
 回滚时按批次回退同一个 Nginx 配置提交，先执行 `nginx -t` 再 reload；不要同时修改数据库、
 Redis 或 Java 业务代码。回滚后重新运行 owner 检查，确认目标批次路径回到 Spring，再停止

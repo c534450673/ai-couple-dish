@@ -1,17 +1,18 @@
 import asyncio
 import secrets
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from time import perf_counter
 from typing import Never
 from zoneinfo import ZoneInfo
 
 import structlog
 from fastapi import Request
-from sqlalchemy import select
+from sqlalchemy import select, text
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import BusinessError
-from app.db.models import DailyGreeting, GreetingStreak, Notification, User
+from app.db.models import Couple, DailyGreeting, GreetingStreak, Notification, User
 from app.schemas.business import DailyGreetingRequest
 
 logger = structlog.get_logger()
@@ -74,13 +75,18 @@ async def _couple_user(
     user_id: int,
     operation: str,
     started: float,
-) -> User:
+) -> tuple[User, Couple]:
     user = await session.scalar(select(User).where(User.id == user_id, User.is_deleted == 0))
     if user is None:
         await _fail(request, operation, started, 1001, "用户不存在")
     if user.couple_id is None:
         await _fail(request, operation, started, 2006, "未绑定情侣关系")
-    return user
+    couple = await session.scalar(
+        select(Couple).where(Couple.id == user.couple_id, Couple.status == 1)
+    )
+    if couple is None or user.id not in {couple.user1_id, couple.user2_id}:
+        await _fail(request, operation, started, 2006, "未绑定情侣关系")
+    return user, couple
 
 
 async def _acquire_send_lock(
@@ -149,9 +155,9 @@ def _empty_payload(greeting_type: int, greeting_date: date) -> dict[str, object 
         "greetingDate": greeting_date.isoformat(),
         "createTime": None,
         "sender": None,
-        "streakDays": 0,
-        "maxStreakDays": 0,
-        "hasCheckedToday": False,
+        "streakDays": None,
+        "maxStreakDays": None,
+        "hasCheckedToday": None,
         "bothCheckStatus": None,
     }
 
@@ -174,7 +180,6 @@ def _payload(record: DailyGreeting, sender: User | None) -> dict[str, object | N
                 if sender
                 else None
             ),
-            "hasCheckedToday": record.greeting_date == _today(),
         }
     )
     return payload
@@ -187,7 +192,10 @@ async def _payloads(
     if not records:
         return []
     users = await session.execute(
-        select(User).where(User.id.in_({item.user_id for item in records}))
+        select(User).where(
+            User.id.in_({item.user_id for item in records}),
+            User.is_deleted == 0,
+        )
     )
     user_map = {user.id: user for user in users.scalars().all()}
     return [_payload(item, user_map.get(item.user_id)) for item in records]
@@ -209,31 +217,41 @@ async def _update_streak(
     greeting_type: int,
     current_date: date,
 ) -> None:
-    item = await session.scalar(
-        select(GreetingStreak).where(
-            GreetingStreak.couple_id == couple_id,
-            GreetingStreak.streak_type == greeting_type,
-        )
-    )
-    if item is None:
-        session.add(
-            GreetingStreak(
-                couple_id=couple_id,
-                streak_type=greeting_type,
-                streak_days=1,
-                max_streak_days=1,
-                last_date=current_date,
+    await session.execute(
+        text(
+            """
+            INSERT INTO t_greeting_streak (
+                couple_id, streak_type, streak_days, max_streak_days, last_date
+            ) VALUES (
+                :couple_id, :streak_type, 1, 1, :current_date
             )
-        )
-        return
-    if item.last_date == current_date:
-        return
-    item.streak_days = (
-        item.streak_days + 1 if item.last_date == current_date - timedelta(days=1) else 1
+            ON DUPLICATE KEY UPDATE
+                streak_days = CASE
+                    WHEN last_date = VALUES(last_date) THEN streak_days
+                    WHEN last_date = DATE_SUB(VALUES(last_date), INTERVAL 1 DAY)
+                        THEN streak_days + 1
+                    WHEN last_date > VALUES(last_date) THEN streak_days
+                    ELSE 1
+                END,
+                max_streak_days = GREATEST(max_streak_days, streak_days),
+                last_date = CASE
+                    WHEN last_date IS NULL OR last_date < VALUES(last_date)
+                        THEN VALUES(last_date)
+                    ELSE last_date
+                END,
+                update_time = CURRENT_TIMESTAMP
+            """
+        ),
+        {
+            "couple_id": couple_id,
+            "streak_type": greeting_type,
+            "current_date": current_date,
+        },
     )
-    item.max_streak_days = max(item.max_streak_days, item.streak_days)
-    item.last_date = current_date
-    item.update_time = datetime.now(BUSINESS_TIMEZONE).replace(tzinfo=None)
+
+
+def _is_active_greeting_conflict(error: IntegrityError) -> bool:
+    return "uk_daily_greeting_active_user_type_date" in str(error.orig)
 
 
 async def send(
@@ -244,9 +262,8 @@ async def send(
 ) -> int:
     started = perf_counter()
     operation = "send"
-    user = await _couple_user(request, session, user_id, operation, started)
+    user, _ = await _couple_user(request, session, user_id, operation, started)
     couple_id = _couple_id(user)
-    current_date = _today()
     lock_key, lock_value = await _acquire_send_lock(
         request, couple_id, payload.greeting_type, operation, started
     )
@@ -254,8 +271,9 @@ async def send(
         # The user lookup starts a REPEATABLE READ transaction before lock acquisition.
         # Reset that snapshot so a waiter can observe the preceding sender's commit.
         await session.rollback()
-        user = await _couple_user(request, session, user_id, operation, started)
+        user, couple = await _couple_user(request, session, user_id, operation, started)
         couple_id = _couple_id(user)
+        current_date = _today()
         existing = await session.scalar(
             select(DailyGreeting.id).where(
                 DailyGreeting.user_id == user_id,
@@ -278,13 +296,20 @@ async def send(
             is_deleted=0,
         )
         session.add(record)
-        await session.flush()
+        try:
+            await session.flush()
+        except IntegrityError as error:
+            if not _is_active_greeting_conflict(error):
+                raise
+            await session.rollback()
+            await _fail(request, operation, started, 8602, "今日已发送过该问候")
         await _update_streak(session, couple_id, payload.greeting_type, current_date)
 
+        partner_id = couple.user2_id if couple.user1_id == user_id else couple.user1_id
         partner = await session.scalar(
             select(User).where(
+                User.id == partner_id,
                 User.couple_id == couple_id,
-                User.id != user_id,
                 User.is_deleted == 0,
             )
         )
@@ -320,7 +345,7 @@ async def today_status(
 ) -> dict[str, object | None]:
     started = perf_counter()
     operation = "today_status"
-    user = await _couple_user(request, session, user_id, operation, started)
+    user, _ = await _couple_user(request, session, user_id, operation, started)
     current_date = _today()
     record = await session.scalar(
         select(DailyGreeting).where(
@@ -333,6 +358,7 @@ async def today_status(
     result = _empty_payload(greeting_type, current_date)
     if record is not None:
         result = _payload(record, user)
+    result["hasCheckedToday"] = record is not None
     streak_item = await session.scalar(
         select(GreetingStreak).where(
             GreetingStreak.couple_id == _couple_id(user),
@@ -355,10 +381,15 @@ async def both_status(
 ) -> dict[str, object | None]:
     started = perf_counter()
     operation = "both_status"
-    user = await _couple_user(request, session, user_id, operation, started)
+    user, couple = await _couple_user(request, session, user_id, operation, started)
     couple_id = _couple_id(user)
+    partner_id = couple.user2_id if couple.user1_id == user_id else couple.user1_id
     partner = await session.scalar(
-        select(User).where(User.couple_id == couple_id, User.id != user_id, User.is_deleted == 0)
+        select(User).where(
+            User.id == partner_id,
+            User.couple_id == couple_id,
+            User.is_deleted == 0,
+        )
     )
     if partner is None:
         await _fail(request, operation, started, 2001, "情侣关系不存在")
@@ -405,7 +436,7 @@ async def streak(
 ) -> dict[str, object]:
     started = perf_counter()
     operation = "streak"
-    user = await _couple_user(request, session, user_id, operation, started)
+    user, _ = await _couple_user(request, session, user_id, operation, started)
     item = await session.scalar(
         select(GreetingStreak).where(
             GreetingStreak.couple_id == _couple_id(user),
@@ -428,7 +459,7 @@ async def history(
 ) -> list[dict[str, object | None]]:
     started = perf_counter()
     operation = "history"
-    user = await _couple_user(request, session, user_id, operation, started)
+    user, _ = await _couple_user(request, session, user_id, operation, started)
     statement = select(DailyGreeting).where(
         DailyGreeting.couple_id == _couple_id(user),
         DailyGreeting.is_deleted == 0,
@@ -457,7 +488,7 @@ async def detail(
 ) -> dict[str, object | None]:
     started = perf_counter()
     operation = "detail"
-    user = await _couple_user(request, session, user_id, operation, started)
+    user, _ = await _couple_user(request, session, user_id, operation, started)
     record = await session.scalar(
         select(DailyGreeting).where(
             DailyGreeting.id == greeting_id,
@@ -468,7 +499,9 @@ async def detail(
         await _fail(request, operation, started, 8601, "问候记录不存在")
     if record.couple_id != _couple_id(user):
         await _fail(request, operation, started, 8603, "无权操作此问候")
-    sender = await session.scalar(select(User).where(User.id == record.user_id))
+    sender = await session.scalar(
+        select(User).where(User.id == record.user_id, User.is_deleted == 0)
+    )
     result = _payload(record, sender)
     await logger.ainfo(
         "business_operation_completed", **_fields(request, operation, "success", started)

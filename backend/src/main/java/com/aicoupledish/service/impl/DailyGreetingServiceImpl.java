@@ -19,10 +19,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,6 +53,9 @@ public class DailyGreetingServiceImpl implements DailyGreetingService {
      * 问候类型：晚安
      */
     private static final int GREETING_TYPE_NIGHT = 2;
+    private static final ZoneId BUSINESS_ZONE = ZoneId.of("Asia/Shanghai");
+    private static final String ACTIVE_GREETING_UNIQUE_INDEX =
+        "uk_daily_greeting_active_user_type_date";
 
     @Override
     @Transactional
@@ -61,7 +66,7 @@ public class DailyGreetingServiceImpl implements DailyGreetingService {
         }
 
         // 检查今日是否已发送该类型问候
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(BUSINESS_ZONE);
         DailyGreeting existing = dailyGreetingMapper.selectOne(
             new LambdaQueryWrapper<DailyGreeting>()
                 .eq(DailyGreeting::getUserId, userId)
@@ -70,7 +75,7 @@ public class DailyGreetingServiceImpl implements DailyGreetingService {
         );
 
         if (existing != null) {
-            throw new IllegalStateException("今日已发送过该问候");
+            throw BusinessException.GREETING_ALREADY_SENT;
         }
 
         // 创建问候记录
@@ -83,12 +88,29 @@ public class DailyGreetingServiceImpl implements DailyGreetingService {
         greeting.setVoiceDuration(req.getVoiceDuration());
         greeting.setGreetingDate(today);
 
-        dailyGreetingMapper.insert(greeting);
+        try {
+            dailyGreetingMapper.insert(greeting);
+        } catch (DuplicateKeyException exception) {
+            String causeMessage = exception.getMostSpecificCause().getMessage();
+            if (causeMessage == null || !causeMessage.contains(ACTIVE_GREETING_UNIQUE_INDEX)) {
+                throw exception;
+            }
+            log.warn(
+                "event=daily_greeting_send_rejected operation=sendGreeting result=rejected "
+                    + "errorCode=8602 userId={} greetingType={} greetingDate={}",
+                userId, req.getGreetingType(), today
+            );
+            throw BusinessException.GREETING_ALREADY_SENT;
+        }
 
         // 更新连续打卡记录
         updateStreak(user.getCoupleId(), userId, req.getGreetingType(), today);
 
-        log.info("发送问候: userId={}, type={}, greetingId={}", userId, req.getGreetingType(), greeting.getId());
+        log.info(
+            "event=daily_greeting_send_completed operation=sendGreeting result=success "
+                + "errorCode=NONE userId={} greetingType={} greetingId={}",
+            userId, req.getGreetingType(), greeting.getId()
+        );
 
         // 发送通知给伴侣
         if (notificationService != null) {
@@ -294,55 +316,13 @@ public class DailyGreetingServiceImpl implements DailyGreetingService {
      * 更新连续打卡记录
      */
     private void updateStreak(Long coupleId, Long userId, Integer greetingType, LocalDate today) {
-        GreetingStreak streak = greetingStreakMapper.selectOne(
-            new LambdaQueryWrapper<GreetingStreak>()
-                .eq(GreetingStreak::getCoupleId, coupleId)
-                .eq(GreetingStreak::getStreakType, greetingType)
+        int affectedRows = greetingStreakMapper.upsert(coupleId, greetingType, today);
+        log.debug(
+            "event=daily_greeting_streak_upsert_completed operation=updateStreak result=success "
+                + "errorCode=NONE userId={} coupleId={} greetingType={} greetingDate={} "
+                + "affectedRows={}",
+            userId, coupleId, greetingType, today, affectedRows
         );
-
-        if (streak == null) {
-            // 首次打卡
-            streak = new GreetingStreak();
-            streak.setCoupleId(coupleId);
-            streak.setStreakType(greetingType);
-            streak.setStreakDays(1);
-            streak.setMaxStreakDays(1);
-            streak.setLastDate(today);
-            greetingStreakMapper.insert(streak);
-        } else {
-            LocalDate lastDate = streak.getLastDate();
-
-            // 如果今天已经打过卡，不更新
-            if (lastDate != null && lastDate.equals(today)) {
-                return;
-            }
-
-            // 检查是否连续（昨天打过卡）
-            if (lastDate != null && lastDate.plusDays(1).equals(today)) {
-                // 连续打卡，使用乐观锁更新
-                int updated = greetingStreakMapper.update(null,
-                    new com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper<GreetingStreak>()
-                        .eq(GreetingStreak::getId, streak.getId())
-                        .eq(GreetingStreak::getLastDate, lastDate)  // 乐观锁条件
-                        .setSql("streak_days = streak_days + 1")
-                        .set(GreetingStreak::getLastDate, today)
-                );
-
-                if (updated > 0) {
-                    // 更新最大连续天数
-                    greetingStreakMapper.update(null,
-                        new com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper<GreetingStreak>()
-                            .eq(GreetingStreak::getId, streak.getId())
-                            .setSql("max_streak_days = GREATEST(max_streak_days, streak_days)")
-                    );
-                }
-            } else {
-                // 不连续，重新开始
-                streak.setStreakDays(1);
-                streak.setLastDate(today);
-                greetingStreakMapper.updateById(streak);
-            }
-        }
     }
 
     private User getUserById(Long userId) {

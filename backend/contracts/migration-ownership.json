@@ -28,6 +28,12 @@
     "POST /api/coupleTree/skin/change",
     "GET /api/coupleTree/skins",
     "POST /api/coupleTree/water",
+    "GET /api/dailyGreeting/both/status",
+    "GET /api/dailyGreeting/detail/{id}",
+    "GET /api/dailyGreeting/history",
+    "POST /api/dailyGreeting/send",
+    "GET /api/dailyGreeting/streak",
+    "GET /api/dailyGreeting/today/status",
     "POST /api/heartMoment/create",
     "DELETE /api/heartMoment/delete/{id}",
     "GET /api/heartMoment/list",
@@ -108,6 +114,12 @@
     "POST /api/coupleTree/skin/change",
     "GET /api/coupleTree/skins",
     "POST /api/coupleTree/water",
+    "GET /api/dailyGreeting/both/status",
+    "GET /api/dailyGreeting/detail/{id}",
+    "GET /api/dailyGreeting/history",
+    "POST /api/dailyGreeting/send",
+    "GET /api/dailyGreeting/streak",
+    "GET /api/dailyGreeting/today/status",
     "POST /api/heartMoment/create",
     "DELETE /api/heartMoment/delete/{id}",
     "GET /api/heartMoment/list",
@@ -245,6 +257,16 @@
       "activeOwner": "fastapi",
       "rollbackOwner": "spring",
       "nginxLocation": "couple-tree-exact-contract-regex",
+      "requires": [
+        "real-mysql-redis-gates",
+        "contract-route-owner-check",
+        "nginx-config-check"
+      ]
+    },
+    "daily-greeting-v1": {
+      "activeOwner": "fastapi",
+      "rollbackOwner": "spring",
+      "nginxLocation": "daily-greeting-exact-contract-regex",
       "requires": [
         "real-mysql-redis-gates",
         "contract-route-owner-check",

@@ -192,9 +192,15 @@ CREATE TABLE IF NOT EXISTS t_daily_greeting (
     voice_duration INT DEFAULT NULL COMMENT '语音时长(秒)',
     greeting_date DATE NOT NULL COMMENT '问候日期',
     is_deleted TINYINT DEFAULT 0 COMMENT '是否删除',
+    active_user_id BIGINT GENERATED ALWAYS AS (
+        CASE WHEN is_deleted = 0 THEN user_id ELSE NULL END
+    ) STORED COMMENT '活跃问候唯一键用户ID',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     INDEX idx_couple_date (couple_id, greeting_date),
-    INDEX idx_user_date (user_id, greeting_date)
+    INDEX idx_user_date (user_id, greeting_date),
+    UNIQUE INDEX uk_daily_greeting_active_user_type_date (
+        active_user_id, greeting_type, greeting_date
+    )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='每日问候表';
 
 -- 问候连续打卡记录表

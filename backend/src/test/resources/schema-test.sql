@@ -208,11 +208,16 @@ CREATE TABLE IF NOT EXISTS t_daily_greeting (
     voice_duration INT DEFAULT NULL,
     greeting_date DATE NOT NULL,
     is_deleted TINYINT DEFAULT 0,
+    active_user_id BIGINT GENERATED ALWAYS AS (
+        CASE WHEN is_deleted = 0 THEN user_id ELSE NULL END
+    ),
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX IF NOT EXISTS idx_greeting_couple_date ON t_daily_greeting(couple_id, greeting_date);
 CREATE INDEX IF NOT EXISTS idx_greeting_user_date ON t_daily_greeting(user_id, greeting_date);
+CREATE UNIQUE INDEX IF NOT EXISTS uk_daily_greeting_active_user_type_date
+    ON t_daily_greeting(active_user_id, greeting_type, greeting_date);
 
 -- 问候连续打卡记录表
 CREATE TABLE IF NOT EXISTS t_greeting_streak (
