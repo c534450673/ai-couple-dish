@@ -2,9 +2,21 @@ from datetime import date
 from decimal import Decimal
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
 Phone = Annotated[str, StringConstraints(pattern=r"^1[3-9]\d{9}$")]
+
+
+class DeepQaSubmitRequest(BaseModel):
+    question_id: int = Field(alias="questionId", ge=1)
+    answer_text: str = Field(alias="answerText", min_length=1, max_length=5000)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    @field_validator("answer_text", mode="before")
+    @classmethod
+    def trim_answer_text(cls, value: object) -> object:
+        return value.strip() if isinstance(value, str) else value
 
 
 class WechatLoginRequest(BaseModel):

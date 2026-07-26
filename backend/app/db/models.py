@@ -496,6 +496,57 @@ class SweetBomb(Base):
     )
 
 
+class DeepQuestion(Base):
+    __tablename__ = "t_deep_question"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    week_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    question_text: Mapped[str] = mapped_column(String(512), nullable=False)
+    question_type: Mapped[str] = mapped_column(
+        String(64), nullable=False, server_default=text("'open'")
+    )
+    options: Mapped[str | None] = mapped_column(Text, nullable=True)
+    category: Mapped[str] = mapped_column(
+        String(64), nullable=False, server_default=text("'relationship'")
+    )
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    is_active: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("1"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class CoupleQaProgress(Base):
+    __tablename__ = "t_couple_qa_progress"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    current_week: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("1"))
+    current_question: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("1"))
+    total_completed: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class DeepQaAnswer(Base):
+    __tablename__ = "t_deep_qa_answer"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    question_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    answer_text: Mapped[str] = mapped_column(Text, nullable=False)
+    is_revealed: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    reveal_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
 class TimeCapsule(Base):
     """情侣时光胶囊；媒体地址以 JSON 数组存储以兼容 Spring 表结构。"""
 
