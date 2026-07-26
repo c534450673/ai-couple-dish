@@ -6,7 +6,6 @@ from typing import Any
 import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from app.api.ai import router as ai_router
 from app.api.anniversary import router as anniversary_router
@@ -29,6 +28,7 @@ from app.api.mood import router as mood_router
 from app.api.note import router as note_router
 from app.api.notification import router as notification_router
 from app.api.order import router as order_router
+from app.api.poster import router as poster_router
 from app.api.recipe import router as recipe_router
 from app.api.relationship_weather import router as relationship_weather_router
 from app.api.sweet_bomb import router as sweet_bomb_router
@@ -40,9 +40,11 @@ from app.core.config import Settings, get_settings
 from app.core.errors import install_exception_handlers
 from app.core.logging import configure_logging
 from app.core.middleware import RequestContextMiddleware
+from app.core.static_files import PosterStaticFiles
 from app.db.session import Database
 from app.redis.client import RedisClient
 from app.services import feed as feed_service
+from app.services import poster_renderer
 
 logger = structlog.get_logger()
 
@@ -103,6 +105,7 @@ async def _feed_expiry_loop(database: Database) -> None:
 def create_app(settings: Settings | None = None) -> FastAPI:
     """根据传入配置创建 FastAPI 应用。"""
     active_settings = settings or get_settings()
+    poster_renderer.validate_font_assets()
     configure_logging(active_settings)
 
     @asynccontextmanager
@@ -171,6 +174,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.state.settings = active_settings
     app.state.readiness = default_readiness
+    app.state.poster_render_semaphore = asyncio.Semaphore(active_settings.poster_render_concurrency)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=active_settings.allowed_origins,
@@ -182,8 +186,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(RequestContextMiddleware)
     install_exception_handlers(app)
     app.mount(
-        f"{active_settings.api_prefix}/uploads",
-        StaticFiles(directory=active_settings.file_upload_path, check_dir=False),
+        active_settings.file_public_path,
+        PosterStaticFiles(directory=active_settings.file_upload_path, check_dir=False),
         name="uploads",
     )
     app.include_router(health_router, prefix=active_settings.api_prefix)
@@ -202,6 +206,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(cart_router, prefix=active_settings.api_prefix)
     app.include_router(challenge_router, prefix=active_settings.api_prefix)
     app.include_router(order_router, prefix=active_settings.api_prefix)
+    app.include_router(poster_router, prefix=active_settings.api_prefix)
     app.include_router(love_calendar_router, prefix=active_settings.api_prefix)
     app.include_router(ai_router, prefix=active_settings.api_prefix)
     app.include_router(notification_router, prefix=active_settings.api_prefix)

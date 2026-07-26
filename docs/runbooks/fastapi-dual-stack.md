@@ -174,6 +174,49 @@ PROJECT_NAME='fastapi-foundation-qa' JWT_SECRET='<inject-at-runtime>' \
 任一步失败都保留备份，不 reload 未通过 `nginx -t` 的配置。切流前后只保留 request ID、
 状态和耗时等脱敏证据。
 
+## Poster orphan 清理
+
+清理命令只维护 FastAPI 海报持久卷中的原子发布临时文件和孤立 PNG，不改变 route owner，
+也不表示生产 Spring 海报写入已经切换到 FastAPI。唯一受支持的入口是在 `backend/` 工作目录
+通过 Python module 运行；不要直接执行 `scripts/cleanup_poster_orphans.py`：
+
+```bash
+cd backend
+uv run python -m scripts.cleanup_poster_orphans --help
+```
+
+命令默认只执行 dry-run，年龄阈值默认 24 小时，不删除文件。先用运行时注入的数据库、上传目录
+和公开路径配置观察候选计数：
+
+```bash
+cd backend
+uv run python -m scripts.cleanup_poster_orphans
+```
+
+确认备份可恢复、容量和 inode 正常、数据库 active URL 查询可用，并审阅 dry-run 的
+`scanned`、`temp`、`final`、`refused`、`errors` 计数。候选数或失败数异常增长时停止，不执行
+删除；先排查渲染失败、数据库提交失败、卷挂载、权限、磁盘容量和 scheduler 重复运行。
+
+只有在 dry-run 计数已观察、备份和恢复步骤已验证且操作获批后，才显式传入 `--apply`：
+
+```bash
+cd backend
+uv run python -m scripts.cleanup_poster_orphans --apply
+```
+
+执行后再次运行 dry-run，确认候选数回落且 `errors=0`。不要把 dry-run 省略 `--apply` 的输出
+当成已经删除，也不要自动重试持续失败的 apply；失败时保留卷快照和审计记录，先恢复容量、权限
+或数据库可用性。
+
+建议由 daily scheduler（如受管 CronJob）每天运行一次 dry-run；apply 是否自动化须单独审批，
+并保留互斥、超时和失败告警。至少监控 scheduler 成功率与耗时、卷容量/inode、`temp`/`final`
+orphan 趋势、`refused`/`errors` 计数，以及 `CLEANUP_FAILED`、`FILESYSTEM_ERRORS`。备份保留期
+必须覆盖默认 24 小时清理窗口，并定期验证恢复，脚本自身不提供恢复能力。
+
+删除只移除当前持久卷中的文件，不能撤回浏览器、CDN、代理或客户端已缓存的副本。Poster 静态
+响应当前使用短期 public cache，owner delete 和 cleanup 都不能承诺公开 URL 立即全网失效；涉及
+敏感内容时应先执行缓存处置和事件响应流程，再评估文件删除。
+
 ## 清理与上传风险
 
 只停止本次项目的服务和临时容器，不删除共享 volume：

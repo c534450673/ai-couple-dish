@@ -32,8 +32,8 @@ def test_fastapi_dockerfile_keeps_build_tools_out_of_runtime() -> None:
 
 def test_fastapi_dockerfile_runs_as_non_root_with_healthcheck_and_command() -> None:
     dockerfile = DOCKERFILE.read_text(encoding="utf-8")
-    assert "groupadd --system app" in dockerfile
-    assert "useradd --system --gid app --home /app app" in dockerfile
+    assert "groupadd --system --gid 10001 app" in dockerfile
+    assert "useradd --system --uid 10001 --gid app --home /app app" in dockerfile
     assert "USER app" in dockerfile
     assert "EXPOSE 8000" in dockerfile
     assert "HEALTHCHECK" in dockerfile

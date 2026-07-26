@@ -40,6 +40,37 @@ class Couple(Base):
     unbind_apply_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
+class PosterTemplate(Base):
+    __tablename__ = "t_poster_template"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    template_code: Mapped[str] = mapped_column(String(64), nullable=False)
+    template_name: Mapped[str] = mapped_column(String(128), nullable=False)
+    template_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    template_config: Mapped[str] = mapped_column(Text, nullable=False)
+    preview_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    is_active: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("1"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
+class UserPoster(Base):
+    __tablename__ = "t_user_poster"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    couple_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    poster_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    template_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    poster_url: Mapped[str] = mapped_column(String(512), nullable=False)
+    invite_code: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    is_deleted: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    create_time: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+
+
 class CoupleRank(Base):
     __tablename__ = "t_couple_rank"
 

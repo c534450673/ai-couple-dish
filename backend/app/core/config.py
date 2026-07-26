@@ -1,6 +1,7 @@
 from functools import lru_cache
+from pathlib import PurePosixPath
 from typing import Literal
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, urlsplit
 
 from pydantic import Field, SecretStr, computed_field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -41,6 +42,8 @@ class Settings(BaseSettings):
     )
     file_upload_path: str = Field("/tmp/uploads", alias="FILE_UPLOAD_PATH")  # noqa: S108
     file_base_url: str = Field("http://localhost:8080/api/uploads", alias="FILE_BASE_URL")
+    file_public_path: str = Field("/api/uploads", alias="FILE_PUBLIC_PATH")
+    poster_render_concurrency: int = Field(2, alias="POSTER_RENDER_CONCURRENCY", ge=1, le=4)
 
     # AI 网关只接受环境变量注入，日志和错误响应不会暴露密钥。
     ai_base_url: str = Field("", alias="AI_BASE_URL")
@@ -68,6 +71,42 @@ class Settings(BaseSettings):
     def validate_production_cors(self) -> "Settings":
         if self.app_env == "prod" and "*" in self.allowed_origins:
             raise ValueError("生产环境 CORS_ORIGINS 不得包含通配符")
+        return self
+
+    @model_validator(mode="after")
+    def validate_file_publish_url(self) -> "Settings":
+        parsed = urlsplit(self.file_base_url)
+        if parsed.query or parsed.fragment or "\\" in self.file_base_url or "%" in parsed.path:
+            raise ValueError("FILE_BASE_URL 必须是不含查询参数或片段的规范 URL")
+        if parsed.scheme:
+            if parsed.scheme not in {"http", "https"} or not parsed.netloc or parsed.username:
+                raise ValueError("FILE_BASE_URL 仅允许 http/https URL")
+        elif (
+            parsed.netloc
+            or not self.file_base_url.startswith("/")
+            or self.file_base_url.startswith("//")
+        ):
+            raise ValueError("FILE_BASE_URL 相对地址必须从根路径开始")
+
+        public_path = self.file_public_path
+        if (
+            not public_path.startswith("/")
+            or public_path.startswith("//")
+            or "\\" in public_path
+            or "%" in public_path
+            or "?" in public_path
+            or "#" in public_path
+        ):
+            raise ValueError("FILE_PUBLIC_PATH 必须是规范的根相对路径")
+
+        def canonical(path: str) -> str:
+            normalized = path.rstrip("/") or "/"
+            if any(part in {".", "..", ""} for part in PurePosixPath(normalized).parts[1:]):
+                raise ValueError("文件公开路径不得包含空段或点段")
+            return normalized
+
+        if canonical(parsed.path) != canonical(public_path):
+            raise ValueError("FILE_PUBLIC_PATH 必须与 FILE_BASE_URL 的路径一致")
         return self
 
     @property
