@@ -223,13 +223,11 @@ async def test_invite_stats_rank_validate_info_and_isolation(
     isolated = await context.client.get("/api/invite/referrals", headers=context.auth[602])
     assert _payload(isolated)["data"] == []
 
-    rank = await context.client.get("/api/invite/rank", headers=context.auth[601])
+    rank = await context.client.get("/api/invite/rank")
     assert [_item["userId"] for _item in _payload(rank)["data"][:2]] == [601, 603]
     assert (
         _payload(
-            await context.client.get(
-                "/api/invite/validate", params={"inviteCode": first}, headers=context.auth[602]
-            )
+            await context.client.get("/api/invite/validate", params={"inviteCode": first})
         )["data"]
         is True
     )
@@ -238,14 +236,13 @@ async def test_invite_stats_rank_validate_info_and_isolation(
             await context.client.get(
                 "/api/invite/validate",
                 params={"inviteCode": "NOT-FOUND"},
-                headers=context.auth[602],
             )
         )["data"]
         is False
     )
-    info = await context.client.get(f"/api/invite/info/{first}", headers=context.auth[602])
+    info = await context.client.get(f"/api/invite/info/{first}")
     assert _payload(info)["data"]["inviteCode"] == first
-    missing = await context.client.get("/api/invite/info/NOT-FOUND", headers=context.auth[602])
+    missing = await context.client.get("/api/invite/info/NOT-FOUND")
     assert _code(missing) == 404
 
 

@@ -21,9 +21,6 @@ def settings() -> Settings:
         ("POST", "/api/invite/use?inviteCode=ABC123"),
         ("GET", "/api/invite/referrals"),
         ("GET", "/api/invite/stats"),
-        ("GET", "/api/invite/rank"),
-        ("GET", "/api/invite/validate?inviteCode=ABC123"),
-        ("GET", "/api/invite/info/ABC123"),
     ],
 )
 async def test_all_invite_routes_require_authentication(method: str, path: str) -> None:

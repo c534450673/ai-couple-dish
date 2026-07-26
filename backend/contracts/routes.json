@@ -636,7 +636,7 @@
     "path": "/api/invite/code",
     "controller": "InviteController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -644,7 +644,7 @@
     "path": "/api/invite/info/{inviteCode}",
     "controller": "InviteController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -652,7 +652,7 @@
     "path": "/api/invite/rank",
     "controller": "InviteController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -660,7 +660,7 @@
     "path": "/api/invite/referrals",
     "controller": "InviteController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -668,7 +668,7 @@
     "path": "/api/invite/stats",
     "controller": "InviteController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -676,7 +676,7 @@
     "path": "/api/invite/use",
     "controller": "InviteController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {
@@ -684,7 +684,7 @@
     "path": "/api/invite/validate",
     "controller": "InviteController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 5
   },
   {

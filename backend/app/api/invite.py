@@ -63,10 +63,8 @@ async def stats(
 async def rank(
     request: Request,
     limit: int = Query(default=10, ge=1, le=100),
-    user_id: int = Depends(current_user_id),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, object]:
-    del user_id
     return {"code": 200, "message": "操作成功", "data": await service.rank(request, session, limit)}
 
 
@@ -74,10 +72,8 @@ async def rank(
 async def validate(
     request: Request,
     invite_code: str = Query(alias="inviteCode", max_length=16),
-    user_id: int = Depends(current_user_id),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, object]:
-    del user_id
     return {
         "code": 200,
         "message": "操作成功",
@@ -89,10 +85,8 @@ async def validate(
 async def info(
     request: Request,
     inviteCode: str,
-    user_id: int = Depends(current_user_id),
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, object]:
-    del user_id
     return {
         "code": 200,
         "message": "操作成功",
