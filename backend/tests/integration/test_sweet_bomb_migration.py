@@ -236,7 +236,7 @@ async def test_sweet_bomb_scope_notifications_idempotency_and_redacted_logs(
         assert all(_payload(response)["code"] == 200 for response in answers)
         assert _payload(await client.get("/api/sweetBomb/history?limit=0", headers=auth[802]))[
             "data"
-        ]
+        ] == []
         assert (
             _payload(await client.get("/api/sweetBomb/unread/count", headers=auth[1001]))["data"]
             == 0

@@ -347,12 +347,11 @@ async def history(
     started = perf_counter()
     operation = "history"
     _, couple = await _couple_context(request, session, user_id, operation, started)
-    safe_limit = limit if 1 <= limit <= 100 else 20
     result = await session.execute(
         select(SweetBomb)
         .where(SweetBomb.couple_id == couple.id)
         .order_by(SweetBomb.sent_time.desc(), SweetBomb.id.desc())
-        .limit(safe_limit)
+        .limit(limit)
     )
     payload = [_payload(bomb) for bomb in result.scalars().all()]
     await logger.ainfo(
