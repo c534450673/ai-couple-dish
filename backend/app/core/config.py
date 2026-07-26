@@ -33,6 +33,21 @@ class Settings(BaseSettings):
     redis_password: SecretStr | None = Field(None, alias="REDIS_PASSWORD")
     redis_database: int = Field(0, alias="REDIS_DATABASE", ge=0)
 
+    # Shadow worker is deliberately opt-in. It must never start from the web lifespan.
+    fastapi_scheduler_enabled: bool = Field(False, alias="FASTAPI_SCHEDULER_ENABLED")
+    couple_code_scheduler_lock_ttl_seconds: int = Field(
+        300,
+        alias="COUPLE_CODE_SCHEDULER_LOCK_TTL_SECONDS",
+        ge=60,
+        le=3600,
+    )
+    couple_code_scheduler_marker_ttl_seconds: int = Field(
+        93_600,
+        alias="COUPLE_CODE_SCHEDULER_MARKER_TTL_SECONDS",
+        ge=93_600,
+        le=604_800,
+    )
+
     jwt_secret: SecretStr = Field(alias="JWT_SECRET")
     jwt_expiration: int = Field(604_800_000, alias="JWT_EXPIRATION", gt=0)
     jwt_algorithm: Literal["HS512"] = "HS512"

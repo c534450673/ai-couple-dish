@@ -32,6 +32,14 @@ POSTER_LOG_FIELDS = (
     "durationMs",
     "errorCode",
 )
+SCHEDULER_LOG_FIELDS = (
+    "requestId",
+    "module",
+    "operation",
+    "result",
+    "durationMs",
+    "errorCode",
+)
 
 
 def sanitize_event(event: MutableMapping[str, Any]) -> dict[str, Any]:
@@ -46,6 +54,8 @@ def allowlist_processor(
     sanitized = sanitize_event(event_dict)
     if sanitized.get("module") == "poster":
         return {key: sanitized[key] for key in POSTER_LOG_FIELDS if key in sanitized}
+    if sanitized.get("module") == "couple_code_scheduler":
+        return {key: sanitized[key] for key in SCHEDULER_LOG_FIELDS if key in sanitized}
     return sanitized
 
 

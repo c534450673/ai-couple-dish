@@ -234,3 +234,23 @@ docker rm -f '<inject-at-runtime>'
 
 未来切流 `/api/ai/chat/stream` 时，Nginx location 必须设置 `proxy_buffering off`，并
 验证断线、超时和回滚；本基础阶段不添加该业务代理例外。
+
+## CoupleCodeTask shadow worker
+
+Spring `CoupleCodeTask.checkExpiration` 仍是默认唯一 writer。FastAPI 的情侣码过期提醒是
+默认关闭的 shadow worker，不属于 HTTP 路由，也绝不能挂入 Uvicorn/Gunicorn lifespan。它只有
+一个受支持入口，受管 CronJob 每小时一次、使用 `Asia/Shanghai` 作为业务时区：
+
+```bash
+cd backend
+FASTAPI_SCHEDULER_ENABLED=true uv run python -m scripts.run_couple_code_reminder
+```
+
+未显式设置 `FASTAPI_SCHEDULER_ENABLED=true` 时命令会以非零状态退出且不会连接数据库或 Redis。
+生产切换前必须获得 owner 审批，先禁用 Spring 对应任务、确认只有一个受管 worker、检查 Redis
+run lock 与 HMAC marker、备份并验证回滚。回滚时先停止 FastAPI CronJob，再恢复 Spring 任务；
+禁止两个 writer 同时运行。worker 日志只保留 requestId、模块、操作、结果、耗时和错误码，不能
+记录情侣码、Redis key、用户 ID、通知文案或原始异常。
+
+Anniversary、DailyGreeting、DailyTask 和 Feed expiry 仍有其各自的多 writer 风险；本 worker
+不迁移或接管这些任务。

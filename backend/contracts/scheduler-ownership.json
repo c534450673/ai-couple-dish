@@ -1,0 +1,16 @@
+{
+  "couple_code_expiration_reminder": {
+    "defaultOwner": "spring",
+    "springTask": "CoupleCodeTask.checkExpiration",
+    "fastapiShadowCommand": "python -m scripts.run_couple_code_reminder",
+    "enabledByDefault": false,
+    "schedule": "0 * * * *",
+    "businessTimezone": "Asia/Shanghai",
+    "singleWriter": true,
+    "switchPrerequisites": [
+      "explicit FASTAPI_SCHEDULER_ENABLED=true",
+      "Spring task disabled by approved deployment change",
+      "single managed CronJob worker with monitoring and rollback approval"
+    ]
+  }
+}
