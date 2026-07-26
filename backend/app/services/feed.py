@@ -419,6 +419,13 @@ async def reject(
         await _fail(request, operation, started, 6001, "投喂记录不存在")
     if item.receiver_id != user_id:
         await _fail(request, operation, started, 6004, "无法接受此投喂")
+    now = _business_now()
+    if item.status != 0 or item.expire_time <= now:
+        if item.status == 0:
+            item.status = 3
+            session.add(_expiry_notification(item))
+            await session.commit()
+        await _fail(request, operation, started, 6003, "投喂已过期")
     item.status = 2
     item.reject_reason = reason
     session.add(
