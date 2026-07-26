@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from app.core.config import Settings
+from app.services.couple_code_scheduler import CoupleCodeRunResult
 from scripts import run_couple_code_reminder
 
 BACKEND = Path(__file__).parents[2]
@@ -98,3 +99,52 @@ async def test_cli_uses_info_for_success_and_error_for_failures(
         "durationMs",
         "errorCode",
     }
+
+
+async def test_close_failure_is_nonzero_and_still_closes_database(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    closed: list[str] = []
+
+    class FakeDatabase:
+        def __init__(self, *_args: object, **_kwargs: object) -> None:
+            self.engine = object()
+
+        async def connect(self) -> None:
+            return None
+
+        async def close(self) -> None:
+            closed.append("database")
+
+    class FakeRedis:
+        raw = object()
+
+        def __init__(self, *_args: object, **_kwargs: object) -> None:
+            return None
+
+        async def connect(self) -> None:
+            return None
+
+        async def close(self) -> None:
+            closed.append("redis")
+            raise RuntimeError("close failed")
+
+    class FakeWorker:
+        def __init__(self, **_kwargs: object) -> None:
+            return None
+
+        async def run(self) -> CoupleCodeRunResult:
+            return CoupleCodeRunResult(status="completed")
+
+    monkeypatch.setattr(run_couple_code_reminder, "Database", FakeDatabase)
+    monkeypatch.setattr(run_couple_code_reminder, "RedisClient", FakeRedis)
+    monkeypatch.setattr(run_couple_code_reminder, "CoupleCodeScheduler", FakeWorker)
+    monkeypatch.setattr(
+        run_couple_code_reminder,
+        "async_sessionmaker",
+        lambda *_args, **_kwargs: None,
+    )
+    settings = Settings(_env_file=None, FASTAPI_SCHEDULER_ENABLED=True, **BASE)
+
+    assert await run_couple_code_reminder.execute(settings) == 1
+    assert closed == ["redis", "database"]
