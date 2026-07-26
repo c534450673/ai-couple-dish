@@ -9,6 +9,7 @@ import time
 import uuid
 
 import structlog
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from app.core.config import Settings
 from app.core.logging import configure_logging
@@ -35,6 +36,7 @@ async def execute(settings: Settings) -> int:
         return 2
     database: Database | None = None
     redis: RedisClient | None = None
+    exit_code = 1
     try:
         database = Database(
             settings.database_url,
@@ -46,7 +48,7 @@ async def execute(settings: Settings) -> int:
         await redis.connect()
         worker = CoupleCodeScheduler(
             redis=redis.raw,
-            session_factory=database.session,
+            session_factory=async_sessionmaker(database.engine, expire_on_commit=False),
             jwt_secret=settings.jwt_secret.get_secret_value(),
             lock_ttl_seconds=settings.couple_code_scheduler_lock_ttl_seconds,
             marker_ttl_seconds=settings.couple_code_scheduler_marker_ttl_seconds,
@@ -60,10 +62,9 @@ async def execute(settings: Settings) -> int:
             started_at,
             "NONE" if not exit_code else "RUN_FAILED",
         )
-        return exit_code
     except Exception:
         await _log_result(request_id, "run", "failed", started_at, "DEPENDENCY")
-        return 1
+        exit_code = 1
     finally:
         if redis is not None:
             try:
@@ -72,6 +73,7 @@ async def execute(settings: Settings) -> int:
                 await _log_result(
                     request_id, "redis.close", "failed", started_at, "DEPENDENCY_CLOSE"
                 )
+                exit_code = 1
         if database is not None:
             try:
                 await database.close()
@@ -79,6 +81,8 @@ async def execute(settings: Settings) -> int:
                 await _log_result(
                     request_id, "database.close", "failed", started_at, "DEPENDENCY_CLOSE"
                 )
+                exit_code = 1
+    return exit_code
 
 
 async def _log_result(

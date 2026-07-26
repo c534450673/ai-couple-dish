@@ -2,9 +2,10 @@ import asyncio
 import uuid
 
 import pytest
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from app.db.models import Notification
+from app.db.models import Notification, User
 from app.db.session import Database
 from app.redis.client import RedisClient
 from app.services.couple_code_scheduler import CoupleCodeScheduler
@@ -45,26 +46,29 @@ class BlockingRedis:
         return await self.raw.eval(script, numkeys, *keys_and_args)
 
 
-class DeleteBeforeHashRedis:
-    """Simulate Spring bind deleting the hash after SCAN's candidate TTL check."""
+class BindAfterHashRedis:
+    """Return stale hash data only after a concurrent bind commits and removes the key."""
 
-    def __init__(self, raw, target_key: str) -> None:  # type: ignore[no-untyped-def]
+    def __init__(
+        self, raw, target_key: str, hash_read: asyncio.Event, bind_finished: asyncio.Event
+    ) -> None:  # type: ignore[no-untyped-def]
         self.raw = raw
         self.target_key = target_key
-        self._target_ttl_calls = 0
+        self.hash_read = hash_read
+        self.bind_finished = bind_finished
 
     async def scan(self, cursor: int, *, match: str, count: int):  # type: ignore[no-untyped-def]
         return await self.raw.scan(cursor, match=match, count=count)
 
     async def ttl(self, key: str) -> int:
-        if key == self.target_key:
-            self._target_ttl_calls += 1
-            if self._target_ttl_calls == 2:
-                await self.raw.delete(key)
         return await self.raw.ttl(key)
 
     async def hgetall(self, key: str):  # type: ignore[no-untyped-def]
-        return await self.raw.hgetall(key)
+        values = await self.raw.hgetall(key)
+        if key == self.target_key:
+            self.hash_read.set()
+            await self.bind_finished.wait()
+        return values
 
     async def set(self, key: str, value: str, *, nx: bool, ex: int):  # type: ignore[no-untyped-def]
         return await self.raw.set(key, value, nx=nx, ex=ex)
@@ -86,9 +90,12 @@ async def test_real_mysql_redis_worker_is_idempotent_and_preserves_notification_
     await redis.connect()
     try:
         async with database.engine.begin() as connection:
+            await connection.run_sync(User.__table__.create, checkfirst=True)
             await connection.run_sync(Notification.__table__.create, checkfirst=True)
         async with database.session() as session:
             await session.execute(delete(Notification).where(Notification.user_id == user_id))
+            await session.execute(delete(User).where(User.id == user_id))
+            session.add(User(id=user_id, openid=f"task34-{uuid.uuid4().hex}", couple_id=None))
             await session.commit()
         await redis.raw.hset(key, mapping={"userId": str(user_id)})
         await redis.raw.expire(key, 86_399)
@@ -96,7 +103,7 @@ async def test_real_mysql_redis_worker_is_idempotent_and_preserves_notification_
         await redis.raw.expire(bad_key, 86_399)
         worker = CoupleCodeScheduler(
             redis=redis.raw,
-            session_factory=database.session,
+            session_factory=async_sessionmaker(database.engine, expire_on_commit=False),
             jwt_secret="x" * 64,
             lock_ttl_seconds=60,
             marker_ttl_seconds=93_600,
@@ -124,6 +131,7 @@ async def test_real_mysql_redis_worker_is_idempotent_and_preserves_notification_
         await redis.raw.delete(key, bad_key)
         async with database.session() as session:
             await session.execute(delete(Notification).where(Notification.user_id == user_id))
+            await session.execute(delete(User).where(User.id == user_id))
             await session.commit()
         await redis.close()
         await database.close()
@@ -143,9 +151,18 @@ async def test_real_redis_lock_and_bind_delete_race_do_not_write_stale_notificat
     await redis.connect()
     try:
         async with database.engine.begin() as connection:
+            await connection.run_sync(User.__table__.create, checkfirst=True)
             await connection.run_sync(Notification.__table__.create, checkfirst=True)
         async with database.session() as session:
             await session.execute(delete(Notification).where(Notification.user_id == user_id))
+            await session.execute(delete(Notification).where(Notification.user_id == race_user_id))
+            await session.execute(delete(User).where(User.id.in_([user_id, race_user_id])))
+            session.add_all(
+                [
+                    User(id=user_id, openid=f"task34-{uuid.uuid4().hex}", couple_id=None),
+                    User(id=race_user_id, openid=f"task34-{uuid.uuid4().hex}", couple_id=None),
+                ]
+            )
             await session.commit()
         await redis.raw.hset(key, mapping={"userId": str(user_id)})
         await redis.raw.expire(key, 86_399)
@@ -153,14 +170,14 @@ async def test_real_redis_lock_and_bind_delete_race_do_not_write_stale_notificat
         release = asyncio.Event()
         first = CoupleCodeScheduler(
             redis=BlockingRedis(redis.raw, entered, release),
-            session_factory=database.session,
+            session_factory=async_sessionmaker(database.engine, expire_on_commit=False),
             jwt_secret="x" * 64,
             lock_ttl_seconds=60,
             marker_ttl_seconds=93_600,
         )
         second = CoupleCodeScheduler(
             redis=redis.raw,
-            session_factory=database.session,
+            session_factory=async_sessionmaker(database.engine, expire_on_commit=False),
             jwt_secret="x" * 64,
             lock_ttl_seconds=60,
             marker_ttl_seconds=93_600,
@@ -176,14 +193,25 @@ async def test_real_redis_lock_and_bind_delete_race_do_not_write_stale_notificat
 
         await redis.raw.hset(race_key, mapping={"userId": str(race_user_id)})
         await redis.raw.expire(race_key, 86_399)
+        hash_read = asyncio.Event()
+        bind_finished = asyncio.Event()
         stale = CoupleCodeScheduler(
-            redis=DeleteBeforeHashRedis(redis.raw, race_key),
-            session_factory=database.session,
+            redis=BindAfterHashRedis(redis.raw, race_key, hash_read, bind_finished),
+            session_factory=async_sessionmaker(database.engine, expire_on_commit=False),
             jwt_secret="x" * 64,
             lock_ttl_seconds=60,
             marker_ttl_seconds=93_600,
         )
-        stale_result = await stale.run()
+        stale_task = asyncio.create_task(stale.run())
+        await hash_read.wait()
+        async with database.session() as bind_session:
+            await bind_session.execute(
+                update(User).where(User.id == race_user_id).values(couple_id=99)
+            )
+            await bind_session.commit()
+        await redis.raw.delete(race_key)
+        bind_finished.set()
+        stale_result = await stale_task
         assert stale_result.processed == 0
         assert await _notification_count(database, user_id) == 1
         assert await _notification_count(database, race_user_id) == 0
@@ -193,6 +221,7 @@ async def test_real_redis_lock_and_bind_delete_race_do_not_write_stale_notificat
             await session.execute(
                 delete(Notification).where(Notification.user_id.in_([user_id, race_user_id]))
             )
+            await session.execute(delete(User).where(User.id.in_([user_id, race_user_id])))
             await session.commit()
         await redis.close()
         await database.close()

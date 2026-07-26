@@ -5,6 +5,7 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from io import StringIO
+from types import SimpleNamespace
 
 import pytest
 import structlog
@@ -20,6 +21,7 @@ class FakeSession:
     fail_commit: bool = False
     commits: int = 0
     rollbacks: int = 0
+    couple_id: int | None = None
 
     def add(self, notification: object) -> None:
         self.notifications.append(notification)
@@ -32,6 +34,9 @@ class FakeSession:
     async def rollback(self) -> None:
         self.rollbacks += 1
 
+    async def scalar(self, _statement: object) -> object:
+        return SimpleNamespace(couple_id=self.couple_id)
+
 
 class FakeRedis:
     def __init__(self, values: dict[str, tuple[int, dict[str, str]]]) -> None:
@@ -42,6 +47,8 @@ class FakeRedis:
         self.deleted: list[str] = []
         self.locked = False
         self.fail_ttl_keys: set[str] = set()
+        self.lose_renewal = False
+        self.renewals = 0
 
     async def scan(self, cursor: int, *, match: str, count: int) -> tuple[int, list[str]]:
         self.scan_calls.append((cursor, match, count))
@@ -67,9 +74,16 @@ class FakeRedis:
         self.strings[key] = (value, ex)
         return True
 
-    async def eval(self, _script: str, _keys: int, key: str, value: str) -> int:
+    async def eval(self, script: str, _keys: int, key: str, value: str, *args: str) -> int:
         if self.strings.get(key, (None, 0))[0] != value:
             return 0
+        if "expire" in script:
+            self.renewals += 1
+            if self.lose_renewal:
+                return 0
+            ttl = int(args[0])
+            self.strings[key] = (value, ttl)
+            return 1
         self.strings.pop(key, None)
         self.deleted.append(key)
         return 1
@@ -169,6 +183,33 @@ async def test_lock_contention_skips_without_writing() -> None:
     assert session.notifications == []
 
 
+async def test_lost_lock_stops_before_processing_a_key() -> None:
+    redis = FakeRedis({"couple:code:ABCD1234": (3_600, {"userId": "7"})})
+    redis.lose_renewal = True
+    session = FakeSession([])
+
+    result = await scheduler(redis, session).run()
+
+    assert result.status == "failed"
+    assert result.failed == 1
+    assert session.notifications == []
+
+
+async def test_lock_is_renewed_for_scan_pages_and_keys() -> None:
+    redis = FakeRedis(
+        {
+            "couple:code:ABCD1234": (3_600, {"userId": "7"}),
+            "couple:code:EFGH5678": (3_600, {"userId": "8"}),
+        }
+    )
+    session = FakeSession([])
+
+    result = await scheduler(redis, session).run()
+
+    assert result.processed == 2
+    assert redis.renewals >= 4
+
+
 async def test_commit_failure_rolls_back_and_removes_only_its_marker() -> None:
     redis = FakeRedis({"couple:code:ABCD1234": (3_600, {"userId": "7"})})
     session = FakeSession([], fail_commit=True)
@@ -194,6 +235,18 @@ async def test_delete_after_marker_reservation_skips_and_cleans_marker() -> None
         return await original_ttl(key)
 
     redis.ttl = deleting_ttl  # type: ignore[method-assign]
+    result = await scheduler(redis, session).run()
+
+    assert result.processed == 0
+    assert result.skipped >= 1
+    assert session.notifications == []
+    assert not [key for key in redis.strings if ":marker:" in key]
+
+
+async def test_bound_user_skips_and_cleans_marker() -> None:
+    redis = FakeRedis({"couple:code:ABCD1234": (3_600, {"userId": "7"})})
+    session = FakeSession([], couple_id=42)
+
     result = await scheduler(redis, session).run()
 
     assert result.processed == 0

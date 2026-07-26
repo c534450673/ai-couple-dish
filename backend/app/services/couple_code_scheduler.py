@@ -12,9 +12,10 @@ from dataclasses import dataclass
 from typing import Protocol
 
 import structlog
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import Notification
+from app.db.models import Notification, User
 
 COUPLE_CODE_PREFIX = "couple:code:"
 REVERSE_KEY_PREFIX = "couple:code:user:"
@@ -25,6 +26,12 @@ MARKER_KEY_PREFIX = "scheduler:couple-code-expiration-reminder:marker:"
 COMPARE_AND_DELETE_LUA = """
 if redis.call('get', KEYS[1]) == ARGV[1] then
     return redis.call('del', KEYS[1])
+end
+return 0
+"""
+COMPARE_AND_EXPIRE_LUA = """
+if redis.call('get', KEYS[1]) == ARGV[1] then
+    return redis.call('expire', KEYS[1], ARGV[2])
 end
 return 0
 """
@@ -103,6 +110,10 @@ class CoupleCodeScheduler:
         try:
             cursor = 0
             while True:
+                if not await self._renew_lock(lock_token):
+                    return await self._lock_lost_result(
+                        request_id, started_at, processed, skipped, duplicates, failed
+                    )
                 try:
                     cursor, keys = await self._redis.scan(
                         cursor, match=f"{COUPLE_CODE_PREFIX}*", count=100
@@ -117,6 +128,10 @@ class CoupleCodeScheduler:
                         failed=failed + 1,
                     )
                 for raw_key in keys:
+                    if not await self._renew_lock(lock_token):
+                        return await self._lock_lost_result(
+                            request_id, started_at, processed, skipped, duplicates, failed
+                        )
                     key = self._as_text(raw_key)
                     if key is None or key.startswith(REVERSE_KEY_PREFIX):
                         skipped += 1
@@ -197,6 +212,13 @@ class CoupleCodeScheduler:
         session: AsyncSession | None = None
         try:
             async with self._session_factory() as session:
+                user = await session.scalar(
+                    select(User).where(User.id == user_id).with_for_update()
+                )
+                if user is None or user.couple_id is not None:
+                    await session.rollback()
+                    await self._compare_and_delete(marker_key, marker_token)
+                    return "skipped"
                 notification = Notification(
                     user_id=user_id,
                     type=2,
@@ -235,6 +257,33 @@ class CoupleCodeScheduler:
 
     async def _compare_and_delete(self, key: str, token: str) -> None:
         await self._redis.eval(COMPARE_AND_DELETE_LUA, 1, key, token)
+
+    async def _renew_lock(self, token: str) -> bool:
+        try:
+            renewed = await self._redis.eval(
+                COMPARE_AND_EXPIRE_LUA, 1, LOCK_KEY, token, str(self._lock_ttl_seconds)
+            )
+        except Exception:
+            return False
+        return bool(renewed)
+
+    async def _lock_lost_result(
+        self,
+        request_id: str,
+        started_at: float,
+        processed: int,
+        skipped: int,
+        duplicates: int,
+        failed: int,
+    ) -> CoupleCodeRunResult:
+        await self._log(request_id, "lock.renew", "failed_lost", started_at, "LOCK_LOST")
+        return CoupleCodeRunResult(
+            status="failed",
+            processed=processed,
+            skipped=skipped,
+            duplicates=duplicates,
+            failed=failed + 1,
+        )
 
     async def _log(
         self,
