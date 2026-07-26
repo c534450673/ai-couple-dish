@@ -372,7 +372,7 @@
     "path": "/api/coupleTree/info",
     "controller": "CoupleTreeController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -380,7 +380,7 @@
     "path": "/api/coupleTree/nutrientLogs",
     "controller": "CoupleTreeController",
     "sideEffect": false,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -388,7 +388,7 @@
     "path": "/api/coupleTree/skin/change",
     "controller": "CoupleTreeController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -396,7 +396,7 @@
     "path": "/api/coupleTree/skins",
     "controller": "CoupleTreeController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {
@@ -404,7 +404,7 @@
     "path": "/api/coupleTree/water",
     "controller": "CoupleTreeController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 4
   },
   {

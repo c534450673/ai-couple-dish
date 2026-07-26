@@ -466,66 +466,166 @@ async def test_couple_tree_routes_keep_scope_atomic_growth_and_redacted_logs(
                     )
                 ).json()["code"] == 200
 
-                concurrent_info = await asyncio.gather(
-                    *[client.get("/api/coupleTree/info", headers=users[0]) for _ in range(4)]
+                first_water_payloads = [
+                    {
+                        "nutrientAmount": 25,
+                        "sourceAction": "manual_water",
+                        "remark": "只在测试日志中保存" if index == 0 else None,
+                    }
+                    for index in range(4)
+                ]
+                concurrent_water = await asyncio.gather(
+                    *[
+                        client.post(
+                            "/api/coupleTree/water",
+                            headers=users[index % 2],
+                            json=payload,
+                        )
+                        for index, payload in enumerate(first_water_payloads)
+                    ]
                 )
-                assert all(response.json()["code"] == 200 for response in concurrent_info)
-                info = concurrent_info[0].json()["data"]
-                assert info["level"] == 1
-                assert info["totalNutrient"] == 0
-                assert info["availableSkins"][0]["unlocked"] is True
+                assert all(response.json()["code"] == 200 for response in concurrent_water)
 
-                assert (
+                async with session_factory() as session:
+                    first_tree = await session.scalar(select(CoupleTree))
+                    assert first_tree is not None
+                    assert await session.scalar(select(func.count(CoupleTree.id))) == 1
+                    assert first_tree.total_nutrient == 100
+                    assert first_tree.level == 2
+                    assert first_tree.current_level_nutrient == 0
+                    assert await session.scalar(select(func.count(TreeNutrientLog.id))) == 4
+
+                unlocked = await client.post(
+                    "/api/coupleTree/water",
+                    headers=users[0],
+                    json={"nutrientAmount": 200, "sourceAction": "manual_water"},
+                )
+                assert unlocked.json()["code"] == 200
+                concurrent_growth = await asyncio.gather(
+                    client.post(
+                        "/api/coupleTree/water",
+                        headers=users[1],
+                        json={"nutrientAmount": 2},
+                    ),
+                    client.post(
+                        "/api/coupleTree/skin/change?skinId=spring",
+                        headers=users[0],
+                    ),
+                )
+                assert all(response.json()["code"] == 200 for response in concurrent_growth)
+
+                grown = (await client.get("/api/coupleTree/info", headers=users[1])).json()["data"]
+                assert set(grown) == {
+                    "id",
+                    "level",
+                    "levelName",
+                    "totalNutrient",
+                    "currentLevelNutrient",
+                    "nextLevelNutrient",
+                    "progressPercent",
+                    "skinId",
+                    "availableSkins",
+                    "todayNutrient",
+                    "nutrientLogs",
+                    "createTime",
+                }
+                assert grown["level"] == 3
+                assert grown["totalNutrient"] == 302
+                assert grown["currentLevelNutrient"] == 2
+                assert grown["progressPercent"] == 0
+                assert grown["skinId"] == "spring"
+                assert grown["availableSkins"][1]["unlocked"] is True
+                assert grown["nutrientLogs"] is None
+                assert isinstance(grown["createTime"], str)
+                assert "T" in grown["createTime"]
+
+                async with session_factory() as session:
+                    recent_logs = list(
+                        (
+                            await session.execute(
+                                select(TreeNutrientLog).order_by(TreeNutrientLog.id.desc()).limit(2)
+                            )
+                        )
+                        .scalars()
+                        .all()
+                    )
+                    deleted_user = await session.scalar(
+                        select(User).where(User.openid == "tree-openid-two")
+                    )
+                    assert len(recent_logs) == 2
+                    assert deleted_user is not None
+                    same_second = datetime(2026, 7, 26, 12, 0, 0)
+                    for nutrient_log in recent_logs:
+                        nutrient_log.create_time = same_second
+                    deleted_user.is_deleted = 1
+                    await session.commit()
+                    expected_log_ids = [nutrient_log.id for nutrient_log in recent_logs]
+                    deleted_user_id = deleted_user.id
+                assert expected_log_ids == sorted(expected_log_ids, reverse=True)
+
+                logs_response = await client.get(
+                    "/api/coupleTree/nutrientLogs?limit=2", headers=users[0]
+                )
+                logs_data = logs_response.json()["data"]
+                assert [item["id"] for item in logs_data] == expected_log_ids
+                assert logs_data[0]["nutrientAmount"] == 2
+                assert logs_data[0]["sourceActionName"] == "手动浇水"
+                assert logs_data[0]["userId"] == deleted_user_id
+                assert logs_data[0]["userName"] is None
+                assert logs_data[0]["userAvatar"] is None
+
+                async with session_factory() as session:
+                    tree = await session.scalar(select(CoupleTree))
+                    couple = await session.scalar(select(Couple))
+                    assert tree is not None
+                    assert couple is not None
+                    assert tree.couple_id == couple.id
+                    assert await session.scalar(select(func.count(CoupleTree.id))) == 1
+                    assert await session.scalar(select(func.count(TreeNutrientLog.id))) == 6
+                    tree_snapshot = (
+                        tree.level,
+                        tree.total_nutrient,
+                        tree.current_level_nutrient,
+                        tree.skin_id,
+                    )
+                    couple.status = 3
+                    await session.commit()
+
+                blocked = [
+                    await client.get("/api/coupleTree/info", headers=users[0]),
                     await client.post(
                         "/api/coupleTree/water",
                         headers=users[0],
-                        json={
-                            "nutrientAmount": 100,
-                            "sourceAction": "manual_water",
-                            "remark": "只在测试日志中保存",
-                        },
-                    )
-                ).json()["code"] == 200
-                assert (
-                    await client.post(
-                        "/api/coupleTree/water",
-                        headers=users[1],
                         json={"nutrientAmount": 10},
-                    )
-                ).json()["code"] == 200
+                    ),
+                    await client.get("/api/coupleTree/nutrientLogs", headers=users[0]),
+                    await client.get("/api/coupleTree/skins", headers=users[0]),
+                    await client.post(
+                        "/api/coupleTree/skin/change?skinId=default",
+                        headers=users[0],
+                    ),
+                ]
+                for response in blocked:
+                    assert response.status_code == 200
+                    assert response.json()["code"] == 2006
 
-                grown = (await client.get("/api/coupleTree/info", headers=users[1])).json()["data"]
-                assert grown["level"] == 2
-                assert grown["totalNutrient"] == 110
-                assert grown["currentLevelNutrient"] == 10
-                assert grown["availableSkins"][1]["unlocked"] is False
-
-                logs_response = await client.get(
-                    "/api/coupleTree/nutrientLogs?limit=1", headers=users[0]
-                )
-                logs_data = logs_response.json()["data"]
-                assert len(logs_data) == 1
-                assert logs_data[0]["nutrientAmount"] == 10
-                assert logs_data[0]["sourceActionName"] == "手动浇水"
-                assert logs_data[0]["userName"] == "树乙"
-
-                locked = await client.post(
-                    "/api/coupleTree/skin/change?skinId=spring", headers=users[0]
-                )
-                assert locked.json()["code"] == 9001
-                changed = await client.post(
-                    "/api/coupleTree/skin/change?skinId=default", headers=users[1]
-                )
-                assert changed.json()["code"] == 200
+                async with session_factory() as session:
+                    unchanged_tree = await session.scalar(select(CoupleTree))
+                    assert unchanged_tree is not None
+                    assert await session.scalar(select(func.count(CoupleTree.id))) == 1
+                    assert await session.scalar(select(func.count(TreeNutrientLog.id))) == 6
+                    assert (
+                        unchanged_tree.level,
+                        unchanged_tree.total_nutrient,
+                        unchanged_tree.current_level_nutrient,
+                        unchanged_tree.skin_id,
+                    ) == tree_snapshot
 
         assert "tree-openid" not in str(logs)
         assert "树甲" not in str(logs)
         assert "只在测试日志中保存" not in str(logs)
         assert "requestId" in str(logs)
         assert "durationMs" in str(logs)
-        async with session_factory() as session:
-            assert await session.scalar(select(func.count(CoupleTree.id))) == 1
-            assert await session.scalar(select(func.count(TreeNutrientLog.id))) == 2
     finally:
         await redis.close()
 

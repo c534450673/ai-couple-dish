@@ -23,6 +23,11 @@
     "POST /api/couple/unbind/confirm",
     "POST /api/couple/unbind/reject",
     "GET /api/couple/validateCode",
+    "GET /api/coupleTree/info",
+    "GET /api/coupleTree/nutrientLogs",
+    "POST /api/coupleTree/skin/change",
+    "GET /api/coupleTree/skins",
+    "POST /api/coupleTree/water",
     "POST /api/heartMoment/create",
     "DELETE /api/heartMoment/delete/{id}",
     "GET /api/heartMoment/list",
@@ -98,6 +103,11 @@
     "POST /api/couple/unbind/confirm",
     "POST /api/couple/unbind/reject",
     "GET /api/couple/validateCode",
+    "GET /api/coupleTree/info",
+    "GET /api/coupleTree/nutrientLogs",
+    "POST /api/coupleTree/skin/change",
+    "GET /api/coupleTree/skins",
+    "POST /api/coupleTree/water",
     "POST /api/heartMoment/create",
     "DELETE /api/heartMoment/delete/{id}",
     "GET /api/heartMoment/list",
@@ -225,6 +235,16 @@
       "activeOwner": "fastapi",
       "rollbackOwner": "spring",
       "nginxLocation": "invite-exact-contract-regex",
+      "requires": [
+        "real-mysql-redis-gates",
+        "contract-route-owner-check",
+        "nginx-config-check"
+      ]
+    },
+    "couple-tree-v1": {
+      "activeOwner": "fastapi",
+      "rollbackOwner": "spring",
+      "nginxLocation": "couple-tree-exact-contract-regex",
       "requires": [
         "real-mysql-redis-gates",
         "contract-route-owner-check",

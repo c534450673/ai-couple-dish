@@ -35,6 +35,11 @@ def test_each_route_has_exactly_one_owner() -> None:
         "POST /api/couple/unbind/confirm",
         "POST /api/couple/unbind/reject",
         "GET /api/couple/validateCode",
+        "GET /api/coupleTree/info",
+        "GET /api/coupleTree/nutrientLogs",
+        "POST /api/coupleTree/skin/change",
+        "GET /api/coupleTree/skins",
+        "POST /api/coupleTree/water",
         "POST /api/heartMoment/create",
         "DELETE /api/heartMoment/delete/{id}",
         "GET /api/heartMoment/list",
@@ -168,6 +173,16 @@ def test_each_route_has_exactly_one_owner() -> None:
                 "nginx-config-check",
             ],
         },
+        "couple-tree-v1": {
+            "activeOwner": "fastapi",
+            "rollbackOwner": "spring",
+            "nginxLocation": "couple-tree-exact-contract-regex",
+            "requires": [
+                "real-mysql-redis-gates",
+                "contract-route-owner-check",
+                "nginx-config-check",
+            ],
+        },
     }
     assert document["integrationGatedRoutes"] == document["fastapiRoutes"]
     assert document["operationalFastapiRoutes"] == [
@@ -198,7 +213,7 @@ def test_business_routes_have_one_declared_owner() -> None:
         if route["owner"] == "fastapi"
     }
     assert fastapi_route_keys == fastapi_routes
-    assert len(route_keys - fastapi_routes) == 120
+    assert len(route_keys - fastapi_routes) == 115
 
 
 def test_foundation_cases_have_required_safe_fields() -> None:

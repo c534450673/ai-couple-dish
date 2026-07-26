@@ -66,7 +66,7 @@ def test_nginx_routes_cutover_batch_to_fastapi_and_defaults_unknown_to_spring() 
     assert "location = /api/health/ready" in config
     assert "location = /api/actuator/health" in config
     assert "location /api/" in config
-    assert config.count("proxy_pass http://fastapi_backend;") == 19
+    assert config.count("proxy_pass http://fastapi_backend;") == 20
     assert config.count("proxy_pass http://spring_backend;") == 1
     assert "split_clients" not in config
     assert "mirror" not in config
@@ -92,6 +92,10 @@ def test_nginx_routes_cutover_batch_to_fastapi_and_defaults_unknown_to_spring() 
     assert (
         "location ~ ^/api/invite/(code|info/[^/]+|rank|referrals|stats|use|validate)$"
         in config
+    )
+    assert "FastAPI cutover batch 9" in config
+    assert (
+        "location ~ ^/api/coupleTree/(info|nutrientLogs|skin/change|skins|water)$" in config
     )
 
 
@@ -122,7 +126,7 @@ def test_nginx_forwards_required_headers_in_each_location() -> None:
         "X-Forwarded-Proto $scheme",
         "X-Forwarded-Host $host",
     ):
-        assert config.count(f"proxy_set_header {header};") == 20
+        assert config.count(f"proxy_set_header {header};") == 21
 
 
 def test_nginx_access_log_is_request_metadata_only() -> None:

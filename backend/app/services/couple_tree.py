@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import BusinessError
-from app.db.models import CoupleTree, TreeNutrientLog, User
+from app.db.models import Couple, CoupleTree, TreeNutrientLog, User
 from app.schemas.business import WaterTreeRequest
 
 logger = structlog.get_logger()
@@ -127,6 +127,11 @@ async def _couple_user(
         await _fail(request, operation, started, 1001, "用户不存在")
     if user.couple_id is None:
         await _fail(request, operation, started, 2006, "未绑定情侣关系")
+    couple = await session.scalar(
+        select(Couple).where(Couple.id == user.couple_id, Couple.status == 1)
+    )
+    if couple is None or user.id not in {couple.user1_id, couple.user2_id}:
+        await _fail(request, operation, started, 2006, "未绑定情侣关系")
     return user
 
 
@@ -200,7 +205,7 @@ def _tree_payload(
     progress = (
         100
         if needed <= 0
-        else min(100, max(0, round((tree.total_nutrient - current_base) * 100 / needed)))
+        else min(100, max(0, (tree.total_nutrient - current_base) * 100 // needed))
     )
     return {
         "id": tree.id,
@@ -213,6 +218,7 @@ def _tree_payload(
         "skinId": tree.skin_id,
         "availableSkins": available_skins,
         "todayNutrient": today,
+        "nutrientLogs": None,
         "createTime": tree.create_time.isoformat() if tree.create_time else None,
     }
 
@@ -317,7 +323,11 @@ async def nutrient_logs(
     if user_ids:
         users = {
             item.id: item
-            for item in (await session.execute(select(User).where(User.id.in_(user_ids))))
+            for item in (
+                await session.execute(
+                    select(User).where(User.id.in_(user_ids), User.is_deleted == 0)
+                )
+            )
             .scalars()
             .all()
         }

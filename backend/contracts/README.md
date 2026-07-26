@@ -57,7 +57,7 @@ header 参数。每个目标文件先写入同目录临时文件、flush/fsync�
 所有 route 初始 `owner="spring"`。只有对应 FastAPI 路由通过 method/path、请求位置、响应外壳、
 错误码、副作用合同和真实集成门禁后，才能登记到 `migration-ownership.json`。导出器会从同目录
 读取该清单并事务式合并 owner，未知路由或无效清单会中止导出，因此重新导出不会静默撤销已批准
-切流。当前用户、情侣、通知、心愿、心动瞬间、情侣挑战、心情、时光胶囊、甜蜜炸弹和邀请返利共 73 条 route 为 FastAPI owner，其余 120 条仍为 Spring。
+切流。当前用户、情侣、通知、心愿、心动瞬间、情侣挑战、心情、时光胶囊、甜蜜炸弹、邀请返利和情侣爱心树共 78 条 route 为 FastAPI owner，其余 115 条仍为 Spring。
 不要直接手改生成的 `routes.json`，也不要用 owner 变更宣称全部业务已经迁移。
 
 ## H5 规格纠偏
