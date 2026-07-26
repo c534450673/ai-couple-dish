@@ -43,7 +43,7 @@ Minor ledger: preserving an existing anniversary link without a returned anniver
 H5 Task 7: complete (commits 3f751d8, 581a2a9, 91c03d7, ee6d39a; combined review approved after runtime and log-sanitization fixes, focused 20/20, full 317/317, assets verify, changed-files lint and build passed)
 H5 Task 8: complete (commits 86c47b4, 1280e78, ce25622, 6b00711; combined review approved after session, consistency, and HTTP 401 combination fixes, focused 148+47/148+47, full 402/402, assets verify, changed-files lint and build passed)
 H5 Task 9: complete (commits 55b55d2, 91af31e, a619ad1; review approved after unload-context and feed-field fixes, focused 35/35, assets verify, build, stitch verify, and 6-view browser matrix passed)
-H5 Task 10: implementation verified, completion gate blocked only by pre-existing full-repo ESLint debt (current fixes: 63/63 E2E, 3/3 visual with 84 PNG, 413/413 Vitest, build, assets verify, scoped lint; isolated real-backend integration passed)
+H5 Task 10: complete (commit e19e048, completion gate closed after removing the remaining full-repo ESLint errors and aligning the menu detail E2E selector with the Couple Cosmos UI; 69/69 non-visual E2E, 6/6 visual suites covering 18 pages across normal/reduced motion and 375/390/430 viewports, 423/423 Vitest, build, assets verify, full ESLint, and staged GitNexus scope check passed)
 
 FastAPI plan: docs/superpowers/plans/2026-07-25-fastapi-foundation-contracts.md
 FastAPI Task 1: complete (commit 2702ac0, review approved, pytest 2/2, Ruff/mypy/lock passed)
