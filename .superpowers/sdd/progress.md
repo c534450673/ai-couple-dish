@@ -20,7 +20,7 @@ Minor ledger: Task 6 exporter does not validate localId path safety; Task 7 exac
 Minor ledger: Task 6 stages remote/download work, but a process interruption during the final per-file promotion phase can still leave partially promoted assets; no crash-recovery transaction is implemented.
 Minor ledger: if the primary export failure is followed by staging cleanup failure, the cleanup error can replace the original error.
 Task 7: complete (commits d4d219e..c66c675, review clean after security fix, state-independent CLI smoke, 122/122 tests)
-Task 8: pending
+Task 8: complete (commit 740e6e2, stitch asset regeneration and verification complete, home-memory chosen)
 
 Subplan: docs/superpowers/plans/2026-07-16-stitch-multi-project-sharding.md
 Subplan start commit: 69211a4
