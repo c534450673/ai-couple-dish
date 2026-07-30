@@ -1,192 +1,48 @@
-### Task 4: 生成项目、首页与三个真实变体
+### Task 4: 重做登录、注册和情侣绑定主链路
 
 **Files:**
-- Create: tools/stitch/src/generate-home.mjs
-- Create: tools/stitch/test/generate-home.test.mjs
-- Create: docs/design/stitch/couple-cosmos/README.md
+- Modify: `frontend-h5/src/views/login/index.vue`
+- Modify: `frontend-h5/src/views/bind/index.vue`
+- Modify: `frontend-h5/src/stores/user.js`
+- Modify: `frontend-h5/src/api/index.js`
+- Modify: `frontend-h5/src/components/AgreementDialog.vue`
+- Test: `frontend-h5/src/tests/views/login.spec.js`
+- Create: `frontend-h5/src/tests/views/bind.spec.js`
+- Create: `frontend-h5/src/tests/e2e/auth-bind.spec.js`
 
 **Interfaces:**
-- Consumes: Stitch SDK createProject(title), Project.generate(prompt, deviceType), Screen.variants(prompt, options, deviceType)
-- Produces: generateHomeDesign(sdk, state) -> updated GenerationState
-- State screen keys: home-base, home-emotion, home-food, home-memory
+- Produces: `userStore.login(credentials)` and `userStore.register(profile)` returning `{ status: 'unavailable', reason: 'PASSWORD_AUTH_NOT_SUPPORTED' }` without issuing a request until the backend exposes a password contract.
+- Preserves: redirect query restoration.
+- Produces binding modes: `invite | enter-code`.
+- Produces: `coupleApi.getCodeInfo()` and `coupleApi.refreshCode()` using the existing Java contracts; invite codes are exactly 8 characters and expire after 7 days.
 
-- [ ] **Step 1: 写首页生成失败测试**
+- [ ] **Step 1: 写密码登录和绑定失败测试**
 
-Create tools/stitch/test/generate-home.test.mjs:
+登录测试必须证明：没有微信/Apple/验证码入口；字段旁显示错误；提交中按钮 disabled；密码能力 unavailable 时不发网络请求、不写 token/localStorage、不跳转。绑定测试必须证明：生成码、复制、重新生成、输入 8 位码、7 天有效期进度和错误恢复可操作。
 
-~~~javascript
-import assert from "node:assert/strict";
-import test from "node:test";
-import { generateHomeDesign } from "../src/generate-home.mjs";
-import { emptyGenerationState } from "../src/state-store.mjs";
+- [ ] **Step 2: 对齐认证 API 模块**
 
-test("generateHomeDesign creates a project, base screen and three variants", async () => {
-  const calls = [];
-  const baseScreen = {
-    screenId: "home-base-id",
-    async variants(prompt, options, deviceType) {
-      calls.push({ prompt, options, deviceType });
-      return [
-        { screenId: "home-emotion-id" },
-        { screenId: "home-food-id" },
-        { screenId: "home-memory-id" }
-      ];
-    }
-  };
-  const sdk = {
-    async createProject(title) {
-      assert.equal(title, "AI Couple Dish - Couple Cosmos");
-      return {
-        projectId: "project-1",
-        async generate(prompt, deviceType) {
-          assert.match(prompt, /Couple Cosmos/);
-          assert.equal(deviceType, "MOBILE");
-          return baseScreen;
-        }
-      };
-    }
-  };
+当前 Java 的 `/user/register` 与 `/user/phoneLogin` 都只接受 `{ phone, verifyCode }`，不存在密码字段、哈希或认证逻辑。Task 4 不新增伪密码 API 映射；`userStore.login/register` 必须返回固定 unavailable 结果，UI 显示“密码登录/注册暂不可用，当前服务端未提供该认证能力”，不得回退到短信、微信或将密码当验证码。现有 legacy API 方法可为未迁移调用方保留，但新 UI 不调用。
 
-  const result = await generateHomeDesign(sdk, emptyGenerationState());
+绑定使用实际合同：`POST /couple/generateCode`、`GET /couple/codeInfo`、`POST /couple/refreshCode`、`POST /couple/bind`。`generateCode` 对有效旧码幂等；“重新生成”必须调用 `refreshCode`，并在确认文案中说明服务端会将恋爱开始日重置为当天，不得伪装为无副作用刷新。
 
-  assert.equal(result.projectId, "project-1");
-  assert.equal(result.screens["home-base"].screenId, "home-base-id");
-  assert.equal(result.screens["home-emotion"].screenId, "home-emotion-id");
-  assert.equal(calls[0].options.variantCount, 3);
-});
+- [ ] **Step 3: 按 Stitch 重做登录与绑定**
 
-test("generateHomeDesign resumes an existing project without creating another", async () => {
-  let createCalls = 0;
-  const baseScreen = {
-    screenId: "home-base-id",
-    async variants() {
-      return [
-        { screenId: "home-emotion-id" },
-        { screenId: "home-food-id" },
-        { screenId: "home-memory-id" }
-      ];
-    }
-  };
-  const project = {
-    projectId: "project-1",
-    async generate() {
-      return baseScreen;
-    }
-  };
-  const sdk = {
-    async createProject() {
-      createCalls += 1;
-      return project;
-    },
-    project(projectId) {
-      assert.equal(projectId, "project-1");
-      return project;
-    }
-  };
-  const state = {
-    ...emptyGenerationState(),
-    projectId: "project-1"
-  };
+登录以 `login.png` 为视觉参考；绑定以 `bind.html` 为结构参考。绑定成功动画通过独立 CSS class 触发，减弱动效下直接显示完成态。
 
-  const result = await generateHomeDesign(sdk, state);
-  assert.equal(createCalls, 0);
-  assert.equal(result.projectId, "project-1");
-});
-~~~
+登录或绑定恢复 `redirect` 时只接受单个 `/` 开头且不以 `//` 开头、并能被当前 Router 解析的站内路径；外部 URL、协议相对 URL、未知路由和空值回退 `/home`。绑定成功必须先持久化 `coupleInfo`，再执行重定向。
 
-- [ ] **Step 2: 运行测试并验证生成模块不存在**
+- [ ] **Step 4: 增加结构化日志**
 
-Run:
+只记录 `auth.login`、`auth.register`、`couple.code.generate`、`couple.bind` 的 result、durationMs、业务错误码和脱敏 user id，不记录手机号、密码或情侣码。
 
-~~~bash
-cd tools/stitch
-node --test test/generate-home.test.mjs
-~~~
+- [ ] **Step 5: 验证与提交**
 
-Expected: FAIL，错误包含 ERR_MODULE_NOT_FOUND。
+```bash
+cd frontend-h5
+npm test -- --run src/tests/views/login.spec.js src/tests/views/bind.spec.js
+npm run build
+git add src/views/login src/views/bind src/stores/user.js src/api/index.js src/components/AgreementDialog.vue src/tests
+git commit -m "feat: 重做Couple Cosmos认证与绑定"
+```
 
-- [ ] **Step 3: 实现项目和首页变体生成**
-
-Create tools/stitch/src/generate-home.mjs:
-
-~~~javascript
-import { getScreenPrompt, HOME_VARIANT_PROMPT } from "./prompts.mjs";
-
-const VARIANT_KEYS = ["home-emotion", "home-food", "home-memory"];
-
-export async function generateHomeDesign(sdk, state) {
-  if (state.projectId && state.screens["home-base"]) {
-    return state;
-  }
-
-  const project = state.projectId
-    ? sdk.project(state.projectId)
-    : await sdk.createProject(state.projectTitle);
-  const base = await project.generate(getScreenPrompt("home"), "MOBILE");
-  const variants = await base.variants(
-    HOME_VARIANT_PROMPT,
-    {
-      variantCount: 3,
-      creativeRange: "EXPLORE",
-      aspects: ["LAYOUT", "COLOR_SCHEME", "IMAGES", "TEXT_CONTENT"]
-    },
-    "MOBILE"
-  );
-
-  const screens = {
-    ...state.screens,
-    "home-base": { screenId: base.screenId, kind: "base" }
-  };
-  for (const [index, screen] of variants.entries()) {
-    screens[VARIANT_KEYS[index]] = {
-      screenId: screen.screenId,
-      kind: "variant"
-    };
-  }
-
-  return {
-    ...state,
-    projectId: project.projectId,
-    screens
-  };
-}
-~~~
-
-Create docs/design/stitch/couple-cosmos/README.md:
-
-~~~markdown
-# Couple Cosmos Stitch Design Assets
-
-本目录保存 AI Couple Dish 的 Stitch 设计导出物。
-
-- generation-state.json：Stitch 项目和屏幕 ID，不包含密钥。
-- manifest.json：本地导出文件、来源屏幕和 SHA-256。
-- screenshots/：页面截图。
-- html/：Stitch HTML 导出。
-
-## Selection
-
-Selected home variant: none
-
-任何文件更新后都必须运行 tools/stitch 的 stitch:verify。
-~~~
-
-- [ ] **Step 4: 运行首页单元测试**
-
-Run:
-
-~~~bash
-cd tools/stitch
-node --test test/generate-home.test.mjs
-~~~
-
-Expected: PASS。
-
-- [ ] **Step 5: 提交首页生成器**
-
-Run:
-
-~~~bash
-git add tools/stitch/src/generate-home.mjs tools/stitch/test/generate-home.test.mjs docs/design/stitch/couple-cosmos/README.md
-git commit -m "design: 增加双人宇宙首页变体生成"
-~~~

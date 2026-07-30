@@ -1,226 +1,86 @@
-### Task 3: 建立 Stitch 客户端健康检查与断点状态
+### Task 3: 实现应用壳、五栏导航和统一状态模型
 
 **Files:**
-- Modify: tools/stitch/package.json
-- Create: tools/stitch/src/client.mjs
-- Create: tools/stitch/src/state-store.mjs
-- Create: tools/stitch/bin/health.mjs
-- Create: tools/stitch/test/client.test.mjs
+- Create: `frontend-h5/src/layouts/MainLayout.vue`
+- Create: `frontend-h5/src/components/cosmos/AppShell.vue`
+- Create: `frontend-h5/src/components/cosmos/AppHeader.vue`
+- Create: `frontend-h5/src/components/cosmos/AsyncState.vue`
+- Create: `frontend-h5/src/components/cosmos/CoupleGate.vue`
+- Create: `frontend-h5/src/components/cosmos/GlassCard.vue`
+- Create: `frontend-h5/src/components/cosmos/IconButton.vue`
+- Create: `frontend-h5/src/components/cosmos/MediaCard.vue`
+- Create: `frontend-h5/src/components/cosmos/StatusChip.vue`
+- Create: `frontend-h5/src/composables/useAsyncResource.js`
+- Create: `frontend-h5/src/composables/useReducedMotion.js`
+- Create: `frontend-h5/src/composables/useStructuredLog.js`
+- Create: `frontend-h5/src/views/states/UnavailableView.vue`
+- Modify: `frontend-h5/src/components/AppTabbar.vue`
+- Modify: `frontend-h5/src/App.vue`
+- Modify: `frontend-h5/src/router/index.js`
+- Test: `frontend-h5/src/tests/components/cosmos/AppShell.spec.js`
+- Test: `frontend-h5/src/tests/components/cosmos/AsyncState.spec.js`
+- Test: `frontend-h5/src/tests/router/cosmos-router.spec.js`
 
 **Interfaces:**
-- Produces: createStitchSdk(config, dependencies) -> { sdk: Stitch, client: StitchToolClient }
-- Produces: assertRequiredTools(client) -> Promise<string[]>
-- Produces: readGenerationState(path) -> Promise<GenerationState>
-- Produces: writeGenerationState(path, state) -> Promise<void>
-- GenerationState: { projectId: string | null, projectTitle: string, screens: Record<string, { screenId: string, kind: string }> }
+- Produces: `useAsyncResource(loader, options) -> { status, data, error, execute, retry, reset }`.
+- Produces: `logUiEvent(event, fields) -> void`, recursively redacting sensitive keys.
+- Produces route meta: `{ requiresAuth, requiresCouple, shell, tab }`.
 
-- [ ] **Step 1: 写客户端工具集失败测试**
+- [ ] **Step 1: 写导航和状态失败测试**
 
-Create tools/stitch/test/client.test.mjs:
+断言五栏文本与路由精确对应：
 
-~~~javascript
-import assert from "node:assert/strict";
-import { mkdtemp } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import test from "node:test";
-import { assertRequiredTools } from "../src/client.mjs";
-import {
-  emptyGenerationState,
-  readGenerationState,
-  writeGenerationState
-} from "../src/state-store.mjs";
+```js
+expect(tabs).toEqual([
+  ['星球', '/home'], ['菜单', '/menu'], ['投喂', '/feed'],
+  ['回忆', '/memories'], ['我们', '/settings']
+])
+```
 
-test("assertRequiredTools accepts the Stitch generation tool set", async () => {
-  const client = {
-    async listTools() {
-      return {
-        tools: [
-          { name: "create_project" },
-          { name: "generate_screen_from_text" },
-          { name: "get_screen" }
-        ]
-      };
-    }
-  };
+`AsyncState` 必须对 loading、empty、error、unauthorized、unbound 分别渲染一个 `role="status"` 或 `role="alert"`，error/unbound 提供明确事件。
 
-  assert.deepEqual(await assertRequiredTools(client), [
-    "create_project",
-    "generate_screen_from_text",
-    "get_screen"
-  ]);
-});
+- [ ] **Step 2: 实现异步资源状态机**
 
-test("assertRequiredTools rejects a missing generation tool", async () => {
-  const client = {
-    async listTools() {
-      return { tools: [{ name: "create_project" }] };
-    }
-  };
+状态只允许 `idle | loading | success | empty | error | unauthorized | unbound`。并发执行使用递增 request id，旧请求完成不得覆盖新结果；日志只记录状态、耗时和脱敏错误码。
 
-  await assert.rejects(
-    () => assertRequiredTools(client),
-    /Missing required Stitch tools/
-  );
-});
+- [ ] **Step 3: 实现应用壳和无障碍组件**
 
-test("generation state persists with an atomic round trip", async () => {
-  const root = await mkdtemp(join(tmpdir(), "stitch-state-"));
-  const filePath = join(root, "generation-state.json");
-  const state = {
-    ...emptyGenerationState(),
-    projectId: "project-1",
-    screens: {
-      login: { screenId: "screen-1", kind: "base" }
-    }
-  };
+`AppShell` 提供 `header/default/navigation` slots；`IconButton` 必须要求非空 `label` 并输出 `aria-label`；固定控件用稳定尺寸，底部安全区使用 `env(safe-area-inset-bottom)`。
 
-  await writeGenerationState(filePath, state);
-  assert.deepEqual(await readGenerationState(filePath), state);
-});
-~~~
+- [ ] **Step 4: 扩展路由和情侣门禁**
 
-- [ ] **Step 2: 运行测试并验证客户端模块不存在**
+新增：
 
-Run:
+```text
+/recipes
+/recipes/:id
+/recipes/new
+/recipes/:id/edit
+/memories
+/memories/notes/new
+/memories/notes/:id
+/ai
+/notifications
+/legal
+/states
+```
 
-~~~bash
-cd tools/stitch
-node --test test/client.test.mjs
-~~~
+对应业务页面尚未由后续任务创建时，路由先指向 `UnavailableView`；每个后续页面任务必须在同一提交中替换对应路由。Task 3 不修改登录或绑定页面，只验证 `redirect` 查询参数被正确保留。
 
-Expected: FAIL，错误包含 ERR_MODULE_NOT_FOUND。
+守卫先检查 token，再检查 `requiresCouple`；未绑定跳转 `/bind?redirect=<encoded fullPath>`。Task 4 的登录/绑定成功流程必须消费该参数并恢复原路由。
 
-- [ ] **Step 3: 实现客户端、状态存储和健康检查**
+- [ ] **Step 5: 验证**
 
-Create tools/stitch/src/client.mjs:
+```bash
+cd frontend-h5
+npm test -- --run src/tests/components/cosmos src/tests/router
+npm run build
+```
 
-~~~javascript
-import { Stitch, StitchToolClient } from "@google/stitch-sdk";
+- [ ] **Step 6: 提交应用壳**
 
-const REQUIRED_TOOLS = [
-  "create_project",
-  "generate_screen_from_text",
-  "get_screen"
-];
+```bash
+git add frontend-h5/src/App.vue frontend-h5/src/router frontend-h5/src/layouts frontend-h5/src/components frontend-h5/src/composables frontend-h5/src/tests
+git commit -m "feat: 建立Couple Cosmos应用壳与状态模型"
+```
 
-export function createStitchSdk(
-  config,
-  dependencies = { Stitch, StitchToolClient }
-) {
-  const client = new dependencies.StitchToolClient({
-    apiKey: config.apiKey,
-    baseUrl: config.host,
-    timeout: 300000
-  });
-  return {
-    sdk: new dependencies.Stitch(client),
-    client
-  };
-}
-
-export async function assertRequiredTools(client) {
-  const response = await client.listTools();
-  const names = response.tools.map(tool => tool.name);
-  const missing = REQUIRED_TOOLS.filter(name => !names.includes(name));
-  if (missing.length > 0) {
-    throw new Error("Missing required Stitch tools: " + missing.join(", "));
-  }
-  return REQUIRED_TOOLS;
-}
-~~~
-
-Create tools/stitch/src/state-store.mjs:
-
-~~~javascript
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
-
-export function emptyGenerationState() {
-  return {
-    projectId: null,
-    projectTitle: "AI Couple Dish - Couple Cosmos",
-    screens: {}
-  };
-}
-
-export async function readGenerationState(filePath) {
-  try {
-    return JSON.parse(await readFile(filePath, "utf8"));
-  } catch (error) {
-    if (error.code === "ENOENT") {
-      return emptyGenerationState();
-    }
-    throw error;
-  }
-}
-
-export async function writeGenerationState(filePath, state) {
-  await mkdir(dirname(filePath), { recursive: true });
-  const temporaryPath = filePath + ".tmp";
-  await writeFile(temporaryPath, JSON.stringify(state, null, 2) + String.fromCharCode(10));
-  await rename(temporaryPath, filePath);
-}
-~~~
-
-Create tools/stitch/bin/health.mjs:
-
-~~~javascript
-import { performance } from "node:perf_hooks";
-import { readStitchConfig, publicConfig } from "../src/config.mjs";
-import { createStitchSdk, assertRequiredTools } from "../src/client.mjs";
-import { logEvent } from "../src/logger.mjs";
-
-const started = performance.now();
-const config = readStitchConfig();
-const { client } = createStitchSdk(config);
-
-try {
-  const tools = await assertRequiredTools(client);
-  logEvent("stitch.health", {
-    result: "ok",
-    durationMs: Math.round(performance.now() - started),
-    tools,
-    config: publicConfig(config)
-  });
-} catch (error) {
-  logEvent("stitch.health", {
-    result: "error",
-    durationMs: Math.round(performance.now() - started),
-    errorName: error.name,
-    errorMessage: error.message
-  });
-  process.exitCode = 1;
-} finally {
-  await client.close();
-}
-~~~
-
-Add the health command:
-
-~~~bash
-cd tools/stitch
-npm pkg set 'scripts.stitch:health=node bin/health.mjs'
-~~~
-
-- [ ] **Step 4: 运行测试和真实健康检查**
-
-Run:
-
-~~~bash
-cd tools/stitch
-npm test
-test -n "$STITCH_API_KEY"
-npm run stitch:health
-~~~
-
-Expected: tests PASS；健康检查输出单行 JSON，result 为 ok，不包含 API key。
-
-- [ ] **Step 5: 提交客户端边界**
-
-Run:
-
-~~~bash
-git add tools/stitch/package.json tools/stitch/src/client.mjs tools/stitch/src/state-store.mjs tools/stitch/bin/health.mjs tools/stitch/test/client.test.mjs
-git commit -m "design: 增加Stitch客户端健康检查"
-~~~

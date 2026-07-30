@@ -1,185 +1,81 @@
-### Task 1: 建立隔离的 Stitch 工具与密钥安全边界
+### Task 1: 修复前端测试与请求合同基线
 
 **Files:**
-- Create: tools/stitch/package.json
-- Create: tools/stitch/package-lock.json
-- Create: tools/stitch/src/config.mjs
-- Create: tools/stitch/src/logger.mjs
-- Create: tools/stitch/test/config.test.mjs
+- Modify: `frontend-h5/vitest.config.js`
+- Modify: `frontend-h5/src/tests/setup.js`
+- Modify: `frontend-h5/src/tests/api/api.spec.js`
+- Modify: `frontend-h5/src/tests/api/newApi.spec.js`
+- Modify: `frontend-h5/src/tests/stores/user.test.js`
+- Modify: `frontend-h5/src/tests/utils/date.spec.js`
+- Modify: `frontend-h5/src/api/request.js`
+- Test: `frontend-h5/src/tests/api/request.test.js`
 
 **Interfaces:**
-- Produces: readStitchConfig(env) -> { apiKey: string, host: string }
-- Produces: publicConfig(config) -> { hasApiKey: boolean, host: string }
-- Produces: logEvent(event, fields, write) -> void
-- Consumes: process.env.STITCH_API_KEY and optional process.env.STITCH_HOST
+- Preserves: API success response shape `{ code, message, data }`.
+- Produces: `resetRequestState() -> void` for deterministic tests and logout cleanup.
+- Produces: a green Vitest baseline with no real network calls.
 
-- [ ] **Step 1: 写密钥与日志脱敏失败测试**
+- [ ] **Step 1: 固化 API 模块 mock 合同**
 
-Create tools/stitch/test/config.test.mjs:
+在 API 测试中用 hoisted request mock 代替给错误 Axios 实例挂 `MockAdapter`：
 
-~~~javascript
-import assert from "node:assert/strict";
-import test from "node:test";
-import { readStitchConfig, publicConfig } from "../src/config.mjs";
-import { logEvent } from "../src/logger.mjs";
+```js
+const requestMock = vi.hoisted(() => ({
+  get: vi.fn(), post: vi.fn(), put: vi.fn(), delete: vi.fn()
+}))
 
-test("readStitchConfig rejects a missing API key", () => {
-  assert.throws(
-    () => readStitchConfig({}),
-    /STITCH_API_KEY must be provided through the process environment/
-  );
-});
+vi.mock('@/api/request', () => ({ default: requestMock }))
+```
 
-test("publicConfig never returns the API key", () => {
-  const config = readStitchConfig({
-    STITCH_API_KEY: "secret-value",
-    STITCH_HOST: "https://stitch.googleapis.com/mcp"
-  });
+每个 API 用例断言调用参数和 `{ code: 200, data }` 返回值，不允许测试发出真实 XHR。
 
-  assert.deepEqual(publicConfig(config), {
-    hasApiKey: true,
-    host: "https://stitch.googleapis.com/mcp"
-  });
-});
+- [ ] **Step 2: 修正 legacy API 测试的 Axios 双层 data 断言**
 
-test("logEvent redacts key and token fields recursively", () => {
-  const lines = [];
-  logEvent(
-    "stitch.health",
-    {
-      result: "ok",
-      apiKey: "secret-value",
-      nested: { accessToken: "token-value", screenId: "screen-1" }
-    },
-    line => lines.push(line)
-  );
+`newApi.spec.js` 测试的是原始 Axios，因此断言统一为：
 
-  assert.equal(lines.length, 1);
-  assert.equal(lines[0].includes("secret-value"), false);
-  assert.equal(lines[0].includes("token-value"), false);
-  assert.equal(lines[0].includes("screen-1"), true);
-});
-~~~
+```js
+const response = await timeCapsuleApi.getList()
+expect(response.data.data).toHaveLength(2)
+```
 
-- [ ] **Step 2: 运行测试并验证因模块不存在而失败**
+并显式导入 `afterEach`，确保 adapter 每例恢复。
+
+- [ ] **Step 3: 暴露请求状态清理函数**
+
+```js
+export const resetRequestState = () => {
+  pendingRequestMap.clear()
+  memoryCache.clear()
+}
+```
+
+在 `afterEach` 调用它，禁止缓存、重试计数和 interval 跨测试污染；`setInterval` 必须保存句柄并在测试环境不启动。
+
+- [ ] **Step 4: 合并重复 user store 断言并固定日期时区**
+
+保留覆盖更完整的 `user.spec.js`；`user.test.js` 只保留不同的 logout/API failure 用例。日期测试使用带时区的 ISO 值与 fake timer：
+
+```js
+vi.useFakeTimers()
+vi.setSystemTime(new Date('2026-07-22T12:00:00+08:00'))
+```
+
+- [ ] **Step 5: 运行基线验证**
 
 Run:
 
-~~~bash
-cd tools/stitch
-node --test test/config.test.mjs
-~~~
+```bash
+cd frontend-h5
+npm test -- --run
+npm run build
+```
 
-Expected: FAIL，错误包含 ERR_MODULE_NOT_FOUND。
+Expected: 0 failed tests、0 unhandled errors、build exit 0。
 
-- [ ] **Step 3: 创建固定依赖和安全配置实现**
+- [ ] **Step 6: 影响分析并提交**
 
-Create tools/stitch/package.json:
+```bash
+git add frontend-h5/vitest.config.js frontend-h5/src/tests frontend-h5/src/api/request.js
+git commit -m "test: 修复H5测试与请求合同基线"
+```
 
-~~~json
-{
-  "name": "@ai-couple-dish/stitch-design",
-  "private": true,
-  "type": "module",
-  "engines": {
-    "node": ">=20"
-  },
-  "scripts": {
-    "test": "node --test test/*.test.mjs"
-  },
-  "dependencies": {
-    "@google/stitch-sdk": "0.3.5"
-  }
-}
-~~~
-
-Create tools/stitch/src/config.mjs:
-
-~~~javascript
-const DEFAULT_HOST = "https://stitch.googleapis.com/mcp";
-
-export function readStitchConfig(env = process.env) {
-  const apiKey = String(env.STITCH_API_KEY || "").trim();
-  if (!apiKey) {
-    throw new Error(
-      "STITCH_API_KEY must be provided through the process environment"
-    );
-  }
-
-  return Object.freeze({
-    apiKey,
-    host: String(env.STITCH_HOST || DEFAULT_HOST).trim()
-  });
-}
-
-export function publicConfig(config) {
-  return Object.freeze({
-    hasApiKey: Boolean(config.apiKey),
-    host: config.host
-  });
-}
-~~~
-
-Create tools/stitch/src/logger.mjs:
-
-~~~javascript
-const SENSITIVE_NAMES = new Set([
-  "apikey",
-  "api_key",
-  "token",
-  "accesstoken",
-  "access_token",
-  "authorization"
-]);
-
-function sanitize(value, key = "") {
-  const normalizedKey = key.toLowerCase();
-  if (SENSITIVE_NAMES.has(normalizedKey)) {
-    return "[REDACTED]";
-  }
-  if (Array.isArray(value)) {
-    return value.map(item => sanitize(item));
-  }
-  if (value && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value).map(([name, item]) => [name, sanitize(item, name)])
-    );
-  }
-  return value;
-}
-
-export function logEvent(
-  event,
-  fields = {},
-  write = line => process.stderr.write(line + String.fromCharCode(10))
-) {
-  write(
-    JSON.stringify({
-      timestamp: new Date().toISOString(),
-      event,
-      ...sanitize(fields)
-    })
-  );
-}
-~~~
-
-- [ ] **Step 4: 安装依赖并运行安全测试**
-
-Run:
-
-~~~bash
-cd tools/stitch
-npm install
-npm test
-~~~
-
-Expected: package-lock.json 生成，3 tests PASS，安装版本为 @google/stitch-sdk@0.3.5。
-
-- [ ] **Step 5: 提交隔离工具基础**
-
-Run:
-
-~~~bash
-git add tools/stitch/package.json tools/stitch/package-lock.json tools/stitch/src/config.mjs tools/stitch/src/logger.mjs tools/stitch/test/config.test.mjs
-git commit -m "build: 建立安全的Stitch设计工具"
-~~~
