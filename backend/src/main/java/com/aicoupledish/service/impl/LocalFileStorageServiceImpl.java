@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -46,13 +48,17 @@ public class LocalFileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public FileUploadResult uploadImage(MultipartFile file) {
+    public FileUploadResult uploadImage(Long userId, MultipartFile file) {
+        if (userId == null) {
+            throw BusinessException.PARAM_INVALID;
+        }
         validateFile(file);
 
         String extension = FileUtil.extName(file.getOriginalFilename()).toLowerCase();
         String newFilename = IdUtil.simpleUUID() + "." + extension;
         String datePath = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        String dirPath = uploadPath + File.separator + datePath;
+        String relativeDir = "user/" + userId + "/" + datePath;
+        String dirPath = uploadPath + File.separator + relativeDir.replace("/", File.separator);
 
         createDirectory(dirPath);
 
@@ -64,10 +70,10 @@ public class LocalFileStorageServiceImpl implements FileStorageService {
             throw new BusinessException(9002, "文件上传失败: " + e.getMessage());
         }
 
-        String fileKey = datePath + "/" + newFilename;
+        String fileKey = relativeDir + "/" + newFilename;
         String fileUrl = baseUrl + "/" + fileKey;
 
-        log.info("文件上传成功: fileKey={}, size={}", fileKey, file.getSize());
+        log.info("文件上传成功: userId={}, fileKey={}, size={}", userId, fileKey, file.getSize());
 
         return new FileUploadResult(
             fileUrl,
@@ -80,7 +86,7 @@ public class LocalFileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public List<FileUploadResult> uploadImages(MultipartFile[] files) {
+    public List<FileUploadResult> uploadImages(Long userId, MultipartFile[] files) {
         if (files == null || files.length == 0) {
             throw BusinessException.PARAM_INVALID;
         }
@@ -92,22 +98,26 @@ public class LocalFileStorageServiceImpl implements FileStorageService {
         List<FileUploadResult> results = new ArrayList<>();
         for (MultipartFile file : files) {
             try {
-                results.add(uploadImage(file));
+                results.add(uploadImage(userId, file));
             } catch (BusinessException e) {
                 log.warn("单文件上传失败: {}", e.getMessage());
             }
+        }
+        if (results.isEmpty()) {
+            throw BusinessException.FILE_UPLOAD_FAILED;
         }
         return results;
     }
 
     @Override
     public boolean deleteFile(String fileKey) {
-        if (StrUtil.isBlank(fileKey)) {
+        Path filePath = resolveUploadPath(fileKey);
+        if (filePath == null) {
+            log.warn("非法文件路径: fileKey={}", fileKey);
             return false;
         }
 
-        String fullPath = uploadPath + File.separator + fileKey.replace("/", File.separator);
-        File file = new File(fullPath);
+        File file = filePath.toFile();
 
         if (file.exists()) {
             boolean deleted = file.delete();
@@ -137,6 +147,21 @@ public class LocalFileStorageServiceImpl implements FileStorageService {
 
         String extension = FileUtil.extName(file.getOriginalFilename()).toLowerCase();
         return isAllowedImageType(extension) && isAllowedMimeType(file.getContentType());
+    }
+
+    /**
+     * 将 fileKey 解析为上传目录内的绝对路径，拒绝路径穿越
+     */
+    private Path resolveUploadPath(String fileKey) {
+        if (StrUtil.isBlank(fileKey) || fileKey.contains("..")) {
+            return null;
+        }
+        Path root = Paths.get(uploadPath).toAbsolutePath().normalize();
+        Path resolved = root.resolve(fileKey.replace('/', File.separatorChar)).normalize();
+        if (!resolved.startsWith(root)) {
+            return null;
+        }
+        return resolved;
     }
 
     /**

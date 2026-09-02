@@ -1,0 +1,54 @@
+services:
+  fastapi-uploads-init:
+    image: busybox:1.36
+    restart: "no"
+    user: "0:0"
+    command: ["sh", "-c", "chown -R 10001:10001 /app/uploads"]
+    volumes:
+      - uploads_data:/app/uploads
+
+  fastapi-backend:
+    build:
+      context: ../../../backend
+      dockerfile: Dockerfile.fastapi
+    restart: unless-stopped
+    environment:
+      APP_ENV: local
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE:-ai_couple_dish}
+      DB_USERNAME: ${MYSQL_USER:-aicoupledish}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-dev_password}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_dev_pass}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must contain at least 64 characters}
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      FILE_UPLOAD_PATH: /app/uploads
+      FILE_BASE_URL: /api/uploads
+      FILE_PUBLIC_PATH: /api/uploads
+      RELEASE_SHA: ${RELEASE_SHA:-dev}
+    expose:
+      - "8000"
+    depends_on:
+      fastapi-uploads-init:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - dev-network
+    volumes:
+      - uploads_data:/app/uploads
+
+  nginx:
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./api-fastapi-foundation.conf:/etc/nginx/conf.d/api-fastapi-foundation.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./h5-dist:/usr/share/nginx/html:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - backend
+      - fastapi-backend

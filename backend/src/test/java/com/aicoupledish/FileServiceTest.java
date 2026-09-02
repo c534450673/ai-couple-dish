@@ -71,7 +71,7 @@ class FileServiceTest {
     @DisplayName("上传单张图片-成功")
     void uploadImage_Success() {
         // Given
-        when(fileStorageService.uploadImage(any())).thenReturn(uploadResult);
+        when(fileStorageService.uploadImage(eq(1L), any())).thenReturn(uploadResult);
 
         // When
         FileUploadResult result = fileService.uploadImage(1L, testImageFile);
@@ -81,7 +81,7 @@ class FileServiceTest {
         assertEquals("abc123.jpg", result.getFilename());
         assertEquals("test-image.jpg", result.getOriginalFilename());
         assertEquals("jpg", result.getType());
-        verify(fileStorageService).uploadImage(testImageFile);
+        verify(fileStorageService).uploadImage(1L, testImageFile);
     }
 
     @Test
@@ -96,7 +96,7 @@ class FileServiceTest {
             "png",
             "2024/01/01/def456.png"
         ));
-        when(fileStorageService.uploadImages(any(MultipartFile[].class))).thenReturn(uploadResults);
+        when(fileStorageService.uploadImages(eq(1L), any(MultipartFile[].class))).thenReturn(uploadResults);
 
         MockMultipartFile[] files = {testImageFile, testImageFile2};
 
@@ -106,7 +106,7 @@ class FileServiceTest {
         // Then
         assertNotNull(results);
         assertEquals(2, results.size());
-        verify(fileStorageService).uploadImages(any(MultipartFile[].class));
+        verify(fileStorageService).uploadImages(eq(1L), any(MultipartFile[].class));
     }
 
     @Test
@@ -114,7 +114,7 @@ class FileServiceTest {
     void uploadImages_EmptyArray_ShouldReturnEmptyList() {
         // Given
         MockMultipartFile[] files = new MockMultipartFile[0];
-        when(fileStorageService.uploadImages(any(MultipartFile[].class))).thenReturn(List.of());
+        when(fileStorageService.uploadImages(eq(1L), any(MultipartFile[].class))).thenReturn(List.of());
 
         // When
         List<FileUploadResult> results = fileService.uploadImages(1L, files);
@@ -210,5 +210,11 @@ class FileServiceTest {
         assertFalse(fileService.canDelete(null, "user/1/file.jpg"));
         assertFalse(fileService.canDelete(1L, null));
         assertFalse(fileService.canDelete(1L, ""));
+    }
+
+    @Test
+    @DisplayName("检查删除-路径穿越应返回false")
+    void canDelete_PathTraversal_ShouldReturnFalse() {
+        assertFalse(fileService.canDelete(1L, "user/1/../../other/file.jpg"));
     }
 }

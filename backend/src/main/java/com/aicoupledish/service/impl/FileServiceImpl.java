@@ -25,13 +25,13 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileUploadResult uploadImage(Long userId, MultipartFile file) {
         log.info("用户上传图片: userId={}, filename={}", userId, file.getOriginalFilename());
-        return fileStorageService.uploadImage(file);
+        return fileStorageService.uploadImage(userId, file);
     }
 
     @Override
     public List<FileUploadResult> uploadImages(Long userId, MultipartFile[] files) {
         log.info("用户上传多张图片: userId={}, count={}", userId, files.length);
-        return fileStorageService.uploadImages(files);
+        return fileStorageService.uploadImages(userId, files);
     }
 
     @Override
@@ -55,9 +55,17 @@ public class FileServiceImpl implements FileService {
         if (userId == null || !StrUtil.isNotBlank(fileKey)) {
             return false;
         }
+        String normalized = fileKey.replace('\\', '/');
+        if (normalized.contains("..")) {
+            return false;
+        }
         // 安全策略：用户只能删除自己上传的文件
-        // 文件key格式包含用户ID前缀，例如：user/{userId}/yyyy/MM/dd/uuid.jpg
+        // 文件 key 格式：user/{userId}/yyyy/MM/dd/uuid.jpg
         String expectedPrefix = "user/" + userId + "/";
-        return fileKey.startsWith(expectedPrefix);
+        if (!normalized.startsWith(expectedPrefix)) {
+            return false;
+        }
+        String relative = normalized.substring(expectedPrefix.length());
+        return !relative.isEmpty() && !relative.startsWith("/");
     }
 }

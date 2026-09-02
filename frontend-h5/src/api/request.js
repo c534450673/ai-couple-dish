@@ -129,10 +129,11 @@ api.interceptors.response.use(
       setCache(response.config, res)
       return res
     } else if (res.code === 401) {
-      // Token过期
-      const userStore = useUserStore()
-      userStore.logout()
-      router.push('/login')
+      if (!response.config?.skipAuthErrorHandler) {
+        const userStore = useUserStore()
+        userStore.logout()
+        router.push('/login')
+      }
       return Promise.reject(res)
     } else {
       showToast(res.message || '请求失败')
@@ -180,9 +181,11 @@ api.interceptors.response.use(
 
     if (error.response) {
       if (error.response.status === 401) {
-        const userStore = useUserStore()
-        userStore.logout()
-        router.push('/login')
+        if (!config?.skipAuthErrorHandler) {
+          const userStore = useUserStore()
+          userStore.logout()
+          router.push('/login')
+        }
       } else {
         showToast('网络错误')
       }

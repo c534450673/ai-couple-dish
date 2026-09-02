@@ -40,13 +40,13 @@ public class AiAgentService {
 
         AiPendingActionDTO pending = null;
         int rounds = 0;
+        String assistantContent = null;
 
         while (rounds < aiProperties.getMaxToolRounds()) {
             rounds++;
             JsonNode response = kimiClient.chat(messages, AiToolDefinitions.allTools());
             JsonNode choice = response.path("choices").path(0);
             JsonNode msg = choice.path("message");
-            String finishReason = choice.path("finish_reason").asText("");
 
             if (msg.has("tool_calls") && msg.get("tool_calls").isArray() && msg.get("tool_calls").size() > 0) {
                 Map<String, Object> assistantMsg = objectMapper.convertValue(msg, new TypeReference<>() {});
@@ -72,8 +72,12 @@ public class AiAgentService {
                 continue;
             }
 
-            if ("stop".equals(finishReason) || msg.has("content")) {
-                break;
+            JsonNode contentNode = msg.path("content");
+            if (!contentNode.isMissingNode() && !contentNode.isNull()) {
+                String content = contentNode.asText("");
+                if (!content.isBlank()) {
+                    assistantContent = content;
+                }
             }
             break;
         }
@@ -83,14 +87,19 @@ public class AiAgentService {
         }
 
         StringBuilder fullReply = new StringBuilder();
-        kimiClient.streamChat(messages, token -> {
-            fullReply.append(token);
-            try {
-                emitter.send(SseEmitter.event().name("token").data(token));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        if (assistantContent != null) {
+            fullReply.append(assistantContent);
+            emitter.send(SseEmitter.event().name("token").data(assistantContent));
+        } else {
+            kimiClient.streamChat(messages, token -> {
+                fullReply.append(token);
+                try {
+                    emitter.send(SseEmitter.event().name("token").data(token));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
 
         messages.add(Map.of("role", "assistant", "content", fullReply.toString()));
         sessionService.saveMessages(userId, sid, messages);

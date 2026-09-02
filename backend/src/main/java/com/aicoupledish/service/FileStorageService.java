@@ -13,17 +13,19 @@ public interface FileStorageService {
 
     /**
      * 上传单张图片
+     * @param userId 上传用户 ID
      * @param file 图片文件
      * @return 上传结果
      */
-    FileUploadResult uploadImage(MultipartFile file);
+    FileUploadResult uploadImage(Long userId, MultipartFile file);
 
     /**
      * 上传多张图片
+     * @param userId 上传用户 ID
      * @param files 图片文件数组
      * @return 上传结果列表
      */
-    List<FileUploadResult> uploadImages(MultipartFile[] files);
+    List<FileUploadResult> uploadImages(Long userId, MultipartFile[] files);
 
     /**
      * 删除文件

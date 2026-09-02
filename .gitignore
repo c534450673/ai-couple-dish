@@ -84,4 +84,5 @@ spring-boot-*.log
 /uploads/
 *.bak
 .gitnexus
+gitnexus/
 .worktrees/
