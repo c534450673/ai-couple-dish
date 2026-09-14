@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import os
+import secrets
+from collections.abc import Awaitable, Callable
 from typing import Protocol
 from uuid import uuid4
 
 import structlog
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
 from packages.platform.service import create_service_app
@@ -86,21 +88,44 @@ def _lock_backend() -> LockBackend:
         raise RuntimeError("Redis lock backend unavailable") from error
 
 
-def create_app(*, enabled: bool | None = None, lock_backend: LockBackend | None = None) -> FastAPI:
+JobHandler = Callable[[], Awaitable[object]]
+
+
+def create_app(
+    *,
+    enabled: bool | None = None,
+    lock_backend: LockBackend | None = None,
+    handlers: dict[str, JobHandler] | None = None,
+) -> FastAPI:
     app = create_service_app("worker")
     is_enabled = (
         enabled if enabled is not None else os.getenv("WORKER_ENABLED", "false").lower() == "true"
     )
     backend = lock_backend or _lock_backend()
-    active: dict[str, str] = {}
     app.state.lock_backend = backend
 
     @app.post("/api/worker/run")
-    async def run(payload: Job) -> dict[str, object]:
+    async def run(
+        payload: Job, x_worker_token: str | None = Header(default=None)
+    ) -> dict[str, object]:
         if not is_enabled:
             logger.info("worker_disabled", module="worker", operation=payload.job, result="skipped")
             raise HTTPException(
                 status_code=503, detail={"code": 503, "message": "Worker未启用", "data": None}
+            )
+        trigger_token = os.getenv("WORKER_TRIGGER_TOKEN")
+        if (
+            not trigger_token
+            or not x_worker_token
+            or not secrets.compare_digest(trigger_token, x_worker_token)
+        ):
+            raise HTTPException(
+                status_code=403, detail={"code": 403, "message": "无任务权限", "data": None}
+            )
+        handler = (handlers or {}).get(payload.job)
+        if handler is None:
+            raise HTTPException(
+                status_code=503, detail={"code": 503, "message": "任务未配置", "data": None}
             )
         key = f"ai-couple-dish:worker:{payload.job}"
         token = uuid4().hex
@@ -122,34 +147,27 @@ def create_app(*, enabled: bool | None = None, lock_backend: LockBackend | None 
             raise HTTPException(
                 status_code=409, detail={"code": 409, "message": "任务已在运行", "data": None}
             )
-        active[payload.job] = token
         logger.info(
             "worker_lock_acquired", module="worker", operation=payload.job, result="started"
         )
-        return {"code": 200, "message": "操作成功", "data": {"job": payload.job, "locked": True}}
-
-    @app.post("/api/worker/release")
-    async def release(payload: Job) -> dict[str, object]:
-        token = active.pop(payload.job, None)
-        if token is None:
+        try:
+            await handler()
+            logger.info(
+                "worker_job_completed", module="worker", operation=payload.job, result="success"
+            )
             return {
                 "code": 200,
                 "message": "操作成功",
-                "data": {"job": payload.job, "released": False},
+                "data": {"job": payload.job, "completed": True},
             }
-        key = f"ai-couple-dish:worker:{payload.job}"
-        released = await backend.release(key, token)
-        logger.info(
-            "worker_lock_released",
-            module="worker",
-            operation=payload.job,
-            result="success" if released else "stale",
-        )
-        return {
-            "code": 200,
-            "message": "操作成功",
-            "data": {"job": payload.job, "released": released},
-        }
+        finally:
+            released = await backend.release(key, token)
+            logger.info(
+                "worker_lock_released",
+                module="worker",
+                operation=payload.job,
+                result="success" if released else "stale",
+            )
 
     return app
 

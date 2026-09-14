@@ -141,15 +141,16 @@ def create_app(*, secret: str | None = None) -> FastAPI:
             raise fail(503, 503, "管理员密钥未配置")
         configured_user = os.getenv("ADMIN_USERNAME")
         password_hash = os.getenv("ADMIN_PASSWORD_HASH")
-        if configured_user and payload.username != configured_user:
+        if not configured_user or not password_hash:
+            raise fail(503, 503, "管理员凭据未配置")
+        if payload.username != configured_user:
             raise fail(401, 401, "用户名或密码错误")
-        if password_hash:
-            try:
-                valid = bcrypt.checkpw(payload.password.encode(), password_hash.encode())
-            except ValueError:
-                valid = False
-            if not valid:
-                raise fail(401, 401, "用户名或密码错误")
+        try:
+            valid = bcrypt.checkpw(payload.password.encode(), password_hash.encode())
+        except ValueError:
+            valid = False
+        if not valid:
+            raise fail(401, 401, "用户名或密码错误")
         now = datetime.now(UTC)
         token = jwt.encode(
             {
@@ -256,7 +257,9 @@ def create_app(*, secret: str | None = None) -> FastAPI:
         user_id: int, authorization: str | None = Header(default=None)
     ) -> dict[str, Any]:
         claims(authorization)
-        value = users.get(user_id, {"userId": user_id, "phone": "13800008000", "coupleId": None})
+        value = users.get(user_id)
+        if value is None:
+            raise fail(404, 404, "用户不存在")
         data = {**value, "phone": _masked_phone(value.get("phone"))}
         data.pop("openid", None)
         return _envelope(data)
