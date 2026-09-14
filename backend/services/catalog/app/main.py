@@ -3,6 +3,7 @@ from pathlib import Path
 
 from fastapi import Body, HTTPException, Query, Request
 
+from packages.platform.admin_auth import require_admin
 from packages.platform.service import create_service_app
 
 from .services.catalog import import_rows, load_catalog
@@ -79,12 +80,7 @@ async def dish_detail(slug: str) -> dict[str, object]:
 
 @app.post("/api/catalog/dishes/{slug}/publish")
 async def publish_dish(slug: str, request: Request) -> dict[str, object]:
-    # 管理员服务会在网关层鉴权；此处要求显式 admin 身份，避免误发布。
-    role = request.headers.get("X-Admin-Role")
-    if role != "admin":
-        raise HTTPException(
-            status_code=403, detail={"code": 403, "message": "无权限", "data": None}
-        )
+    require_admin(request)
     if not app.state.catalog.publish(slug):
         raise HTTPException(
             status_code=422, detail={"code": 422, "message": "菜品来源未审核", "data": None}
@@ -97,10 +93,7 @@ async def import_catalog(
     request: Request,
     payload: list[dict[str, object]] = Body(...),  # noqa: B008
 ) -> dict[str, object]:
-    if request.headers.get("X-Admin-Role") != "admin":
-        raise HTTPException(
-            status_code=403, detail={"code": 403, "message": "无权限", "data": None}
-        )
+    require_admin(request)
     result = import_rows(payload)
     return _envelope(
         {"imported": result["imported"], "failed": result["failed"], "failures": result["failures"]}

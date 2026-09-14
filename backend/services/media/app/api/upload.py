@@ -5,6 +5,8 @@ from uuid import uuid4
 
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 
+from packages.platform.admin_auth import require_admin
+
 from ..services.image_policy import validate_and_thumbnail
 from ..services.storage import Storage
 
@@ -20,6 +22,7 @@ async def upload_image(
     license_name: str = Form(...),  # noqa: B008
     attribution: str = Form(...),  # noqa: B008
 ) -> dict[str, object]:
+    require_admin(request)
     if not source_url.strip() or not license_name.strip() or not attribution.strip():
         raise HTTPException(
             status_code=400,

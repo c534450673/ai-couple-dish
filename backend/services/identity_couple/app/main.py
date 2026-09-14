@@ -298,13 +298,14 @@ def create_app(
     ) -> dict[str, object]:
         user_id = request.state.user_id
         user_result = await session.execute(
-            select(User).where(User.id == user_id, User.is_deleted == 0)
+            select(User).where(User.id == user_id, User.is_deleted == 0).with_for_update()
         )
         user = user_result.scalar_one_or_none()
         code_result = await session.execute(
             select(Couple)
             .where(Couple.couple_code == payload.couple_code.strip().upper(), Couple.status == 0)
             .limit(1)
+            .with_for_update()
         )
         couple = code_result.scalar_one_or_none()
         if (
@@ -327,13 +328,26 @@ def create_app(
             couple.start_date or date.today(), datetime.min.time()
         )
         owner_result = await session.execute(
-            select(User).where(User.id == couple.user1_id, User.is_deleted == 0)
+            select(User).where(User.id == couple.user1_id, User.is_deleted == 0).with_for_update()
         )
         owner = owner_result.scalar_one_or_none()
-        if owner is not None:
-            owner.couple_id = couple.id
-            owner.love_start_date = user.love_start_date
+        if owner is None or owner.couple_id is not None:
+            await session.rollback()
+            raise HTTPException(
+                status_code=400,
+                detail={"code": 2003, "message": "情侣码无效或已过期", "data": None},
+            )
+        owner.couple_id = couple.id
+        owner.love_start_date = user.love_start_date
         await session.commit()
+        await logger.ainfo(
+            "identity_operation_completed",
+            requestId=_request_id(request),
+            module="identity",
+            operation="bind",
+            result="success",
+            errorCode="NONE",
+        )
         return _result({"coupleId": couple.id})
 
     return app

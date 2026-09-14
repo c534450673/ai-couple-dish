@@ -4,7 +4,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 
-from services.dining.app.services.cart import _item_payload
+from services.dining.app.services.cart import _item_payload, list_items
 
 
 def test_cart_item_payload_contains_price_snapshot_and_subtotal() -> None:
@@ -49,3 +49,23 @@ async def test_dining_rejects_missing_token_before_database_dependency() -> None
 
     assert response.status_code == 401
     assert response.json() == {"code": 401, "message": "请先登录", "data": None}
+
+
+@pytest.mark.asyncio
+async def test_empty_cart_read_does_not_create_an_uncommitted_cart() -> None:
+    class Session:
+        def __init__(self):
+            self.added = []
+
+        async def scalar(self, query):
+            return None
+
+        def add(self, value):
+            self.added.append(value)
+
+    session = Session()
+    result = await list_items(session, user_id=8, couple_id=None)
+
+    assert result["cartId"] is None
+    assert result["items"] == []
+    assert session.added == []

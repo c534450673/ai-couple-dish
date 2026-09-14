@@ -1,7 +1,9 @@
 from io import BytesIO
 
+from fastapi.testclient import TestClient
 from PIL import Image
 
+from services.media.app.main import app
 from services.media.app.services.image_policy import validate_and_thumbnail
 
 
@@ -18,3 +20,17 @@ def test_media_policy_rejects_svg() -> None:
 
     with pytest.raises(ValueError):
         validate_and_thumbnail(b"<svg/>", filename="dish.svg")
+
+
+def test_media_upload_rejects_anonymous_requests(monkeypatch) -> None:
+    monkeypatch.setenv("ADMIN_JWT_SECRET", "admin-test-secret-" + "x" * 64)
+    response = TestClient(app).post(
+        "/api/media/upload",
+        files={"file": ("dish.jpg", b"not-an-image", "image/jpeg")},
+        data={
+            "source_url": "https://example.test/source",
+            "license_name": "CC0",
+            "attribution": "Author",
+        },
+    )
+    assert response.status_code == 401

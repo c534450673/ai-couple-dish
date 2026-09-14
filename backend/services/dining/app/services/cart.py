@@ -42,7 +42,21 @@ async def cart_scope(
 async def list_items(
     session: AsyncSession, *, user_id: int, couple_id: int | None
 ) -> dict[str, object]:
-    cart = await cart_scope(session, user_id=user_id, couple_id=couple_id)
+    scope = (
+        SharedCart.couple_id == couple_id
+        if couple_id is not None
+        else SharedCart.user_id == user_id
+    )
+    cart = await session.scalar(select(SharedCart).where(scope))
+    if cart is None:
+        return {
+            "cartId": None,
+            "coupleId": couple_id,
+            "userId": None if couple_id is not None else user_id,
+            "items": [],
+            "totalAmount": "0.00",
+            "count": 0,
+        }
     rows = await session.scalars(
         select(SharedCartItem)
         .where(SharedCartItem.cart_id == cart.id)
