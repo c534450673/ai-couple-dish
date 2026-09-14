@@ -8,11 +8,12 @@ from __future__ import annotations
 
 import os
 import secrets
-from collections.abc import AsyncIterator, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import AbstractAsyncContextManager
 from datetime import date, datetime
 from time import perf_counter
 
+import httpx
 import structlog
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -41,6 +42,45 @@ class BindRequest(BaseModel):
 
 
 SessionProvider = Callable[[], AbstractAsyncContextManager[AsyncSession]]
+WechatCodeResolver = Callable[[str], Awaitable[str]]
+
+
+async def _resolve_wechat_code(code: str) -> str:
+    app_id = os.getenv("WECHAT_APP_ID")
+    app_secret = os.getenv("WECHAT_APP_SECRET")
+    if not app_id or not app_secret:
+        raise HTTPException(
+            status_code=503,
+            detail={"code": 503, "message": "微信登录暂不可用", "data": None},
+        )
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(
+                "https://api.weixin.qq.com/sns/jscode2session",
+                params={
+                    "appid": app_id,
+                    "secret": app_secret,
+                    "js_code": code,
+                    "grant_type": "authorization_code",
+                },
+            )
+            response.raise_for_status()
+            payload = response.json()
+        openid = payload.get("openid") if isinstance(payload, dict) else None
+        if isinstance(openid, str) and openid:
+            return openid
+    except (httpx.HTTPError, ValueError) as error:
+        await logger.awarning(
+            "identity_wechat_code_rejected",
+            module="identity",
+            operation="code2session",
+            result="error",
+            errorCode=type(error).__name__,
+        )
+    raise HTTPException(
+        status_code=401,
+        detail={"code": 401, "message": "微信登录凭证无效", "data": None},
+    )
 
 
 def _secret(value: str | None) -> str:
@@ -118,11 +158,15 @@ def _claims_user(authorization: str | None, secret: str) -> int:
 
 
 def create_app(
-    *, jwt_secret: str | None = None, session_provider: SessionProvider | None = None
+    *,
+    jwt_secret: str | None = None,
+    session_provider: SessionProvider | None = None,
+    wechat_code_resolver: WechatCodeResolver | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Identity Couple Service")
     app.state.jwt_secret = _secret(jwt_secret)
     app.state.session_provider = session_provider
+    app.state.wechat_code_resolver = wechat_code_resolver or _resolve_wechat_code
 
     @app.middleware("http")
     async def request_context(request: Request, call_next):  # type: ignore[no-untyped-def]
@@ -154,13 +198,14 @@ def create_app(
         request: Request, payload: LoginRequest, session: AsyncSession = _SESSION_DEPENDENCY
     ) -> dict[str, object]:
         started = perf_counter()
+        openid = await app.state.wechat_code_resolver(payload.code)
         result = await session.execute(
-            select(User).where(User.openid == payload.code, User.is_deleted == 0).limit(1)
+            select(User).where(User.openid == openid, User.is_deleted == 0).limit(1)
         )
         user = result.scalar_one_or_none()
         if user is None:
             user = User(
-                openid=payload.code,
+                openid=openid,
                 nick_name=payload.nick_name or "新用户",
                 avatar_url=payload.avatar_url or "",
                 member_level=0,
