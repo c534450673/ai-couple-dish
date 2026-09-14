@@ -253,7 +253,8 @@ services:
         condition: service_healthy
 
   nginx:
-    image: nginx:1.27-alpine
+    # 腾讯云节点默认已缓存官方 alpine 镜像，避免生产启动时访问 Docker Hub 超时。
+    image: nginx:alpine
     restart: unless-stopped
     ports:
       - "${NGINX_PORT:-80}:80"
