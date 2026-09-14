@@ -1,0 +1,22 @@
+{
+  "service": "dining",
+  "version": "1.0.0",
+  "resultEnvelope": {"code": "integer", "message": "string", "data": "object|null"},
+  "statusTransitions": {
+    "pending_confirmation": ["confirmed", "cancelled"],
+    "confirmed": ["cooking"],
+    "cooking": ["completed"]
+  },
+  "paths": {
+    "/api/dining/cart": ["GET", "DELETE"],
+    "/api/dining/cart/items": ["POST"],
+    "/api/dining/cart/items/{itemId}": ["PATCH", "DELETE"],
+    "/api/dining/orders": ["GET", "POST"],
+    "/api/dining/orders/{orderId}": ["GET"],
+    "/api/dining/orders/{orderId}/confirm": ["POST"],
+    "/api/dining/orders/{orderId}/cancel": ["POST"],
+    "/api/dining/orders/{orderId}/cooking": ["POST"],
+    "/api/dining/orders/{orderId}/complete": ["POST"]
+  },
+  "headers": {"Idempotency-Key": "required for retriable order creation"}
+}

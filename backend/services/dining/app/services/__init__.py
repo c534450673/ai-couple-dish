@@ -1,0 +1,1 @@
+"""Dining domain services."""
