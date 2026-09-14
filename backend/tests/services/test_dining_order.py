@@ -1,9 +1,12 @@
+from contextlib import asynccontextmanager
 from datetime import datetime
 from decimal import Decimal
 from types import SimpleNamespace
 
+import httpx
 import pytest
 
+from packages.platform.auth import issue_user_token
 from services.dining.app.models import (
     DiningOrder,
     IdempotencyRecord,
@@ -142,3 +145,32 @@ async def test_idempotency_returns_first_response_without_running_action() -> No
 
     assert result["message"] == "首次"
     assert calls == 0
+
+
+@pytest.mark.asyncio
+async def test_unbound_user_cannot_read_another_users_order_detail() -> None:
+    from services.dining.app.main import create_app
+
+    secret = "dining-test-secret-" + "x" * 64
+    session = FakeSession(
+        [
+            SimpleNamespace(id=8, couple_id=None),
+            SimpleNamespace(id=12, user_id=7, couple_id=None),
+        ]
+    )
+
+    @asynccontextmanager
+    async def provide_session():
+        yield session
+
+    app = create_app(jwt_secret=secret, session_provider=provide_session)
+    token = issue_user_token(user_id=8, secret=secret, expires_ms=60_000)
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app), base_url="http://dining"
+    ) as client:
+        response = await client.get(
+            "/api/dining/orders/12", headers={"Authorization": f"Bearer {token}"}
+        )
+
+    assert response.status_code == 200
+    assert response.json() == {"code": 4041, "message": "订单不存在", "data": None}

@@ -392,7 +392,10 @@ def create_app(
     ) -> dict[str, object]:
         user_id, couple_id = await context(request, session)
         row = await session.scalar(select(DiningOrder).where(DiningOrder.id == order_id))
-        if row is None or (row.user_id != user_id and row.couple_id != couple_id):
+        if row is None or (
+            row.user_id != user_id
+            and (couple_id is None or row.couple_id != couple_id)
+        ):
             raise _error(4041, "订单不存在")
         items = list(
             (

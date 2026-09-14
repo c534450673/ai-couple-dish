@@ -8,16 +8,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_1",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-002",
@@ -28,16 +20,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_2",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-003",
@@ -48,16 +32,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_3",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-004",
@@ -68,16 +44,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_4",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-005",
@@ -88,16 +56,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_5",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-006",
@@ -108,16 +68,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_6",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-007",
@@ -128,16 +80,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_7",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-008",
@@ -148,16 +92,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_8",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-009",
@@ -168,16 +104,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_9",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-010",
@@ -188,16 +116,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_10",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-011",
@@ -208,16 +128,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_11",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-012",
@@ -228,16 +140,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_12",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-013",
@@ -248,16 +152,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_13",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-014",
@@ -268,16 +164,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_14",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-015",
@@ -288,16 +176,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_15",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-016",
@@ -308,16 +188,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_16",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-017",
@@ -328,16 +200,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_17",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-018",
@@ -348,16 +212,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_18",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-019",
@@ -368,16 +224,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_19",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-020",
@@ -388,16 +236,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_20",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-021",
@@ -408,16 +248,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_21",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-022",
@@ -428,16 +260,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_22",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-023",
@@ -448,16 +272,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_23",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-024",
@@ -468,16 +284,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_24",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-025",
@@ -488,16 +296,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_25",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-026",
@@ -508,16 +308,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_26",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-027",
@@ -528,16 +320,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_27",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-028",
@@ -548,16 +332,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:寿司_28",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-029",
@@ -568,16 +344,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_29",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-030",
@@ -588,16 +356,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:拉面_30",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-031",
@@ -608,16 +368,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_31",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-032",
@@ -628,16 +380,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_32",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-033",
@@ -648,16 +392,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_33",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-034",
@@ -668,16 +404,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_34",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-035",
@@ -688,16 +416,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_35",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-036",
@@ -708,16 +428,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_36",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-037",
@@ -728,16 +440,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_37",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-038",
@@ -748,16 +452,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_38",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-039",
@@ -768,16 +464,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_39",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-040",
@@ -788,16 +476,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:披萨_40",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-041",
@@ -808,16 +488,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_41",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-042",
@@ -828,16 +500,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_42",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-043",
@@ -848,16 +512,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_43",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-044",
@@ -868,16 +524,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_44",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-045",
@@ -888,16 +536,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_45",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-046",
@@ -908,16 +548,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_46",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-047",
@@ -928,16 +560,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_47",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-048",
@@ -948,16 +572,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_48",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-049",
@@ -968,16 +584,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_49",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-050",
@@ -988,16 +596,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_50",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-051",
@@ -1008,16 +608,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_51",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-052",
@@ -1028,16 +620,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_52",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-053",
@@ -1048,16 +632,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_53",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-054",
@@ -1068,16 +644,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_54",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-055",
@@ -1088,16 +656,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_55",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-056",
@@ -1108,16 +668,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_56",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-057",
@@ -1128,16 +680,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_57",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-058",
@@ -1148,16 +692,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_58",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-059",
@@ -1168,16 +704,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_59",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-060",
@@ -1188,16 +716,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_60",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-061",
@@ -1208,16 +728,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_61",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-062",
@@ -1228,16 +740,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_62",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-063",
@@ -1248,16 +752,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_63",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-064",
@@ -1268,16 +764,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_64",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-065",
@@ -1288,16 +776,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_65",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-066",
@@ -1308,16 +788,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_66",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-067",
@@ -1328,16 +800,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_67",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-068",
@@ -1348,16 +812,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_68",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-069",
@@ -1368,16 +824,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_69",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-070",
@@ -1388,16 +836,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:寿司_70",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-071",
@@ -1408,16 +848,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_71",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-072",
@@ -1428,16 +860,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:拉面_72",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-073",
@@ -1448,16 +872,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_73",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-074",
@@ -1468,16 +884,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_74",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-075",
@@ -1488,16 +896,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_75",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-076",
@@ -1508,16 +908,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_76",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-077",
@@ -1528,16 +920,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_77",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-078",
@@ -1548,16 +932,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_78",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-079",
@@ -1568,16 +944,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_79",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-080",
@@ -1588,16 +956,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_80",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-081",
@@ -1608,16 +968,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_81",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-082",
@@ -1628,16 +980,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:披萨_82",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-083",
@@ -1648,16 +992,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_83",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-084",
@@ -1668,16 +1004,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_84",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-085",
@@ -1688,16 +1016,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_85",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-086",
@@ -1708,16 +1028,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_86",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-087",
@@ -1728,16 +1040,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_87",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-088",
@@ -1748,16 +1052,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_88",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-089",
@@ -1768,16 +1064,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_89",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-090",
@@ -1788,16 +1076,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_90",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-091",
@@ -1808,16 +1088,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_91",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-092",
@@ -1828,16 +1100,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_92",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-093",
@@ -1848,16 +1112,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_93",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-094",
@@ -1868,16 +1124,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_94",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-095",
@@ -1888,16 +1136,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_95",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-096",
@@ -1908,16 +1148,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_96",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-097",
@@ -1928,16 +1160,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_97",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-098",
@@ -1948,16 +1172,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_98",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-099",
@@ -1968,16 +1184,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_99",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-100",
@@ -1988,16 +1196,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_100",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-101",
@@ -2008,16 +1208,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_101",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-102",
@@ -2028,16 +1220,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_102",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-103",
@@ -2048,16 +1232,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_103",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-104",
@@ -2068,16 +1244,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_104",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-105",
@@ -2088,16 +1256,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_105",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-106",
@@ -2108,16 +1268,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_106",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-107",
@@ -2128,16 +1280,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_107",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-108",
@@ -2148,16 +1292,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_108",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-109",
@@ -2168,16 +1304,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_109",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-110",
@@ -2188,16 +1316,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_110",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-111",
@@ -2208,16 +1328,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_111",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-112",
@@ -2228,16 +1340,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:寿司_112",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-113",
@@ -2248,16 +1352,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_113",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-114",
@@ -2268,16 +1364,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:拉面_114",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-115",
@@ -2288,16 +1376,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_115",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-116",
@@ -2308,16 +1388,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_116",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-117",
@@ -2328,16 +1400,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_117",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-118",
@@ -2348,16 +1412,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_118",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-119",
@@ -2368,16 +1424,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_119",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-120",
@@ -2388,16 +1436,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_120",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-121",
@@ -2408,16 +1448,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_121",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-122",
@@ -2428,16 +1460,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_122",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-123",
@@ -2448,16 +1472,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_123",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-124",
@@ -2468,16 +1484,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:披萨_124",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-125",
@@ -2488,16 +1496,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_125",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-126",
@@ -2508,16 +1508,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_126",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-127",
@@ -2528,16 +1520,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_127",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-128",
@@ -2548,16 +1532,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_128",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-129",
@@ -2568,16 +1544,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_129",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-130",
@@ -2588,16 +1556,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_130",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-131",
@@ -2608,16 +1568,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_131",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-132",
@@ -2628,16 +1580,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_132",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-133",
@@ -2648,16 +1592,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_133",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-134",
@@ -2668,16 +1604,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_134",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-135",
@@ -2688,16 +1616,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_135",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-136",
@@ -2708,16 +1628,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_136",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-137",
@@ -2728,16 +1640,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_137",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-138",
@@ -2748,16 +1652,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_138",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-139",
@@ -2768,16 +1664,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_139",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-140",
@@ -2788,16 +1676,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_140",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-141",
@@ -2808,16 +1688,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_141",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-142",
@@ -2828,16 +1700,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_142",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-143",
@@ -2848,16 +1712,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_143",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-144",
@@ -2868,16 +1724,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_144",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-145",
@@ -2888,16 +1736,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_145",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-146",
@@ -2908,16 +1748,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_146",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-147",
@@ -2928,16 +1760,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_147",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-148",
@@ -2948,16 +1772,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_148",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-149",
@@ -2968,16 +1784,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_149",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-150",
@@ -2988,16 +1796,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_150",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-151",
@@ -3008,16 +1808,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_151",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-152",
@@ -3028,16 +1820,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_152",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-153",
@@ -3048,16 +1832,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_153",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-154",
@@ -3068,16 +1844,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:寿司_154",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-155",
@@ -3088,16 +1856,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_155",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-156",
@@ -3108,16 +1868,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:拉面_156",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-157",
@@ -3128,16 +1880,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_157",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-158",
@@ -3148,16 +1892,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_158",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-159",
@@ -3168,16 +1904,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_159",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-160",
@@ -3188,16 +1916,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_160",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-161",
@@ -3208,16 +1928,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_161",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-162",
@@ -3228,16 +1940,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_162",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-163",
@@ -3248,16 +1952,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_163",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-164",
@@ -3268,16 +1964,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_164",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-165",
@@ -3288,16 +1976,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_165",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-166",
@@ -3308,16 +1988,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:披萨_166",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-167",
@@ -3328,16 +2000,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_167",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-168",
@@ -3348,16 +2012,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_168",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-169",
@@ -3368,16 +2024,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_169",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-170",
@@ -3388,16 +2036,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_170",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-171",
@@ -3408,16 +2048,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_171",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-172",
@@ -3428,16 +2060,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_172",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-173",
@@ -3448,16 +2072,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_173",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-174",
@@ -3468,16 +2084,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_174",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-175",
@@ -3488,16 +2096,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_175",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-176",
@@ -3508,16 +2108,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_176",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-177",
@@ -3528,16 +2120,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_177",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-178",
@@ -3548,16 +2132,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_178",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-179",
@@ -3568,16 +2144,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_179",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-180",
@@ -3588,16 +2156,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_180",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-181",
@@ -3608,16 +2168,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_181",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-182",
@@ -3628,16 +2180,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_182",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-183",
@@ -3648,16 +2192,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_183",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-184",
@@ -3668,16 +2204,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_184",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-185",
@@ -3688,16 +2216,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_185",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-186",
@@ -3708,16 +2228,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_186",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-187",
@@ -3728,16 +2240,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_187",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-188",
@@ -3748,16 +2252,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_188",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-189",
@@ -3768,16 +2264,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_189",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-190",
@@ -3788,16 +2276,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_190",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-191",
@@ -3808,16 +2288,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_191",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-192",
@@ -3828,16 +2300,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_192",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-193",
@@ -3848,16 +2312,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_193",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-194",
@@ -3868,16 +2324,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_194",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-195",
@@ -3888,16 +2336,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_195",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-196",
@@ -3908,16 +2348,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:寿司_196",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-197",
@@ -3928,16 +2360,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_197",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-198",
@@ -3948,16 +2372,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:拉面_198",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-199",
@@ -3968,16 +2384,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_199",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-200",
@@ -3988,16 +2396,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_200",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-201",
@@ -4008,16 +2408,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_201",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-202",
@@ -4028,16 +2420,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_202",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-203",
@@ -4048,16 +2432,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_203",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-204",
@@ -4068,16 +2444,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_204",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-205",
@@ -4088,16 +2456,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_205",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-206",
@@ -4108,16 +2468,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_206",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-207",
@@ -4128,16 +2480,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_207",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-208",
@@ -4148,16 +2492,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:披萨_208",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-209",
@@ -4168,16 +2504,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_209",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-210",
@@ -4188,16 +2516,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_210",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-211",
@@ -4208,16 +2528,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_211",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-212",
@@ -4228,16 +2540,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_212",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-213",
@@ -4248,16 +2552,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_213",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-214",
@@ -4268,16 +2564,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_214",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-215",
@@ -4288,16 +2576,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_215",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-216",
@@ -4308,16 +2588,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_216",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-217",
@@ -4328,16 +2600,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_217",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-218",
@@ -4348,16 +2612,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_218",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-219",
@@ -4368,16 +2624,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_219",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-220",
@@ -4388,16 +2636,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_220",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-221",
@@ -4408,16 +2648,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_221",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-222",
@@ -4428,16 +2660,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_222",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-223",
@@ -4448,16 +2672,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_223",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-224",
@@ -4468,16 +2684,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_224",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-225",
@@ -4488,16 +2696,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_225",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-226",
@@ -4508,16 +2708,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_226",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-227",
@@ -4528,16 +2720,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_227",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-228",
@@ -4548,16 +2732,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_228",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-229",
@@ -4568,16 +2744,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_229",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-230",
@@ -4588,16 +2756,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_230",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-231",
@@ -4608,16 +2768,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_231",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-232",
@@ -4628,16 +2780,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_232",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-233",
@@ -4648,16 +2792,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_233",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-234",
@@ -4668,16 +2804,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_234",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-235",
@@ -4688,16 +2816,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_235",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-236",
@@ -4708,16 +2828,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_236",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-237",
@@ -4728,16 +2840,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_237",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-238",
@@ -4748,16 +2852,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:寿司_238",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-239",
@@ -4768,16 +2864,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_239",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-240",
@@ -4788,16 +2876,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:拉面_240",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-241",
@@ -4808,16 +2888,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_241",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-242",
@@ -4828,16 +2900,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_242",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-243",
@@ -4848,16 +2912,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_243",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-244",
@@ -4868,16 +2924,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_244",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-245",
@@ -4888,16 +2936,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_245",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-246",
@@ -4908,16 +2948,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_246",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-247",
@@ -4928,16 +2960,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_247",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-248",
@@ -4948,16 +2972,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_248",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-249",
@@ -4968,16 +2984,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_249",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-250",
@@ -4988,16 +2996,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:披萨_250",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-251",
@@ -5008,16 +3008,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_251",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-252",
@@ -5028,16 +3020,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_252",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-253",
@@ -5048,16 +3032,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_253",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-254",
@@ -5068,16 +3044,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_254",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-255",
@@ -5088,16 +3056,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_255",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-256",
@@ -5108,16 +3068,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_256",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-257",
@@ -5128,16 +3080,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_257",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-258",
@@ -5148,16 +3092,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_258",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-259",
@@ -5168,16 +3104,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_259",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-260",
@@ -5188,16 +3116,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_260",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-261",
@@ -5208,16 +3128,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_261",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-262",
@@ -5228,16 +3140,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_262",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-263",
@@ -5248,16 +3152,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_263",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-264",
@@ -5268,16 +3164,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_264",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-265",
@@ -5288,16 +3176,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_265",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-266",
@@ -5308,16 +3188,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_266",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-267",
@@ -5328,16 +3200,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_267",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-268",
@@ -5348,16 +3212,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_268",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-269",
@@ -5368,16 +3224,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_269",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-270",
@@ -5388,16 +3236,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_270",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-271",
@@ -5408,16 +3248,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_271",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-272",
@@ -5428,16 +3260,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_272",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-273",
@@ -5448,16 +3272,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_273",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-274",
@@ -5468,16 +3284,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_274",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-275",
@@ -5488,16 +3296,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_275",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-276",
@@ -5508,16 +3308,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_276",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-277",
@@ -5528,16 +3320,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_277",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-278",
@@ -5548,16 +3332,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_278",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-279",
@@ -5568,16 +3344,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_279",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-280",
@@ -5588,16 +3356,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:寿司_280",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-281",
@@ -5608,16 +3368,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_281",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-282",
@@ -5628,16 +3380,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:拉面_282",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-283",
@@ -5648,16 +3392,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_283",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-284",
@@ -5668,16 +3404,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_284",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-285",
@@ -5688,16 +3416,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_285",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-286",
@@ -5708,16 +3428,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_286",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-287",
@@ -5728,16 +3440,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_287",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-288",
@@ -5748,16 +3452,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_288",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-289",
@@ -5768,16 +3464,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_289",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-290",
@@ -5788,16 +3476,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_290",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-291",
@@ -5808,16 +3488,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_291",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-292",
@@ -5828,16 +3500,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:披萨_292",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-293",
@@ -5848,16 +3512,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_293",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-294",
@@ -5868,16 +3524,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_294",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-295",
@@ -5888,16 +3536,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_295",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-296",
@@ -5908,16 +3548,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_296",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-297",
@@ -5928,16 +3560,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_297",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-298",
@@ -5948,16 +3572,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_298",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-299",
@@ -5968,16 +3584,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_299",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-300",
@@ -5988,16 +3596,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_300",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-301",
@@ -6008,16 +3608,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_301",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-302",
@@ -6028,16 +3620,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_302",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-303",
@@ -6048,16 +3632,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_303",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-304",
@@ -6068,16 +3644,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_304",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-305",
@@ -6088,16 +3656,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_305",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-306",
@@ -6108,16 +3668,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_306",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-307",
@@ -6128,16 +3680,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_307",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "japanese-dish-308",
@@ -6148,16 +3692,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_308",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "korean-dish-309",
@@ -6168,16 +3704,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_309",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "southeast-asian-dish-310",
@@ -6188,16 +3716,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_310",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "mediterranean-dish-311",
@@ -6208,16 +3728,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_311",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "western-dish-312",
@@ -6228,16 +3740,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_312",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "chuan-dish-313",
@@ -6248,16 +3752,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_313",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "yue-dish-314",
@@ -6268,16 +3764,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_314",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "lu-dish-315",
@@ -6288,16 +3776,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_315",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "su-dish-316",
@@ -6308,16 +3788,8 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_316",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "zhe-dish-317",
@@ -6328,16 +3800,8 @@
       "推荐"
     ],
     "spicyLevel": 0,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_317",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "min-dish-318",
@@ -6348,16 +3812,8 @@
       "推荐"
     ],
     "spicyLevel": 1,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_318",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "xiang-dish-319",
@@ -6368,16 +3824,8 @@
       "推荐"
     ],
     "spicyLevel": 2,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_319",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   },
   {
     "slug": "hui-dish-320",
@@ -6388,15 +3836,7 @@
       "推荐"
     ],
     "spicyLevel": 3,
-    "status": "published",
-    "sources": [
-      {
-        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_320",
-        "license": "CC BY-SA 4.0",
-        "attribution": "Wikimedia Commons contributors",
-        "reviewStatus": "approved",
-        "collectedAt": "2026-09-14"
-      }
-    ]
+    "status": "draft",
+    "sources": []
   }
 ]

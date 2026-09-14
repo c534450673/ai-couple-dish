@@ -49,7 +49,6 @@ dish_names = [
 dishes = []
 for i in range(320):
     cuisine = cuisines[i % len(cuisines)]
-    source_name = dish_names[i % len(dish_names)].replace("（", "_").replace("）", "")
     dishes.append(
         {
             "slug": f"{cuisine['slug']}-dish-{i + 1:03d}",
@@ -57,19 +56,8 @@ for i in range(320):
             "cuisine": cuisine["slug"],
             "tags": ["家常", "推荐"],
             "spicyLevel": i % 4,
-            "status": "published",
-            "sources": [
-                {
-                    "url": (
-                        "https://commons.wikimedia.org/wiki/Category:"
-                        f"{source_name}_{i + 1}"
-                    ),
-                    "license": "CC BY-SA 4.0",
-                    "attribution": "Wikimedia Commons contributors",
-                    "reviewStatus": "approved",
-                    "collectedAt": "2026-09-14",
-                }
-            ],
+            "status": "draft",
+            "sources": [],
         }
     )
 Path("data/catalog/dishes.json").write_text(json.dumps(dishes, ensure_ascii=False, indent=2) + "\n")

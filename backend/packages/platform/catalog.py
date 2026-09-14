@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+import builtins
 from dataclasses import dataclass, field, replace
-from typing import List
 
 
 @dataclass(frozen=True)
@@ -45,7 +45,7 @@ class Catalog:
     def get(self, slug: str) -> Dish | None:
         return self._dishes.get(slug)
 
-    def list_cuisines(self) -> List[str]:
+    def list_cuisines(self) -> builtins.list[str]:
         return sorted({dish.cuisine for dish in self._dishes.values()})
 
     def publish(self, slug: str) -> bool:

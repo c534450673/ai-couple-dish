@@ -13,9 +13,9 @@ logger = logging.getLogger("media.storage")
 class Storage:
     def __init__(self, root: str | Path | None = None) -> None:
         resolved_root: str | Path = (
-            root if root is not None else os.getenv("FILE_UPLOAD_PATH", "/tmp/uploads")
+            root if root is not None else os.getenv("FILE_UPLOAD_PATH", "/tmp/uploads")  # noqa: S108
         )
-        self.root = Path(resolved_root)  # noqa: S108
+        self.root = Path(resolved_root)
         self.root.mkdir(parents=True, exist_ok=True)
         self.cos_bucket = os.getenv("COS_BUCKET")
         self.cos_region = os.getenv("COS_REGION")
