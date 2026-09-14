@@ -3,6 +3,7 @@ package com.aicoupledish.controller;
 import com.aicoupledish.common.annotation.RateLimit;
 import com.aicoupledish.common.utils.JwtUtils;
 import com.aicoupledish.common.utils.Result;
+import com.aicoupledish.common.utils.TokenExtractor;
 import com.aicoupledish.domain.dto.LoginRespDTO;
 import com.aicoupledish.domain.dto.UserInfoDTO;
 import com.aicoupledish.domain.req.PhoneLoginReq;
@@ -12,6 +13,7 @@ import com.aicoupledish.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -81,8 +83,11 @@ public class UserController extends BaseAuthController {
     @ApiOperation("退出登录")
     @PostMapping("/logout")
     public Result<Void> logout(HttpServletRequest request) {
-        Long userId = getCurrentUserId(request, jwtUtils);
-        userService.logout(userId);
+        String token = TokenExtractor.extractToken(request);
+        if (StringUtils.hasText(token) && jwtUtils.validateToken(token)) {
+            Long userId = jwtUtils.getUserIdFromToken(token);
+            userService.logout(userId, token);
+        }
         return Result.success();
     }
 

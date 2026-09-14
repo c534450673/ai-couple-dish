@@ -26,7 +26,7 @@ export const userApi = {
   },
   // 登出
   logout() {
-    return api.post('/user/logout')
+    return api.post('/user/logout', null, { skipAuthErrorHandler: true })
   }
 }
 

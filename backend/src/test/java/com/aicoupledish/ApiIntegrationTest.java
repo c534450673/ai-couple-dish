@@ -126,6 +126,23 @@ class ApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("登出-无token应成功")
+    void logout_NoToken_ShouldSucceed() throws Exception {
+        mockMvc.perform(post("/user/logout"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
+    }
+
+    @Test
+    @DisplayName("登出-无效token应成功")
+    void logout_InvalidToken_ShouldSucceed() throws Exception {
+        mockMvc.perform(post("/user/logout")
+                .header("Authorization", "Bearer invalid_token"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
+    }
+
+    @Test
     @DisplayName("获取用户信息-有效token应返回用户信息")
     void getUserInfo_ValidToken_ShouldReturnUserInfo() throws Exception {
         mockMvc.perform(get("/user/info")

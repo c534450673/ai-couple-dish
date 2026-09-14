@@ -95,13 +95,23 @@ public class AiSessionService {
         if (messages.size() <= max + 1) {
             return;
         }
+        int start = alignTrimStart(messages, messages.size() - max);
         Map<String, Object> system = messages.get(0);
-        List<Map<String, Object>> tail = new ArrayList<>(messages.subList(messages.size() - max, messages.size()));
         List<Map<String, Object>> trimmed = new ArrayList<>();
         trimmed.add(system);
-        trimmed.addAll(tail);
+        trimmed.addAll(messages.subList(start, messages.size()));
         messages.clear();
         messages.addAll(trimmed);
+    }
+
+    /**
+     * 回退截断起点，避免 tool 消息与其 assistant tool_calls 被拆开
+     */
+    private int alignTrimStart(List<Map<String, Object>> messages, int start) {
+        while (start > 1 && "tool".equals(String.valueOf(messages.get(start).get("role")))) {
+            start--;
+        }
+        return start;
     }
 
     private String systemPrompt() {

@@ -11,8 +11,8 @@ import com.aicoupledish.common.utils.Result;
 import com.aicoupledish.controller.BaseAuthController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -20,17 +20,29 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 @Slf4j
 @Api(tags = "AI 助手")
 @RestController
 @RequestMapping("/ai")
-@RequiredArgsConstructor
 public class AiChatController extends BaseAuthController {
 
     private final AiAgentService aiAgentService;
     private final JwtUtils jwtUtils;
     private final HttpServletRequest request;
+    private final Executor aiChatExecutor;
+
+    public AiChatController(
+            AiAgentService aiAgentService,
+            JwtUtils jwtUtils,
+            HttpServletRequest request,
+            @Qualifier("aiChatExecutor") Executor aiChatExecutor) {
+        this.aiAgentService = aiAgentService;
+        this.jwtUtils = jwtUtils;
+        this.request = request;
+        this.aiChatExecutor = aiChatExecutor;
+    }
 
     @ApiOperation("流式聊天（SSE）")
     @PostMapping(value = "/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -41,7 +53,7 @@ public class AiChatController extends BaseAuthController {
         emitter.onTimeout(emitter::complete);
         emitter.onError(e -> log.warn("SSE error userId={}", userId, e));
 
-        new Thread(() -> {
+        aiChatExecutor.execute(() -> {
             try {
                 aiAgentService.chatStream(userId, req.getMessage(), req.getSessionId(), emitter);
             } catch (Exception e) {
@@ -52,7 +64,7 @@ public class AiChatController extends BaseAuthController {
                 }
                 emitter.completeWithError(e);
             }
-        }).start();
+        });
 
         return emitter;
     }

@@ -24,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("本地文件存储服务测试")
 class FileStorageServiceTest {
 
+    private static final Long TEST_USER_ID = 1L;
+
     private LocalFileStorageServiceImpl fileStorageService;
 
     @TempDir
@@ -51,13 +53,14 @@ class FileStorageServiceTest {
         );
 
         // When
-        FileUploadResult result = fileStorageService.uploadImage(file);
+        FileUploadResult result = fileStorageService.uploadImage(TEST_USER_ID,file);
 
         // Then
         assertNotNull(result);
         assertEquals("jpg", result.getType());
         assertTrue(result.getUrl().contains("http://localhost:8080/api/uploads"));
         assertTrue(result.getFilename().endsWith(".jpg"));
+        assertTrue(result.getFileKey().startsWith("user/" + TEST_USER_ID + "/"));
     }
 
     @Test
@@ -75,7 +78,7 @@ class FileStorageServiceTest {
         );
 
         // When
-        FileUploadResult result = fileStorageService.uploadImage(file);
+        FileUploadResult result = fileStorageService.uploadImage(TEST_USER_ID,file);
 
         // Then
         assertNotNull(result);
@@ -97,7 +100,7 @@ class FileStorageServiceTest {
         );
 
         // When
-        FileUploadResult result = fileStorageService.uploadImage(file);
+        FileUploadResult result = fileStorageService.uploadImage(TEST_USER_ID,file);
 
         // Then
         assertNotNull(result);
@@ -117,7 +120,7 @@ class FileStorageServiceTest {
 
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> fileStorageService.uploadImage(file));
+            () -> fileStorageService.uploadImage(TEST_USER_ID,file));
         assertEquals(BusinessException.PARAM_INVALID.getCode(), exception.getCode());
     }
 
@@ -126,7 +129,7 @@ class FileStorageServiceTest {
     void uploadImage_NullFile_ShouldThrowException() {
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> fileStorageService.uploadImage(null));
+            () -> fileStorageService.uploadImage(TEST_USER_ID,null));
         assertEquals(BusinessException.PARAM_INVALID.getCode(), exception.getCode());
     }
 
@@ -143,7 +146,7 @@ class FileStorageServiceTest {
 
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> fileStorageService.uploadImage(file));
+            () -> fileStorageService.uploadImage(TEST_USER_ID,file));
         assertEquals(BusinessException.PARAM_INVALID.getCode(), exception.getCode());
     }
 
@@ -163,7 +166,7 @@ class FileStorageServiceTest {
 
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> fileStorageService.uploadImage(file));
+            () -> fileStorageService.uploadImage(TEST_USER_ID,file));
         assertEquals(BusinessException.PARAM_INVALID.getCode(), exception.getCode());
     }
 
@@ -181,7 +184,7 @@ class FileStorageServiceTest {
 
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> fileStorageService.uploadImage(file));
+            () -> fileStorageService.uploadImage(TEST_USER_ID,file));
         assertEquals(BusinessException.PARAM_INVALID.getCode(), exception.getCode());
     }
 
@@ -202,7 +205,7 @@ class FileStorageServiceTest {
         MultipartFile[] files = {file1, file2};
 
         // When
-        List<FileUploadResult> results = fileStorageService.uploadImages(files);
+        List<FileUploadResult> results = fileStorageService.uploadImages(TEST_USER_ID,files);
 
         // Then
         assertNotNull(results);
@@ -221,7 +224,7 @@ class FileStorageServiceTest {
 
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> fileStorageService.uploadImages(files));
+            () -> fileStorageService.uploadImages(TEST_USER_ID,files));
         assertEquals(BusinessException.PARAM_INVALID.getCode(), exception.getCode());
     }
 
@@ -233,7 +236,7 @@ class FileStorageServiceTest {
 
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> fileStorageService.uploadImages(files));
+            () -> fileStorageService.uploadImages(TEST_USER_ID,files));
         assertEquals(BusinessException.PARAM_INVALID.getCode(), exception.getCode());
     }
 
@@ -242,7 +245,7 @@ class FileStorageServiceTest {
     void uploadImages_NullArray_ShouldThrowException() {
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> fileStorageService.uploadImages(null));
+            () -> fileStorageService.uploadImages(TEST_USER_ID,null));
         assertEquals(BusinessException.PARAM_INVALID.getCode(), exception.getCode());
     }
 
@@ -254,7 +257,7 @@ class FileStorageServiceTest {
         byte[] jpgContent = new byte[jpgHeader.length + 10];
         System.arraycopy(jpgHeader, 0, jpgContent, 0, jpgHeader.length);
         MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", jpgContent);
-        FileUploadResult result = fileStorageService.uploadImage(file);
+        FileUploadResult result = fileStorageService.uploadImage(TEST_USER_ID,file);
         String fileKey = result.getFileKey();
 
         // When
@@ -262,6 +265,12 @@ class FileStorageServiceTest {
 
         // Then
         assertTrue(deleteResult);
+    }
+
+    @Test
+    @DisplayName("删除路径穿越的key应返回false")
+    void deleteFile_PathTraversal_ShouldReturnFalse() {
+        assertFalse(fileStorageService.deleteFile("user/1/../../etc/passwd"));
     }
 
     @Test

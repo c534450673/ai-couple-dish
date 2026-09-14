@@ -16,6 +16,7 @@ public final class AuthConstants {
      */
     public static final String[] PUBLIC_PATHS = {
             "/user/login",
+            "/user/logout",
             "/user/register",
             "/user/phoneLogin",
             "/user/sendCode",

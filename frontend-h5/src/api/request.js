@@ -192,8 +192,10 @@ api.interceptors.response.use(
       setCache(response.config, res)
       return res
     } else if (res.code === 401) {
-      // Token过期
-      handleUnauthorized()
+      // Token过期；允许调用方显式跳过统一登出处理
+      if (!response.config?.skipAuthErrorHandler) {
+        handleUnauthorized()
+      }
       return Promise.reject(res)
     } else {
       showToast(res.message || '请求失败')
@@ -256,7 +258,9 @@ api.interceptors.response.use(
 
     if (error.response) {
       if (error.response.status === 401) {
-        handleUnauthorized()
+        if (!config?.skipAuthErrorHandler) {
+          handleUnauthorized()
+        }
       } else {
         showToast('网络错误')
       }
