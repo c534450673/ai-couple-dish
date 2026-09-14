@@ -14,6 +14,7 @@ services:
     restart: unless-stopped
     environment:
       APP_ENV: local
+      EXPOSE_DEV_VERIFICATION_CODE: ${EXPOSE_DEV_VERIFICATION_CODE:-true}
       DB_HOST: mysql
       DB_PORT: 3306
       DB_NAME: ${MYSQL_DATABASE:-ai_couple_dish}
@@ -23,10 +24,10 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_dev_pass}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must contain at least 64 characters}
-      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
       FILE_UPLOAD_PATH: /app/uploads
       FILE_BASE_URL: /api/uploads
       FILE_PUBLIC_PATH: /api/uploads
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,http://106.54.232.125}
       RELEASE_SHA: ${RELEASE_SHA:-dev}
     expose:
       - "8000"
@@ -46,6 +47,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d/api-fastapi-foundation.conf:/etc/nginx/conf.d/api.conf:ro
+      - ./h5-dist:/usr/share/nginx/html:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - nginx_logs:/var/log/nginx
     depends_on:

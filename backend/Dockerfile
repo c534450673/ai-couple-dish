@@ -23,6 +23,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-alpine
 
 # 设置时区
+RUN sed -i 's|dl-cdn.alpinelinux.org/alpine|mirrors.cloud.tencent.com/alpine|g' /etc/apk/repositories
 RUN apk add --no-cache tzdata && \
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo 'Asia/Shanghai' > /etc/timezone
@@ -30,9 +31,7 @@ RUN apk add --no-cache tzdata && \
 # 安装必要的工具
 RUN apk add --no-cache \
     curl \
-    netcat-openbsd \
-    redis-cli \
-    mysql-client
+    netcat-openbsd
 
 # 创建应用目录
 RUN mkdir -p /app/uploads /app/logs
@@ -45,7 +44,7 @@ ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC"
 ENV SERVER_PORT=8080
 
 # 创建entrypoint脚本
-RUN echo '#!/bin/sh\n\
+RUN printf '%b' '#!/bin/sh\n\
 set -e\n\
 \necho "Starting AI Couple Dish Backend..."\n\
 \n# 等待MySQL就绪\necho "Waiting for MySQL..."\n\

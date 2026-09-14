@@ -1,0 +1,299 @@
+/**
+ * 路由配置
+ */
+import { createRouter, createWebHistory } from 'vue-router'
+import { logUiEvent } from '@/composables/useStructuredLog'
+
+const validateMemoryNoteId = (to) => {
+  const valid = /^[1-9]\d*$/.test(String(to.params.id || ''))
+  logUiEvent('route_memory_note_validated', {
+    module: 'router',
+    operation: 'validate_note_id',
+    result: valid ? 'allowed' : 'invalid',
+    durationMs: 0,
+    ...(!valid ? { errorCode: 'INVALID_NOTE_ID' } : {})
+  })
+  return valid ? true : { path: '/memories', query: { type: 'note' } }
+}
+
+const baseRoutes = [
+  {
+    path: '/',
+    redirect: '/home'
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/login/index.vue'),
+    meta: { title: '登录', guest: true, requiresAuth: false, requiresCouple: false, shell: false }
+  },
+  {
+    path: '/bind',
+    name: 'Bind',
+    component: () => import('@/views/bind/index.vue'),
+    meta: { title: '绑定TA', requiresAuth: true, requiresCouple: false, shell: false }
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    component: () => import('@/views/home/index.vue'),
+    meta: { title: '首页', requiresAuth: true, requiresCouple: true, hasCouple: true, shell: true, tab: '星球' }
+  },
+  {
+    path: '/menu',
+    name: 'Menu',
+    component: () => import('@/views/menu/index.vue'),
+    meta: { title: '私密菜单', requiresAuth: true, requiresCouple: true, shell: true, tab: '菜单' }
+  },
+  {
+    path: '/feed',
+    name: 'Feed',
+    component: () => import('@/views/feed/index.vue'),
+    meta: { title: '投喂', requiresAuth: true, requiresCouple: true, shell: true, tab: '投喂' }
+  },
+  {
+    path: '/memories',
+    name: 'Memories',
+    component: () => import('@/views/memories/index.vue'),
+    meta: { title: '回忆', requiresAuth: true, requiresCouple: true, shell: true, tab: '回忆' }
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: () => import('@/views/settings/index.vue'),
+    meta: { title: '设置', requiresAuth: true, requiresCouple: false, shell: true, tab: '我们' }
+  },
+  {
+    path: '/menu/add',
+    name: 'MenuAdd',
+    component: () => import('@/views/menu/add.vue'),
+    meta: { title: '添加菜单', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
+  },
+  {
+    path: '/menu/:id/edit',
+    name: 'MenuEdit',
+    component: () => import('@/views/menu/add.vue'),
+    meta: { title: '编辑菜单', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
+  },
+  {
+    path: '/menu/:id',
+    name: 'MenuDetail',
+    component: () => import('@/views/menu/detail.vue'),
+    meta: { title: '菜单详情', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
+  },
+  {
+    path: '/recipe/add',
+    redirect: '/recipes/new'
+  },
+  {
+    path: '/anniversary',
+    name: 'Anniversary',
+    redirect: to => ({ path: '/memories', query: { ...to.query, type: 'anniversary' }, hash: to.hash }),
+    meta: { title: '纪念日', requiresAuth: true, requiresCouple: true, shell: true }
+  },
+  {
+    path: '/note',
+    name: 'Note',
+    redirect: to => ({ path: '/memories', query: { ...to.query, type: 'note' }, hash: to.hash }),
+    meta: { title: '美食笔记', requiresAuth: true, requiresCouple: true, shell: true }
+  },
+  {
+    path: '/wish',
+    name: 'Wish',
+    redirect: to => ({ path: '/memories', query: { ...to.query, type: 'wish' }, hash: to.hash }),
+    meta: { title: '心愿单', requiresAuth: true, requiresCouple: true, shell: true }
+  },
+  {
+    path: '/map',
+    name: 'Map',
+    component: () => import('@/views/map/index.vue'),
+    meta: { title: '餐厅地图', requiresAuth: true, requiresCouple: true, shell: true }
+  },
+  {
+    path: '/recipes',
+    name: 'Recipes',
+    component: () => import('@/views/recipe/index.vue'),
+    meta: { title: '菜谱', requiresAuth: true, requiresCouple: true, shell: true }
+  },
+  {
+    path: '/recipes/new',
+    name: 'RecipeNew',
+    component: () => import('@/views/recipe/add.vue'),
+    meta: { title: '新建菜谱', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
+  },
+  {
+    path: '/recipes/:id/edit',
+    name: 'RecipeEdit',
+    component: () => import('@/views/recipe/add.vue'),
+    meta: { title: '编辑菜谱', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
+  },
+  {
+    path: '/recipes/:id',
+    name: 'RecipeDetail',
+    component: () => import('@/views/recipe/detail.vue'),
+    meta: { title: '菜谱详情', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
+  },
+  {
+    path: '/memories/notes/new',
+    name: 'MemoryNoteNew',
+    component: () => import('@/views/memories/note-editor.vue'),
+    meta: { title: '新建回忆', requiresAuth: true, requiresCouple: true, shell: true, hideAiFab: true }
+  },
+  {
+    path: '/memories/notes/:id',
+    name: 'MemoryNoteDetail',
+    component: () => import('@/views/memories/note-detail.vue'),
+    beforeEnter: validateMemoryNoteId,
+    meta: { title: '回忆详情', requiresAuth: true, requiresCouple: true, shell: true }
+  },
+  {
+    path: '/ai',
+    name: 'Ai',
+    component: () => import('@/views/ai/index.vue'),
+    meta: { title: 'AI 助手', requiresAuth: true, requiresCouple: false, shell: true }
+  },
+  {
+    path: '/notifications',
+    name: 'Notifications',
+    component: () => import('@/views/notification/index.vue'),
+    meta: { title: '通知', requiresAuth: true, requiresCouple: false, shell: true }
+  },
+  {
+    path: '/legal',
+    name: 'Legal',
+    component: () => import('@/views/legal/index.vue'),
+    meta: { title: '协议与隐私', requiresAuth: false, requiresCouple: false, shell: false }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/errors/NotFound.vue'),
+    meta: { title: '页面不存在', requiresAuth: false, requiresCouple: false, shell: false }
+  }
+]
+
+const statesRoute = {
+  path: '/states',
+  name: 'States',
+  component: () => import('@/views/states/index.vue'),
+  meta: { title: '状态', requiresAuth: true, requiresCouple: false, shell: true }
+}
+
+const runtimeProduction = import.meta.env.PROD
+
+export const createRouteTable = ({ production = runtimeProduction } = {}) => (
+  runtimeProduction || production ? [...baseRoutes] : [...baseRoutes, statesRoute]
+)
+
+export const routes = createRouteTable()
+
+const hasCoupleSnapshot = (storage) => {
+  const rawCoupleInfo = storage?.getItem('coupleInfo')
+  if (!rawCoupleInfo) return false
+
+  try {
+    return Boolean(JSON.parse(rawCoupleInfo))
+  } catch (error) {
+    logUiEvent('route_couple_snapshot_invalid', {
+      module: 'router',
+      operation: 'read_couple_snapshot',
+      result: 'invalid_json',
+      durationMs: 0,
+      errorCode: 'INVALID_COUPLE_SNAPSHOT'
+    })
+    return false
+  }
+}
+
+const syncCoupleSnapshot = async (storage, token) => {
+  if (!token || typeof fetch !== 'function') return false
+  try {
+    const response = await fetch('/api/couple/info', {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: 'no-store'
+    })
+    if (!response.ok) return false
+    const payload = await response.json()
+    if (payload?.code !== 200 || !payload.data) return false
+    storage?.setItem?.('coupleInfo', JSON.stringify(payload.data))
+    logUiEvent('route_couple_snapshot_synced', {
+      module: 'router', operation: 'sync_couple_snapshot', result: 'success',
+      durationMs: 0, errorCode: 'NONE'
+    })
+    return true
+  } catch (error) {
+    logUiEvent('route_couple_snapshot_synced', {
+      module: 'router', operation: 'sync_couple_snapshot', result: 'skipped',
+      durationMs: 0, errorCode: 'SYNC_FAILED'
+    })
+    return false
+  }
+}
+
+export const createCosmosRouter = ({
+  history = createWebHistory(),
+  storage = globalThis.localStorage,
+  syncCouple = syncCoupleSnapshot
+} = {}) => {
+  const router = createRouter({ history, routes })
+
+  router.beforeEach(async (to) => {
+    if (typeof document !== 'undefined') {
+      document.title = to.meta.title ? `${to.meta.title} - 情侣私密菜单` : '情侣私密菜单'
+    }
+
+    const token = storage?.getItem('token')
+
+    if (to.meta.requiresAuth && !token) {
+      logUiEvent('route_guard_redirected', {
+        module: 'router',
+        operation: 'authorize',
+        result: 'login_required',
+        targetRoute: to.name || 'unknown',
+        durationMs: 0
+      })
+      return { name: 'Login', query: { redirect: to.fullPath } }
+    }
+
+    if (to.meta.requiresCouple && token && !hasCoupleSnapshot(storage)) {
+      await syncCouple(storage, token)
+    }
+
+    if (to.meta.requiresCouple && !hasCoupleSnapshot(storage)) {
+      logUiEvent('route_guard_redirected', {
+        module: 'router',
+        operation: 'authorize_couple',
+        result: 'couple_required',
+        targetRoute: to.name || 'unknown',
+        durationMs: 0
+      })
+      return { name: 'Bind', query: { redirect: to.fullPath } }
+    }
+
+    if (to.meta.guest && token) {
+      logUiEvent('route_guard_redirected', {
+        module: 'router',
+        operation: 'authorize_guest',
+        result: 'authenticated_home',
+        targetRoute: to.name || 'unknown',
+        durationMs: 0
+      })
+      return { name: 'Home' }
+    }
+
+    logUiEvent('route_guard_allowed', {
+      module: 'router',
+      operation: 'authorize',
+      result: 'allowed',
+      targetRoute: to.name || 'unknown',
+      durationMs: 0
+    })
+    return true
+  })
+
+  return router
+}
+
+const router = createCosmosRouter()
+
+export default router

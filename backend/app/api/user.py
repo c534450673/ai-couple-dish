@@ -37,8 +37,14 @@ async def register(
 
 @router.post("/sendCode")
 async def send_code(request: Request, phone: str = Query(...)) -> dict[str, object | None]:
-    await user_service.send_verify_code(request, phone)
-    return {"code": 200, "message": "验证码发送成功", "data": None}
+    code = await user_service.send_verify_code(request, phone)
+    settings = request.app.state.settings
+    dev_code = code if settings.app_env in {"local", "test"} and settings.expose_dev_verification_code else None
+    return {
+        "code": 200,
+        "message": "验证码发送成功",
+        "data": {"devCode": dev_code} if dev_code else None,
+    }
 
 
 @router.post("/phoneLogin")
