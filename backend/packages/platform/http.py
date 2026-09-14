@@ -1,4 +1,5 @@
 from collections.abc import Mapping
+from typing import Any
 
 import httpx
 
@@ -9,7 +10,7 @@ async def request_json(
     *,
     headers: Mapping[str, str] | None = None,
     timeout_seconds: float = 5.0,
-    **kwargs: object,
+    **kwargs: Any,
 ) -> httpx.Response:
     request_headers = dict(headers or {})
     request_headers.setdefault("X-Request-ID", "")
