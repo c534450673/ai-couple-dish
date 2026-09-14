@@ -28,6 +28,18 @@ const baseRoutes = [
     meta: { title: '登录', guest: true, requiresAuth: false, requiresCouple: false, shell: false }
   },
   {
+    path: '/admin/login',
+    name: 'AdminLogin',
+    component: () => import('@/views/admin/login.vue'),
+    meta: { title: '管理员登录', requiresAdmin: false, requiresAuth: false, requiresCouple: false, shell: false }
+  },
+  {
+    path: '/admin',
+    name: 'AdminDashboard',
+    component: () => import('@/views/admin/index.vue'),
+    meta: { title: '运营指挥台', requiresAdmin: true, requiresAuth: false, requiresCouple: false, shell: false }
+  },
+  {
     path: '/bind',
     name: 'Bind',
     component: () => import('@/views/bind/index.vue'),
@@ -44,6 +56,12 @@ const baseRoutes = [
     name: 'Menu',
     component: () => import('@/views/menu/index.vue'),
     meta: { title: '私密菜单', requiresAuth: true, requiresCouple: true, shell: true, tab: '菜单' }
+  },
+  {
+    path: '/dining',
+    name: 'Dining',
+    component: () => import('@/views/dining/index.vue'),
+    meta: { title: '今晚吃什么', requiresAuth: true, requiresCouple: false, shell: true, hideAiFab: true }
   },
   {
     path: '/feed',
@@ -217,6 +235,15 @@ export const createCosmosRouter = ({
     }
 
     const token = storage?.getItem('token')
+    const adminToken = storage?.getItem('adminToken')
+
+    if (to.meta.requiresAdmin && !adminToken) {
+      logUiEvent('route_guard_redirected', {
+        module: 'router', operation: 'authorize_admin', result: 'admin_login_required',
+        targetRoute: to.name || 'unknown', durationMs: 0
+      })
+      return { name: 'AdminLogin', query: { redirect: to.fullPath } }
+    }
 
     if (to.meta.requiresAuth && !token) {
       logUiEvent('route_guard_redirected', {

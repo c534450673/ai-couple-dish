@@ -28,6 +28,7 @@ describe('Couple Cosmos 路由', () => {
       ['Bind', '/bind'],
       ['Home', '/home'],
       ['Menu', '/menu'],
+      ['Dining', '/dining'],
       ['MenuAdd', '/menu/add'],
       ['MenuDetail', '/menu/:id'],
       ['Anniversary', '/anniversary'],

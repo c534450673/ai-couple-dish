@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from decimal import Decimal
 from types import SimpleNamespace
+from typing import Any, cast
 
 import httpx
 import pytest
@@ -148,6 +149,32 @@ async def test_idempotency_returns_first_response_without_running_action() -> No
 
 
 @pytest.mark.asyncio
+async def test_idempotency_rechecks_after_user_lock_before_running_action() -> None:
+    record = IdempotencyRecord(
+        user_id=7,
+        idempotency_key="same-key",
+        response_code=200,
+        response_json='{"code": 200, "message": "首次", "data": {"id": 1}}',
+    )
+    session = FakeSession([None, None, record])
+    calls = 0
+
+    async def action() -> dict[str, object]:
+        nonlocal calls
+        calls += 1
+        return {"code": 200, "message": "不应执行"}
+
+    result = await run_once(session, 7, "same-key", action)
+
+    assert result["message"] == "首次"
+    assert calls == 0
+    assert len(session.queries) == 3
+    assert session.queries[0]._for_update_arg is not None
+    assert session.queries[1]._for_update_arg is not None
+    assert session.queries[2]._for_update_arg is not None
+
+
+@pytest.mark.asyncio
 async def test_unbound_user_cannot_read_another_users_order_detail() -> None:
     from services.dining.app.main import create_app
 
@@ -174,3 +201,129 @@ async def test_unbound_user_cannot_read_another_users_order_detail() -> None:
 
     assert response.status_code == 200
     assert response.json() == {"code": 4041, "message": "订单不存在", "data": None}
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("idempotency_key", [None, "   "])
+async def test_order_creation_requires_non_blank_idempotency_key(
+    idempotency_key: str | None,
+) -> None:
+    from services.dining.app.main import create_app
+
+    class Session:
+        def __init__(self) -> None:
+            self.scalar_calls = 0
+
+        async def scalar(self, _query: object) -> object:
+            self.scalar_calls += 1
+            return SimpleNamespace(id=7, couple_id=None)
+
+    session = Session()
+
+    @asynccontextmanager
+    async def provide_session():
+        yield session
+
+    secret = "dining-test-secret-" + "x" * 64
+    app = create_app(jwt_secret=secret, session_provider=provide_session)
+    token = issue_user_token(user_id=7, secret=secret, expires_ms=60_000)
+    headers = {"Authorization": f"Bearer {token}"}
+    if idempotency_key is not None:
+        headers["Idempotency-Key"] = idempotency_key
+
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app), base_url="http://dining"
+    ) as client:
+        response = await client.post("/api/dining/orders", headers=headers, json={})
+
+    assert response.status_code == 200
+    assert response.json() == {"code": 4002, "message": "Idempotency-Key不能为空", "data": None}
+    assert session.scalar_calls == 1
+
+
+@pytest.mark.asyncio
+async def test_order_creation_rejects_overlong_idempotency_key_before_database_access() -> None:
+    from services.dining.app.main import create_app
+
+    class Session:
+        def __init__(self) -> None:
+            self.scalar_calls = 0
+
+        async def scalar(self, _query: object) -> object:
+            self.scalar_calls += 1
+            return SimpleNamespace(id=7, couple_id=None)
+
+    session = Session()
+
+    @asynccontextmanager
+    async def provide_session():
+        yield session
+
+    secret = "dining-test-secret-" + "x" * 64
+    app = create_app(jwt_secret=secret, session_provider=provide_session)
+    token = issue_user_token(user_id=7, secret=secret, expires_ms=60_000)
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app), base_url="http://dining"
+    ) as client:
+        response = await client.post(
+            "/api/dining/orders",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Idempotency-Key": f"  {'x' * 129}  ",
+            },
+            json={},
+        )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "code": 4002,
+        "message": "Idempotency-Key长度不能超过128",
+        "data": None,
+    }
+    assert session.scalar_calls == 0
+
+
+@pytest.mark.asyncio
+async def test_order_list_uses_bounded_sql_pagination() -> None:
+    from services.dining.app.main import create_app
+
+    class Result:
+        def all(self) -> list[object]:
+            return []
+
+    class Session:
+        def __init__(self) -> None:
+            self.scalar_calls = 0
+            self.page_statement: object | None = None
+
+        async def scalar(self, _query: object) -> object:
+            self.scalar_calls += 1
+            return SimpleNamespace(id=7, couple_id=None) if self.scalar_calls == 1 else 23
+
+        async def scalars(self, statement: object) -> Result:
+            self.page_statement = statement
+            return Result()
+
+    session = Session()
+
+    @asynccontextmanager
+    async def provide_session():
+        yield session
+
+    secret = "dining-test-secret-" + "x" * 64
+    app = create_app(jwt_secret=secret, session_provider=provide_session)
+    token = issue_user_token(user_id=7, secret=secret, expires_ms=60_000)
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app), base_url="http://dining"
+    ) as client:
+        response = await client.get(
+            "/api/dining/orders?page=3&pageSize=7",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+    assert response.status_code == 200
+    assert response.json()["data"] == {"records": [], "total": 23}
+    assert session.page_statement is not None
+    statement = cast(Any, session.page_statement)
+    assert statement._limit_clause.value == 7
+    assert statement._offset_clause.value == 14

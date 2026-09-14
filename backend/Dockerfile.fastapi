@@ -1,19 +1,28 @@
+# FastAPI 迁移期运行镜像。Java/Spring 镜像仍由 backend/Dockerfile 提供。
+FROM ghcr.io/astral-sh/uv:0.11.21 AS uv-bin
+
 FROM python:3.12-slim-bookworm AS builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
-COPY requirements.fastapi.txt ./
-# 使用腾讯云 Debian 镜像，避免受限网络下访问 deb.debian.org 超时。
+# 腾讯云镜像在国内网络环境下更稳定；代理可由 docker build 的标准参数运行时注入。
 RUN sed -i 's|deb.debian.org/debian|mirrors.cloud.tencent.com/debian|g; s|security.debian.org/debian-security|mirrors.cloud.tencent.com/debian-security|g' /etc/apt/sources.list.d/debian.sources
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends gcc libc6-dev \
     && rm -rf /var/lib/apt/lists/*
-RUN python -m venv .venv \
-    && .venv/bin/pip install --no-cache-dir \
-       --index-url https://mirrors.cloud.tencent.com/pypi/simple \
-       --requirement requirements.fastapi.txt
+COPY --from=uv-bin /uv /usr/local/bin/uv
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+# 仅复制运行时源码，避免把密钥、测试资产和合同快照带入镜像。
+COPY app ./app
+COPY packages ./packages
+COPY services ./services
+COPY scripts/run_couple_code_reminder.py scripts/run_feed_expiry.py ./scripts/
 
 FROM python:3.12-slim-bookworm AS runtime
 
@@ -25,8 +34,12 @@ RUN groupadd --system --gid 10001 app \
     && useradd --system --uid 10001 --gid app --home /app app
 WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
-COPY app ./app
-COPY scripts/run_couple_code_reminder.py scripts/run_feed_expiry.py ./scripts/
+# COPY app ./app (runtime copies the builder's verified source below)
+COPY --from=builder /app/app ./app
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/services ./services
+# COPY scripts/run_couple_code_reminder.py scripts/run_feed_expiry.py ./scripts/
+COPY --from=builder /app/scripts ./scripts
 RUN mkdir -p /app/uploads && chown -R app:app /app
 USER app
 EXPOSE 8000

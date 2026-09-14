@@ -107,12 +107,16 @@ async def test_bind_locks_code_and_participants_before_commit() -> None:
                 love_days=0, couple_nickname=None, status=0,
             )
             self.owner = SimpleNamespace(id=7, couple_id=None, love_start_date=None)
-            self.values = [self.user, self.couple, self.owner]
+            # 先读候选情侣码，再按用户 ID 升序锁定参与者，最后锁定情侣码。
+            self.values = [self.couple, self.owner, self.user, self.couple]
             self.queries = []
+            self.lock_user_ids = []
             self.committed = False
 
         async def execute(self, query):
             self.queries.append(query)
+            if query._for_update_arg is not None and "t_user.id" in str(query):
+                self.lock_user_ids.append(query.compile().params["id_1"])
             return Result(self.values.pop(0))
 
         async def commit(self):
@@ -138,5 +142,10 @@ async def test_bind_locks_code_and_participants_before_commit() -> None:
 
     assert response.status_code == 200
     assert session.committed
-    assert all(query._for_update_arg is not None for query in session.queries)
+    assert session.queries[0]._for_update_arg is None
+    assert all(query._for_update_arg is not None for query in session.queries[1:])
+    assert session.lock_user_ids == [7, 8]
+    assert "user.id =" in str(session.queries[1])
+    assert "user.id =" in str(session.queries[2])
+    assert "couple.id =" in str(session.queries[3])
     assert session.user.couple_id == session.owner.couple_id == session.couple.id

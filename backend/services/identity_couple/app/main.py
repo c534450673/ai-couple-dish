@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 import secrets
 from collections.abc import AsyncIterator, Awaitable, Callable
-from contextlib import AbstractAsyncContextManager
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from datetime import date, datetime
 from time import perf_counter
 
@@ -21,8 +21,15 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import create_access_token
+from app.core.auth import create_access_token, decode_access_token
+from app.core.config import Settings, get_settings
+from app.core.errors import BusinessError
 from app.db.models import Couple, User
+from app.db.session import Database
+from app.redis.client import RedisClient
+from app.redis.keys import logout_blacklist_key
+from app.schemas.business import PhoneLoginRequest
+from app.services import user as user_service
 
 logger = structlog.get_logger()
 
@@ -116,7 +123,7 @@ _SESSION_DEPENDENCY = Depends(_session)
 async def _authenticated_session(
     request: Request, authorization: str | None = Header(default=None)
 ) -> AsyncIterator[AsyncSession]:
-    request.state.user_id = _claims_user(authorization, request.app.state.jwt_secret)
+    request.state.user_id = await _claims_user(request, authorization)
     async for session in _session(request):
         yield session
 
@@ -140,21 +147,53 @@ def _user_payload(user: User) -> dict[str, object | None]:
     }
 
 
-def _claims_user(authorization: str | None, secret: str) -> int:
-    from packages.platform.auth import decode_token
-
+async def _claims_user(request: Request, authorization: str | None) -> int:
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(
             status_code=401, detail={"code": 401, "message": "请先登录", "data": None}
         )
     token = authorization.removeprefix("Bearer ").strip()
     try:
-        payload = decode_token(token, secret=secret)
-        return int(payload["userId"])
-    except Exception as error:
+        claims = decode_access_token(token, request.app.state.jwt_secret)
+    except BusinessError as error:
         raise HTTPException(
             status_code=401, detail={"code": 401, "message": "登录信息无效", "data": None}
         ) from error
+    redis = getattr(request.app.state, "redis", None)
+    if redis is None and request.app.state.requires_redis:
+        raise HTTPException(
+            status_code=503, detail={"code": 503, "message": "身份服务未就绪", "data": None}
+        )
+    if redis is not None:
+        try:
+            revoked = await redis.raw.exists(logout_blacklist_key(claims.jti))
+        except Exception as error:
+            await logger.aerror(
+                "identity_dependency_failed",
+                requestId=_request_id(request),
+                module="identity",
+                operation="check_token_revocation",
+                result="error",
+                errorCode=type(error).__name__,
+            )
+            raise HTTPException(
+                status_code=503, detail={"code": 503, "message": "身份服务暂不可用", "data": None}
+            ) from error
+        if revoked:
+            await logger.awarning(
+                "identity_token_rejected",
+                requestId=_request_id(request),
+                module="identity",
+                operation="check_token_revocation",
+                result="rejected",
+                errorCode="TOKEN_REVOKED",
+            )
+            raise HTTPException(
+                status_code=401,
+                detail={"code": 401, "message": "登录已过期，请重新登录", "data": None},
+            )
+    request.state.token_claims = claims
+    return claims.user_id
 
 
 def create_app(
@@ -162,11 +201,52 @@ def create_app(
     jwt_secret: str | None = None,
     session_provider: SessionProvider | None = None,
     wechat_code_resolver: WechatCodeResolver | None = None,
+    settings: Settings | None = None,
 ) -> FastAPI:
-    app = FastAPI(title="Identity Couple Service")
+    @asynccontextmanager
+    async def lifespan(application: FastAPI) -> AsyncIterator[None]:
+        if session_provider is not None:
+            yield
+            return
+        active_settings = settings or get_settings()
+        database = Database(
+            active_settings.database_url,
+            pool_size=active_settings.database_pool_size,
+            max_overflow=active_settings.database_max_overflow,
+        )
+        redis = RedisClient(active_settings.redis_url)
+        application.state.settings = active_settings
+        application.state.session_provider = database.session
+        application.state.redis = redis
+        try:
+            await database.connect()
+            await redis.connect()
+            await logger.ainfo(
+                "identity_dependencies_connected",
+                module="identity",
+                operation="startup",
+                result="success",
+                dependencies=["database", "redis"],
+            )
+            yield
+        finally:
+            await redis.close()
+            await database.close()
+            await logger.ainfo(
+                "identity_dependencies_closed",
+                module="identity",
+                operation="shutdown",
+                result="success",
+                dependencies=["database", "redis"],
+            )
+
+    app = FastAPI(title="Identity Couple Service", lifespan=lifespan)
     app.state.jwt_secret = _secret(jwt_secret)
     app.state.session_provider = session_provider
     app.state.wechat_code_resolver = wechat_code_resolver or _resolve_wechat_code
+    app.state.settings = settings
+    app.state.redis = None
+    app.state.requires_redis = session_provider is None
 
     @app.middleware("http")
     async def request_context(request: Request, call_next):  # type: ignore[no-untyped-def]
@@ -188,6 +268,21 @@ def create_app(
             }
         )
         return JSONResponse(status_code=error.status_code, content=detail)
+
+    @app.exception_handler(BusinessError)
+    async def business_error(request: Request, error: BusinessError) -> JSONResponse:
+        await logger.awarning(
+            "identity_operation_rejected",
+            requestId=_request_id(request),
+            module="identity",
+            operation=request.url.path,
+            result="rejected",
+            errorCode=error.code,
+        )
+        return JSONResponse(
+            status_code=error.http_status,
+            content={"code": error.code, "message": error.message, "data": None},
+        )
 
     @app.get("/health")
     async def health() -> dict[str, str]:
@@ -229,6 +324,80 @@ def create_app(
             errorCode="NONE",
         )
         return _result({"token": token, "userInfo": _user_payload(user)})
+
+    @app.post("/api/user/sendCode")
+    async def send_code(request: Request, phone: str) -> dict[str, object | None]:
+        active_settings: Settings | None = app.state.settings
+        if active_settings is None or app.state.redis is None:
+            raise HTTPException(
+                status_code=503, detail={"code": 503, "message": "身份服务未就绪", "data": None}
+            )
+        if active_settings.app_env not in {"local", "test"}:
+            raise HTTPException(
+                status_code=503, detail={"code": 503, "message": "验证码发送暂不可用", "data": None}
+            )
+        code = await user_service.send_verify_code(request, phone)
+        dev_code = code if active_settings.expose_dev_verification_code else None
+        return {
+            "code": 200,
+            "message": "验证码发送成功",
+            "data": {"devCode": dev_code} if dev_code else None,
+        }
+
+    @app.post("/api/user/register")
+    async def register(
+        request: Request, payload: PhoneLoginRequest, session: AsyncSession = _SESSION_DEPENDENCY
+    ) -> dict[str, object | None]:
+        if app.state.settings is None or app.state.redis is None:
+            raise HTTPException(
+                status_code=503, detail={"code": 503, "message": "身份服务未就绪", "data": None}
+            )
+        started = perf_counter()
+        data = await user_service.register_by_phone(request, session, payload)
+        await logger.ainfo(
+            "identity_operation_completed",
+            requestId=_request_id(request),
+            module="identity",
+            operation="register_by_phone",
+            result="success",
+            durationMs=round((perf_counter() - started) * 1000),
+            errorCode="NONE",
+        )
+        return _result(data)
+
+    @app.post("/api/user/phoneLogin")
+    async def phone_login(
+        request: Request, payload: PhoneLoginRequest, session: AsyncSession = _SESSION_DEPENDENCY
+    ) -> dict[str, object | None]:
+        if app.state.settings is None or app.state.redis is None:
+            raise HTTPException(
+                status_code=503, detail={"code": 503, "message": "身份服务未就绪", "data": None}
+            )
+        started = perf_counter()
+        data = await user_service.phone_login(request, session, payload)
+        await logger.ainfo(
+            "identity_operation_completed",
+            requestId=_request_id(request),
+            module="identity",
+            operation="phone_login",
+            result="success",
+            durationMs=round((perf_counter() - started) * 1000),
+            errorCode="NONE",
+        )
+        return _result(data)
+
+    @app.post("/api/user/logout")
+    async def logout(
+        request: Request, session: AsyncSession = _AUTHENTICATED_SESSION_DEPENDENCY
+    ) -> dict[str, object | None]:
+        if app.state.redis is None:
+            raise HTTPException(
+                status_code=503, detail={"code": 503, "message": "身份服务未就绪", "data": None}
+            )
+        await user_service.logout(
+            request, session, request.state.user_id, request.state.token_claims
+        )
+        return _result()
 
     @app.get("/api/user/profile")
     async def profile(
@@ -297,17 +466,43 @@ def create_app(
         session: AsyncSession = _AUTHENTICATED_SESSION_DEPENDENCY,
     ) -> dict[str, object]:
         user_id = request.state.user_id
-        user_result = await session.execute(
-            select(User).where(User.id == user_id, User.is_deleted == 0).with_for_update()
+        normalized_code = payload.couple_code.strip().upper()
+        candidate_result = await session.execute(
+            select(Couple)
+            .where(Couple.couple_code == normalized_code, Couple.status == 0)
+            .limit(1)
         )
-        user = user_result.scalar_one_or_none()
+        candidate = candidate_result.scalar_one_or_none()
+        if candidate is None:
+            raise HTTPException(
+                status_code=400,
+                detail={"code": 2003, "message": "情侣码无效或已过期", "data": None},
+            )
+
+        # 交叉码并发绑定时，所有参与者都按数值升序加锁；先锁用户，再锁情侣码，
+        # 不让一条事务持有用户锁后等待另一条事务持有的情侣码锁。
+        participant_ids = sorted({user_id, candidate.user1_id})
+        locked_users: dict[int, User | None] = {}
+        for participant_id in participant_ids:
+            participant_result = await session.execute(
+                select(User)
+                .where(User.id == participant_id, User.is_deleted == 0)
+                .with_for_update()
+            )
+            locked_users[participant_id] = participant_result.scalar_one_or_none()
         code_result = await session.execute(
             select(Couple)
-            .where(Couple.couple_code == payload.couple_code.strip().upper(), Couple.status == 0)
+            .where(
+                Couple.id == candidate.id,
+                Couple.couple_code == normalized_code,
+                Couple.status == 0,
+            )
             .limit(1)
             .with_for_update()
         )
         couple = code_result.scalar_one_or_none()
+        user = locked_users.get(user_id)
+        owner = locked_users.get(candidate.user1_id)
         if (
             user is None
             or couple is None
@@ -327,10 +522,15 @@ def create_app(
         user.love_start_date = datetime.combine(
             couple.start_date or date.today(), datetime.min.time()
         )
-        owner_result = await session.execute(
-            select(User).where(User.id == couple.user1_id, User.is_deleted == 0).with_for_update()
+        await logger.ainfo(
+            "identity_bind_locks_acquired",
+            requestId=_request_id(request),
+            module="identity",
+            operation="bind",
+            result="locked",
+            lockOrder=participant_ids,
+            coupleId=couple.id,
         )
-        owner = owner_result.scalar_one_or_none()
         if owner is None or owner.couple_id is not None:
             await session.rollback()
             raise HTTPException(

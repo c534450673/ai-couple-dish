@@ -117,6 +117,12 @@ onMounted(() => {
       </button>
     </header>
 
+    <button class="dining-entry" type="button" data-test="open-dining" @click="router.push('/dining')">
+      <span class="dining-entry__icon"><van-icon name="shop-o" /></span>
+      <span><strong>开始点菜</strong><small>浏览真实菜品，加入你的今晚购物车</small></span>
+      <van-icon name="arrow" aria-hidden="true" />
+    </button>
+
     <form class="search-row search-row--discovery" @submit.prevent="handleSearch">
       <van-icon name="search" aria-hidden="true" />
       <input v-model="keyword" type="search" placeholder="搜索餐厅、食谱或地点..." aria-label="搜索餐厅、食谱或地点">
@@ -216,6 +222,11 @@ onMounted(() => {
 .eyebrow { margin-bottom: $space-1; color: $cosmos-secondary; font-size: $fs-caption; font-weight: $fw-semibold; }
 h1 { font-size: 28px; line-height: 36px; }
 .icon-action { width: 44px; min-width: 44px; min-height: 44px; border: 1px solid $cosmos-border; border-radius: 50%; background: $cosmos-surface-raised; color: $cosmos-primary; font-size: 20px; }
+.dining-entry { display: flex; width: 100%; align-items: center; gap: $space-3; margin-bottom: $space-4; padding: $space-3 $space-4; border: 1px solid rgba(84, 232, 211, .34); border-radius: $radius-lg; color: $cosmos-text; background: linear-gradient(110deg, rgba(84, 232, 211, .16), rgba(20, 27, 51, .78)); text-align: left; }
+.dining-entry__icon { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border-radius: 50%; color: $cosmos-bg; background: $cosmos-secondary; font-size: 20px; }
+.dining-entry span:nth-child(2) { display: grid; flex: 1; gap: 2px; }
+.dining-entry strong { font-size: $fs-body; }
+.dining-entry small { color: $cosmos-text-muted; font-size: $fs-caption; }
 .search-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: $space-2; align-items: center; padding: $space-2 $space-3; border: 1px solid $cosmos-border; border-radius: 8px; background: $cosmos-surface-raised; }
 .search-row input { min-width: 0; min-height: 40px; border: 0; outline: 0; background: transparent; color: $cosmos-text; font-size: $fs-body; }
 .search-row button, .state-panel button { min-height: 40px; padding: 0 $space-4; border: 0; border-radius: 6px; background: $cosmos-primary; color: #fff; }

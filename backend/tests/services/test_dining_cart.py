@@ -1,10 +1,14 @@
+from contextlib import asynccontextmanager
 from decimal import Decimal
 from types import SimpleNamespace
 
 import httpx
 import pytest
 
+from packages.platform.catalog import Dish
+from services.catalog.app.main import create_app as create_catalog_app
 from services.dining.app.services.cart import _item_payload, list_items
+from services.dining.app.services.catalog import HttpCatalogReader
 
 
 def test_cart_item_payload_contains_price_snapshot_and_subtotal() -> None:
@@ -69,3 +73,60 @@ async def test_empty_cart_read_does_not_create_an_uncommitted_cart() -> None:
     assert result["cartId"] is None
     assert result["items"] == []
     assert session.added == []
+
+
+@pytest.mark.asyncio
+async def test_http_catalog_reader_returns_legal_dish_with_cart_price_contract() -> None:
+    dish = Dish(
+        slug="checkout-dish",
+        name="可结算菜品",
+        cuisine="chuan",
+        tags=(),
+        spicy_level=1,
+        status="published",
+        sources=(
+            {
+                "url": "https://example.test/source",
+                "license": "CC-BY-4.0",
+                "attribution": "Example Author",
+                "reviewStatus": "approved",
+            },
+        ),
+        id=801,
+        unit_price=Decimal("19.90"),
+    )
+
+    class Store:
+        async def get_published_dish(self, session, dish_reference):
+            return dish if dish_reference == "801" else None
+
+    @asynccontextmanager
+    async def session_provider():
+        yield SimpleNamespace()
+
+    catalog_app = create_catalog_app(session_provider=session_provider, store=Store())
+    reader = HttpCatalogReader("http://catalog", transport=httpx.ASGITransport(app=catalog_app))
+
+    dish = await reader.get_dish(801, "catalog-contract-test")
+
+    assert dish is not None
+    assert dish["id"] == 801
+    assert dish["name"] == "可结算菜品"
+    assert dish["unitPrice"] == "19.90"
+
+
+@pytest.mark.asyncio
+async def test_http_catalog_reader_rejects_incomplete_published_contract() -> None:
+    async def handler(_: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            json={
+                "code": 200,
+                "message": "操作成功",
+                "data": {"id": 802, "name": "缺失价格", "status": "published"},
+            },
+        )
+
+    reader = HttpCatalogReader("http://catalog", transport=httpx.MockTransport(handler))
+
+    assert await reader.get_dish(802, "catalog-contract-invalid") is None

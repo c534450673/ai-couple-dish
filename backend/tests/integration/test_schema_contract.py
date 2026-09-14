@@ -295,5 +295,5 @@ async def test_daily_greeting_unique_migration_resumes_after_column_only_partial
             )
         )
 
-    assert revision == "0002_daily_greeting_unique"
+    assert revision == "0006_catalog_persistence"
     assert int(unique_index_columns or 0) == 3

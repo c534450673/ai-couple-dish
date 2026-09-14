@@ -42,6 +42,41 @@ uv run uvicorn app.main:app --host 127.0.0.1 --port 8000
 `/api/couple/**`、`/api/coupleTree/**`、`/api/dailyGreeting/**`、`/api/notification/**`、`/api/wish/**`、`/api/heartMoment/**`、`/api/challenge/**`、`/api/mood/**`、`/api/timeCapsule/**`、`/api/sweetBomb/**` 和 `/api/invite/**` 合同 route 由 FastAPI 提供，其余 `/api/**`
 仍由 Spring 处理；权威清单见 `backend/contracts/migration-ownership.json`。
 
+## Python 微服务入口（当前可运行面）
+
+Python 微服务已经按边界拆分为独立 FastAPI 入口，但 Compose 双栈默认仍由
+Spring `backend` 作为旧业务回退写者；不要把“可以启动多个 Python 进程”当作
+“全部业务已切换”。所有入口都从仓库根目录启动，并共享 `backend/` 的 Python
+path。生产/预发布必须注入完整的 `DB_*`、`REDIS_*`、`JWT_SECRET`，不能依赖
+导入时的未配置占位应用：
+
+```bash
+cd backend
+export PYTHONPATH=.
+uv run uvicorn services.gateway.app.main:app --host 0.0.0.0 --port 8000
+uv run uvicorn services.identity_couple.app.main:app --host 0.0.0.0 --port 8001
+uv run uvicorn services.catalog.app.main:app --host 0.0.0.0 --port 8002
+uv run uvicorn services.dining.app.main:app --host 0.0.0.0 --port 8003
+uv run uvicorn services.media.app.main:app --host 0.0.0.0 --port 8004
+uv run uvicorn services.admin.app.main:app --host 0.0.0.0 --port 8005
+uv run uvicorn services.analytics.app.main:app --host 0.0.0.0 --port 8006
+uv run uvicorn services.worker.app.main:app --host 0.0.0.0 --port 8007
+```
+
+每个进程的 `/health` 是存活检查；依赖数据库的服务还提供 `/health/ready`。
+Gateway 的 `GATEWAY_*_SERVICE_URL` 应指向对应上游，例如
+`http://127.0.0.1:8001` 至 `http://127.0.0.1:8006`。Worker 默认关闭，只有受管
+任务明确设置 `WORKER_ENABLED=true` 且提供 `WORKER_TRIGGER_TOKEN` 时才执行任务。
+
+### Compose 双栈的边界
+
+`deploy/dev/docker/docker-compose.yml` 启动 MySQL、Redis、Spring `backend` 与
+Nginx；叠加 `docker-compose.fastapi.yml` 才会构建 `fastapi-backend`（`backend/
+Dockerfile.fastapi`，端口仅在 Compose 网络内暴露 8000）并把已登记切流路径转发
+到它。该 overlay 不会自动启动上面列出的 identity/catalog/dining/admin/
+analytics 等独立容器，也不会替换未知路径的 Spring 回退。部署前应分别运行入口
+健康检查并确认上游 URL，再执行 `docker compose ... config --quiet` 和 `nginx -t`。
+
 ## HTTP 切流与回滚
 
 当前启用 `user-couple-notification-v1`、`wish-v1`、`heart-moment-v1`、`challenge-v1`、`mood-v1`、`time-capsule-v1`、`sweet-bomb-v1`、`invite-v1`、`couple-tree-v1` 和 `daily-greeting-v1` 十个 HTTP 切流批次，覆盖用户 7 条、
@@ -83,6 +118,58 @@ PROJECT_NAME='fastapi-foundation-qa' NGINX_PORT='<inject-at-runtime>' \
 转发到 FastAPI；通用 `location /api/` 固定转发到 `spring_backend`。Task11 的真实
 双栈启动曾因 Maven/Eclipse Temurin 镜像网络超时而无法完成；重试前配置组织代理或
 预热镜像，不能把 Compose config 通过写成运行时通过。
+
+## Python 微服务全量编排
+
+`deploy/dev/docker/docker-compose.python.yml` 是独立的开发/QA 编排，用于验证正式
+Python 服务边界，而不是迁移期双栈 overlay。它会启动以下八个入口：
+
+| 服务 | 容器端口 | 责任 |
+| --- | ---: | --- |
+| `gateway` | 8000 | 同源 API 入口、认证校验和上游路由 |
+| `identity` | 8001 | 用户登录、情侣绑定 |
+| `catalog` | 8002 | 菜品目录与授权来源 |
+| `dining` | 8003 | 购物车与订单 |
+| `media` | 8004 | 图片上传与授权读取 |
+| `admin` | 8005 | 管理员会话、审核、审计 |
+| `analytics` | 8006 | 事件接收与报表 |
+| `worker` | 8007 | 受管任务入口（默认关闭任务执行） |
+
+MySQL、Redis、Alembic migration、上传卷初始化和 Nginx 也由该文件管理。所有业务
+服务复用 `backend/Dockerfile.fastapi`，但通过独立 Uvicorn 命令和端口启动；Nginx
+只代理到 `gateway:8000`，不会再隐式依赖 Spring `backend`。migration 完成后，除
+worker 外的业务服务才允许启动，避免健康检查早于表结构准备完成。
+
+运行前必须在 shell 或 CI secret 中注入 `JWT_SECRET`（至少 64 字符）、
+`ADMIN_JWT_SECRET`（至少 64 字符）和 `ADMIN_PASSWORD_HASH`；不要把这些值写入
+仓库或日志。最小配置校验：
+
+```bash
+cd deploy/dev/docker
+JWT_SECRET='<inject-at-runtime>' \
+ADMIN_JWT_SECRET='<inject-at-runtime>' \
+ADMIN_PASSWORD_HASH='<bcrypt-hash-injected-at-runtime>' \
+docker compose -f docker-compose.python.yml config --quiet
+```
+
+全量启动及最小同源 smoke：
+
+```bash
+cd deploy/dev/docker
+JWT_SECRET='<inject-at-runtime>' \
+ADMIN_JWT_SECRET='<inject-at-runtime>' \
+ADMIN_PASSWORD_HASH='<bcrypt-hash-injected-at-runtime>' \
+bash ./python-compose-smoke.sh
+```
+
+脚本只输出服务名、状态和耗时等结构化信息；默认 smoke 完成后停止本次项目并保留
+命名卷。需要保留现场排查时设置 `KEEP_SMOKE_STACK=1`，清理使用同一项目名执行
+`docker compose -p ai-couple-dish-python-smoke -f docker-compose.python.yml down`。
+
+`init-python-schema.sh` 仅为开发/QA 容器把 H2 兼容测试 schema 的索引语法转换为
+MySQL 8 可执行语法；随后由 Alembic 应用服务新增表。生产部署不得直接把该测试 schema
+当作生产快照，应按“Schema 审计、验证与 stamp”章节使用已审批的 MySQL canonical
+快照。
 
 ## Spring 合同导出
 

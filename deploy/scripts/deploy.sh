@@ -174,7 +174,7 @@ WX_APPID=your-appid
 WX_SECRET=your-secret
 
 # JWT配置
-JWT_SECRET=aiCoupleDishSecretKey2024VeryLongAndSecureForProduction
+JWT_SECRET="${JWT_SECRET:?请通过密钥管理器或运行时环境变量注入 JWT_SECRET}"
 EOF
         print_success "环境变量文件已创建: ${DEPLOY_DIR}/docker/.env"
     else

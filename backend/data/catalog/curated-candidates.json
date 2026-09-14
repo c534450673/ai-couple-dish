@@ -1,0 +1,65 @@
+[
+  {
+    "id": 10001,
+    "slug": "gong-bao-ji-ding",
+    "name": "宫保鸡丁",
+    "cuisine": "chuan",
+    "tags": ["鸡肉", "花生"],
+    "spicyLevel": 2,
+    "status": "draft",
+    "unitPrice": "0.00",
+    "imageAsset": "assets/kung-pao-chicken.jpg",
+    "sources": [
+      {
+        "url": "https://commons.wikimedia.org/wiki/File:Kung_Pao_Chicken_at_Liqiaoshun_Restaurant_(20220310175424).jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "attribution": "N509FZ / Wikimedia Commons / CC BY-SA 4.0; thumbnail, no editorial changes",
+        "reviewStatus": "pending",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "id": 10002,
+    "slug": "ma-po-dou-fu",
+    "name": "麻婆豆腐",
+    "cuisine": "chuan",
+    "tags": ["豆腐", "香辣"],
+    "spicyLevel": 3,
+    "status": "draft",
+    "unitPrice": "0.00",
+    "imageAsset": "assets/mapo-tofu.jpg",
+    "sources": [
+      {
+        "url": "https://commons.wikimedia.org/wiki/File:Chen_Mapo_Tofu.jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "attribution": "ZhengZhou / Wikimedia Commons / CC BY-SA 4.0; thumbnail, no editorial changes",
+        "reviewStatus": "pending",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "id": 10003,
+    "slug": "bai-qie-ji",
+    "name": "白切鸡",
+    "cuisine": "yue",
+    "tags": ["鸡肉", "清淡"],
+    "spicyLevel": 0,
+    "status": "draft",
+    "unitPrice": "0.00",
+    "imageAsset": "assets/white-cut-chicken.jpg",
+    "sources": [
+      {
+        "url": "https://commons.wikimedia.org/wiki/File:Whitecutchicken.jpg",
+        "license": "Public domain",
+        "licenseUrl": "https://commons.wikimedia.org/wiki/File:Whitecutchicken.jpg",
+        "attribution": "Benjwong / Wikimedia Commons / Public domain; thumbnail, no editorial changes",
+        "reviewStatus": "pending",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  }
+]

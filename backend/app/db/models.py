@@ -1,12 +1,127 @@
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import BigInteger, Date, DateTime, Integer, Numeric, String, Text, text
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import (
+    BigInteger,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Text,
+    UniqueConstraint,
+    text,
+)
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
     pass
+
+
+class CatalogCuisine(Base):
+    """目录服务拥有的菜系主数据。"""
+
+    __tablename__ = "catalog_cuisine"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    slug: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    status: Mapped[str] = mapped_column(String(16), nullable=False, server_default=text("'active'"))
+
+
+class CatalogDish(Base):
+    """目录服务拥有的可点菜菜品，主键即跨服务传递的数字菜品 ID。"""
+
+    __tablename__ = "catalog_dish"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    slug: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    cuisine_slug: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    tags_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    allergens_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    spicy_level: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    status: Mapped[str] = mapped_column(
+        String(16), nullable=False, server_default=text("'draft'"), index=True
+    )
+    image_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    unit_price: Mapped[Decimal | None] = mapped_column(Numeric(10, 2), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )
+    sources: Mapped[list["CatalogDishSource"]] = relationship(
+        back_populates="dish", cascade="all, delete-orphan", lazy="selectin"
+    )
+
+
+class CatalogDishSource(Base):
+    """菜品的可审计授权资料；不会从菜品名或图片链接推断生成。"""
+
+    __tablename__ = "catalog_dish_source"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    dish_id: Mapped[int] = mapped_column(
+        BigInteger, ForeignKey("catalog_dish.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    source_url: Mapped[str] = mapped_column(String(1024), nullable=False)
+    source_url_fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    license_name: Mapped[str] = mapped_column(String(128), nullable=False)
+    attribution: Mapped[str] = mapped_column(String(512), nullable=False)
+    review_status: Mapped[str] = mapped_column(
+        String(16), nullable=False, server_default=text("'pending'"), index=True
+    )
+    collected_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    license_expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
+    dish: Mapped[CatalogDish] = relationship(back_populates="sources")
+
+    __table_args__ = (
+        UniqueConstraint(
+            "dish_id", "source_url_fingerprint", name="uk_catalog_dish_source_fingerprint"
+        ),
+    )
+
+
+class CatalogDishImage(Base):
+    """已上传的目录图片及其原始授权记录。"""
+
+    __tablename__ = "catalog_dish_image"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    dish_slug: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    object_key: Mapped[str] = mapped_column(String(512), nullable=False)
+    source_url: Mapped[str] = mapped_column(String(1024), nullable=False)
+    license_name: Mapped[str] = mapped_column(String(128), nullable=False)
+    attribution: Mapped[str] = mapped_column(String(512), nullable=False)
+    license_expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    review_status: Mapped[str] = mapped_column(
+        String(16), nullable=False, server_default=text("'pending'")
+    )
+    width: Mapped[int] = mapped_column(Integer, nullable=False)
+    height: Mapped[int] = mapped_column(Integer, nullable=False)
+    thumbnail_key: Mapped[str | None] = mapped_column(String(512), nullable=True)
+
+
+class CatalogImportBatch(Base):
+    """保留每批导入的失败明细，供后台追溯和重新处理。"""
+
+    __tablename__ = "catalog_import_batch"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    source_name: Mapped[str] = mapped_column(String(128), nullable=False)
+    imported_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    failed_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    failure_report_json: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)
 
 
 class User(Base):

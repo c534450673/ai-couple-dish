@@ -2,16 +2,17 @@
 
 一款面向情侣的私密菜单管理应用，支持记录约会餐厅、管理心愿清单、纪念日提醒等功能。
 
-当前后端处于 FastAPI 基础设施迁移期：Java Spring Boot `backend/Dockerfile` 仍是 193
-条业务 route 的唯一业务写者；`backend/Dockerfile.fastapi` 仅提供 health 等基础能力，
-尚未承载业务 route，也不表示后端迁移完成。H5 继续通过同源相对 `/api` 访问 Nginx，
-由 Nginx 将业务请求转发至 Spring。
+当前后端处于 FastAPI 分阶段迁移期：Python 微服务入口已覆盖 identity、catalog、
+dining、media、admin、analytics、gateway 与 worker；已登记的 84 条合同 route
+由 FastAPI 承载，其余 route 仍由 Java Spring Boot `backend/Dockerfile` 作为回退
+写者。独立 Python 服务可运行不表示后端迁移完成；H5 继续通过同源相对 `/api`
+访问 Nginx，由 Nginx 按 owner 将请求转发至 FastAPI 或 Spring。
 
 ## 项目结构
 
 ```
 ai-couple-dish/
-├── backend/              # Spring Boot 后端服务
+├── backend/              # Java Spring + Python FastAPI 迁移期后端
 ├── frontend/              # 微信小程序版本
 ├── frontend-h5/           # H5 浏览器版本
 ├── frontend-uniapp/       # UniApp 跨平台版本
@@ -25,7 +26,7 @@ ai-couple-dish/
 ### 后端
 
 - **Java 17** + Spring Boot 2.7
-- **FastAPI** + Python 3.12（迁移期基础 health 服务，业务仍由 Spring 承载）
+- **FastAPI** + Python 3.12（identity/catalog/dining/media/admin/analytics 等微服务，分阶段切流）
 - **MySQL** + MyBatis Plus
 - **Redis** - 缓存和会话
 - **JWT** - 用户认证
@@ -60,7 +61,8 @@ cp .env.example .env
 ./mvnw spring-boot:run
 ```
 
-后端启动后访问: http://localhost:8080/api/doc.html
+旧 Spring 后端启动后访问: http://localhost:8080/api/doc.html；Python 微服务入口和双栈
+Compose 说明见 [FastAPI 双栈运行手册](docs/runbooks/fastapi-dual-stack.md)。
 
 ### 前端 H5 启动
 

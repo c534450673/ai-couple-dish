@@ -163,7 +163,7 @@ api.interceptors.request.use(
     addPendingRequest(config)
 
     const token = localStorage.getItem('token')
-    if (token) {
+    if (token && !config.skipUserToken) {
       unauthorizedNavigationStarted = false
       config.headers.Authorization = `Bearer ${token}`
     }

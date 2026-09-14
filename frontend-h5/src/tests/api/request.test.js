@@ -135,6 +135,20 @@ describe('API Request Module', () => {
     })
   })
 
+  it('管理员请求保留独立 Authorization，不被普通用户 token 覆盖', () => {
+    localStorage.setItem('token', 'user-token')
+    const config = {
+      headers: { Authorization: 'Bearer admin-token' },
+      method: 'get',
+      url: '/admin/orders',
+      skipUserToken: true
+    }
+
+    transport.state.requestHandler(config)
+
+    expect(config.headers.Authorization).toBe('Bearer admin-token')
+  })
+
   describe('unauthorized session cleanup', () => {
     it('业务码 401 只清理本机会话，不调用远程 logout', async () => {
       localStorage.setItem('token', 'expired-session')

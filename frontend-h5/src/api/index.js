@@ -125,6 +125,98 @@ export const menuApi = {
   }
 }
 
+export const diningApi = {
+  getCuisines() {
+    return api.get('/dining/cuisines', { cache: false })
+  },
+  getDishes(params = {}) {
+    return api.get('/dining/dishes', { params, cache: false })
+  },
+  getCart() {
+    return api.get('/dining/cart', { cache: false })
+  },
+  addItem(data) {
+    return api.post('/dining/cart/items', data, { retryConfig: { retries: 0 } })
+  },
+  updateItem(itemId, quantity) {
+    return api.patch(`/dining/cart/items/${itemId}`, { quantity }, { retryConfig: { retries: 0 } })
+  },
+  removeItem(itemId) {
+    return api.delete(`/dining/cart/items/${itemId}`, { retryConfig: { retries: 0 } })
+  },
+  clearCart() {
+    return api.delete('/dining/cart', { retryConfig: { retries: 0 } })
+  },
+  createOrder(data, idempotencyKey) {
+    if (typeof idempotencyKey !== 'string' || !idempotencyKey.trim()) {
+      throw new Error('Idempotency-Key is required for order creation')
+    }
+    return api.post('/dining/orders', data, {
+      headers: { 'Idempotency-Key': idempotencyKey.trim() },
+      retryConfig: { retries: 0 }
+    })
+  },
+  getOrders() {
+    return api.get('/dining/orders', { cache: false })
+  },
+  getOrder(orderId) {
+    return api.get(`/dining/orders/${orderId}`, { cache: false })
+  },
+  confirmOrder(orderId) {
+    return api.post(`/dining/orders/${orderId}/confirm`, undefined, { retryConfig: { retries: 0 } })
+  },
+  cancelOrder(orderId) {
+    return api.post(`/dining/orders/${orderId}/cancel`, undefined, { retryConfig: { retries: 0 } })
+  }
+}
+
+// 管理后台使用独立令牌；不会复用或覆盖普通用户会话。
+const adminRequestConfig = (config = {}) => ({
+  ...config,
+  headers: {
+    ...(config.headers || {}),
+    ...(localStorage.getItem('adminToken')
+      ? { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
+      : {})
+  },
+  cache: false,
+  skipUserToken: true,
+  skipAuthErrorHandler: true
+})
+
+export const adminApi = {
+  login(data) {
+    return api.post('/admin/login', data, { retryConfig: { retries: 0 }, skipAuthErrorHandler: true })
+  },
+  getAudit(operation) {
+    return api.get('/admin/audit', adminRequestConfig({ params: operation ? { operation } : {} }))
+  },
+  getOrders(status) {
+    return api.get('/admin/orders', adminRequestConfig({ params: status ? { status } : {} }))
+  },
+  getCatalogImports() {
+    return api.get('/admin/catalog/imports', adminRequestConfig())
+  },
+  getUser(userId) {
+    return api.get(`/admin/users/${userId}`, adminRequestConfig())
+  },
+  getDailyReport(date) {
+    return api.get('/analytics/reports/daily', adminRequestConfig({ params: { date } }))
+  },
+  getHourlyReport(date) {
+    return api.get('/analytics/reports/hourly', adminRequestConfig({ params: { date } }))
+  },
+  reviewCatalog(data) {
+    return api.post('/admin/catalog/review', data, adminRequestConfig({ retryConfig: { retries: 0 } }))
+  },
+  publishCatalog(slug) {
+    return api.post(`/admin/catalog/${encodeURIComponent(slug)}/publish`, undefined, adminRequestConfig({ retryConfig: { retries: 0 } }))
+  },
+  flagOrder(orderId, data) {
+    return api.post(`/admin/orders/${encodeURIComponent(orderId)}/flag`, data, adminRequestConfig({ retryConfig: { retries: 0 } }))
+  }
+}
+
 export const recipeApi = {
   createRecipe(data) {
     return api.post('/recipe/create', data)

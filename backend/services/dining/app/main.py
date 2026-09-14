@@ -5,21 +5,26 @@ from __future__ import annotations
 import os
 import secrets
 from collections.abc import AsyncIterator, Callable
-from contextlib import AbstractAsyncContextManager
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from datetime import datetime
 from typing import Any
 
 import httpx
 import structlog
-from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.auth import decode_access_token
+from app.core.config import Settings, get_settings
+from app.core.errors import BusinessError
 from app.db.models import User
-from packages.platform.auth import decode_token
+from app.db.session import Database
+from app.redis.client import RedisClient
+from app.redis.keys import logout_blacklist_key
 from services.dining.app.models import DiningOrder, DiningOrderItem
 from services.dining.app.services import cart, order
 from services.dining.app.services.catalog import CatalogReader, HttpCatalogReader
@@ -87,14 +92,47 @@ async def _user_id(request: Request) -> int:
             status_code=401, detail={"code": 401, "message": "请先登录", "data": None}
         )
     try:
-        claims = decode_token(
-            authorization.removeprefix("Bearer ").strip(), secret=request.app.state.jwt_secret
+        claims = decode_access_token(
+            authorization.removeprefix("Bearer ").strip(), request.app.state.jwt_secret
         )
-        return int(claims["userId"])
-    except Exception as error:
+    except BusinessError as error:
         raise HTTPException(
             status_code=401, detail={"code": 401, "message": "登录信息无效", "data": None}
         ) from error
+    redis = getattr(request.app.state, "redis", None)
+    if redis is None and request.app.state.requires_redis:
+        raise HTTPException(
+            status_code=503, detail={"code": 503, "message": "点菜服务未就绪", "data": None}
+        )
+    if redis is not None:
+        try:
+            revoked = await redis.raw.exists(logout_blacklist_key(claims.jti))
+        except Exception as error:
+            await logger.aerror(
+                "dining_dependency_failed",
+                requestId=request.state.request_id,
+                module="dining",
+                operation="check_token_revocation",
+                result="error",
+                errorCode=type(error).__name__,
+            )
+            raise HTTPException(
+                status_code=503, detail={"code": 503, "message": "点菜服务暂不可用", "data": None}
+            ) from error
+        if revoked:
+            await logger.awarning(
+                "dining_token_rejected",
+                requestId=request.state.request_id,
+                module="dining",
+                operation="check_token_revocation",
+                result="rejected",
+                errorCode="TOKEN_REVOKED",
+            )
+            raise HTTPException(
+                status_code=401,
+                detail={"code": 401, "message": "登录已过期，请重新登录", "data": None},
+            )
+    return claims.user_id
 
 
 async def _authenticated_session(request: Request) -> AsyncIterator[AsyncSession]:
@@ -118,10 +156,49 @@ def create_app(
     jwt_secret: str | None = None,
     session_provider: SessionProvider | None = None,
     catalog_reader: CatalogReader | None = None,
+    settings: Settings | None = None,
 ) -> FastAPI:
-    app = FastAPI(title="Dining Service")
+    @asynccontextmanager
+    async def lifespan(application: FastAPI) -> AsyncIterator[None]:
+        if session_provider is not None:
+            yield
+            return
+        active_settings = settings or get_settings()
+        database = Database(
+            active_settings.database_url,
+            pool_size=active_settings.database_pool_size,
+            max_overflow=active_settings.database_max_overflow,
+        )
+        redis = RedisClient(active_settings.redis_url)
+        application.state.session_provider = database.session
+        application.state.redis = redis
+        try:
+            await database.connect()
+            await redis.connect()
+            await logger.ainfo(
+                "dining_dependencies_connected",
+                module="dining",
+                operation="startup",
+                result="success",
+                dependencies=["database", "redis"],
+            )
+            yield
+        finally:
+            await redis.close()
+            await database.close()
+            await logger.ainfo(
+                "dining_dependencies_closed",
+                module="dining",
+                operation="shutdown",
+                result="success",
+                dependencies=["database", "redis"],
+            )
+
+    app = FastAPI(title="Dining Service", lifespan=lifespan)
     app.state.jwt_secret = _secret(jwt_secret)
     app.state.session_provider = session_provider
+    app.state.redis = None
+    app.state.requires_redis = session_provider is None
     app.state.catalog_reader = catalog_reader or HttpCatalogReader(
         os.getenv("CATALOG_SERVICE_URL", "http://127.0.0.1:8102")
     )
@@ -291,7 +368,33 @@ def create_app(
         idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
         session: AsyncSession = _AUTHENTICATED_SESSION_DEPENDENCY,
     ) -> dict[str, object]:
+        normalized_idempotency_key = (
+            idempotency_key.strip() if idempotency_key is not None else None
+        )
+        if normalized_idempotency_key is not None and len(normalized_idempotency_key) > 128:
+            await logger.awarning(
+                "dining_order_rejected",
+                requestId=request.state.request_id,
+                module="dining",
+                operation="order_create",
+                result="rejected",
+                errorCode="IDEMPOTENCY_KEY_TOO_LONG",
+                keyLength=len(normalized_idempotency_key),
+            )
+            raise _error(4002, "Idempotency-Key长度不能超过128")
         user_id, couple_id = await context(request, session)
+        if normalized_idempotency_key is None or not normalized_idempotency_key:
+            await logger.awarning(
+                "dining_order_rejected",
+                requestId=request.state.request_id,
+                module="dining",
+                operation="order_create",
+                result="rejected",
+                errorCode="IDEMPOTENCY_KEY_REQUIRED",
+                userId=user_id,
+            )
+            raise _error(4002, "Idempotency-Key不能为空")
+        idempotency_key = normalized_idempotency_key
         cart_row = await cart.cart_scope(session, user_id=user_id, couple_id=couple_id)
 
         async def action() -> dict[str, object]:
@@ -393,8 +496,7 @@ def create_app(
         user_id, couple_id = await context(request, session)
         row = await session.scalar(select(DiningOrder).where(DiningOrder.id == order_id))
         if row is None or (
-            row.user_id != user_id
-            and (couple_id is None or row.couple_id != couple_id)
+            row.user_id != user_id and (couple_id is None or row.couple_id != couple_id)
         ):
             raise _error(4041, "订单不存在")
         items = list(
@@ -408,7 +510,10 @@ def create_app(
 
     @app.get("/api/dining/orders")
     async def order_list(
-        request: Request, session: AsyncSession = _AUTHENTICATED_SESSION_DEPENDENCY
+        request: Request,
+        page: int = Query(default=1, ge=1),
+        page_size: int = Query(default=20, alias="pageSize", ge=1, le=100),
+        session: AsyncSession = _AUTHENTICATED_SESSION_DEPENDENCY,
     ) -> dict[str, object]:
         user_id, couple_id = await context(request, session)
         filters = (
@@ -416,14 +521,33 @@ def create_app(
             if couple_id is not None
             else (DiningOrder.user_id == user_id)
         )
+        total = int(
+            await session.scalar(select(func.count(DiningOrder.id)).where(filters)) or 0
+        )
         rows = list(
             (
                 await session.scalars(
-                    select(DiningOrder).where(filters).order_by(DiningOrder.id.desc())
+                    select(DiningOrder)
+                    .where(filters)
+                    .order_by(DiningOrder.id.desc())
+                    .offset((page - 1) * page_size)
+                    .limit(page_size)
                 )
             ).all()
         )
-        return _result({"records": [order.payload(row) for row in rows], "total": len(rows)})
+        await logger.ainfo(
+            "dining_orders_listed",
+            requestId=request.state.request_id,
+            module="dining",
+            operation="order_list",
+            result="success",
+            userId=user_id,
+            page=page,
+            pageSize=page_size,
+            total=total,
+            returnedCount=len(rows),
+        )
+        return _result({"records": [order.payload(row) for row in rows], "total": total})
 
     return app
 
