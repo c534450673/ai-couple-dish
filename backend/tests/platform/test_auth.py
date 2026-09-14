@@ -13,4 +13,4 @@ def test_user_jwt_contains_required_claims() -> None:
 
 def test_short_secret_is_rejected() -> None:
     with pytest.raises(ValueError):
-        issue_user_token(user_id=1, secret="short", expires_ms=1000)
+        issue_user_token(user_id=1, secret="short", expires_ms=1000)  # noqa: S106

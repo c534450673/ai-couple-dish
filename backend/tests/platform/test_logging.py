@@ -9,7 +9,11 @@ from packages.platform.logging import configure_logging
 
 def test_logs_are_json_and_exclude_secrets() -> None:
     stream = StringIO()
-    settings = Settings(DB_PASSWORD="pw", JWT_SECRET="x" * 64, SERVICE_NAME="test")
+    settings = Settings(  # noqa: S106
+        DB_PASSWORD="pw",  # noqa: S106
+        JWT_SECRET="x" * 64,  # noqa: S106
+        SERVICE_NAME="test",
+    )
     configure_logging(settings, stream=stream)
     structlog.get_logger().info(
         "operation",
@@ -18,8 +22,8 @@ def test_logs_are_json_and_exclude_secrets() -> None:
         operation="list",
         result="ok",
         durationMs=1,
-        Authorization="Bearer secret",
-        password="secret",
+        Authorization="Bearer secret",  # noqa: S106
+        password="secret",  # noqa: S106
     )
     payload = json.loads(stream.getvalue())
     assert payload["requestId"] == "r1"

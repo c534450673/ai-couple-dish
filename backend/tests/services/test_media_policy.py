@@ -1,4 +1,5 @@
 from io import BytesIO
+
 from PIL import Image
 
 from services.media.app.services.image_policy import validate_and_thumbnail

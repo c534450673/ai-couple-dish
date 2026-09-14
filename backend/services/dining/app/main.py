@@ -1,8 +1,3 @@
-from fastapi import FastAPI
+from packages.platform.service import create_service_app
 
-app = FastAPI(title="Dining Service")
-
-
-@app.get("/health")
-async def health() -> dict[str, str]:
-    return {"status": "ok", "service": "dining"}
+app = create_service_app("dining")

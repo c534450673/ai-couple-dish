@@ -1,9 +1,23 @@
 name: python-services
 on:
   push:
-    paths: ["backend/packages/**", "backend/services/**", "backend/tests/**"]
+    paths:
+      - "backend/pyproject.toml"
+      - "backend/uv.lock"
+      - "backend/packages/**"
+      - "backend/services/**"
+      - "backend/tests/**"
+      - "backend/scripts/**"
+      - "backend/data/**"
   pull_request:
-    paths: ["backend/packages/**", "backend/services/**", "backend/tests/**"]
+    paths:
+      - "backend/pyproject.toml"
+      - "backend/uv.lock"
+      - "backend/packages/**"
+      - "backend/services/**"
+      - "backend/tests/**"
+      - "backend/scripts/**"
+      - "backend/data/**"
 jobs:
   checks:
     runs-on: ubuntu-latest
@@ -16,5 +30,6 @@ jobs:
         with:
           version: latest
       - run: uv sync --frozen
-      - run: uv run pytest tests/platform -q
-      - run: uv run ruff check packages services tests/platform
+      - run: uv run pytest -q
+      - run: uv run ruff check packages services tests
+      - run: uv run mypy packages services --ignore-missing-imports
