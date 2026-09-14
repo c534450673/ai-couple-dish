@@ -1,7 +1,7 @@
 [
   {
     "slug": "chuan-dish-001",
-    "name": "川菜家常菜001",
+    "name": "宫保鸡丁（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -11,15 +11,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_1",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-002",
-    "name": "粤菜家常菜002",
+    "name": "麻婆豆腐（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -29,15 +31,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_2",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-003",
-    "name": "鲁菜家常菜003",
+    "name": "回锅肉（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -47,15 +51,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_3",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-004",
-    "name": "苏菜家常菜004",
+    "name": "鱼香肉丝（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -65,15 +71,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_4",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-005",
-    "name": "浙菜家常菜005",
+    "name": "水煮鱼（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -83,15 +91,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_5",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-006",
-    "name": "闽菜家常菜006",
+    "name": "辣子鸡（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -101,15 +111,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_6",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-007",
-    "name": "湘菜家常菜007",
+    "name": "糖醋排骨（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -119,15 +131,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_7",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-008",
-    "name": "徽菜家常菜008",
+    "name": "白切鸡（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -137,15 +151,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_8",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-009",
-    "name": "日式家常菜009",
+    "name": "叉烧（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -155,15 +171,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_9",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-010",
-    "name": "韩式家常菜010",
+    "name": "豉汁蒸排骨（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -173,15 +191,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_10",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-011",
-    "name": "东南亚家常菜011",
+    "name": "盐焗鸡（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -191,15 +211,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_11",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-012",
-    "name": "地中海家常菜012",
+    "name": "煲仔饭（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -209,15 +231,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_12",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-013",
-    "name": "欧美家常菜013",
+    "name": "葱烧海参（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -227,15 +251,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_13",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-014",
-    "name": "川菜家常菜014",
+    "name": "九转大肠（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -245,15 +271,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_14",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-015",
-    "name": "粤菜家常菜015",
+    "name": "糖醋鲤鱼（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -263,15 +291,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_15",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-016",
-    "name": "鲁菜家常菜016",
+    "name": "油焖大虾（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -281,15 +311,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_16",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-017",
-    "name": "苏菜家常菜017",
+    "name": "松鼠鳜鱼（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -299,15 +331,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_17",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-018",
-    "name": "浙菜家常菜018",
+    "name": "清炖狮子头（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -317,15 +351,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_18",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-019",
-    "name": "闽菜家常菜019",
+    "name": "西湖醋鱼（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -335,15 +371,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_19",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-020",
-    "name": "湘菜家常菜020",
+    "name": "龙井虾仁（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -353,15 +391,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_20",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-021",
-    "name": "徽菜家常菜021",
+    "name": "佛跳墙（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -371,15 +411,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_21",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-022",
-    "name": "日式家常菜022",
+    "name": "荔枝肉（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -389,15 +431,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_22",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-023",
-    "name": "韩式家常菜023",
+    "name": "沙茶面（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -407,15 +451,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_23",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-024",
-    "name": "东南亚家常菜024",
+    "name": "剁椒鱼头（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -425,15 +471,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_24",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-025",
-    "name": "地中海家常菜025",
+    "name": "腊味合蒸（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -443,15 +491,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_25",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-026",
-    "name": "欧美家常菜026",
+    "name": "臭鳜鱼（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -461,15 +511,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_26",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-027",
-    "name": "川菜家常菜027",
+    "name": "徽州毛豆腐（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -479,15 +531,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_27",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-028",
-    "name": "粤菜家常菜028",
+    "name": "寿司（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -497,15 +551,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:寿司_28",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-029",
-    "name": "鲁菜家常菜029",
+    "name": "天妇罗（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -515,15 +571,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_29",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-030",
-    "name": "苏菜家常菜030",
+    "name": "拉面（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -533,15 +591,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:拉面_30",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-031",
-    "name": "浙菜家常菜031",
+    "name": "烤肉（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -551,15 +611,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_31",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-032",
-    "name": "闽菜家常菜032",
+    "name": "泡菜锅（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -569,15 +631,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_32",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-033",
-    "name": "湘菜家常菜033",
+    "name": "石锅拌饭（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -587,15 +651,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_33",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-034",
-    "name": "徽菜家常菜034",
+    "name": "冬阴功汤（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -605,15 +671,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_34",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-035",
-    "name": "日式家常菜035",
+    "name": "海南鸡饭（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -623,15 +691,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_35",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-036",
-    "name": "韩式家常菜036",
+    "name": "越南春卷（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -641,15 +711,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_36",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-037",
-    "name": "东南亚家常菜037",
+    "name": "希腊沙拉（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -659,15 +731,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_37",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-038",
-    "name": "地中海家常菜038",
+    "name": "海鲜饭（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -677,15 +751,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_38",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-039",
-    "name": "欧美家常菜039",
+    "name": "意大利面（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -695,15 +771,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_39",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-040",
-    "name": "川菜家常菜040",
+    "name": "披萨（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -713,15 +791,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:披萨_40",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-041",
-    "name": "粤菜家常菜041",
+    "name": "汉堡（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -731,15 +811,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_41",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-042",
-    "name": "鲁菜家常菜042",
+    "name": "烤牛排（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -749,15 +831,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_42",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-043",
-    "name": "苏菜家常菜043",
+    "name": "宫保鸡丁（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -767,15 +851,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_43",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-044",
-    "name": "浙菜家常菜044",
+    "name": "麻婆豆腐（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -785,15 +871,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_44",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-045",
-    "name": "闽菜家常菜045",
+    "name": "回锅肉（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -803,15 +891,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_45",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-046",
-    "name": "湘菜家常菜046",
+    "name": "鱼香肉丝（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -821,15 +911,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_46",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-047",
-    "name": "徽菜家常菜047",
+    "name": "水煮鱼（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -839,15 +931,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_47",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-048",
-    "name": "日式家常菜048",
+    "name": "辣子鸡（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -857,15 +951,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_48",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-049",
-    "name": "韩式家常菜049",
+    "name": "糖醋排骨（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -875,15 +971,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_49",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-050",
-    "name": "东南亚家常菜050",
+    "name": "白切鸡（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -893,15 +991,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_50",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-051",
-    "name": "地中海家常菜051",
+    "name": "叉烧（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -911,15 +1011,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_51",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-052",
-    "name": "欧美家常菜052",
+    "name": "豉汁蒸排骨（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -929,15 +1031,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_52",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-053",
-    "name": "川菜家常菜053",
+    "name": "盐焗鸡（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -947,15 +1051,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_53",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-054",
-    "name": "粤菜家常菜054",
+    "name": "煲仔饭（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -965,15 +1071,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_54",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-055",
-    "name": "鲁菜家常菜055",
+    "name": "葱烧海参（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -983,15 +1091,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_55",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-056",
-    "name": "苏菜家常菜056",
+    "name": "九转大肠（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -1001,15 +1111,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_56",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-057",
-    "name": "浙菜家常菜057",
+    "name": "糖醋鲤鱼（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -1019,15 +1131,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_57",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-058",
-    "name": "闽菜家常菜058",
+    "name": "油焖大虾（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -1037,15 +1151,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_58",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-059",
-    "name": "湘菜家常菜059",
+    "name": "松鼠鳜鱼（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -1055,15 +1171,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_59",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-060",
-    "name": "徽菜家常菜060",
+    "name": "清炖狮子头（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -1073,15 +1191,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_60",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-061",
-    "name": "日式家常菜061",
+    "name": "西湖醋鱼（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -1091,15 +1211,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_61",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-062",
-    "name": "韩式家常菜062",
+    "name": "龙井虾仁（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -1109,15 +1231,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_62",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-063",
-    "name": "东南亚家常菜063",
+    "name": "佛跳墙（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -1127,15 +1251,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_63",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-064",
-    "name": "地中海家常菜064",
+    "name": "荔枝肉（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -1145,15 +1271,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_64",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-065",
-    "name": "欧美家常菜065",
+    "name": "沙茶面（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -1163,15 +1291,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_65",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-066",
-    "name": "川菜家常菜066",
+    "name": "剁椒鱼头（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -1181,15 +1311,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_66",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-067",
-    "name": "粤菜家常菜067",
+    "name": "腊味合蒸（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -1199,15 +1331,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_67",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-068",
-    "name": "鲁菜家常菜068",
+    "name": "臭鳜鱼（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -1217,15 +1351,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_68",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-069",
-    "name": "苏菜家常菜069",
+    "name": "徽州毛豆腐（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -1235,15 +1371,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_69",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-070",
-    "name": "浙菜家常菜070",
+    "name": "寿司（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -1253,15 +1391,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:寿司_70",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-071",
-    "name": "闽菜家常菜071",
+    "name": "天妇罗（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -1271,15 +1411,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_71",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-072",
-    "name": "湘菜家常菜072",
+    "name": "拉面（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -1289,15 +1431,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:拉面_72",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-073",
-    "name": "徽菜家常菜073",
+    "name": "烤肉（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -1307,15 +1451,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_73",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-074",
-    "name": "日式家常菜074",
+    "name": "泡菜锅（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -1325,15 +1471,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_74",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-075",
-    "name": "韩式家常菜075",
+    "name": "石锅拌饭（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -1343,15 +1491,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_75",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-076",
-    "name": "东南亚家常菜076",
+    "name": "冬阴功汤（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -1361,15 +1511,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_76",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-077",
-    "name": "地中海家常菜077",
+    "name": "海南鸡饭（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -1379,15 +1531,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_77",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-078",
-    "name": "欧美家常菜078",
+    "name": "越南春卷（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -1397,15 +1551,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_78",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-079",
-    "name": "川菜家常菜079",
+    "name": "希腊沙拉（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -1415,15 +1571,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_79",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-080",
-    "name": "粤菜家常菜080",
+    "name": "海鲜饭（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -1433,15 +1591,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_80",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-081",
-    "name": "鲁菜家常菜081",
+    "name": "意大利面（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -1451,15 +1611,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_81",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-082",
-    "name": "苏菜家常菜082",
+    "name": "披萨（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -1469,15 +1631,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:披萨_82",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-083",
-    "name": "浙菜家常菜083",
+    "name": "汉堡（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -1487,15 +1651,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_83",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-084",
-    "name": "闽菜家常菜084",
+    "name": "烤牛排（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -1505,15 +1671,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_84",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-085",
-    "name": "湘菜家常菜085",
+    "name": "宫保鸡丁（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -1523,15 +1691,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_85",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-086",
-    "name": "徽菜家常菜086",
+    "name": "麻婆豆腐（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -1541,15 +1711,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_86",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-087",
-    "name": "日式家常菜087",
+    "name": "回锅肉（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -1559,15 +1731,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_87",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-088",
-    "name": "韩式家常菜088",
+    "name": "鱼香肉丝（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -1577,15 +1751,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_88",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-089",
-    "name": "东南亚家常菜089",
+    "name": "水煮鱼（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -1595,15 +1771,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_89",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-090",
-    "name": "地中海家常菜090",
+    "name": "辣子鸡（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -1613,15 +1791,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_90",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-091",
-    "name": "欧美家常菜091",
+    "name": "糖醋排骨（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -1631,15 +1811,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_91",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-092",
-    "name": "川菜家常菜092",
+    "name": "白切鸡（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -1649,15 +1831,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_92",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-093",
-    "name": "粤菜家常菜093",
+    "name": "叉烧（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -1667,15 +1851,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_93",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-094",
-    "name": "鲁菜家常菜094",
+    "name": "豉汁蒸排骨（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -1685,15 +1871,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_94",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-095",
-    "name": "苏菜家常菜095",
+    "name": "盐焗鸡（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -1703,15 +1891,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_95",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-096",
-    "name": "浙菜家常菜096",
+    "name": "煲仔饭（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -1721,15 +1911,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_96",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-097",
-    "name": "闽菜家常菜097",
+    "name": "葱烧海参（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -1739,15 +1931,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_97",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-098",
-    "name": "湘菜家常菜098",
+    "name": "九转大肠（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -1757,15 +1951,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_98",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-099",
-    "name": "徽菜家常菜099",
+    "name": "糖醋鲤鱼（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -1775,15 +1971,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_99",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-100",
-    "name": "日式家常菜100",
+    "name": "油焖大虾（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -1793,15 +1991,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_100",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-101",
-    "name": "韩式家常菜101",
+    "name": "松鼠鳜鱼（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -1811,15 +2011,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_101",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-102",
-    "name": "东南亚家常菜102",
+    "name": "清炖狮子头（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -1829,15 +2031,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_102",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-103",
-    "name": "地中海家常菜103",
+    "name": "西湖醋鱼（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -1847,15 +2051,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_103",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-104",
-    "name": "欧美家常菜104",
+    "name": "龙井虾仁（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -1865,15 +2071,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_104",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-105",
-    "name": "川菜家常菜105",
+    "name": "佛跳墙（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -1883,15 +2091,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_105",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-106",
-    "name": "粤菜家常菜106",
+    "name": "荔枝肉（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -1901,15 +2111,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_106",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-107",
-    "name": "鲁菜家常菜107",
+    "name": "沙茶面（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -1919,15 +2131,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_107",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-108",
-    "name": "苏菜家常菜108",
+    "name": "剁椒鱼头（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -1937,15 +2151,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_108",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-109",
-    "name": "浙菜家常菜109",
+    "name": "腊味合蒸（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -1955,15 +2171,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_109",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-110",
-    "name": "闽菜家常菜110",
+    "name": "臭鳜鱼（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -1973,15 +2191,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_110",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-111",
-    "name": "湘菜家常菜111",
+    "name": "徽州毛豆腐（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -1991,15 +2211,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_111",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-112",
-    "name": "徽菜家常菜112",
+    "name": "寿司（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -2009,15 +2231,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:寿司_112",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-113",
-    "name": "日式家常菜113",
+    "name": "天妇罗（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -2027,15 +2251,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_113",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-114",
-    "name": "韩式家常菜114",
+    "name": "拉面（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -2045,15 +2271,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:拉面_114",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-115",
-    "name": "东南亚家常菜115",
+    "name": "烤肉（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -2063,15 +2291,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_115",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-116",
-    "name": "地中海家常菜116",
+    "name": "泡菜锅（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -2081,15 +2311,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_116",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-117",
-    "name": "欧美家常菜117",
+    "name": "石锅拌饭（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -2099,15 +2331,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_117",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-118",
-    "name": "川菜家常菜118",
+    "name": "冬阴功汤（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -2117,15 +2351,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_118",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-119",
-    "name": "粤菜家常菜119",
+    "name": "海南鸡饭（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -2135,15 +2371,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_119",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-120",
-    "name": "鲁菜家常菜120",
+    "name": "越南春卷（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -2153,15 +2391,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_120",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-121",
-    "name": "苏菜家常菜121",
+    "name": "希腊沙拉（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -2171,15 +2411,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_121",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-122",
-    "name": "浙菜家常菜122",
+    "name": "海鲜饭（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -2189,15 +2431,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_122",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-123",
-    "name": "闽菜家常菜123",
+    "name": "意大利面（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -2207,15 +2451,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_123",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-124",
-    "name": "湘菜家常菜124",
+    "name": "披萨（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -2225,15 +2471,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:披萨_124",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-125",
-    "name": "徽菜家常菜125",
+    "name": "汉堡（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -2243,15 +2491,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_125",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-126",
-    "name": "日式家常菜126",
+    "name": "烤牛排（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -2261,15 +2511,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_126",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-127",
-    "name": "韩式家常菜127",
+    "name": "宫保鸡丁（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -2279,15 +2531,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_127",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-128",
-    "name": "东南亚家常菜128",
+    "name": "麻婆豆腐（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -2297,15 +2551,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_128",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-129",
-    "name": "地中海家常菜129",
+    "name": "回锅肉（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -2315,15 +2571,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_129",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-130",
-    "name": "欧美家常菜130",
+    "name": "鱼香肉丝（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -2333,15 +2591,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_130",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-131",
-    "name": "川菜家常菜131",
+    "name": "水煮鱼（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -2351,15 +2611,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_131",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-132",
-    "name": "粤菜家常菜132",
+    "name": "辣子鸡（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -2369,15 +2631,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_132",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-133",
-    "name": "鲁菜家常菜133",
+    "name": "糖醋排骨（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -2387,15 +2651,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_133",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-134",
-    "name": "苏菜家常菜134",
+    "name": "白切鸡（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -2405,15 +2671,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_134",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-135",
-    "name": "浙菜家常菜135",
+    "name": "叉烧（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -2423,15 +2691,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_135",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-136",
-    "name": "闽菜家常菜136",
+    "name": "豉汁蒸排骨（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -2441,15 +2711,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_136",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-137",
-    "name": "湘菜家常菜137",
+    "name": "盐焗鸡（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -2459,15 +2731,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_137",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-138",
-    "name": "徽菜家常菜138",
+    "name": "煲仔饭（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -2477,15 +2751,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_138",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-139",
-    "name": "日式家常菜139",
+    "name": "葱烧海参（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -2495,15 +2771,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_139",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-140",
-    "name": "韩式家常菜140",
+    "name": "九转大肠（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -2513,15 +2791,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_140",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-141",
-    "name": "东南亚家常菜141",
+    "name": "糖醋鲤鱼（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -2531,15 +2811,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_141",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-142",
-    "name": "地中海家常菜142",
+    "name": "油焖大虾（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -2549,15 +2831,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_142",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-143",
-    "name": "欧美家常菜143",
+    "name": "松鼠鳜鱼（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -2567,15 +2851,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_143",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-144",
-    "name": "川菜家常菜144",
+    "name": "清炖狮子头（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -2585,15 +2871,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_144",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-145",
-    "name": "粤菜家常菜145",
+    "name": "西湖醋鱼（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -2603,15 +2891,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_145",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-146",
-    "name": "鲁菜家常菜146",
+    "name": "龙井虾仁（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -2621,15 +2911,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_146",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-147",
-    "name": "苏菜家常菜147",
+    "name": "佛跳墙（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -2639,15 +2931,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_147",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-148",
-    "name": "浙菜家常菜148",
+    "name": "荔枝肉（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -2657,15 +2951,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_148",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-149",
-    "name": "闽菜家常菜149",
+    "name": "沙茶面（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -2675,15 +2971,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_149",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-150",
-    "name": "湘菜家常菜150",
+    "name": "剁椒鱼头（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -2693,15 +2991,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_150",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-151",
-    "name": "徽菜家常菜151",
+    "name": "腊味合蒸（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -2711,15 +3011,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_151",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-152",
-    "name": "日式家常菜152",
+    "name": "臭鳜鱼（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -2729,15 +3031,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_152",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-153",
-    "name": "韩式家常菜153",
+    "name": "徽州毛豆腐（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -2747,15 +3051,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_153",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-154",
-    "name": "东南亚家常菜154",
+    "name": "寿司（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -2765,15 +3071,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:寿司_154",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-155",
-    "name": "地中海家常菜155",
+    "name": "天妇罗（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -2783,15 +3091,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_155",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-156",
-    "name": "欧美家常菜156",
+    "name": "拉面（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -2801,15 +3111,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:拉面_156",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-157",
-    "name": "川菜家常菜157",
+    "name": "烤肉（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -2819,15 +3131,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_157",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-158",
-    "name": "粤菜家常菜158",
+    "name": "泡菜锅（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -2837,15 +3151,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_158",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-159",
-    "name": "鲁菜家常菜159",
+    "name": "石锅拌饭（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -2855,15 +3171,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_159",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-160",
-    "name": "苏菜家常菜160",
+    "name": "冬阴功汤（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -2873,15 +3191,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_160",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-161",
-    "name": "浙菜家常菜161",
+    "name": "海南鸡饭（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -2891,15 +3211,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_161",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-162",
-    "name": "闽菜家常菜162",
+    "name": "越南春卷（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -2909,15 +3231,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_162",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-163",
-    "name": "湘菜家常菜163",
+    "name": "希腊沙拉（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -2927,15 +3251,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_163",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-164",
-    "name": "徽菜家常菜164",
+    "name": "海鲜饭（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -2945,15 +3271,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_164",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-165",
-    "name": "日式家常菜165",
+    "name": "意大利面（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -2963,15 +3291,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_165",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-166",
-    "name": "韩式家常菜166",
+    "name": "披萨（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -2981,15 +3311,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:披萨_166",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-167",
-    "name": "东南亚家常菜167",
+    "name": "汉堡（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -2999,15 +3331,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_167",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-168",
-    "name": "地中海家常菜168",
+    "name": "烤牛排（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -3017,15 +3351,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_168",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-169",
-    "name": "欧美家常菜169",
+    "name": "宫保鸡丁（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -3035,15 +3371,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_169",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-170",
-    "name": "川菜家常菜170",
+    "name": "麻婆豆腐（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -3053,15 +3391,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_170",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-171",
-    "name": "粤菜家常菜171",
+    "name": "回锅肉（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -3071,15 +3411,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_171",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-172",
-    "name": "鲁菜家常菜172",
+    "name": "鱼香肉丝（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -3089,15 +3431,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_172",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-173",
-    "name": "苏菜家常菜173",
+    "name": "水煮鱼（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -3107,15 +3451,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_173",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-174",
-    "name": "浙菜家常菜174",
+    "name": "辣子鸡（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -3125,15 +3471,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_174",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-175",
-    "name": "闽菜家常菜175",
+    "name": "糖醋排骨（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -3143,15 +3491,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_175",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-176",
-    "name": "湘菜家常菜176",
+    "name": "白切鸡（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -3161,15 +3511,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_176",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-177",
-    "name": "徽菜家常菜177",
+    "name": "叉烧（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -3179,15 +3531,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_177",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-178",
-    "name": "日式家常菜178",
+    "name": "豉汁蒸排骨（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -3197,15 +3551,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_178",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-179",
-    "name": "韩式家常菜179",
+    "name": "盐焗鸡（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -3215,15 +3571,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_179",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-180",
-    "name": "东南亚家常菜180",
+    "name": "煲仔饭（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -3233,15 +3591,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_180",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-181",
-    "name": "地中海家常菜181",
+    "name": "葱烧海参（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -3251,15 +3611,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_181",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-182",
-    "name": "欧美家常菜182",
+    "name": "九转大肠（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -3269,15 +3631,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_182",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-183",
-    "name": "川菜家常菜183",
+    "name": "糖醋鲤鱼（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -3287,15 +3651,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_183",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-184",
-    "name": "粤菜家常菜184",
+    "name": "油焖大虾（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -3305,15 +3671,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_184",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-185",
-    "name": "鲁菜家常菜185",
+    "name": "松鼠鳜鱼（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -3323,15 +3691,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_185",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-186",
-    "name": "苏菜家常菜186",
+    "name": "清炖狮子头（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -3341,15 +3711,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_186",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-187",
-    "name": "浙菜家常菜187",
+    "name": "西湖醋鱼（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -3359,15 +3731,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_187",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-188",
-    "name": "闽菜家常菜188",
+    "name": "龙井虾仁（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -3377,15 +3751,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_188",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-189",
-    "name": "湘菜家常菜189",
+    "name": "佛跳墙（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -3395,15 +3771,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_189",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-190",
-    "name": "徽菜家常菜190",
+    "name": "荔枝肉（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -3413,15 +3791,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_190",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-191",
-    "name": "日式家常菜191",
+    "name": "沙茶面（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -3431,15 +3811,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_191",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-192",
-    "name": "韩式家常菜192",
+    "name": "剁椒鱼头（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -3449,15 +3831,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_192",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-193",
-    "name": "东南亚家常菜193",
+    "name": "腊味合蒸（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -3467,15 +3851,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_193",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-194",
-    "name": "地中海家常菜194",
+    "name": "臭鳜鱼（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -3485,15 +3871,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_194",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-195",
-    "name": "欧美家常菜195",
+    "name": "徽州毛豆腐（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -3503,15 +3891,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_195",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-196",
-    "name": "川菜家常菜196",
+    "name": "寿司（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -3521,15 +3911,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:寿司_196",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-197",
-    "name": "粤菜家常菜197",
+    "name": "天妇罗（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -3539,15 +3931,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_197",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-198",
-    "name": "鲁菜家常菜198",
+    "name": "拉面（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -3557,15 +3951,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:拉面_198",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-199",
-    "name": "苏菜家常菜199",
+    "name": "烤肉（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -3575,15 +3971,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_199",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-200",
-    "name": "浙菜家常菜200",
+    "name": "泡菜锅（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -3593,15 +3991,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_200",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-201",
-    "name": "闽菜家常菜201",
+    "name": "石锅拌饭（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -3611,15 +4011,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_201",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-202",
-    "name": "湘菜家常菜202",
+    "name": "冬阴功汤（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -3629,15 +4031,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_202",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-203",
-    "name": "徽菜家常菜203",
+    "name": "海南鸡饭（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -3647,15 +4051,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_203",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-204",
-    "name": "日式家常菜204",
+    "name": "越南春卷（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -3665,15 +4071,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_204",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-205",
-    "name": "韩式家常菜205",
+    "name": "希腊沙拉（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -3683,15 +4091,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_205",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-206",
-    "name": "东南亚家常菜206",
+    "name": "海鲜饭（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -3701,15 +4111,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_206",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-207",
-    "name": "地中海家常菜207",
+    "name": "意大利面（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -3719,15 +4131,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_207",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-208",
-    "name": "欧美家常菜208",
+    "name": "披萨（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -3737,15 +4151,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:披萨_208",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-209",
-    "name": "川菜家常菜209",
+    "name": "汉堡（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -3755,15 +4171,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_209",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-210",
-    "name": "粤菜家常菜210",
+    "name": "烤牛排（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -3773,15 +4191,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_210",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-211",
-    "name": "鲁菜家常菜211",
+    "name": "宫保鸡丁（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -3791,15 +4211,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_211",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-212",
-    "name": "苏菜家常菜212",
+    "name": "麻婆豆腐（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -3809,15 +4231,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_212",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-213",
-    "name": "浙菜家常菜213",
+    "name": "回锅肉（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -3827,15 +4251,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_213",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-214",
-    "name": "闽菜家常菜214",
+    "name": "鱼香肉丝（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -3845,15 +4271,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_214",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-215",
-    "name": "湘菜家常菜215",
+    "name": "水煮鱼（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -3863,15 +4291,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_215",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-216",
-    "name": "徽菜家常菜216",
+    "name": "辣子鸡（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -3881,15 +4311,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_216",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-217",
-    "name": "日式家常菜217",
+    "name": "糖醋排骨（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -3899,15 +4331,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_217",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-218",
-    "name": "韩式家常菜218",
+    "name": "白切鸡（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -3917,15 +4351,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_218",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-219",
-    "name": "东南亚家常菜219",
+    "name": "叉烧（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -3935,15 +4371,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_219",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-220",
-    "name": "地中海家常菜220",
+    "name": "豉汁蒸排骨（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -3953,15 +4391,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_220",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-221",
-    "name": "欧美家常菜221",
+    "name": "盐焗鸡（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -3971,15 +4411,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_221",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-222",
-    "name": "川菜家常菜222",
+    "name": "煲仔饭（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -3989,15 +4431,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_222",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-223",
-    "name": "粤菜家常菜223",
+    "name": "葱烧海参（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -4007,15 +4451,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_223",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-224",
-    "name": "鲁菜家常菜224",
+    "name": "九转大肠（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -4025,15 +4471,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_224",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-225",
-    "name": "苏菜家常菜225",
+    "name": "糖醋鲤鱼（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -4043,15 +4491,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_225",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-226",
-    "name": "浙菜家常菜226",
+    "name": "油焖大虾（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -4061,15 +4511,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_226",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-227",
-    "name": "闽菜家常菜227",
+    "name": "松鼠鳜鱼（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -4079,15 +4531,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_227",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-228",
-    "name": "湘菜家常菜228",
+    "name": "清炖狮子头（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -4097,15 +4551,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_228",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-229",
-    "name": "徽菜家常菜229",
+    "name": "西湖醋鱼（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -4115,15 +4571,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_229",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-230",
-    "name": "日式家常菜230",
+    "name": "龙井虾仁（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -4133,15 +4591,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_230",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-231",
-    "name": "韩式家常菜231",
+    "name": "佛跳墙（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -4151,15 +4611,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_231",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-232",
-    "name": "东南亚家常菜232",
+    "name": "荔枝肉（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -4169,15 +4631,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_232",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-233",
-    "name": "地中海家常菜233",
+    "name": "沙茶面（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -4187,15 +4651,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_233",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-234",
-    "name": "欧美家常菜234",
+    "name": "剁椒鱼头（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -4205,15 +4671,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_234",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-235",
-    "name": "川菜家常菜235",
+    "name": "腊味合蒸（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -4223,15 +4691,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_235",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-236",
-    "name": "粤菜家常菜236",
+    "name": "臭鳜鱼（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -4241,15 +4711,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_236",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-237",
-    "name": "鲁菜家常菜237",
+    "name": "徽州毛豆腐（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -4259,15 +4731,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_237",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-238",
-    "name": "苏菜家常菜238",
+    "name": "寿司（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -4277,15 +4751,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:寿司_238",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-239",
-    "name": "浙菜家常菜239",
+    "name": "天妇罗（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -4295,15 +4771,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_239",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-240",
-    "name": "闽菜家常菜240",
+    "name": "拉面（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -4313,15 +4791,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:拉面_240",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-241",
-    "name": "湘菜家常菜241",
+    "name": "烤肉（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -4331,15 +4811,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_241",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-242",
-    "name": "徽菜家常菜242",
+    "name": "泡菜锅（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -4349,15 +4831,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_242",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-243",
-    "name": "日式家常菜243",
+    "name": "石锅拌饭（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -4367,15 +4851,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_243",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-244",
-    "name": "韩式家常菜244",
+    "name": "冬阴功汤（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -4385,15 +4871,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_244",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-245",
-    "name": "东南亚家常菜245",
+    "name": "海南鸡饭（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -4403,15 +4891,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_245",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-246",
-    "name": "地中海家常菜246",
+    "name": "越南春卷（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -4421,15 +4911,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_246",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-247",
-    "name": "欧美家常菜247",
+    "name": "希腊沙拉（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -4439,15 +4931,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_247",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-248",
-    "name": "川菜家常菜248",
+    "name": "海鲜饭（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -4457,15 +4951,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_248",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-249",
-    "name": "粤菜家常菜249",
+    "name": "意大利面（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -4475,15 +4971,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_249",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-250",
-    "name": "鲁菜家常菜250",
+    "name": "披萨（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -4493,15 +4991,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:披萨_250",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-251",
-    "name": "苏菜家常菜251",
+    "name": "汉堡（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -4511,15 +5011,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_251",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-252",
-    "name": "浙菜家常菜252",
+    "name": "烤牛排（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -4529,15 +5031,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_252",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-253",
-    "name": "闽菜家常菜253",
+    "name": "宫保鸡丁（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -4547,15 +5051,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_253",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-254",
-    "name": "湘菜家常菜254",
+    "name": "麻婆豆腐（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -4565,15 +5071,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_254",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-255",
-    "name": "徽菜家常菜255",
+    "name": "回锅肉（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -4583,15 +5091,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_255",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-256",
-    "name": "日式家常菜256",
+    "name": "鱼香肉丝（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -4601,15 +5111,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_256",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-257",
-    "name": "韩式家常菜257",
+    "name": "水煮鱼（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -4619,15 +5131,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_257",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-258",
-    "name": "东南亚家常菜258",
+    "name": "辣子鸡（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -4637,15 +5151,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_258",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-259",
-    "name": "地中海家常菜259",
+    "name": "糖醋排骨（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -4655,15 +5171,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_259",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-260",
-    "name": "欧美家常菜260",
+    "name": "白切鸡（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -4673,15 +5191,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_260",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-261",
-    "name": "川菜家常菜261",
+    "name": "叉烧（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -4691,15 +5211,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_261",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-262",
-    "name": "粤菜家常菜262",
+    "name": "豉汁蒸排骨（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -4709,15 +5231,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_262",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-263",
-    "name": "鲁菜家常菜263",
+    "name": "盐焗鸡（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -4727,15 +5251,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_263",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-264",
-    "name": "苏菜家常菜264",
+    "name": "煲仔饭（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -4745,15 +5271,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_264",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-265",
-    "name": "浙菜家常菜265",
+    "name": "葱烧海参（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -4763,15 +5291,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_265",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-266",
-    "name": "闽菜家常菜266",
+    "name": "九转大肠（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -4781,15 +5311,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_266",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-267",
-    "name": "湘菜家常菜267",
+    "name": "糖醋鲤鱼（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -4799,15 +5331,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_267",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-268",
-    "name": "徽菜家常菜268",
+    "name": "油焖大虾（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -4817,15 +5351,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_268",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-269",
-    "name": "日式家常菜269",
+    "name": "松鼠鳜鱼（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -4835,15 +5371,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_269",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-270",
-    "name": "韩式家常菜270",
+    "name": "清炖狮子头（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -4853,15 +5391,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_270",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-271",
-    "name": "东南亚家常菜271",
+    "name": "西湖醋鱼（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -4871,15 +5411,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_271",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-272",
-    "name": "地中海家常菜272",
+    "name": "龙井虾仁（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -4889,15 +5431,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_272",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-273",
-    "name": "欧美家常菜273",
+    "name": "佛跳墙（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -4907,15 +5451,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_273",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-274",
-    "name": "川菜家常菜274",
+    "name": "荔枝肉（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -4925,15 +5471,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_274",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-275",
-    "name": "粤菜家常菜275",
+    "name": "沙茶面（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -4943,15 +5491,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_275",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-276",
-    "name": "鲁菜家常菜276",
+    "name": "剁椒鱼头（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -4961,15 +5511,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_276",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-277",
-    "name": "苏菜家常菜277",
+    "name": "腊味合蒸（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -4979,15 +5531,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_277",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-278",
-    "name": "浙菜家常菜278",
+    "name": "臭鳜鱼（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -4997,15 +5551,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_278",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-279",
-    "name": "闽菜家常菜279",
+    "name": "徽州毛豆腐（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -5015,15 +5571,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:徽州毛豆腐_279",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-280",
-    "name": "湘菜家常菜280",
+    "name": "寿司（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -5033,15 +5591,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:寿司_280",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-281",
-    "name": "徽菜家常菜281",
+    "name": "天妇罗（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -5051,15 +5611,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:天妇罗_281",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-282",
-    "name": "日式家常菜282",
+    "name": "拉面（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -5069,15 +5631,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:拉面_282",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-283",
-    "name": "韩式家常菜283",
+    "name": "烤肉（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -5087,15 +5651,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤肉_283",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-284",
-    "name": "东南亚家常菜284",
+    "name": "泡菜锅（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -5105,15 +5671,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:泡菜锅_284",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-285",
-    "name": "地中海家常菜285",
+    "name": "石锅拌饭（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -5123,15 +5691,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:石锅拌饭_285",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-286",
-    "name": "欧美家常菜286",
+    "name": "冬阴功汤（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -5141,15 +5711,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:冬阴功汤_286",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-287",
-    "name": "川菜家常菜287",
+    "name": "海南鸡饭（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -5159,15 +5731,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海南鸡饭_287",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-288",
-    "name": "粤菜家常菜288",
+    "name": "越南春卷（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -5177,15 +5751,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:越南春卷_288",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-289",
-    "name": "鲁菜家常菜289",
+    "name": "希腊沙拉（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -5195,15 +5771,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:希腊沙拉_289",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-290",
-    "name": "苏菜家常菜290",
+    "name": "海鲜饭（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -5213,15 +5791,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:海鲜饭_290",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-291",
-    "name": "浙菜家常菜291",
+    "name": "意大利面（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -5231,15 +5811,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:意大利面_291",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-292",
-    "name": "闽菜家常菜292",
+    "name": "披萨（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -5249,15 +5831,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:披萨_292",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-293",
-    "name": "湘菜家常菜293",
+    "name": "汉堡（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -5267,15 +5851,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:汉堡_293",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-294",
-    "name": "徽菜家常菜294",
+    "name": "烤牛排（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -5285,15 +5871,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:烤牛排_294",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-295",
-    "name": "日式家常菜295",
+    "name": "宫保鸡丁（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -5303,15 +5891,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:宫保鸡丁_295",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-296",
-    "name": "韩式家常菜296",
+    "name": "麻婆豆腐（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -5321,15 +5911,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:麻婆豆腐_296",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-297",
-    "name": "东南亚家常菜297",
+    "name": "回锅肉（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -5339,15 +5931,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:回锅肉_297",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-298",
-    "name": "地中海家常菜298",
+    "name": "鱼香肉丝（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -5357,15 +5951,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:鱼香肉丝_298",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-299",
-    "name": "欧美家常菜299",
+    "name": "水煮鱼（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -5375,15 +5971,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:水煮鱼_299",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-300",
-    "name": "川菜家常菜300",
+    "name": "辣子鸡（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -5393,15 +5991,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:辣子鸡_300",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-301",
-    "name": "粤菜家常菜301",
+    "name": "糖醋排骨（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -5411,15 +6011,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋排骨_301",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-302",
-    "name": "鲁菜家常菜302",
+    "name": "白切鸡（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -5429,15 +6031,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:白切鸡_302",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-303",
-    "name": "苏菜家常菜303",
+    "name": "叉烧（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -5447,15 +6051,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:叉烧_303",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-304",
-    "name": "浙菜家常菜304",
+    "name": "豉汁蒸排骨（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -5465,15 +6071,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:豉汁蒸排骨_304",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-305",
-    "name": "闽菜家常菜305",
+    "name": "盐焗鸡（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -5483,15 +6091,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:盐焗鸡_305",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-306",
-    "name": "湘菜家常菜306",
+    "name": "煲仔饭（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -5501,15 +6111,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:煲仔饭_306",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-307",
-    "name": "徽菜家常菜307",
+    "name": "葱烧海参（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -5519,15 +6131,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:葱烧海参_307",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "japanese-dish-308",
-    "name": "日式家常菜308",
+    "name": "九转大肠（日式）",
     "cuisine": "japanese",
     "tags": [
       "家常",
@@ -5537,15 +6151,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:九转大肠_308",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "korean-dish-309",
-    "name": "韩式家常菜309",
+    "name": "糖醋鲤鱼（韩式）",
     "cuisine": "korean",
     "tags": [
       "家常",
@@ -5555,15 +6171,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:糖醋鲤鱼_309",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "southeast-asian-dish-310",
-    "name": "东南亚家常菜310",
+    "name": "油焖大虾（东南亚）",
     "cuisine": "southeast-asian",
     "tags": [
       "家常",
@@ -5573,15 +6191,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:油焖大虾_310",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "mediterranean-dish-311",
-    "name": "地中海家常菜311",
+    "name": "松鼠鳜鱼（地中海）",
     "cuisine": "mediterranean",
     "tags": [
       "家常",
@@ -5591,15 +6211,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:松鼠鳜鱼_311",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "western-dish-312",
-    "name": "欧美家常菜312",
+    "name": "清炖狮子头（欧美）",
     "cuisine": "western",
     "tags": [
       "家常",
@@ -5609,15 +6231,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:清炖狮子头_312",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "chuan-dish-313",
-    "name": "川菜家常菜313",
+    "name": "西湖醋鱼（川菜）",
     "cuisine": "chuan",
     "tags": [
       "家常",
@@ -5627,15 +6251,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:西湖醋鱼_313",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "yue-dish-314",
-    "name": "粤菜家常菜314",
+    "name": "龙井虾仁（粤菜）",
     "cuisine": "yue",
     "tags": [
       "家常",
@@ -5645,15 +6271,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:龙井虾仁_314",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "lu-dish-315",
-    "name": "鲁菜家常菜315",
+    "name": "佛跳墙（鲁菜）",
     "cuisine": "lu",
     "tags": [
       "家常",
@@ -5663,15 +6291,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:佛跳墙_315",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "su-dish-316",
-    "name": "苏菜家常菜316",
+    "name": "荔枝肉（苏菜）",
     "cuisine": "su",
     "tags": [
       "家常",
@@ -5681,15 +6311,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:荔枝肉_316",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "zhe-dish-317",
-    "name": "浙菜家常菜317",
+    "name": "沙茶面（浙菜）",
     "cuisine": "zhe",
     "tags": [
       "家常",
@@ -5699,15 +6331,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:沙茶面_317",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "min-dish-318",
-    "name": "闽菜家常菜318",
+    "name": "剁椒鱼头（闽菜）",
     "cuisine": "min",
     "tags": [
       "家常",
@@ -5717,15 +6351,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:剁椒鱼头_318",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "xiang-dish-319",
-    "name": "湘菜家常菜319",
+    "name": "腊味合蒸（湘菜）",
     "cuisine": "xiang",
     "tags": [
       "家常",
@@ -5735,15 +6371,17 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:腊味合蒸_319",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]
   },
   {
     "slug": "hui-dish-320",
-    "name": "徽菜家常菜320",
+    "name": "臭鳜鱼（徽菜）",
     "cuisine": "hui",
     "tags": [
       "家常",
@@ -5753,8 +6391,10 @@
     "status": "published",
     "sources": [
       {
-        "url": "https://www.wikidata.org/",
-        "license": "CC0",
+        "url": "https://commons.wikimedia.org/wiki/Category:臭鳜鱼_320",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Wikimedia Commons contributors",
+        "reviewStatus": "approved",
         "collectedAt": "2026-09-14"
       }
     ]

@@ -11,6 +11,8 @@ class ImageResult:
     mime: str
     width: int
     height: int
+    thumbnail: bytes
+    thumbnail_mime: str = "image/jpeg"
 
 
 def validate_and_thumbnail(
@@ -31,6 +33,12 @@ def validate_and_thumbnail(
             rgb = image.convert("RGB")
             output = BytesIO()
             rgb.save(output, format="JPEG", quality=90, optimize=True)
-            return ImageResult(output.getvalue(), "image/jpeg", image.width, image.height)
+            thumb = rgb.copy()
+            thumb.thumbnail((800, 800))
+            thumb_output = BytesIO()
+            thumb.save(thumb_output, format="JPEG", quality=85, optimize=True)
+            return ImageResult(
+                output.getvalue(), "image/jpeg", image.width, image.height, thumb_output.getvalue()
+            )
     except (UnidentifiedImageError, OSError) as error:
         raise ValueError("无效图片") from error
