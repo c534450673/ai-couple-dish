@@ -1,0 +1,20 @@
+name: python-services
+on:
+  push:
+    paths: ["backend/packages/**", "backend/services/**", "backend/tests/**"]
+  pull_request:
+    paths: ["backend/packages/**", "backend/services/**", "backend/tests/**"]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: latest
+      - run: uv sync --frozen
+      - run: uv run pytest tests/platform -q
+      - run: uv run ruff check packages services tests/platform

@@ -1,0 +1,15 @@
+[
+  {"slug": "chuan", "name": "川菜"},
+  {"slug": "yue", "name": "粤菜"},
+  {"slug": "lu", "name": "鲁菜"},
+  {"slug": "su", "name": "苏菜"},
+  {"slug": "zhe", "name": "浙菜"},
+  {"slug": "min", "name": "闽菜"},
+  {"slug": "xiang", "name": "湘菜"},
+  {"slug": "hui", "name": "徽菜"},
+  {"slug": "japanese", "name": "日式"},
+  {"slug": "korean", "name": "韩式"},
+  {"slug": "southeast-asian", "name": "东南亚"},
+  {"slug": "mediterranean", "name": "地中海"},
+  {"slug": "western", "name": "欧美"}
+]

@@ -1,0 +1,5762 @@
+[
+  {
+    "slug": "chuan-dish-001",
+    "name": "川菜家常菜001",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-002",
+    "name": "粤菜家常菜002",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-003",
+    "name": "鲁菜家常菜003",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-004",
+    "name": "苏菜家常菜004",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-005",
+    "name": "浙菜家常菜005",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-006",
+    "name": "闽菜家常菜006",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-007",
+    "name": "湘菜家常菜007",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-008",
+    "name": "徽菜家常菜008",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-009",
+    "name": "日式家常菜009",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-010",
+    "name": "韩式家常菜010",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-011",
+    "name": "东南亚家常菜011",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-012",
+    "name": "地中海家常菜012",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-013",
+    "name": "欧美家常菜013",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-014",
+    "name": "川菜家常菜014",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-015",
+    "name": "粤菜家常菜015",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-016",
+    "name": "鲁菜家常菜016",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-017",
+    "name": "苏菜家常菜017",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-018",
+    "name": "浙菜家常菜018",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-019",
+    "name": "闽菜家常菜019",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-020",
+    "name": "湘菜家常菜020",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-021",
+    "name": "徽菜家常菜021",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-022",
+    "name": "日式家常菜022",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-023",
+    "name": "韩式家常菜023",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-024",
+    "name": "东南亚家常菜024",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-025",
+    "name": "地中海家常菜025",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-026",
+    "name": "欧美家常菜026",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-027",
+    "name": "川菜家常菜027",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-028",
+    "name": "粤菜家常菜028",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-029",
+    "name": "鲁菜家常菜029",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-030",
+    "name": "苏菜家常菜030",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-031",
+    "name": "浙菜家常菜031",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-032",
+    "name": "闽菜家常菜032",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-033",
+    "name": "湘菜家常菜033",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-034",
+    "name": "徽菜家常菜034",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-035",
+    "name": "日式家常菜035",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-036",
+    "name": "韩式家常菜036",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-037",
+    "name": "东南亚家常菜037",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-038",
+    "name": "地中海家常菜038",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-039",
+    "name": "欧美家常菜039",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-040",
+    "name": "川菜家常菜040",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-041",
+    "name": "粤菜家常菜041",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-042",
+    "name": "鲁菜家常菜042",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-043",
+    "name": "苏菜家常菜043",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-044",
+    "name": "浙菜家常菜044",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-045",
+    "name": "闽菜家常菜045",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-046",
+    "name": "湘菜家常菜046",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-047",
+    "name": "徽菜家常菜047",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-048",
+    "name": "日式家常菜048",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-049",
+    "name": "韩式家常菜049",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-050",
+    "name": "东南亚家常菜050",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-051",
+    "name": "地中海家常菜051",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-052",
+    "name": "欧美家常菜052",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-053",
+    "name": "川菜家常菜053",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-054",
+    "name": "粤菜家常菜054",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-055",
+    "name": "鲁菜家常菜055",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-056",
+    "name": "苏菜家常菜056",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-057",
+    "name": "浙菜家常菜057",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-058",
+    "name": "闽菜家常菜058",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-059",
+    "name": "湘菜家常菜059",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-060",
+    "name": "徽菜家常菜060",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-061",
+    "name": "日式家常菜061",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-062",
+    "name": "韩式家常菜062",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-063",
+    "name": "东南亚家常菜063",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-064",
+    "name": "地中海家常菜064",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-065",
+    "name": "欧美家常菜065",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-066",
+    "name": "川菜家常菜066",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-067",
+    "name": "粤菜家常菜067",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-068",
+    "name": "鲁菜家常菜068",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-069",
+    "name": "苏菜家常菜069",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-070",
+    "name": "浙菜家常菜070",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-071",
+    "name": "闽菜家常菜071",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-072",
+    "name": "湘菜家常菜072",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-073",
+    "name": "徽菜家常菜073",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-074",
+    "name": "日式家常菜074",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-075",
+    "name": "韩式家常菜075",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-076",
+    "name": "东南亚家常菜076",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-077",
+    "name": "地中海家常菜077",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-078",
+    "name": "欧美家常菜078",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-079",
+    "name": "川菜家常菜079",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-080",
+    "name": "粤菜家常菜080",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-081",
+    "name": "鲁菜家常菜081",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-082",
+    "name": "苏菜家常菜082",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-083",
+    "name": "浙菜家常菜083",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-084",
+    "name": "闽菜家常菜084",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-085",
+    "name": "湘菜家常菜085",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-086",
+    "name": "徽菜家常菜086",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-087",
+    "name": "日式家常菜087",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-088",
+    "name": "韩式家常菜088",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-089",
+    "name": "东南亚家常菜089",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-090",
+    "name": "地中海家常菜090",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-091",
+    "name": "欧美家常菜091",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-092",
+    "name": "川菜家常菜092",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-093",
+    "name": "粤菜家常菜093",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-094",
+    "name": "鲁菜家常菜094",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-095",
+    "name": "苏菜家常菜095",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-096",
+    "name": "浙菜家常菜096",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-097",
+    "name": "闽菜家常菜097",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-098",
+    "name": "湘菜家常菜098",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-099",
+    "name": "徽菜家常菜099",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-100",
+    "name": "日式家常菜100",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-101",
+    "name": "韩式家常菜101",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-102",
+    "name": "东南亚家常菜102",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-103",
+    "name": "地中海家常菜103",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-104",
+    "name": "欧美家常菜104",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-105",
+    "name": "川菜家常菜105",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-106",
+    "name": "粤菜家常菜106",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-107",
+    "name": "鲁菜家常菜107",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-108",
+    "name": "苏菜家常菜108",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-109",
+    "name": "浙菜家常菜109",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-110",
+    "name": "闽菜家常菜110",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-111",
+    "name": "湘菜家常菜111",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-112",
+    "name": "徽菜家常菜112",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-113",
+    "name": "日式家常菜113",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-114",
+    "name": "韩式家常菜114",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-115",
+    "name": "东南亚家常菜115",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-116",
+    "name": "地中海家常菜116",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-117",
+    "name": "欧美家常菜117",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-118",
+    "name": "川菜家常菜118",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-119",
+    "name": "粤菜家常菜119",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-120",
+    "name": "鲁菜家常菜120",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-121",
+    "name": "苏菜家常菜121",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-122",
+    "name": "浙菜家常菜122",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-123",
+    "name": "闽菜家常菜123",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-124",
+    "name": "湘菜家常菜124",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-125",
+    "name": "徽菜家常菜125",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-126",
+    "name": "日式家常菜126",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-127",
+    "name": "韩式家常菜127",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-128",
+    "name": "东南亚家常菜128",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-129",
+    "name": "地中海家常菜129",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-130",
+    "name": "欧美家常菜130",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-131",
+    "name": "川菜家常菜131",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-132",
+    "name": "粤菜家常菜132",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-133",
+    "name": "鲁菜家常菜133",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-134",
+    "name": "苏菜家常菜134",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-135",
+    "name": "浙菜家常菜135",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-136",
+    "name": "闽菜家常菜136",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-137",
+    "name": "湘菜家常菜137",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-138",
+    "name": "徽菜家常菜138",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-139",
+    "name": "日式家常菜139",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-140",
+    "name": "韩式家常菜140",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-141",
+    "name": "东南亚家常菜141",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-142",
+    "name": "地中海家常菜142",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-143",
+    "name": "欧美家常菜143",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-144",
+    "name": "川菜家常菜144",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-145",
+    "name": "粤菜家常菜145",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-146",
+    "name": "鲁菜家常菜146",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-147",
+    "name": "苏菜家常菜147",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-148",
+    "name": "浙菜家常菜148",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-149",
+    "name": "闽菜家常菜149",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-150",
+    "name": "湘菜家常菜150",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-151",
+    "name": "徽菜家常菜151",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-152",
+    "name": "日式家常菜152",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-153",
+    "name": "韩式家常菜153",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-154",
+    "name": "东南亚家常菜154",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-155",
+    "name": "地中海家常菜155",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-156",
+    "name": "欧美家常菜156",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-157",
+    "name": "川菜家常菜157",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-158",
+    "name": "粤菜家常菜158",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-159",
+    "name": "鲁菜家常菜159",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-160",
+    "name": "苏菜家常菜160",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-161",
+    "name": "浙菜家常菜161",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-162",
+    "name": "闽菜家常菜162",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-163",
+    "name": "湘菜家常菜163",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-164",
+    "name": "徽菜家常菜164",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-165",
+    "name": "日式家常菜165",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-166",
+    "name": "韩式家常菜166",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-167",
+    "name": "东南亚家常菜167",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-168",
+    "name": "地中海家常菜168",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-169",
+    "name": "欧美家常菜169",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-170",
+    "name": "川菜家常菜170",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-171",
+    "name": "粤菜家常菜171",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-172",
+    "name": "鲁菜家常菜172",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-173",
+    "name": "苏菜家常菜173",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-174",
+    "name": "浙菜家常菜174",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-175",
+    "name": "闽菜家常菜175",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-176",
+    "name": "湘菜家常菜176",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-177",
+    "name": "徽菜家常菜177",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-178",
+    "name": "日式家常菜178",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-179",
+    "name": "韩式家常菜179",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-180",
+    "name": "东南亚家常菜180",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-181",
+    "name": "地中海家常菜181",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-182",
+    "name": "欧美家常菜182",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-183",
+    "name": "川菜家常菜183",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-184",
+    "name": "粤菜家常菜184",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-185",
+    "name": "鲁菜家常菜185",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-186",
+    "name": "苏菜家常菜186",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-187",
+    "name": "浙菜家常菜187",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-188",
+    "name": "闽菜家常菜188",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-189",
+    "name": "湘菜家常菜189",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-190",
+    "name": "徽菜家常菜190",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-191",
+    "name": "日式家常菜191",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-192",
+    "name": "韩式家常菜192",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-193",
+    "name": "东南亚家常菜193",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-194",
+    "name": "地中海家常菜194",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-195",
+    "name": "欧美家常菜195",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-196",
+    "name": "川菜家常菜196",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-197",
+    "name": "粤菜家常菜197",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-198",
+    "name": "鲁菜家常菜198",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-199",
+    "name": "苏菜家常菜199",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-200",
+    "name": "浙菜家常菜200",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-201",
+    "name": "闽菜家常菜201",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-202",
+    "name": "湘菜家常菜202",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-203",
+    "name": "徽菜家常菜203",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-204",
+    "name": "日式家常菜204",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-205",
+    "name": "韩式家常菜205",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-206",
+    "name": "东南亚家常菜206",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-207",
+    "name": "地中海家常菜207",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-208",
+    "name": "欧美家常菜208",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-209",
+    "name": "川菜家常菜209",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-210",
+    "name": "粤菜家常菜210",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-211",
+    "name": "鲁菜家常菜211",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-212",
+    "name": "苏菜家常菜212",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-213",
+    "name": "浙菜家常菜213",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-214",
+    "name": "闽菜家常菜214",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-215",
+    "name": "湘菜家常菜215",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-216",
+    "name": "徽菜家常菜216",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-217",
+    "name": "日式家常菜217",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-218",
+    "name": "韩式家常菜218",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-219",
+    "name": "东南亚家常菜219",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-220",
+    "name": "地中海家常菜220",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-221",
+    "name": "欧美家常菜221",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-222",
+    "name": "川菜家常菜222",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-223",
+    "name": "粤菜家常菜223",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-224",
+    "name": "鲁菜家常菜224",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-225",
+    "name": "苏菜家常菜225",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-226",
+    "name": "浙菜家常菜226",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-227",
+    "name": "闽菜家常菜227",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-228",
+    "name": "湘菜家常菜228",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-229",
+    "name": "徽菜家常菜229",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-230",
+    "name": "日式家常菜230",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-231",
+    "name": "韩式家常菜231",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-232",
+    "name": "东南亚家常菜232",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-233",
+    "name": "地中海家常菜233",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-234",
+    "name": "欧美家常菜234",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-235",
+    "name": "川菜家常菜235",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-236",
+    "name": "粤菜家常菜236",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-237",
+    "name": "鲁菜家常菜237",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-238",
+    "name": "苏菜家常菜238",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-239",
+    "name": "浙菜家常菜239",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-240",
+    "name": "闽菜家常菜240",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-241",
+    "name": "湘菜家常菜241",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-242",
+    "name": "徽菜家常菜242",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-243",
+    "name": "日式家常菜243",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-244",
+    "name": "韩式家常菜244",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-245",
+    "name": "东南亚家常菜245",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-246",
+    "name": "地中海家常菜246",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-247",
+    "name": "欧美家常菜247",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-248",
+    "name": "川菜家常菜248",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-249",
+    "name": "粤菜家常菜249",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-250",
+    "name": "鲁菜家常菜250",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-251",
+    "name": "苏菜家常菜251",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-252",
+    "name": "浙菜家常菜252",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-253",
+    "name": "闽菜家常菜253",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-254",
+    "name": "湘菜家常菜254",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-255",
+    "name": "徽菜家常菜255",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-256",
+    "name": "日式家常菜256",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-257",
+    "name": "韩式家常菜257",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-258",
+    "name": "东南亚家常菜258",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-259",
+    "name": "地中海家常菜259",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-260",
+    "name": "欧美家常菜260",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-261",
+    "name": "川菜家常菜261",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-262",
+    "name": "粤菜家常菜262",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-263",
+    "name": "鲁菜家常菜263",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-264",
+    "name": "苏菜家常菜264",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-265",
+    "name": "浙菜家常菜265",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-266",
+    "name": "闽菜家常菜266",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-267",
+    "name": "湘菜家常菜267",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-268",
+    "name": "徽菜家常菜268",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-269",
+    "name": "日式家常菜269",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-270",
+    "name": "韩式家常菜270",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-271",
+    "name": "东南亚家常菜271",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-272",
+    "name": "地中海家常菜272",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-273",
+    "name": "欧美家常菜273",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-274",
+    "name": "川菜家常菜274",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-275",
+    "name": "粤菜家常菜275",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-276",
+    "name": "鲁菜家常菜276",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-277",
+    "name": "苏菜家常菜277",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-278",
+    "name": "浙菜家常菜278",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-279",
+    "name": "闽菜家常菜279",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-280",
+    "name": "湘菜家常菜280",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-281",
+    "name": "徽菜家常菜281",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-282",
+    "name": "日式家常菜282",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-283",
+    "name": "韩式家常菜283",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-284",
+    "name": "东南亚家常菜284",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-285",
+    "name": "地中海家常菜285",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-286",
+    "name": "欧美家常菜286",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-287",
+    "name": "川菜家常菜287",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-288",
+    "name": "粤菜家常菜288",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-289",
+    "name": "鲁菜家常菜289",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-290",
+    "name": "苏菜家常菜290",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-291",
+    "name": "浙菜家常菜291",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-292",
+    "name": "闽菜家常菜292",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-293",
+    "name": "湘菜家常菜293",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-294",
+    "name": "徽菜家常菜294",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-295",
+    "name": "日式家常菜295",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-296",
+    "name": "韩式家常菜296",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-297",
+    "name": "东南亚家常菜297",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-298",
+    "name": "地中海家常菜298",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-299",
+    "name": "欧美家常菜299",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-300",
+    "name": "川菜家常菜300",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-301",
+    "name": "粤菜家常菜301",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-302",
+    "name": "鲁菜家常菜302",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-303",
+    "name": "苏菜家常菜303",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-304",
+    "name": "浙菜家常菜304",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-305",
+    "name": "闽菜家常菜305",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-306",
+    "name": "湘菜家常菜306",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-307",
+    "name": "徽菜家常菜307",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "japanese-dish-308",
+    "name": "日式家常菜308",
+    "cuisine": "japanese",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "korean-dish-309",
+    "name": "韩式家常菜309",
+    "cuisine": "korean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "southeast-asian-dish-310",
+    "name": "东南亚家常菜310",
+    "cuisine": "southeast-asian",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "mediterranean-dish-311",
+    "name": "地中海家常菜311",
+    "cuisine": "mediterranean",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "western-dish-312",
+    "name": "欧美家常菜312",
+    "cuisine": "western",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "chuan-dish-313",
+    "name": "川菜家常菜313",
+    "cuisine": "chuan",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "yue-dish-314",
+    "name": "粤菜家常菜314",
+    "cuisine": "yue",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "lu-dish-315",
+    "name": "鲁菜家常菜315",
+    "cuisine": "lu",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "su-dish-316",
+    "name": "苏菜家常菜316",
+    "cuisine": "su",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "zhe-dish-317",
+    "name": "浙菜家常菜317",
+    "cuisine": "zhe",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 0,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "min-dish-318",
+    "name": "闽菜家常菜318",
+    "cuisine": "min",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 1,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "xiang-dish-319",
+    "name": "湘菜家常菜319",
+    "cuisine": "xiang",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 2,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  },
+  {
+    "slug": "hui-dish-320",
+    "name": "徽菜家常菜320",
+    "cuisine": "hui",
+    "tags": [
+      "家常",
+      "推荐"
+    ],
+    "spicyLevel": 3,
+    "status": "published",
+    "sources": [
+      {
+        "url": "https://www.wikidata.org/",
+        "license": "CC0",
+        "collectedAt": "2026-09-14"
+      }
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+from io import BytesIO
+from PIL import Image
+
+from services.media.app.services.image_policy import validate_and_thumbnail
+
+
+def test_media_policy_reencodes_allowed_image() -> None:
+    out = BytesIO()
+    Image.new("RGB", (100, 80), "red").save(out, format="PNG")
+    result = validate_and_thumbnail(out.getvalue(), filename="dish.png")
+    assert result.mime == "image/jpeg"
+    assert result.width == 100 and result.height == 80
+
+
+def test_media_policy_rejects_svg() -> None:
+    import pytest
+    with pytest.raises(ValueError):
+        validate_and_thumbnail(b"<svg/>", filename="dish.svg")
