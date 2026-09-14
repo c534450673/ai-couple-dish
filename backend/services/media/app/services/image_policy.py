@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
+
 from PIL import Image, UnidentifiedImageError
 
 
@@ -12,8 +13,15 @@ class ImageResult:
     height: int
 
 
-def validate_and_thumbnail(content: bytes, *, filename: str, max_bytes: int = 10 * 1024 * 1024) -> ImageResult:
-    if len(content) > max_bytes or Path(filename).suffix.lower() not in {".jpg", ".jpeg", ".png", ".webp"}:
+def validate_and_thumbnail(
+    content: bytes, *, filename: str, max_bytes: int = 10 * 1024 * 1024
+) -> ImageResult:
+    if len(content) > max_bytes or Path(filename).suffix.lower() not in {
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".webp",
+    }:
         raise ValueError("仅支持 JPEG/PNG/WebP 且文件不得超过10MB")
     try:
         with Image.open(BytesIO(content)) as image:

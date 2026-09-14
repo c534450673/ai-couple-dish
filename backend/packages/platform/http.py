@@ -8,10 +8,12 @@ async def request_json(
     url: str,
     *,
     headers: Mapping[str, str] | None = None,
-    timeout: float = 5.0,
+    timeout_seconds: float = 5.0,
     **kwargs: object,
 ) -> httpx.Response:
     request_headers = dict(headers or {})
     request_headers.setdefault("X-Request-ID", "")
-    async with httpx.AsyncClient(timeout=httpx.Timeout(timeout, connect=timeout)) as client:
+    async with httpx.AsyncClient(
+        timeout=httpx.Timeout(timeout_seconds, connect=timeout_seconds)
+    ) as client:
         return await client.request(method, url, headers=request_headers, **kwargs)
