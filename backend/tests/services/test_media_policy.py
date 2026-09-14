@@ -14,5 +14,6 @@ def test_media_policy_reencodes_allowed_image() -> None:
 
 def test_media_policy_rejects_svg() -> None:
     import pytest
+
     with pytest.raises(ValueError):
         validate_and_thumbnail(b"<svg/>", filename="dish.svg")
