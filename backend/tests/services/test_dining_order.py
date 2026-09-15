@@ -77,6 +77,22 @@ def test_new_shared_cart_has_python_version_default_for_async_writes() -> None:
     assert cart.version == 0
 
 
+def test_new_dining_order_has_eager_timestamp_defaults_for_async_serialization() -> None:
+    """Serializing an order immediately after flush must not lazy-load timestamps."""
+    created = DiningOrder(
+        order_no="D-EAGER-DEFAULT",
+        couple_id=None,
+        user_id=7,
+        status="pending_confirmation",
+        total_amount=Decimal("8.00"),
+        remark=None,
+    )
+
+    assert created.version == 0
+    assert created.create_time is not None
+    assert created.update_time is not None
+
+
 def test_dining_registers_order_routes() -> None:
     from services.dining.app.main import create_app
 

@@ -94,6 +94,13 @@ class DiningOrder(Base):
 
     def __init__(self, **kwargs: object) -> None:
         kwargs.setdefault("version", 0)
+        # Avoid implicit async refreshes when the order response is serialized
+        # immediately after ``flush``.  The database still owns the canonical
+        # timestamp for persisted rows, while the eager value keeps the object
+        # usable inside the current async transaction.
+        now = datetime.now()
+        kwargs.setdefault("create_time", now)
+        kwargs.setdefault("update_time", now)
         super().__init__(**kwargs)
 
 
