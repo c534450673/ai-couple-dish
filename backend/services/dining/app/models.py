@@ -28,13 +28,25 @@ class SharedCart(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     couple_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     user_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
-    version: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    # Keep a Python-side default as well as the DB default.  asyncmy may expire
+    # server-default columns on a freshly flushed row; cart writes increment
+    # ``version`` in the same transaction and must not trigger implicit IO.
+    version: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default=text("0")
+    )
     create_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
     update_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
+
+    def __init__(self, **kwargs: object) -> None:
+        # SQLAlchemy applies ``default`` during INSERT, not object creation.
+        # Initialize eagerly so a new cart can be versioned before any
+        # server-default refresh (important for asyncmy sessions).
+        kwargs.setdefault("version", 0)
+        super().__init__(**kwargs)
 
 
 class SharedCartItem(Base):
@@ -70,13 +82,19 @@ class DiningOrder(Base):
     )
     total_amount: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     remark: Mapped[str | None] = mapped_column(String(512), nullable=True)
-    version: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    version: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default=text("0")
+    )
     create_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
     update_time: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
+
+    def __init__(self, **kwargs: object) -> None:
+        kwargs.setdefault("version", 0)
+        super().__init__(**kwargs)
 
 
 class DiningOrderItem(Base):

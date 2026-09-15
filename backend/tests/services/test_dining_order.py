@@ -13,6 +13,7 @@ from services.dining.app.models import (
     IdempotencyRecord,
     OrderStatusHistory,
     OutboxEvent,
+    SharedCart,
 )
 from services.dining.app.services.idempotency import run_once
 from services.dining.app.services.order import STATUSES, TRANSITIONS, payload, transition
@@ -67,6 +68,13 @@ def test_order_payload_preserves_snapshot_fields() -> None:
     assert result["coupleId"] is None
     assert result["items"][0]["dishName"] == "旧菜名"
     assert result["items"][0]["unitPrice"] == "10.00"
+
+
+def test_new_shared_cart_has_python_version_default_for_async_writes() -> None:
+    """Incrementing a freshly-created cart must not trigger implicit async IO."""
+    cart = SharedCart(couple_id=7)
+
+    assert cart.version == 0
 
 
 def test_dining_registers_order_routes() -> None:
