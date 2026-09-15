@@ -554,7 +554,9 @@ async def test_couple_tree_routes_keep_scope_atomic_growth_and_redacted_logs(
                     )
                     assert len(recent_logs) == 2
                     assert deleted_user is not None
-                    same_second = datetime(2026, 7, 26, 12, 0, 0)
+                    # Keep the two newest rows newer than the preceding logs while
+                    # forcing an exact timestamp tie to verify the id tiebreaker.
+                    same_second = datetime.now()
                     for nutrient_log in recent_logs:
                         nutrient_log.create_time = same_second
                     deleted_user.is_deleted = 1

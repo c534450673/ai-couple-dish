@@ -13,7 +13,7 @@
   Spring 响应正文。
 - Swagger 中 GET/POST/PUT/DELETE/PATCH 共 198 个 operation；`routes.json` 为 27 个业务
   Controller 的 193 个 operation，`method + path` 唯一。
-- `h5-consumers.json`：当前源码中 74 个 Axios 调用和 4 个 AI fetch，共 78 个消费者。
+- `h5-consumers.json`：当前源码中 96 个 Axios 调用和 4 个 AI fetch，共 100 个消费者。
 - `error-codes.json`：60 个可观察错误码；`redis-keys.json`：8 个 pattern。
 
 ## OpenAPI 规范化与静态对账
@@ -64,8 +64,9 @@ header 参数。每个目标文件先写入同目录临时文件、flush/fsync�
 
 批准计划依据旧盘点，计数是 54 个 Axios + 4 个 AI + 1 个菜谱 direct fetch = 59。当前源码已
 发生可验证重构：`recipeApi` 14 个导出、情侣码 2 个导出、菜单 unlike/unfavorite 2 个导出已进入
-`frontend-h5/src/api/index.js`；旧的菜谱 direct fetch 已由 store/API 层替代。净结果是 72 个
-Axios + 4 个 AI fetch = 76，本合同以当前源码为权威，不保留不存在的 direct consumer。
+`frontend-h5/src/api/index.js`；旧的菜谱 direct fetch 已由 store/API 层替代。当前源码包含 96 个
+Axios + 4 个 AI fetch = 100 个消费者；其中 dining、admin、analytics 路由由 FastAPI 服务承载，
+其余消费者继续按 Spring 路由合同对账。本合同以当前源码为权威，不保留不存在的 direct consumer。
 
 每项记录 `sourceFile`、`exportName`、`functionName`、`sourceLine`、transport、method、path 和
 path/query/body/multipart 参数位置。模板路径以 H5 函数参数名表示，例如 `{id}`；它与 Spring

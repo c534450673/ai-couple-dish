@@ -5,9 +5,10 @@ This document describes all environment variables used in the AI Couple Dish pro
 ## Migration status
 
 The backend is in a staged migration. Java Spring Boot (`backend/Dockerfile`) remains the
-only business writer for all 193 business routes. `backend/Dockerfile.fastapi` is a
-non-root FastAPI foundation image for health endpoints only; business routes have not
-migrated. The H5 browser client keeps using same-origin relative `/api` through Nginx.
+fallback business writer for the 109 business routes that have not yet migrated. FastAPI
+currently owns the approved cutover routes; the remaining Spring routes are still marked
+“尚未迁移” and must stay available for rollback. The H5 browser client keeps using same-origin relative
+`/api` through Nginx.
 
 ## Quick Start
 

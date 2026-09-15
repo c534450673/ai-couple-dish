@@ -427,11 +427,379 @@
   },
   {
     "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "getCuisines",
+    "method": "GET",
+    "path": "/api/dining/cuisines",
+    "sourceLine": 130,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "getDishes",
+    "method": "GET",
+    "path": "/api/dining/dishes",
+    "sourceLine": 133,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "params"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "getCart",
+    "method": "GET",
+    "path": "/api/dining/cart",
+    "sourceLine": 136,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "addItem",
+    "method": "POST",
+    "path": "/api/dining/cart/items",
+    "sourceLine": 139,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "updateItem",
+    "method": "PATCH",
+    "path": "/api/dining/cart/items/{itemId}",
+    "sourceLine": 142,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "itemId"
+      ],
+      "query": [],
+      "body": [
+        "{ quantity }"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "removeItem",
+    "method": "DELETE",
+    "path": "/api/dining/cart/items/{itemId}",
+    "sourceLine": 145,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "itemId"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "clearCart",
+    "method": "DELETE",
+    "path": "/api/dining/cart",
+    "sourceLine": 148,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "createOrder",
+    "method": "POST",
+    "path": "/api/dining/orders",
+    "sourceLine": 154,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "getOrders",
+    "method": "GET",
+    "path": "/api/dining/orders",
+    "sourceLine": 160,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "getOrder",
+    "method": "GET",
+    "path": "/api/dining/orders/{orderId}",
+    "sourceLine": 163,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "orderId"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "confirmOrder",
+    "method": "POST",
+    "path": "/api/dining/orders/{orderId}/confirm",
+    "sourceLine": 166,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "orderId"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "diningApi",
+    "functionName": "cancelOrder",
+    "method": "POST",
+    "path": "/api/dining/orders/{orderId}/cancel",
+    "sourceLine": 169,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "orderId"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "adminApi",
+    "functionName": "login",
+    "method": "POST",
+    "path": "/api/admin/login",
+    "sourceLine": 189,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "adminApi",
+    "functionName": "getAudit",
+    "method": "GET",
+    "path": "/api/admin/audit",
+    "sourceLine": 192,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "operation"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "adminApi",
+    "functionName": "getOrders",
+    "method": "GET",
+    "path": "/api/admin/orders",
+    "sourceLine": 195,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "status"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "adminApi",
+    "functionName": "getCatalogImports",
+    "method": "GET",
+    "path": "/api/admin/catalog/imports",
+    "sourceLine": 198,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "adminApi",
+    "functionName": "getUser",
+    "method": "GET",
+    "path": "/api/admin/users/{userId}",
+    "sourceLine": 201,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "userId"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "adminApi",
+    "functionName": "getDailyReport",
+    "method": "GET",
+    "path": "/api/analytics/reports/daily",
+    "sourceLine": 204,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "date"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "adminApi",
+    "functionName": "getHourlyReport",
+    "method": "GET",
+    "path": "/api/analytics/reports/hourly",
+    "sourceLine": 207,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [
+        "date"
+      ],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "adminApi",
+    "functionName": "reviewCatalog",
+    "method": "POST",
+    "path": "/api/admin/catalog/review",
+    "sourceLine": 210,
+    "transport": "axios",
+    "parameters": {
+      "path": [],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "adminApi",
+    "functionName": "publishCatalog",
+    "method": "POST",
+    "path": "/api/admin/catalog/${encodeURIComponent(slug)}/publish",
+    "sourceLine": 213,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "encodeURIComponent(slug)"
+      ],
+      "query": [],
+      "body": [],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
+    "exportName": "adminApi",
+    "functionName": "flagOrder",
+    "method": "POST",
+    "path": "/api/admin/orders/${encodeURIComponent(orderId)}/flag",
+    "sourceLine": 216,
+    "transport": "axios",
+    "parameters": {
+      "path": [
+        "encodeURIComponent(orderId)"
+      ],
+      "query": [],
+      "body": [
+        "data"
+      ],
+      "multipart": []
+    }
+  },
+  {
+    "sourceFile": "frontend-h5/src/api/index.js",
     "exportName": "recipeApi",
     "functionName": "createRecipe",
     "method": "POST",
     "path": "/api/recipe/create",
-    "sourceLine": 130,
+    "sourceLine": 222,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -448,7 +816,7 @@
     "functionName": "updateRecipe",
     "method": "PUT",
     "path": "/api/recipe/update/{id}",
-    "sourceLine": 133,
+    "sourceLine": 225,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -467,7 +835,7 @@
     "functionName": "deleteRecipe",
     "method": "DELETE",
     "path": "/api/recipe/delete/{id}",
-    "sourceLine": 136,
+    "sourceLine": 228,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -484,7 +852,7 @@
     "functionName": "publishRecipe",
     "method": "POST",
     "path": "/api/recipe/publish/{id}",
-    "sourceLine": 139,
+    "sourceLine": 231,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -501,7 +869,7 @@
     "functionName": "getRecipeDetail",
     "method": "GET",
     "path": "/api/recipe/detail/{id}",
-    "sourceLine": 142,
+    "sourceLine": 234,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -518,7 +886,7 @@
     "functionName": "getMyRecipes",
     "method": "GET",
     "path": "/api/recipe/my",
-    "sourceLine": 145,
+    "sourceLine": 237,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -535,7 +903,7 @@
     "functionName": "getCoupleRecipes",
     "method": "GET",
     "path": "/api/recipe/couple",
-    "sourceLine": 148,
+    "sourceLine": 240,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -552,7 +920,7 @@
     "functionName": "getRecommendedRecipes",
     "method": "GET",
     "path": "/api/recipe/recommended",
-    "sourceLine": 151,
+    "sourceLine": 243,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -569,7 +937,7 @@
     "functionName": "searchRecipes",
     "method": "GET",
     "path": "/api/recipe/search",
-    "sourceLine": 154,
+    "sourceLine": 246,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -586,7 +954,7 @@
     "functionName": "getCollectedRecipes",
     "method": "GET",
     "path": "/api/recipe/collected",
-    "sourceLine": 157,
+    "sourceLine": 249,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -603,7 +971,7 @@
     "functionName": "likeRecipe",
     "method": "POST",
     "path": "/api/recipe/like/{id}",
-    "sourceLine": 160,
+    "sourceLine": 252,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -620,7 +988,7 @@
     "functionName": "unlikeRecipe",
     "method": "DELETE",
     "path": "/api/recipe/like/{id}",
-    "sourceLine": 163,
+    "sourceLine": 255,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -637,7 +1005,7 @@
     "functionName": "collectRecipe",
     "method": "POST",
     "path": "/api/recipe/collect/{id}",
-    "sourceLine": 166,
+    "sourceLine": 258,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -654,7 +1022,7 @@
     "functionName": "uncollectRecipe",
     "method": "DELETE",
     "path": "/api/recipe/collect/{id}",
-    "sourceLine": 169,
+    "sourceLine": 261,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -671,7 +1039,7 @@
     "functionName": "getAnniversaryList",
     "method": "GET",
     "path": "/api/anniversary/list",
-    "sourceLine": 176,
+    "sourceLine": 268,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -686,7 +1054,7 @@
     "functionName": "getUpcomingAnniversaries",
     "method": "GET",
     "path": "/api/anniversary/upcoming",
-    "sourceLine": 180,
+    "sourceLine": 272,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -701,7 +1069,7 @@
     "functionName": "getNextAnniversary",
     "method": "GET",
     "path": "/api/anniversary/next",
-    "sourceLine": 184,
+    "sourceLine": 276,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -716,7 +1084,7 @@
     "functionName": "addAnniversary",
     "method": "POST",
     "path": "/api/anniversary/add",
-    "sourceLine": 188,
+    "sourceLine": 280,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -733,7 +1101,7 @@
     "functionName": "updateAnniversary",
     "method": "PUT",
     "path": "/api/anniversary/update/{id}",
-    "sourceLine": 192,
+    "sourceLine": 284,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -752,7 +1120,7 @@
     "functionName": "deleteAnniversary",
     "method": "DELETE",
     "path": "/api/anniversary/delete/{id}",
-    "sourceLine": 196,
+    "sourceLine": 288,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -769,7 +1137,7 @@
     "functionName": "getTodayFeedStatus",
     "method": "GET",
     "path": "/api/feed/today",
-    "sourceLine": 203,
+    "sourceLine": 295,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -784,7 +1152,7 @@
     "functionName": "sendFeed",
     "method": "POST",
     "path": "/api/feed/send",
-    "sourceLine": 207,
+    "sourceLine": 299,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -801,7 +1169,7 @@
     "functionName": "getReceivedFeeds",
     "method": "GET",
     "path": "/api/feed/received",
-    "sourceLine": 211,
+    "sourceLine": 303,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -816,7 +1184,7 @@
     "functionName": "getSentFeeds",
     "method": "GET",
     "path": "/api/feed/sent",
-    "sourceLine": 215,
+    "sourceLine": 307,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -831,7 +1199,7 @@
     "functionName": "acceptFeed",
     "method": "POST",
     "path": "/api/feed/accept/{id}",
-    "sourceLine": 219,
+    "sourceLine": 311,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -848,7 +1216,7 @@
     "functionName": "rejectFeed",
     "method": "POST",
     "path": "/api/feed/reject/{id}",
-    "sourceLine": 223,
+    "sourceLine": 315,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -867,7 +1235,7 @@
     "functionName": "getTodayMoods",
     "method": "GET",
     "path": "/api/mood/today",
-    "sourceLine": 230,
+    "sourceLine": 322,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -882,7 +1250,7 @@
     "functionName": "sendMood",
     "method": "POST",
     "path": "/api/mood/send",
-    "sourceLine": 234,
+    "sourceLine": 326,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -899,7 +1267,7 @@
     "functionName": "getNoteList",
     "method": "GET",
     "path": "/api/note/list",
-    "sourceLine": 241,
+    "sourceLine": 333,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -916,7 +1284,7 @@
     "functionName": "getNoteDetail",
     "method": "GET",
     "path": "/api/note/detail/{id}",
-    "sourceLine": 245,
+    "sourceLine": 337,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -933,7 +1301,7 @@
     "functionName": "addNote",
     "method": "POST",
     "path": "/api/note/add",
-    "sourceLine": 249,
+    "sourceLine": 341,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -950,7 +1318,7 @@
     "functionName": "updateNote",
     "method": "PUT",
     "path": "/api/note/update/{id}",
-    "sourceLine": 253,
+    "sourceLine": 345,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -969,7 +1337,7 @@
     "functionName": "deleteNote",
     "method": "DELETE",
     "path": "/api/note/delete/{id}",
-    "sourceLine": 257,
+    "sourceLine": 349,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -986,7 +1354,7 @@
     "functionName": "likeNote",
     "method": "POST",
     "path": "/api/note/like/{id}",
-    "sourceLine": 261,
+    "sourceLine": 353,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1003,7 +1371,7 @@
     "functionName": "getWishList",
     "method": "GET",
     "path": "/api/wish/list",
-    "sourceLine": 268,
+    "sourceLine": 360,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1018,7 +1386,7 @@
     "functionName": "getWishDetail",
     "method": "GET",
     "path": "/api/wish/detail/{id}",
-    "sourceLine": 272,
+    "sourceLine": 364,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1035,7 +1403,7 @@
     "functionName": "addWish",
     "method": "POST",
     "path": "/api/wish/add",
-    "sourceLine": 276,
+    "sourceLine": 368,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1052,7 +1420,7 @@
     "functionName": "updateWish",
     "method": "PUT",
     "path": "/api/wish/update/{id}",
-    "sourceLine": 280,
+    "sourceLine": 372,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1071,7 +1439,7 @@
     "functionName": "fulfillWish",
     "method": "POST",
     "path": "/api/wish/fulfill/{id}",
-    "sourceLine": 284,
+    "sourceLine": 376,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1088,7 +1456,7 @@
     "functionName": "unfulfillWish",
     "method": "POST",
     "path": "/api/wish/unfulfill/{id}",
-    "sourceLine": 288,
+    "sourceLine": 380,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1105,7 +1473,7 @@
     "functionName": "deleteWish",
     "method": "DELETE",
     "path": "/api/wish/delete/{id}",
-    "sourceLine": 292,
+    "sourceLine": 384,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1122,7 +1490,7 @@
     "functionName": "getNotificationList",
     "method": "GET",
     "path": "/api/notification/list",
-    "sourceLine": 299,
+    "sourceLine": 391,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1139,7 +1507,7 @@
     "functionName": "getUnreadCount",
     "method": "GET",
     "path": "/api/notification/unreadCount",
-    "sourceLine": 303,
+    "sourceLine": 395,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1154,7 +1522,7 @@
     "functionName": "markAsRead",
     "method": "PUT",
     "path": "/api/notification/read/{id}",
-    "sourceLine": 307,
+    "sourceLine": 399,
     "transport": "axios",
     "parameters": {
       "path": [
@@ -1171,7 +1539,7 @@
     "functionName": "markAllAsRead",
     "method": "PUT",
     "path": "/api/notification/readAll",
-    "sourceLine": 311,
+    "sourceLine": 403,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1186,7 +1554,7 @@
     "functionName": "uploadImage",
     "method": "POST",
     "path": "/api/upload/image",
-    "sourceLine": 320,
+    "sourceLine": 412,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1203,7 +1571,7 @@
     "functionName": "getNearbyRestaurants",
     "method": "GET",
     "path": "/api/menu/nearby",
-    "sourceLine": 329,
+    "sourceLine": 421,
     "transport": "axios",
     "parameters": {
       "path": [],
@@ -1220,7 +1588,7 @@
     "functionName": "getMapRestaurants",
     "method": "GET",
     "path": "/api/menu/map",
-    "sourceLine": 333,
+    "sourceLine": 425,
     "transport": "axios",
     "parameters": {
       "path": [],

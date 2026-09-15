@@ -168,7 +168,8 @@ async def test_poster_real_mysql_redis_filesystem_and_tcp_pixels(
     try:
         with capture_logs() as logs:
             async with _running_uvicorn(app) as base_url:
-                async with AsyncClient(base_url=base_url, timeout=30) as client:
+                # Local uvicorn traffic must bypass any process-wide outbound proxy.
+                async with AsyncClient(base_url=base_url, timeout=30, trust_env=False) as client:
                     assert (await client.get("/api/poster/templates")).status_code == 401
                     first = await _login(client, "POSTER_OPENID_SENTINEL_ONE", "海报甲")
                     partner = await _login(client, "POSTER_OPENID_SENTINEL_TWO", "海报乙")

@@ -55,6 +55,9 @@ EXPECTED_REDIS_PATTERNS = {
     "ai:session:pending:<userId>:<sessionId>",
     "rate_limit:<scope>:<identityHmac>",
 }
+# These H5 paths are served by the Python services and intentionally do not
+# appear in the legacy Spring route inventory.
+FASTAPI_ROUTE_PREFIXES = ("/api/admin/", "/api/analytics/", "/api/dining/")
 
 
 def load_json(path: Path) -> Any:
@@ -568,7 +571,7 @@ def test_h5_consumers_match_current_source_calls() -> None:
 
     extracted = _extract_axios_consumers(index_source) + _extract_ai_consumers(ai_source)
 
-    assert len(extracted) == 78
+    assert len(extracted) == 100
     assert consumers == extracted
 
 
@@ -579,7 +582,7 @@ def test_h5_axios_entries_are_independently_extracted_from_source() -> None:
     extracted = _extract_axios_consumers(source)
     recorded = [item for item in consumers if item["transport"] == "axios"]
 
-    assert len(extracted) == 74
+    assert len(extracted) == 96
     assert recorded == extracted
 
 
@@ -591,9 +594,14 @@ def test_every_h5_consumer_has_a_spring_wire_route() -> None:
         return re.sub(r"\{[^}]+\}", "{}", path)
 
     spring_routes = {(route["method"], wire_path(route["path"])) for route in routes}
+    spring_consumers = [
+        item
+        for item in consumers
+        if not item["path"].startswith(FASTAPI_ROUTE_PREFIXES)
+    ]
     assert {
         (item["method"], wire_path(item["path"]))
-        for item in consumers
+        for item in spring_consumers
     }.issubset(spring_routes)
 
 
