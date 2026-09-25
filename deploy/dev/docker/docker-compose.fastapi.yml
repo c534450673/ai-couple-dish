@@ -29,6 +29,12 @@ services:
       FILE_PUBLIC_PATH: /api/uploads
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,http://106.54.232.125}
       RELEASE_SHA: ${RELEASE_SHA:-dev}
+      AI_BASE_URL: ${AI_BASE_URL:-}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-kimi-k2.6}
+      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-120000}
+      AI_MAX_HISTORY: ${AI_MAX_HISTORY:-20}
+      AI_MAX_TOOL_ROUNDS: ${AI_MAX_TOOL_ROUNDS:-5}
     expose:
       - "8000"
     depends_on:

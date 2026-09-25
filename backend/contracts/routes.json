@@ -4,7 +4,7 @@
     "path": "/api/ai/chat/confirm",
     "controller": "AiChatController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 3
   },
   {
@@ -12,7 +12,7 @@
     "path": "/api/ai/chat/reject",
     "controller": "AiChatController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 3
   },
   {
@@ -20,7 +20,7 @@
     "path": "/api/ai/chat/stream",
     "controller": "AiChatController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 3
   },
   {
@@ -28,7 +28,7 @@
     "path": "/api/ai/generate",
     "controller": "AiChatController",
     "sideEffect": true,
-    "owner": "spring",
+    "owner": "fastapi",
     "migrationBatch": 3
   },
   {

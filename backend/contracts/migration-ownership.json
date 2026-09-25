@@ -1,6 +1,10 @@
 {
   "defaultOwner": "spring",
   "fastapiRoutes": [
+    "POST /api/ai/chat/confirm",
+    "POST /api/ai/chat/reject",
+    "POST /api/ai/chat/stream",
+    "POST /api/ai/generate",
     "POST /api/challenge/accept/{challengeId}",
     "POST /api/challenge/cancel/{challengeId}",
     "POST /api/challenge/checkin",
@@ -87,6 +91,10 @@
     "PUT /api/wish/update/{id}"
   ],
   "integrationGatedRoutes": [
+    "POST /api/ai/chat/confirm",
+    "POST /api/ai/chat/reject",
+    "POST /api/ai/chat/stream",
+    "POST /api/ai/generate",
     "POST /api/challenge/accept/{challengeId}",
     "POST /api/challenge/cancel/{challengeId}",
     "POST /api/challenge/checkin",
@@ -267,6 +275,16 @@
       "activeOwner": "fastapi",
       "rollbackOwner": "spring",
       "nginxLocation": "daily-greeting-exact-contract-regex",
+      "requires": [
+        "real-mysql-redis-gates",
+        "contract-route-owner-check",
+        "nginx-config-check"
+      ]
+    },
+    "ai-v1": {
+      "activeOwner": "fastapi",
+      "rollbackOwner": "spring",
+      "nginxLocation": "ai-exact-contract-regex",
       "requires": [
         "real-mysql-redis-gates",
         "contract-route-owner-check",

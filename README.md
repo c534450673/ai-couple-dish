@@ -3,8 +3,8 @@
 一款面向情侣的私密菜单管理应用，支持记录约会餐厅、管理心愿清单、纪念日提醒等功能。
 
 当前后端处于 FastAPI 分阶段迁移期：Python 微服务入口已覆盖 identity、catalog、
-dining、media、admin、analytics、gateway 与 worker；已登记的 84 条合同 route
-由 FastAPI 承载；在 193 条业务 route 中，其余 109 条尚未迁移，仍由 Java Spring Boot `backend/Dockerfile`
+dining、media、admin、analytics、gateway 与 worker；已登记的 88 条合同 route
+由 FastAPI 承载；在 193 条业务 route 中，其余 105 条尚未迁移，仍由 Java Spring Boot `backend/Dockerfile`
 作为回退写者。独立 Python 服务可运行不表示后端迁移完成；H5 继续通过同源相对 `/api`
 访问 Nginx，由 Nginx 按 owner 将请求转发至 FastAPI 或 Spring。
 
