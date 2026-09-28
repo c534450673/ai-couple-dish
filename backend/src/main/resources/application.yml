@@ -74,6 +74,11 @@ wx:
     msgDataFormat: JSON
     tenantId: 10001
 
+wechat:
+  mini-program:
+    app-id: ${WECHAT_MINI_PROGRAM_APP_ID:}
+    app-secret: ${WECHAT_MINI_PROGRAM_APP_SECRET:}
+
 # 文件上传配置
 file:
   upload:

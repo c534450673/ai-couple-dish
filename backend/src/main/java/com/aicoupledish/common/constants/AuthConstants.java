@@ -16,10 +16,12 @@ public final class AuthConstants {
      */
     public static final String[] PUBLIC_PATHS = {
             "/user/login",
+            "/user/wechatPhoneLogin",
             "/user/logout",
             "/user/register",
             "/user/phoneLogin",
             "/user/sendCode",
+            "/api/uploads",
             "/doc.html",
             "/swagger-ui",
             "/v3/api-docs",

@@ -9,6 +9,7 @@ import com.aicoupledish.domain.dto.UserInfoDTO;
 import com.aicoupledish.domain.req.PhoneLoginReq;
 import com.aicoupledish.domain.req.UpdateUserReq;
 import com.aicoupledish.domain.req.WechatLoginReq;
+import com.aicoupledish.domain.req.WechatPhoneLoginReq;
 import com.aicoupledish.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,6 +36,14 @@ public class UserController extends BaseAuthController {
     @PostMapping("/login")
     public Result<LoginRespDTO> wechatLogin(@Valid @RequestBody WechatLoginReq req) {
         LoginRespDTO resp = userService.wechatLogin(req);
+        return Result.success(resp);
+    }
+
+    @ApiOperation("微信手机号一键登录")
+    @PostMapping("/wechatPhoneLogin")
+    @RateLimit(key = "wechatPhoneLogin", time = 60, count = 10, limitType = RateLimit.LimitType.IP, message = "登录操作太频繁，请1分钟后再试")
+    public Result<LoginRespDTO> wechatPhoneLogin(@Valid @RequestBody WechatPhoneLoginReq req) {
+        LoginRespDTO resp = userService.wechatPhoneLogin(req.getLoginCode(), req.getPhoneCode());
         return Result.success(resp);
     }
 

@@ -135,6 +135,8 @@ public class MenuServiceImpl implements MenuService {
         menu.setNote(req.getNote());
         menu.setRating(req.getRating());
         menu.setStatus(req.getStatus() != null ? req.getStatus() : 0);
+        menu.setPhotoUrls(req.getPhotoUrls());
+        menu.setPhotoCount(StrUtil.isBlank(req.getPhotoUrls()) ? 0 : req.getPhotoUrls().split(",").length);
 
         if (req.getEaterIds() != null && !req.getEaterIds().isEmpty()) {
             menu.setEaterIds(JSONUtil.toJsonStr(req.getEaterIds()));
@@ -143,7 +145,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setEatenDate(req.getEatenDate() != null ? LocalDate.parse(req.getEatenDate()) : null);
 
         menuMapper.insert(menu);
-        log.info("添加菜单: userId={}, menuId={}", userId, menu.getId());
+        log.info("添加菜单: userId={}, menuId={}, photoCount={}", userId, menu.getId(), menu.getPhotoCount());
 
         return menu.getId();
     }
@@ -172,6 +174,11 @@ public class MenuServiceImpl implements MenuService {
         menu.setNote(req.getNote());
         menu.setRating(req.getRating());
 
+        if (req.getPhotoUrls() != null) {
+            menu.setPhotoUrls(req.getPhotoUrls());
+            menu.setPhotoCount(StrUtil.isBlank(req.getPhotoUrls()) ? 0 : req.getPhotoUrls().split(",").length);
+        }
+
         if (req.getStatus() != null) {
             menu.setStatus(req.getStatus());
         }
@@ -183,7 +190,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setEatenDate(req.getEatenDate() != null ? LocalDate.parse(req.getEatenDate()) : null);
 
         menuMapper.updateById(menu);
-        log.info("更新菜单: userId={}, menuId={}", userId, menuId);
+        log.info("更新菜单: userId={}, menuId={}, photoCount={}", userId, menuId, menu.getPhotoCount());
     }
 
     @Override
@@ -503,6 +510,8 @@ public class MenuServiceImpl implements MenuService {
         dto.setStatusName(getStatusName(menu.getStatus()));
         dto.setLikeCount(menu.getLikeCount());
         dto.setIsFavorite(menu.getIsFavorite() == 1);
+        dto.setPhotoUrls(menu.getPhotoUrls());
+        dto.setPhotoCount(menu.getPhotoCount());
         dto.setCreateTime(menu.getCreateTime() != null ? menu.getCreateTime().toString() : null);
 
         if (StrUtil.isNotBlank(menu.getEaterIds())) {

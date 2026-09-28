@@ -19,6 +19,11 @@ public interface UserService {
     LoginRespDTO wechatLogin(WechatLoginReq req);
 
     /**
+     * 微信手机号一键登录
+     */
+    LoginRespDTO wechatPhoneLogin(String loginCode, String phoneCode);
+
+    /**
      * 手机号注册（创建新用户）
      */
     LoginRespDTO registerByPhone(String phone, String verifyCode);

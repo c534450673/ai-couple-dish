@@ -8,6 +8,7 @@ import com.aicoupledish.dao.model.User;
 import com.aicoupledish.domain.dto.LoginRespDTO;
 import com.aicoupledish.domain.dto.UserInfoDTO;
 import com.aicoupledish.domain.req.WechatLoginReq;
+import com.aicoupledish.wechat.WechatMiniProgramClient;
 import com.aicoupledish.service.CoupleService;
 import com.aicoupledish.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final JwtUtils jwtUtils;
     private final RedisTemplate<String, String> redisTemplate;
     private final CoupleService coupleService;
+    private final WechatMiniProgramClient wechatMiniProgramClient;
 
     private static final String USER_CACHE_PREFIX = "user:info:";
     private static final String OPENID_CACHE_PREFIX = "user:openid:";
@@ -59,6 +61,54 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = findOrCreateUserByOpenid(openid, req.getNickName(), req.getAvatarUrl());
+        return buildLoginResponse(user);
+    }
+
+    @Override
+    public LoginRespDTO wechatPhoneLogin(String loginCode, String phoneCode) {
+        WechatMiniProgramClient.LoginIdentity identity = wechatMiniProgramClient.exchangeCodes(loginCode, phoneCode);
+        String openid = identity.getOpenid();
+        String phone = identity.getPhone();
+        if (!isValidPhoneNumber(phone)) {
+            log.warn("微信手机号登录失败: 微信返回手机号格式无效");
+            throw new BusinessException(1004, "手机号格式不正确");
+        }
+
+        User openidUser = findUserByOpenid(openid);
+        User phoneUser = findUserByPhone(phone).orElse(null);
+        if (openidUser != null && phoneUser != null && !openidUser.getId().equals(phoneUser.getId())) {
+            log.warn("微信手机号登录账号匹配冲突");
+            throw new BusinessException(9001, "当前微信账号与手机号关联不一致，请联系客服处理");
+        }
+        if (openidUser != null && StrUtil.isNotBlank(openidUser.getPhone()) && !phone.equals(openidUser.getPhone())) {
+            log.warn("微信手机号登录发现已绑定其他手机号: userId={}", openidUser.getId());
+            throw new BusinessException(9001, "当前微信账号已关联其他手机号，请联系客服处理");
+        }
+
+        User user = openidUser != null ? openidUser : phoneUser;
+        if (user == null) {
+            user = new User();
+            user.setNickName("用户" + phone.substring(phone.length() - 4));
+            user.setAvatarUrl("");
+            user.setStatus(DEFAULT_USER_STATUS);
+            user.setMemberLevel(DEFAULT_MEMBER_LEVEL);
+            user.setOpenid(openid);
+            user.setPhone(phone);
+            userMapper.insert(user);
+            log.info("微信手机号登录创建新用户: userId={}, phone={}", user.getId(), maskPhone(phone));
+        } else {
+            String previousOpenid = user.getOpenid();
+            user.setOpenid(openid);
+            user.setPhone(phone);
+            userMapper.updateById(user);
+            if (StrUtil.isNotBlank(previousOpenid) && !openid.equals(previousOpenid)) {
+                redisTemplate.delete(OPENID_CACHE_PREFIX + previousOpenid);
+            }
+            redisTemplate.delete(USER_CACHE_PREFIX + user.getId());
+            log.info("微信手机号登录关联已有用户: userId={}, phone={}", user.getId(), maskPhone(phone));
+        }
+
+        cacheOpenidMapping(openid, user.getId());
         return buildLoginResponse(user);
     }
 

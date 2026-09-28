@@ -3,6 +3,10 @@
 
 FROM maven:3.9-eclipse-temurin-17 AS builder
 
+# 允许构建时通过 MAVEN_OPTS 配置临时代理
+ARG MAVEN_OPTS
+ENV MAVEN_OPTS=${MAVEN_OPTS}
+
 # 设置工作目录
 WORKDIR /build
 

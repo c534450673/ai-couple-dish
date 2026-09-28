@@ -89,6 +89,9 @@ services:
       # 微信小程序配置
       WX_MINIAPP_APPID: ${WX_APPID:-dev_appid}
       WX_MINIAPP_SECRET: ${WX_SECRET:-dev_secret}
+      WECHAT_MINI_PROGRAM_APP_ID: ${WECHAT_MINI_PROGRAM_APP_ID:-}
+      WECHAT_MINI_PROGRAM_APP_SECRET: ${WECHAT_MINI_PROGRAM_APP_SECRET:-}
+      FILE_BASE_URL: ${FILE_BASE_URL:-http://localhost:8080/api/uploads}
       # Java配置
       JAVA_OPTS: "-Xms256m -Xmx512m -XX:+UseG1GC"
       SPRING_PROFILES_ACTIVE: dev
